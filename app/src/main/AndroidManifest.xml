@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Bit_Time"
         tools:targetApi="22">
         <activity
+            android:name=".DbActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
