@@ -18,15 +18,18 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 {
 
     private DbViewModel dbViewModel;
-    private List<ActivityInfo> list;
-    private SettingsLowerFragment settingsLowerFragment;
+    private List<ActivityItem> list;
+    private SettingsLowerFragmentActivities settingsLowerFragmentActivities;
 
-    public ListAdapter(SettingsLowerFragment settingsLowerFragment, List<ActivityInfo> list)
+    private CustomViewModel viewModel;
+
+    public ListAdapter(SettingsLowerFragmentActivities settingsLowerFragmentActivities, List<ActivityItem> list)
     {
-        this.settingsLowerFragment = settingsLowerFragment;
+        this.settingsLowerFragmentActivities = settingsLowerFragmentActivities;
         this.list = list;
+        dbViewModel = new ViewModelProvider(settingsLowerFragmentActivities.requireActivity()).get(DbViewModel.class);
+        viewModel = new ViewModelProvider(settingsLowerFragmentActivities.requireActivity()).get(CustomViewModel.class);
 
-        dbViewModel = new ViewModelProvider(settingsLowerFragment.requireActivity()).get(DbViewModel.class);
     }
 
 
@@ -44,9 +47,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     @Override
     public void onBindViewHolder(@NonNull ListAdapter.ListItemHolder holder, int position) {
 
-        ActivityInfo activityInfo = list.get(position);
-        holder.labelName.setText(activityInfo.getName());
-        holder.labelTime.setText(activityInfo.getTime());
+        ActivityItem activityItem = list.get(position);
+        holder.labelName.setText(activityItem.getName());
+        holder.labelTime.setText(activityItem.getTime());
+        holder.id = activityItem.activityInfo.getIdInt();
 
     }
 
@@ -57,16 +61,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
     public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
+        int id;
         TextView labelName;
         TextView labelTime;
-
         Button modifyButton;
         Button deleteButton;
 
         public ListItemHolder (View view)
         {
             super(view);
-
             labelName = view.findViewById(R.id.labelName);
             labelTime = view.findViewById(R.id.labelTime);
             modifyButton = view.findViewById(R.id.modifyButton);
@@ -80,7 +83,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(labelName.getContext(), "modify button is pressed",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
+
+                    DbViewModelData newDbData = new DbViewModelData(dbViewModel.getSelectedItem().getValue());
+                    newDbData.activityToModify = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
+                    dbViewModel.selectItem(newDbData);
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyActivity));
+
+
 
                 }
             });
@@ -96,7 +106,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     Log.i("TEST",""+labelName.getText().toString()+" "+labelTime.getText().toString());
                     Log.i("TEST","immediatly after "+ newData.activityToDelete.getName());
 
-                    ActivityInfo itemToDelete = new ActivityInfo(labelName.getText().toString(),labelTime.getText().toString());
+                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
 
                     newData.activityToDelete = itemToDelete;
 
@@ -110,7 +120,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
         @Override
         public void onClick(View view) {
-            //settingsLowerFragment.showNote(getAdapterPosition());
+            Toast.makeText(view.getContext(), "item pressed this is the action",Toast.LENGTH_SHORT);
+
         }
     }
 }

@@ -54,14 +54,14 @@ public class TaskSelectionDialog extends DialogFragment {
 
                         if(isChecked)
                         {
-                            selectedTasks[i] = new TaskItem(tasksCursor.getString(1),tasksCursor.getString(2));
+                            selectedTasks[i] = new TaskItem(tasksCursor.getInt(0),tasksCursor.getString(1),tasksCursor.getString(2));
                             Toast.makeText(getContext(),"added "+tasksCursor.getString(1),Toast.LENGTH_SHORT).show();
 
                         }
                         else
                         {
                             Toast.makeText(getContext(),"UNselected"+i,Toast.LENGTH_SHORT).show();
-                            selectedTasks[i] = new TaskItem("empty","-1");
+                            selectedTasks[i] = new TaskItem(-1,"empty","-1");
                         }
 
                     }

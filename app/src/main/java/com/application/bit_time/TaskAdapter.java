@@ -1,27 +1,36 @@
 package com.application.bit_time;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder> {
 
+    private DbViewModel dbViewModel;
+    private CustomViewModel viewModel;
+
     private List<TaskItem> taskList;
-    private SettingsLowerFragment settingsLowerFragment;
+    private SettingsLowerFragmentTasks settingsLowerFragmentTasks;
 
 
-    public TaskAdapter(SettingsLowerFragment settingsLowerFragment, List<TaskItem> taskList)
+
+    public TaskAdapter(SettingsLowerFragmentTasks settingsLowerFragmentTasks, List<TaskItem> taskList)
     {
-        this.settingsLowerFragment = settingsLowerFragment;
+        this.settingsLowerFragmentTasks = settingsLowerFragmentTasks;
         this.taskList = taskList;
+        dbViewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(DbViewModel.class);
+        viewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(CustomViewModel.class);
     }
 
 
@@ -40,7 +49,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     public void onBindViewHolder(@NonNull TaskAdapter.ListItemHolder holder, int position) {
 
         TaskItem task = taskList.get(position);
-
         holder.labelName.setText(task.getName());
         holder.labelDuration.setText(task.getDuration());
         //immagine boh
@@ -57,6 +65,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
         TextView labelName;
         TextView labelDuration;
+
+        Button modifyButton;
+        Button deleteButton;
         //immagine boh;
 
 
@@ -65,16 +76,51 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
             super(view);
             labelName = view.findViewById(R.id.labelTask);
             labelDuration = view.findViewById(R.id.labelDuration);
+            modifyButton = view.findViewById(R.id.modifyTaskButton);
+            deleteButton = view.findViewById(R.id.deleteTaskButton);
             //immagine boh
+
+
+            modifyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), "modify pressed",Toast.LENGTH_SHORT).show();
+
+
+                    DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
+                    newData.taskToModify = new TaskItem(-1,labelName.getText().toString(),labelDuration.getText().toString());
+                    Log.i("TASKAD newData ttm",newData.taskToModify.toString());
+                    dbViewModel.selectItem(newData);
+
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyTask));
+
+
+
+                }
+            });
+
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), "delete pressed",Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
 
 
             view.setClickable(true);
             view.setOnClickListener(this);
+
+
+
+
         }
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(settingsLowerFragment.getContext(),"item pressed",Toast.LENGTH_SHORT).show();
+            Toast.makeText(settingsLowerFragmentTasks.getContext(),"item pressed",Toast.LENGTH_SHORT).show();
         }
     }
 }

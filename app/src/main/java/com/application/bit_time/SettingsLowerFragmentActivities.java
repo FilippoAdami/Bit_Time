@@ -1,5 +1,7 @@
 package com.application.bit_time;
 
+
+
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,11 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsLowerFragment extends Fragment
+public class SettingsLowerFragmentActivities extends Fragment
 {
 
 
-    private List<ActivityInfo> activityList;
+    private List<ActivityItem> activityList;
     private List<TaskItem> taskList;
     DbContract activityContract;
     private RecyclerView recyclerView;
@@ -33,12 +35,7 @@ public class SettingsLowerFragment extends Fragment
     DbViewModel dbViewModel;
     DbViewModelData latestData;
     CustomViewModel viewModel;
-    String mode;
 
-    SettingsLowerFragment(String mode)
-    {
-        this.mode = mode;
-    }
 
 
     @Override
@@ -64,9 +61,6 @@ public class SettingsLowerFragment extends Fragment
                 Log.i("FROM SETTINGS LOWER FRAGMENT","new activity to delete");
             }
 
-
-
-
             latestData = item; // update di latest data
 
 
@@ -82,7 +76,7 @@ public class SettingsLowerFragment extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-
+        Log.i("LOWFRAGACT","uptohere bro");
         View view = inflater.inflate(R.layout.settings_lower_fragment_layout,container,false);
 
         recyclerView= view.findViewById(R.id.recyclerView);
@@ -91,77 +85,36 @@ public class SettingsLowerFragment extends Fragment
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),LinearLayoutManager.VERTICAL));
 
+        activityList = new ArrayList<>();
+        activityList = getActivityData(dbManager.selectAllActivities());
+        listAdapter = new ListAdapter(this,activityList);
+        Log.i("LOWFRAGACT adaptState",listAdapter.toString());
 
-        /*viewModel.getSelectedItem().observe(this,item ->
-        {
-            if(item.equals(SettingsModeData.Mode.Tasks))*/
-            if(this.mode.equals(SettingsModeData.Mode.Tasks))
-            {
-                taskList = new ArrayList<>();
-                taskList = getTaskData(dbManager.selectAllTasks());
-                //taskAdapter = new TaskAdapter(this,taskList);
-                recyclerView.setAdapter(taskAdapter);
-            }
-            else if(this.mode.equals(SettingsModeData.Mode.Activities))
-            {
-
-                activityList = new ArrayList<>();
-                activityList = getActivityData(dbManager.selectAllActivities());
-                //listAdapter = new ListAdapter(this,activityList);
-                recyclerView.setAdapter(listAdapter);
-
-
-            }
-        //});
-
-        taskList = new ArrayList<>();
-        taskList = getTaskData(dbManager.selectAllTasks());
-        //taskAdapter = new TaskAdapter(this,taskList);
-        recyclerView.setAdapter(taskAdapter);
+        recyclerView.setAdapter(listAdapter);
 
         return view;
 
     }
 
 
-
-    private List<ActivityInfo> getActivityData(Cursor c)
+    private List<ActivityItem> getActivityData(Cursor c)
     {
-        List<ActivityInfo> list = new ArrayList<>();
+        List<ActivityItem> list = new ArrayList<>();
 
 
         Log.i("HELP","uptohere");
 
         while(c.moveToNext())
         {
-            ActivityInfo activityInfo = new ActivityInfo(c.getString(0),c.getString(1), c.getString(2));
-            list.add(activityInfo);
+            ActivityItem activityItem = new ActivityItem(c.getString(0),c.getString(1), c.getString(2));
+            list.add(activityItem);
         }
 
         return list;
     }
 
-    private List<TaskItem> getTaskData(Cursor c)
-    {
-        List<TaskItem> list = new ArrayList<>();
 
 
-        Log.i("HELP","uptohere");
-
-        while(c.moveToNext())
-        {
-            TaskItem listItem = new TaskItem(-1,c.getString(1),c.getString(2));
-            Log.i("CREAD",listItem.toString());
-            list.add(listItem);
-        }
-
-        return list;
-    }
-
-    public void notifyDataSetChanged()
-    {
-        this.taskAdapter.notifyDataSetChanged();
-    }
 
     @Override
     public void onDestroy() {
@@ -170,3 +123,4 @@ public class SettingsLowerFragment extends Fragment
 
     }
 }
+

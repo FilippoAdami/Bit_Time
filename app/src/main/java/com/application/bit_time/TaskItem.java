@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 
 public class TaskItem {
 
+
+    private int IDpk;
     private String Name;
     private int Duration;
     //immagine boh
@@ -14,26 +16,30 @@ public class TaskItem {
 
     public TaskItem()
     {
+        this.IDpk = -1;
         this.Name = "emptyTask";
         this.Duration = -1;
 
         Log.i("TASKITEMCONST",this.toString());
     }
 
-    public TaskItem(String name, int duration)
+    public TaskItem(int id,String name, int duration)
     {
+        this.IDpk = id;
         this.Name = name;
         this.Duration = duration;
     }
 
     public TaskItem(TaskItem original)
     {
+        this.IDpk = original.IDpk;
         this.Name = new String(original.getName());
         this.Duration = original.getDurationInt();
     }
 
-    public TaskItem(String name,String duration)
+    public TaskItem(int id,String name,String duration)
     {
+        this.IDpk = id;
         this.Name = name;
         try {
             this.Duration = Integer.parseInt(duration);
@@ -70,7 +76,15 @@ public class TaskItem {
         this.Duration= Integer.parseInt(duration);
     }
 
+    public int getID()
+    {
+        return this.IDpk;
+    }
 
+    public String getIdStr()
+    {
+        return Integer.toString(this.IDpk);
+    }
 
     @Override
     public boolean equals(@Nullable Object obj) {
@@ -94,7 +108,7 @@ public class TaskItem {
     @Override
     public String toString() {
 
-        return getName() + " " + getDuration();
+        return getIdStr()+" "+getName() + " " + getDuration();
 
 
     }

@@ -16,7 +16,7 @@ public class DbManager {
         public static final String DATABASE_NAME = "Activities.db";
 
         private static final String SQL_CREATE_ACTIVITIES_TABLE = "create table " + DbContract.Activities.TABLE_NAME  + " (" +
-                DbContract.Activities._ID + " integer primary key,"  +
+                DbContract.Activities._ID + " integer primary key autoincrement,"  +
                 DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME     + " text," +
                 DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + " integer);";
                 /*+ DbContract.Activities.COLUMN_NAME_TASK1 + "integer,"
@@ -26,7 +26,7 @@ public class DbManager {
                 + DbContract.Activities.COLUMN_NAME_TASK5 + "integer);";*/
 
         private static final String SQL_CREATE_TASKS_TABLE = "create table " + DbContract.Tasks.TABLE_NAME  + " (" +
-                DbContract.Tasks._ID + " integer primary key,"  +
+                DbContract.Tasks._ID + " integer primary key autoincrement,"  +
                 DbContract.Tasks.COLUMN_NAME_TASK_NAME + " text," +
                 DbContract.Tasks.COLUMN_NAME_TASK_DURATION  + " text);";
 
@@ -124,6 +124,20 @@ public class DbManager {
 
         Log.i("QUERY",deleteQuery);
         db.execSQL(deleteQuery);
+    }
+
+    public void modifyTask(TaskItem modifiedItem)
+    {
+        String updateQuery =
+                "update "+ DbContract.Tasks.TABLE_NAME +
+                        " set "
+                        + DbContract.Tasks.COLUMN_NAME_TASK_NAME + "='" + modifiedItem.getName() + "',"
+                        + DbContract.Tasks.COLUMN_NAME_TASK_DURATION + "=" + modifiedItem.getDuration()
+                        + " where " + DbContract.Tasks._ID + "=" + modifiedItem.getIdStr();
+
+        Log.i("SQLMOD",updateQuery.toString());
+        //db.execSQL(updateQuery);
+
     }
 
 

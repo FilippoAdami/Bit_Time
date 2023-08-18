@@ -3,6 +3,7 @@ package com.application.bit_time;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class ActivityItem {
 
@@ -33,6 +34,12 @@ public class ActivityItem {
         }*/
     }
 
+    public ActivityItem(String id,String name,String duration)
+    {
+        this.activityInfo = new ActivityInfo(id,name,duration);
+        subtask = null;
+    }
+
 
   public String getName()
   {
@@ -60,4 +67,23 @@ public class ActivityItem {
 
         return info;//+ " "+ subtasksInfo;
     }
+
+
+    //@Override
+    /*public boolean equals(@Nullable Object obj) {
+
+        if(obj instanceof ActivityItem)
+        {
+            ActivityItem objAI = (ActivityItem) obj;
+            if(
+                    //this.activityInfo.equals(objAI.activityInfo));
+
+
+        }
+
+        return false;
+
+
+
+    }*/
 }

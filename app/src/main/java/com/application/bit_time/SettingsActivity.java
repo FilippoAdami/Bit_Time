@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -17,7 +18,6 @@ public class SettingsActivity extends AppCompatActivity {
     Fragment upperFrag;
     Fragment middleFrag;
     Fragment lowerFrag;
-
     DbViewModelData currentDbViewModelData;
 
 
@@ -29,30 +29,19 @@ public class SettingsActivity extends AppCompatActivity {
 
         dbManager = new DbManager(getApplicationContext());
 
-        //Log.i("DBLOG",dbManager.getDbName());
-
         dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
-        //Log.i("dbViewModel",dbViewModel.getSelectedItem().getValue().toString());
 
         currentDbViewModelData = new DbViewModelData(dbViewModel.getSelectedItem().getValue());
 
-        //currentDbViewModelData = new DbViewModelData();
-        /*currentDbViewModelData.activityToAdd = dbViewModel.getSelectedItem().getValue().activityToAdd;
-        currentDbViewModelData.activityToDelete = dbViewModel.getSelectedItem().getValue().activityToDelete;
-        currentDbViewModelData.taskToDelete = dbViewModel.getSelectedItem().getValue().taskToDelete;
-        currentDbViewModelData.taskToAdd = dbViewModel.getSelectedItem().getValue().taskToAdd;*/
-
-
 
         viewModel = new ViewModelProvider(this).get(CustomViewModel.class);
-        viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Tasks));
 
         fManager = getSupportFragmentManager();
         Fragment frag = fManager.findFragmentById(R.id.fragmentsContainer);
 
         upperFrag = new SettingsUpperFragment();
         middleFrag = new SettingsMiddleFragment();
-        lowerFrag = new SettingsLowerFragment();
+        lowerFrag = new SettingsLowerFragmentTasks();
 
 
 
@@ -67,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             if(!currentDbViewModelData.taskToAdd.equals(item.taskToAdd))
             {
-                Log.i("FROM SETTINGS ACTIVITY"," entro qui");
+                Log.i("FROM SETTINGS ACTIVITY"," entro qui ed inserisco task");
                 dbManager.insertTaskRecord(item.taskToAdd.getName(),item.taskToAdd.getDuration());
 
             }
@@ -77,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
             else if(!currentDbViewModelData.activityToAdd.equals(item.activityToAdd))
             {
-                Log.i("FROM SETTINGS ACTIVITY"," entro qui");
+                Log.i("FROM SETTINGS ACTIVITY"," entro qui ed inserisco act");
                 dbManager.insertActivityRecord(item.activityToAdd.getName(),item.activityToAdd.getTime());
 
             }
@@ -86,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.i("FROM SETTINGS ACTIVITY"," entro qui");
                 dbManager.deleteActivity(item.activityToDelete);
 
-                lowerFrag = new SettingsLowerFragment();
+                lowerFrag = new SettingsLowerFragment(SettingsModeData.Mode.Activities.toString());
 
                 fManager.beginTransaction()
                         .replace(R.id.bottom_fragment_container_view,lowerFrag)
@@ -107,15 +96,19 @@ public class SettingsActivity extends AppCompatActivity {
 
         viewModel.getSelectedItem().observe(this, item ->
             {
+
+                Log.i("SettingsActivity VM","item : "+item.toString());
+
                 if(frag == null)
                 {
                     //Log.i("INFOZ","entro in if");
                     if(item.equals("Tasks"))
                     {
+                        taskRender();
                     }
                     else if(item.equals("Activities"))
                     {
-
+                        activitiesRender();
                     }
                 }
 
@@ -125,6 +118,15 @@ public class SettingsActivity extends AppCompatActivity {
                 }else if(item.equals("NewActivity"))
                 {
                     newActivityRender();
+                }else if(item.equals("ModifyActivity"))
+                {
+                    Toast.makeText(getApplicationContext(),"i should modify data",Toast.LENGTH_SHORT);
+                }else if(item.equals("ModifyTask"))
+                {
+                    //Toast.makeText(this,"received modify Task",Toast.LENGTH_SHORT).show();
+                    modifyTask();
+
+
                 }
 
             });
@@ -134,17 +136,24 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void taskRender()
     {
-        Fragment lowerFrag = new SettingsLowerFragment();
+        Fragment lowerFrag = new SettingsLowerFragmentTasks();
+
+        fManager.beginTransaction()
+                .replace(R.id.bottom_fragment_container_view,lowerFrag)
+                .commit();
+
+        Log.i("SettingsActivity VM","taskRender called");
 
     }
 
     private void activitiesRender()
     {
-        lowerFrag = new PlaceholderFragment();
-
+        lowerFrag = new SettingsLowerFragmentActivities();
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .commit();
+
+        Log.i("SettingsActivity VM","activitiesRender called");
     }
 
 
@@ -162,6 +171,17 @@ public class SettingsActivity extends AppCompatActivity {
     private void newActivityRender()
     {
         upperFrag = new ActivityCreationFragment();
+
+        fManager.beginTransaction()
+                .replace(R.id.top_fragment_container_view,upperFrag)
+                .remove(middleFrag)
+                .remove(lowerFrag)
+                .commit();
+    }
+
+    private void modifyTask()
+    {
+        upperFrag = new ModifyTasksFragment();
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)

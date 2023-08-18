@@ -9,15 +9,19 @@ public class DbViewModelData {
 
     TaskItem taskToDelete;
     TaskItem taskToAdd;
+    TaskItem taskToModify;
     ActivityInfo activityToDelete;
     ActivityItem activityToAdd;
+    ActivityInfo activityToModify;
 
     public DbViewModelData()
     {
-        this.taskToDelete = new TaskItem(" ",-1);
-        this.taskToAdd = new TaskItem(" ",-1);
+        this.taskToDelete = new TaskItem(-1," ",-1);
+        this.taskToAdd = new TaskItem(-1," ",-1);
+        this.taskToModify = new TaskItem(-1,"",-1);
         this.activityToAdd =  new ActivityItem();
-        this.activityToDelete = new ActivityInfo(" ",-1);
+        this.activityToDelete = new ActivityInfo(-1," ",-1);
+        this.activityToModify = new ActivityInfo(-1,"",-1);
 
         Log.i("NEW VMDATA",taskToDelete+" "+taskToAdd+" "+activityToDelete+" "+activityToAdd);
 
@@ -29,8 +33,11 @@ public class DbViewModelData {
     {
         this.taskToDelete = new TaskItem(original.taskToDelete);
         this.taskToAdd = new TaskItem(original.taskToAdd);
+        this.taskToModify = new TaskItem(original.taskToModify);
         this.activityToAdd = new ActivityItem(original.activityToAdd);
         this.activityToDelete = new ActivityInfo(original.activityToDelete);
+        this.activityToModify = new ActivityInfo(original.activityToModify);
+
     }
 
     @Override
@@ -46,6 +53,7 @@ public class DbViewModelData {
                     && this.activityToAdd.equals(objData.activityToAdd)
                     && this.taskToAdd.equals(objData.taskToAdd)
                     && this.taskToDelete.equals(objData.taskToDelete)
+                    && this.activityToModify.equals(objData.activityToModify)
 
             )
             {
@@ -69,12 +77,16 @@ public class DbViewModelData {
         String taskToAddStr = taskToAdd.toString();
         String activityToAddStr = activityToAdd.toString();
         String activityToDeleteStr = activityToDelete.toString();
+        String activityToModifyStr = activityToModify.toString();
+        String taskToModifyStr = taskToModify.toString();
 
         String res =
                 taskToDeleteStr + " "
                 + taskToAddStr + " "
+                + taskToModifyStr + " "
                 + activityToDeleteStr + " "
-                + activityToAddStr;
+                + activityToAddStr + " "
+                + activityToModifyStr;
 
         return res;
     }

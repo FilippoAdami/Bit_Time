@@ -59,7 +59,7 @@ public class CreationUpperFragment extends Fragment {
                 int totalTime = hours+minutes;
 
 
-                TaskItem newTask = new TaskItem(editName.getText().toString(),totalTime);
+                TaskItem newTask = new TaskItem(-1,editName.getText().toString(),totalTime);
 
                 Log.i("INFOZ",newTask.getName()+" "+newTask.getDuration());
 

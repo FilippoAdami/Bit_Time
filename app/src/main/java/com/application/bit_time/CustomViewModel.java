@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 public class CustomViewModel extends ViewModel {
 
-    private final MutableLiveData<SettingsModeData> selectedItem = new MutableLiveData<SettingsModeData>();
+    private final MutableLiveData<SettingsModeData> selectedItem = new MutableLiveData(new SettingsModeData());
 
     public void selectItem(SettingsModeData item)
     {
