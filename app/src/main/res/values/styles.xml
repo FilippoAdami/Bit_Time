@@ -1,3 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="MyStyledButton">
+        <item name="android:background">@drawable/button</item>
+
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="CaregiverButton">
+        <item name="android:background">@drawable/caregiver_button</item>
+
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">32sp</item>
+    </style>
+
+
+
+    <style name="TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextColor">@color/black</item>
+        <item name="boxStrokeColor">@android:color/transparent</item> <!-- Remove the box stroke color -->
+        <item name="android:background">@android:color/transparent</item> <!-- Remove the background -->
+    </style>
+
+
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">21dp</item>
+        <item name="android:backgroundTint">@color/grey</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
 </resources>
