@@ -1,6 +1,8 @@
 package com.application.bit_time;
 
 import androidx.fragment.app.Fragment;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +16,19 @@ public class CaregiverLoginFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.caregiver_login_layout, container, false);
 
         Button backButton = rootView.findViewById(R.id.backButton);
+        Button logInButton = rootView.findViewById(R.id.loginButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Navigate back to the previous fragment or perform another action
                 requireActivity().onBackPressed();
+            }
+        });
+
+        logInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettingsActivity();
             }
         });
 
@@ -33,6 +43,10 @@ public class CaregiverLoginFragment extends Fragment {
         });
 
         return rootView;
+    }
+    private void openSettingsActivity() {
+        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+        startActivity(intent);
     }
 }
 
