@@ -136,7 +136,18 @@ public class DbManager {
                         + " where " + DbContract.Tasks._ID + "=" + modifiedItem.getIdStr();
 
         Log.i("SQLMOD",updateQuery.toString());
-        //db.execSQL(updateQuery);
+        db.execSQL(updateQuery);
+
+    }
+
+    public void deleteTask(TaskItem task)
+    {
+        String deleteQuery =
+                "delete from "+ DbContract.Tasks.TABLE_NAME + " where "
+                + DbContract.Tasks._ID + "=" + task.getIdStr();
+
+        //Log.i("DB delTask",deleteQuery.toString());
+        db.execSQL(deleteQuery);
 
     }
 

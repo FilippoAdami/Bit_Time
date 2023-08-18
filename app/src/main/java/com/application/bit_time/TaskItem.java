@@ -94,7 +94,8 @@ public class TaskItem {
 
             TaskItem objData = (TaskItem) obj;
 
-            if(this.Name == objData.getName() && this.Duration == objData.getDurationInt())
+            //if(this.Name == objData.getName() && this.Duration == objData.getDurationInt())
+            if(this.IDpk == objData.IDpk)
                 return true;
         }
 
@@ -111,5 +112,10 @@ public class TaskItem {
         return getIdStr()+" "+getName() + " " + getDuration();
 
 
+    }
+
+    public String toStringShrt()
+    {
+        return getIdStr();
     }
 }

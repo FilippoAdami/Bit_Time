@@ -63,11 +63,12 @@ public class SettingsActivity extends AppCompatActivity {
             else if(!currentDbViewModelData.taskToDelete.equals(item.taskToDelete))
             {
                 Log.i("FROM SETTINGS ACTIVITY","now i would delete the selected task, implement the method");
+                dbManager.deleteTask(item.taskToDelete);
             }
             else if(!currentDbViewModelData.activityToAdd.equals(item.activityToAdd))
             {
                 Log.i("FROM SETTINGS ACTIVITY"," entro qui ed inserisco act");
-                dbManager.insertActivityRecord(item.activityToAdd.getName(),item.activityToAdd.getTime());
+                //dbManager.insertActivityRecord(item.activityToAdd.getName(),item.activityToAdd.getTime());
 
             }
             else if(!currentDbViewModelData.activityToDelete.equals(item.activityToDelete))
@@ -156,6 +157,12 @@ public class SettingsActivity extends AppCompatActivity {
         Log.i("SettingsActivity VM","activitiesRender called");
     }
 
+
+    @Override
+    protected void onDestroy() {
+        dbManager.closeDb();
+        super.onDestroy();
+    }
 
     private void newTaskRender()
     {

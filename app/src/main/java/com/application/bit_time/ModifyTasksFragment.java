@@ -58,7 +58,6 @@ public class ModifyTasksFragment extends Fragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("UPDATE",editName.getText().toString());
 
                 int h = Integer.parseInt(edith.getText().toString());
                 int min = Integer.parseInt(editmin.getText().toString());
@@ -66,10 +65,12 @@ public class ModifyTasksFragment extends Fragment {
 
                 int totalTime = h*60 + min;
 
-
                 TaskItem newItem = new TaskItem(taskToModify.getID(),editName.getText().toString(),totalTime);
 
-                dbManager.modifyTask(taskToModify);
+                Log.i("UPDATE",newItem.toString());
+
+
+                dbManager.modifyTask(newItem);
 
 
             }

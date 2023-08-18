@@ -73,20 +73,21 @@ public class DbViewModelData {
     @Override
     public String toString() {
 
-        String taskToDeleteStr = taskToDelete.toString();
-        String taskToAddStr = taskToAdd.toString();
+        String taskToDeleteStr = taskToDelete.toStringShrt();
+        String taskToAddStr = taskToAdd.toStringShrt();
         String activityToAddStr = activityToAdd.toString();
         String activityToDeleteStr = activityToDelete.toString();
         String activityToModifyStr = activityToModify.toString();
-        String taskToModifyStr = taskToModify.toString();
+        String taskToModifyStr = taskToModify.toStringShrt();
 
         String res =
-                taskToDeleteStr + " "
-                + taskToAddStr + " "
+                taskToAddStr + " "
                 + taskToModifyStr + " "
-                + activityToDeleteStr + " "
+                + taskToDeleteStr + " "
                 + activityToAddStr + " "
-                + activityToModifyStr;
+                + activityToModifyStr +" "
+                + activityToDeleteStr;
+
 
         return res;
     }

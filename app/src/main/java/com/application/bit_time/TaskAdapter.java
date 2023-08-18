@@ -51,6 +51,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         TaskItem task = taskList.get(position);
         holder.labelName.setText(task.getName());
         holder.labelDuration.setText(task.getDuration());
+        holder.id = task.getID();
         //immagine boh
 
 
@@ -63,6 +64,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
     public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        int id;
         TextView labelName;
         TextView labelDuration;
 
@@ -78,6 +80,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
             labelDuration = view.findViewById(R.id.labelDuration);
             modifyButton = view.findViewById(R.id.modifyTaskButton);
             deleteButton = view.findViewById(R.id.deleteTaskButton);
+
+
             //immagine boh
 
 
@@ -88,7 +92,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
 
                     DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
-                    newData.taskToModify = new TaskItem(-1,labelName.getText().toString(),labelDuration.getText().toString());
+                    newData.taskToModify = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
                     Log.i("TASKAD newData ttm",newData.taskToModify.toString());
                     dbViewModel.selectItem(newData);
 
@@ -103,7 +107,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(), "delete pressed",Toast.LENGTH_SHORT).show();
+                    Log.i("TASKAD btn" ,"delete pressed");
+
+                    DbViewModelData dbData = dbViewModel.getSelectedItem().getValue();
+                    dbData.taskToDelete = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
+                    dbViewModel.selectItem(dbData);
+
 
                 }
             });
