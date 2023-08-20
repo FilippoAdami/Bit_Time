@@ -11,8 +11,9 @@ import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private SubtasksViewModel subtasksViewModel;
     private DbManager dbManager;
-    private CustomViewModel  viewModel;
+    private CustomViewModel viewModel;
     private DbViewModel dbViewModel;
     FragmentManager fManager;
     Fragment upperFrag;
@@ -26,6 +27,16 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+
+
+        subtasksViewModel = new ViewModelProvider(this).get(SubtasksViewModel.class);
+
+
+        subtasksViewModel.getSelectedItem().observe(this,item ->
+        {
+
+            Log.i("SETT ACT ",item.toString());
+        });
 
         dbManager = new DbManager(getApplicationContext());
 
@@ -73,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
             else if(!currentDbViewModelData.activityToDelete.equals(item.activityToDelete))
             {
-                Log.i("FROM SETTINGS ACTIVITY"," entro qui");
+                Log.i("FROM SETTINGS ACTIVITY"," entro qui e cancello act");
                 dbManager.deleteActivity(item.activityToDelete);
 
                 lowerFrag = new SettingsLowerFragment(SettingsModeData.Mode.Activities.toString());
@@ -143,7 +154,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .commit();
 
-        Log.i("SettingsActivity VM","taskRender called");
+        //Log.i("SettingsActivity VM","taskRender called");
 
     }
 
@@ -154,7 +165,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .commit();
 
-        Log.i("SettingsActivity VM","activitiesRender called");
+        //Log.i("SettingsActivity VM","activitiesRender called");
     }
 
 

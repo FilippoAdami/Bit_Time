@@ -11,13 +11,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import java.util.ArrayList;
 
 public class TaskSelectionDialog extends DialogFragment {
 
 
     DbManager dbManager;
     Cursor tasksCursor;
-    TaskItem[] selectedTasks;
+    ArrayList<TaskItem> selectedTasks;
+    SubtasksViewModel subtasksViewModel;
+
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,12 +32,12 @@ public class TaskSelectionDialog extends DialogFragment {
 
         dbManager = new DbManager(getContext());
         tasksCursor= dbManager.selectAllTasks();
-        selectedTasks = new TaskItem[tasksCursor.getCount()];
+        selectedTasks = new ArrayList<>();
+        subtasksViewModel = new ViewModelProvider(requireActivity()).get(SubtasksViewModel.class);
 
-        for(TaskItem ti : selectedTasks)
-        {
-            ti =  new TaskItem();
-        }
+        Log.i("testfromdialog",subtasksViewModel.toString());
+
+
         //Toast.makeText(getContext(),dbManager.getDbName(),Toast.LENGTH_SHORT).show();
 
     }
@@ -54,14 +61,23 @@ public class TaskSelectionDialog extends DialogFragment {
 
                         if(isChecked)
                         {
-                            selectedTasks[i] = new TaskItem(tasksCursor.getInt(0),tasksCursor.getString(1),tasksCursor.getString(2));
-                            Toast.makeText(getContext(),"added "+tasksCursor.getString(1),Toast.LENGTH_SHORT).show();
+
+                            if(selectedTasks.size() <= DbContract.Activities.DIM_MAX)
+                            {
+                                selectedTasks.add(new TaskItem(tasksCursor.getInt(0),tasksCursor.getString(1),tasksCursor.getString(2)));
+                                Toast.makeText(getContext(),"added "+tasksCursor.getString(1),Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                                Toast.makeText(getContext(),"DIM MAX reached",Toast.LENGTH_SHORT).show();
+
 
                         }
                         else
                         {
                             Toast.makeText(getContext(),"UNselected"+i,Toast.LENGTH_SHORT).show();
-                            selectedTasks[i] = new TaskItem(-1,"empty","-1");
+                            selectedTasks.remove(new TaskItem(tasksCursor.getInt(0),tasksCursor.getString(1),tasksCursor.getString(2)));
+
+
                         }
 
                     }
@@ -69,9 +85,21 @@ public class TaskSelectionDialog extends DialogFragment {
                 .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.i("SELECTED TASKS",selectedTasks[0].toString());
+                                Log.i("SELECTED TASKS","pressed positive");
+
+                                TaskItem[] selectedTasksA = new TaskItem[selectedTasks.size()];
+
+                                selectedTasksA = selectedTasks.toArray(selectedTasksA);
+
+                                subtasksViewModel.selectItem(new SubtasksViewModelData(selectedTasksA));
+
+                                for(TaskItem ti : selectedTasksA)
+                                    Log.i("SELTASK_A",ti.toString());
+
+                                Log.i("DIALOG","subtasks submitted");
                             }
                         });
+
 
 
 

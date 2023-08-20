@@ -1,6 +1,5 @@
 package com.application.bit_time;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
