@@ -8,6 +8,7 @@ public class SubtasksViewModelData {
 
 
     TaskItem[] subtasks;
+    SubtaskAdapter subtaskAdapter;
 
 
     public SubtasksViewModelData()
@@ -19,10 +20,12 @@ public class SubtasksViewModelData {
           subtasks[i] = new TaskItem();
           //Log.i("new subtask",subtasks[i].toString());
       }
+
+      subtaskAdapter = null;
     }
 
 
-    public SubtasksViewModelData(TaskItem[] subtasks)
+    public SubtasksViewModelData(TaskItem[] subtasks, SubtaskAdapter subtadapt)
     {
         this();
 
@@ -31,6 +34,8 @@ public class SubtasksViewModelData {
                 this.subtasks[i] = new TaskItem(subtasks[i]);
             }
         }
+
+        this.subtaskAdapter = subtadapt;
 
     }
 

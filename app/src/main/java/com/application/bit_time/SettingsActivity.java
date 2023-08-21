@@ -12,6 +12,7 @@ import android.widget.Toast;
 public class SettingsActivity extends AppCompatActivity {
 
     private SubtasksViewModel subtasksViewModel;
+    private SubtasksViewModel dbTasksViewModel;
     private DbManager dbManager;
     private CustomViewModel viewModel;
     private DbViewModel dbViewModel;
@@ -28,8 +29,10 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
 
+        dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
+        subtasksViewModel = new ViewModelProvider(this).get("subTasksVM",SubtasksViewModel.class);
+        dbTasksViewModel = new ViewModelProvider(this).get("DbTasksVM",SubtasksViewModel.class);
 
-        subtasksViewModel = new ViewModelProvider(this).get(SubtasksViewModel.class);
 
 
         subtasksViewModel.getSelectedItem().observe(this,item ->

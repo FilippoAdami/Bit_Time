@@ -13,16 +13,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.CustomViewModel;
 import com.application.bit_time.DbManager;
 import com.application.bit_time.R;
 import com.application.bit_time.TaskSelectionDialog;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ActivityCreationFragment extends Fragment {
 
     private DbManager dbManager;
-
+    private RecyclerView subtasksRecyclerView;
+    private SubtaskAdapter subtaskAdapter;
     private CustomViewModel viewModel;
 
     private SubtasksViewModel subtasksViewModel;
@@ -33,6 +41,9 @@ public class ActivityCreationFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         subtasksToAdd = new TaskItem[DbContract.Activities.DIM_MAX];
 
         for(int i =0 ;i <DbContract.Activities.DIM_MAX ; i++)
@@ -42,7 +53,19 @@ public class ActivityCreationFragment extends Fragment {
 
 
         dbManager = new DbManager(getContext());
-        subtasksViewModel = new ViewModelProvider(requireActivity()).get(SubtasksViewModel.class);
+        subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
+        List<TaskItem> subtasksList =  Arrays.asList(subtasksToAdd);
+        subtaskAdapter = new SubtaskAdapter(this,subtasksList);
+
+        SubtasksViewModelData AdaptData = subtasksViewModel.getSelectedItem().getValue();
+
+        if(AdaptData.subtaskAdapter == null)
+        {
+            Log.i("adaptData state"," was null");
+            AdaptData.subtaskAdapter = subtaskAdapter;
+            Log.i("adaptData state","now is "+ AdaptData.subtaskAdapter.toString());
+            subtasksViewModel.selectItem(AdaptData);
+        }
 
 
 
@@ -50,12 +73,17 @@ public class ActivityCreationFragment extends Fragment {
 
         subtasksViewModel.getSelectedItem().observe(this,item -> {
 
-            for(int i = 0; i< item.subtasks.length ; i++) {
+            for (int i = 0; i < item.subtasks.length; i++) {
                 Log.i("ACF subtasks[i]= ", item.subtasks[i].toString());
 
                 subtasksToAdd[i] = new TaskItem(item.subtasks[i]);
             }
         });
+
+
+
+
+
 
 
     }
@@ -66,10 +94,41 @@ public class ActivityCreationFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_creation_fragment_layout,container,false);
 
-
         TextView nameLabel = view.findViewById(R.id.editNameLabel);
+        TextView totalTimelabel = view.findViewById(R.id.totalTimeLabel);
         Button addButton = view.findViewById(R.id.addTaskButton);
         Button endButton = view.findViewById(R.id.fineButton);
+
+
+
+
+
+        subtasksRecyclerView = view.findViewById(R.id.subtasksRecyclerView);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        subtasksRecyclerView.setLayoutManager(layoutManager);
+        subtasksRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        subtasksRecyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),LinearLayoutManager.VERTICAL));
+
+        subtasksRecyclerView.setAdapter(subtaskAdapter);
+
+
+
+
+
+        subtasksViewModel.getSelectedItem().observe(this,item ->
+                {
+                    ;
+                    int totalTime = 0;
+
+                    for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
+                        if (!subtasksToAdd[i].isEqualToEmpty()) {
+                            totalTime = totalTime + subtasksToAdd[i].getDurationInt();
+                        }
+                    }
+
+                    totalTimelabel.setText(Integer.toString(totalTime));
+                });
+
 
 
         addButton.setOnClickListener(new View.OnClickListener() {

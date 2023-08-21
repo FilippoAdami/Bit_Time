@@ -41,6 +41,7 @@ public class TaskItem {
     {
         this.IDpk = id;
         this.Name = name;
+
         try {
             this.Duration = Integer.parseInt(duration);
         }catch(NumberFormatException ex)

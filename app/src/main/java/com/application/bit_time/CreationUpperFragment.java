@@ -16,12 +16,16 @@ import androidx.lifecycle.ViewModelProvider;
 public class CreationUpperFragment extends Fragment {
 
     DbViewModel dbViewModel;
+    SubtasksViewModel subtasksViewModel;
+
+    TaskAdapter taskAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
+        subtasksViewModel = new ViewModelProvider(requireActivity()).get("dbTasksVM", SubtasksViewModel.class);
 
 
 
@@ -43,11 +47,6 @@ public class CreationUpperFragment extends Fragment {
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
 
-
-
-
-
-
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,6 +66,8 @@ public class CreationUpperFragment extends Fragment {
                 data.taskToAdd = newTask;
 
                 dbViewModel.selectItem(data);
+
+
 
 
             }

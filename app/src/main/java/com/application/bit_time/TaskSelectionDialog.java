@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DiffUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TaskSelectionDialog extends DialogFragment {
 
@@ -21,8 +23,9 @@ public class TaskSelectionDialog extends DialogFragment {
     DbManager dbManager;
     Cursor tasksCursor;
     ArrayList<TaskItem> selectedTasks;
+    ArrayList<TaskItem> oldSelectedTasks;
     SubtasksViewModel subtasksViewModel;
-
+    SubtaskAdapter subtaskAdapter;
 
 
 
@@ -33,7 +36,12 @@ public class TaskSelectionDialog extends DialogFragment {
         dbManager = new DbManager(getContext());
         tasksCursor= dbManager.selectAllTasks();
         selectedTasks = new ArrayList<>();
-        subtasksViewModel = new ViewModelProvider(requireActivity()).get(SubtasksViewModel.class);
+        subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
+        subtaskAdapter = subtasksViewModel.getSelectedItem().getValue().subtaskAdapter;
+        oldSelectedTasks = new ArrayList<>(Arrays.asList(subtasksViewModel.getSelectedItem().getValue().subtasks));
+
+
+        Log.i("subtAdapt Dialog is",""+subtaskAdapter.toString());
 
         Log.i("testfromdialog",subtasksViewModel.toString());
 
@@ -88,15 +96,24 @@ public class TaskSelectionDialog extends DialogFragment {
                                 Log.i("SELECTED TASKS","pressed positive");
 
                                 TaskItem[] selectedTasksA = new TaskItem[selectedTasks.size()];
+                                TaskItem[] oldSelectedTasksA = new TaskItem[oldSelectedTasks.size()];
 
                                 selectedTasksA = selectedTasks.toArray(selectedTasksA);
+                                //oldSelectedTasksA = oldSelectedTasks.toArray(oldSelectedTasks);
 
-                                subtasksViewModel.selectItem(new SubtasksViewModelData(selectedTasksA));
+                                subtasksViewModel.selectItem(new SubtasksViewModelData(selectedTasksA,subtaskAdapter));
 
                                 for(TaskItem ti : selectedTasksA)
                                     Log.i("SELTASK_A",ti.toString());
 
                                 Log.i("DIALOG","subtasks submitted");
+
+                                //subtaskAdapter.notifyDataSetChanged();
+
+                                final TasksDiffCallback diffCallback = new TasksDiffCallback(oldSelectedTasks,selectedTasks);
+                                final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+                                diffResult.dispatchUpdatesTo(subtaskAdapter);
                             }
                         });
 
