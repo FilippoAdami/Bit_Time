@@ -66,7 +66,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         int id;
         TextView labelName;
         TextView labelDuration;
-
         Button modifyButton;
         Button deleteButton;
         //immagine boh;
@@ -97,7 +96,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyTask));
 
-
+                    //notifyDataSetChanged();
 
                 }
             });
@@ -111,6 +110,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
                     DbViewModelData dbData = dbViewModel.getSelectedItem().getValue();
                     dbData.taskToDelete = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
                     dbViewModel.selectItem(dbData);
+
+
 
 
                 }

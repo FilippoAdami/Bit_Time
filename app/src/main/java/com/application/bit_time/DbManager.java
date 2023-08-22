@@ -130,6 +130,17 @@ public class DbManager {
         db.execSQL(insertQuery);
     }
 
+    public TaskItem searchTask(int id)
+    {
+        String searchQuery = "select * from "+DbContract.Tasks.TABLE_NAME+ " where "+
+                DbContract.Tasks._ID + "=" + id;
+
+        Cursor c = db.rawQuery(searchQuery,null);
+        c.moveToFirst();
+        return new TaskItem(c.getInt(0),c.getString(1),c.getInt(2));
+
+    }
+
     public Cursor searchRecord(String name)
     {
         String searchQuery = "select "+ name +" from " + DbContract.Activities.TABLE_NAME;

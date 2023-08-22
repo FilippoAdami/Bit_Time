@@ -102,7 +102,6 @@ public class ActivityCreationFragment extends Fragment {
 
 
 
-
         subtasksRecyclerView = view.findViewById(R.id.subtasksRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         subtasksRecyclerView.setLayoutManager(layoutManager);
@@ -117,7 +116,7 @@ public class ActivityCreationFragment extends Fragment {
 
         subtasksViewModel.getSelectedItem().observe(this,item ->
                 {
-                    ;
+
                     int totalTime = 0;
 
                     for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
@@ -145,10 +144,6 @@ public class ActivityCreationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
-
-
-
-
 
                 dbManager.insertActivityRecord(nameLabel.getText().toString(),  subtasksToAdd);
             }

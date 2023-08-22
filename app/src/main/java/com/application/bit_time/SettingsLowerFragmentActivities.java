@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.application.bit_time.ActivityItem;
 import com.application.bit_time.CustomViewModel;
@@ -77,10 +78,6 @@ public class SettingsLowerFragmentActivities extends Fragment
 
         });
 
-
-        //Log.i("SLF","inside onCreate");
-
-
     }
 
     @Nullable
@@ -95,6 +92,7 @@ public class SettingsLowerFragmentActivities extends Fragment
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),LinearLayoutManager.VERTICAL));
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         activityList = new ArrayList<>();
         activityList = getActivityData(dbManager.selectAllActivities());
@@ -113,13 +111,25 @@ public class SettingsLowerFragmentActivities extends Fragment
         List<ActivityItem> list = new ArrayList<>();
 
 
-        Log.i("HELP","uptohere");
+        Log.i("HELP"," "+c.getColumnCount());
 
         while(c.moveToNext())
         {
-            ActivityItem activityItem = new ActivityItem(c.getString(0),c.getString(1), c.getString(2));
+
+            int[] subtasksA = new int[DbContract.Activities.DIM_MAX];
+
+            for(int i = 0; i< DbContract.Activities.DIM_MAX; i++)
+            {
+                subtasksA[i] = c.getInt(3+i);
+                Log.i("currentsubtask",Integer.toString(subtasksA[i]));
+            }
+
+
+            ActivityItem activityItem = new ActivityItem(c.getString(0),c.getString(1), c.getString(2),subtasksA);
+            //Log.i("activity item",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
             list.add(activityItem);
         }
+
 
         return list;
     }

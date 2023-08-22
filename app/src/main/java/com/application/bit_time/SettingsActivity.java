@@ -151,7 +151,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void taskRender()
     {
-        Fragment lowerFrag = new SettingsLowerFragmentTasks();
+        lowerFrag = new SettingsLowerFragmentTasks();
 
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)

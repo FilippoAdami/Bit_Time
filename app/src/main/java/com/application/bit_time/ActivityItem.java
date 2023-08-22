@@ -11,12 +11,15 @@ public class ActivityItem {
     ActivityInfo activityInfo;
     TaskItem[] subtasks;
 
+    boolean expanded;
+
 
     public ActivityItem()
     {
         this.activityInfo = new ActivityInfo();
 
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+        expanded = false;
     }
 
     public ActivityItem(ActivityItem original)
@@ -24,12 +27,27 @@ public class ActivityItem {
         this.activityInfo = new ActivityInfo(original.activityInfo);
 
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+        expanded = false;
     }
 
     public ActivityItem(String id,String name,String duration)
     {
         this.activityInfo = new ActivityInfo(id,name,duration);
+        expanded = false;
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+
+    }
+
+
+    public ActivityItem(String id, String name, String duration, int[] subtasksA)
+    {
+        this(id,name,duration);
+
+        for(int i = 0;i< DbContract.Activities.DIM_MAX ;i++)
+        {
+            subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0);
+        }
     }
 
     public ActivityItem(String name, int duration, TaskItem[] subtasks)
@@ -62,6 +80,16 @@ public class ActivityItem {
   public String getTime()
   {
       return this.activityInfo.getTime();
+  }
+
+  public boolean isExpanded()
+  {
+      return this.expanded;
+  }
+
+  public void setExpanded(boolean expandedState)
+  {
+      this.expanded = expandedState;
   }
 
     @NonNull
