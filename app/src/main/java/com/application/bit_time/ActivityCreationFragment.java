@@ -37,6 +37,10 @@ public class ActivityCreationFragment extends Fragment {
 
     private TaskItem[] subtasksToAdd;
 
+    public ActivityCreationFragment()
+    {
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

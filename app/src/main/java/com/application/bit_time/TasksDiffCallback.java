@@ -1,6 +1,5 @@
 package com.application.bit_time;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 import java.util.List;

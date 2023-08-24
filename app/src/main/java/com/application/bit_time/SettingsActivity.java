@@ -23,6 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
     DbViewModelData currentDbViewModelData;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +136,9 @@ public class SettingsActivity extends AppCompatActivity {
                     newActivityRender();
                 }else if(item.equals("ModifyActivity"))
                 {
-                    Toast.makeText(getApplicationContext(),"i should modify data",Toast.LENGTH_SHORT);
+                    Log.i("access","access is here");
+                    //Toast.makeText(getApplicationContext(),"i should modify data",Toast.LENGTH_SHORT);
+                    modifyActivity();
                 }else if(item.equals("ModifyTask"))
                 {
                     //Toast.makeText(this,"received modify Task",Toast.LENGTH_SHORT).show();
@@ -203,6 +206,20 @@ public class SettingsActivity extends AppCompatActivity {
     private void modifyTask()
     {
         upperFrag = new ModifyTasksFragment();
+
+        fManager.beginTransaction()
+                .replace(R.id.top_fragment_container_view,upperFrag)
+                .remove(middleFrag)
+                .remove(lowerFrag)
+                .commit();
+    }
+
+
+
+    public void modifyActivity()
+    {
+        upperFrag = new ActivityCreationFragment();
+        
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)
