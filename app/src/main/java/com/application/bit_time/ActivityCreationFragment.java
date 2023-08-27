@@ -1,5 +1,6 @@
 package com.application.bit_time;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,18 +35,19 @@ public class ActivityCreationFragment extends Fragment {
     private CustomViewModel viewModel;
 
     private SubtasksViewModel subtasksViewModel;
-
+    private DbViewModel dbViewModel;
     private TaskItem[] subtasksToAdd;
 
-    public ActivityCreationFragment()
-    {
 
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
+        dbManager = new DbManager(getContext());
+        subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
+        dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
 
 
         subtasksToAdd = new TaskItem[DbContract.Activities.DIM_MAX];
@@ -55,9 +57,36 @@ public class ActivityCreationFragment extends Fragment {
             subtasksToAdd[i] = new TaskItem();
         }
 
+        SettingsModeData currentState = viewModel.getSelectedItem().getValue();
 
-        dbManager = new DbManager(getContext());
-        subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
+        if(currentState.equals("NewActivity"))
+        {
+
+        }else if(currentState.equals("ModifyActivity"))
+        {
+            ActivityInfo activityToModifyInfo = dbViewModel.getSelectedItem().getValue().activityToModify;
+
+            Log.i("contentz",dbViewModel.getSelectedItem().getValue().toString());
+
+            Cursor activityToModifyData = dbManager.searchActivityById(activityToModifyInfo.getIdInt());
+
+            activityToModifyData.moveToFirst();
+
+            for(int i = 0; i< DbContract.Activities.DIM_MAX; i++)
+            {
+                int subtaskToAddId = activityToModifyData.getInt(3+i);
+                if(subtaskToAddId > -1) {
+
+                    subtasksToAdd[i] = dbManager.searchTask(subtaskToAddId);
+                    Log.i("subtoAdd", subtasksToAdd[i].toStringShrt());
+                }
+            }
+
+            subtasksViewModel.selectItem(new SubtasksViewModelData(subtasksToAdd,null));
+
+        }
+
+
         List<TaskItem> subtasksList =  Arrays.asList(subtasksToAdd);
         subtaskAdapter = new SubtaskAdapter(this,subtasksList);
 
@@ -71,8 +100,6 @@ public class ActivityCreationFragment extends Fragment {
             subtasksViewModel.selectItem(AdaptData);
         }
 
-
-
         Log.i("subtest",subtasksViewModel.toString());
 
         subtasksViewModel.getSelectedItem().observe(this,item -> {
@@ -83,13 +110,6 @@ public class ActivityCreationFragment extends Fragment {
                 subtasksToAdd[i] = new TaskItem(item.subtasks[i]);
             }
         });
-
-
-
-
-
-
-
     }
 
     @Nullable
@@ -149,7 +169,21 @@ public class ActivityCreationFragment extends Fragment {
             public void onClick(View view) {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
 
-                dbManager.insertActivityRecord(nameLabel.getText().toString(),  subtasksToAdd);
+                if(viewModel.getSelectedItem().getValue().equals("NewActivity")) {
+                    dbManager.insertActivityRecord(nameLabel.getText().toString(), subtasksToAdd);
+                }
+                else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity")) {
+
+                    int[] subtasksId = new int[DbContract.Activities.DIM_MAX];
+
+                    for(int i = 0;i< DbContract.Activities.DIM_MAX; i++)
+                    {
+                        subtasksId[i] = subtasksToAdd[i].getID();
+                    }
+
+                    dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
+                }
+
             }
         });
 

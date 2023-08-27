@@ -10,6 +10,9 @@ public class DbManager {
 
     private SQLiteDatabase db;
 
+
+
+
     public class DbHelper extends SQLiteOpenHelper
     {
         public static final int DATABASE_VERSION = 1;
@@ -78,6 +81,15 @@ public class DbManager {
         this.db = dbHelper.getWritableDatabase();
     }
 
+
+    public Cursor searchActivityById(int idInt) {
+
+        String query = "SELECT * FROM "+ DbContract.Activities.TABLE_NAME + " WHERE " +DbContract.Activities._ID + "=" + Integer.toString(idInt);
+
+        //Log.i("searchQuery",query);
+        return db.rawQuery(query,null);
+
+    }
 
     public void insertActivityRecord(String name,TaskItem[] tasks)
     {
@@ -162,6 +174,26 @@ public class DbManager {
         return db.rawQuery(searchQuery,null);
     }
 
+    public void modifyActivity(int Id,String Name,int duration,int[] subtasksId) {
+
+        String query =
+                "UPDATE "+ DbContract.Activities.TABLE_NAME
+                + " SET "
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME + "='"+ Name + "',"
+                + DbContract.Activities.COLUMN_NAME_TASK1 + "=" + Integer.toString(subtasksId[0]) +","
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(duration) +","
+                + DbContract.Activities.COLUMN_NAME_TASK2 + "=" + Integer.toString(subtasksId[1]) +","
+                + DbContract.Activities.COLUMN_NAME_TASK3 + "=" + Integer.toString(subtasksId[2]) +","
+                + DbContract.Activities.COLUMN_NAME_TASK4 + "=" + Integer.toString(subtasksId[3]) +","
+                + DbContract.Activities.COLUMN_NAME_TASK5 + "=" + Integer.toString(subtasksId[4])
+                + " WHERE "+ DbContract.Activities._ID + "=" +Integer.toString(Id);
+
+        Log.i("updatequery",query);
+
+
+        db.execSQL(query);
+
+    }
 
     public void deleteActivity(ActivityInfo item)
     {

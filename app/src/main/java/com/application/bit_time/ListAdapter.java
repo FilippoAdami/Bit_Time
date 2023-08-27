@@ -56,6 +56,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
         ActivityItem activityItem = list.get(position);
         holder.bind(activityItem);
+        holder.id = activityItem.activityInfo.getIdInt();
+
 
         holder.itemView.setOnClickListener(v -> {
             boolean expanded = activityItem.isExpanded();
