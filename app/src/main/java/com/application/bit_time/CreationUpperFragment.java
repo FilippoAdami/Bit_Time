@@ -17,7 +17,7 @@ public class CreationUpperFragment extends Fragment {
 
     DbViewModel dbViewModel;
     SubtasksViewModel subtasksViewModel;
-
+    CustomViewModel viewModel;
     TaskAdapter taskAdapter;
 
     @Override
@@ -27,7 +27,7 @@ public class CreationUpperFragment extends Fragment {
         dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
         subtasksViewModel = new ViewModelProvider(requireActivity()).get("dbTasksVM", SubtasksViewModel.class);
 
-
+        viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
 
 
     }
@@ -67,6 +67,7 @@ public class CreationUpperFragment extends Fragment {
 
                 dbViewModel.selectItem(data);
 
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
 
 
 

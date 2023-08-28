@@ -103,11 +103,13 @@ public class SettingsActivity extends AppCompatActivity {
 
 
 
-        fManager.beginTransaction()
+        /*fManager.beginTransaction()
                 .add(R.id.top_fragment_container_view,upperFrag)
                 .add(R.id.middle_fragment_container_view,middleFrag)
                 .add(R.id.bottom_fragment_container_view,lowerFrag)
-                .commit();
+                .addToBackStack("EntryPoint")
+                .commit();*/
+        mainEntry();
 
 
         viewModel.getSelectedItem().observe(this, item ->
@@ -128,6 +130,8 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }
 
+
+
                 if(item.equals("NewTask"))
                 {
                     newTaskRender();
@@ -143,10 +147,11 @@ public class SettingsActivity extends AppCompatActivity {
                 {
                     //Toast.makeText(this,"received modify Task",Toast.LENGTH_SHORT).show();
                     modifyTask();
-
-
                 }
-
+                else if(item.equals("MainEntry"))
+                {
+                    mainEntry();
+                }
             });
     }
 
@@ -158,6 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
+                //.addToBackStack("taskRender")
                 .commit();
 
         //Log.i("SettingsActivity VM","taskRender called");
@@ -169,6 +175,7 @@ public class SettingsActivity extends AppCompatActivity {
         lowerFrag = new SettingsLowerFragmentActivities();
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
+                //.addToBackStack("ActivitiesRender")
                 .commit();
 
         //Log.i("SettingsActivity VM","activitiesRender called");
@@ -216,15 +223,38 @@ public class SettingsActivity extends AppCompatActivity {
 
 
 
-    public void modifyActivity()
-    {
+    public void modifyActivity() {
         upperFrag = new ActivityCreationFragment();
-        
+
 
         fManager.beginTransaction()
-                .replace(R.id.top_fragment_container_view,upperFrag)
+                .replace(R.id.top_fragment_container_view, upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .commit();
+    }
+
+
+    public void mainEntry()
+    {
+
+
+        /*fManager.beginTransaction()
+                .remove(upperFrag)
+                .remove(middleFrag)
+                .remove(lowerFrag)
+                .commit();*/
+
+        upperFrag = new SettingsUpperFragment();
+        middleFrag = new SettingsMiddleFragment();
+        lowerFrag = new SettingsLowerFragmentActivities();
+
+
+        fManager.beginTransaction()
+                .add(R.id.top_fragment_container_view,upperFrag)
+                .add(R.id.middle_fragment_container_view,middleFrag)
+                .add(R.id.bottom_fragment_container_view,lowerFrag)
+                .addToBackStack("MainEntry")
                 .commit();
     }
 
