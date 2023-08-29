@@ -9,13 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -48,7 +45,7 @@ public class HomeFragment extends Fragment {
                 // Replace the current fragment with a new fragment
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, new GameFragment());
+                fragmentTransaction.replace(R.id.fragmentContainer, new GameFragment());
                 fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
                 fragmentTransaction.commit();
             }
@@ -59,7 +56,7 @@ public class HomeFragment extends Fragment {
                 // Replace the current fragment with a new fragment
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, new CaregiverLoginFragment());
+                fragmentTransaction.replace(R.id.fragmentContainer, new CaregiverLoginFragment());
                 fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
                 fragmentTransaction.commit();
             }
