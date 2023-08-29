@@ -1,5 +1,6 @@
 package com.application.bit_time;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,11 +28,13 @@ public class RunningTaskFragment extends Fragment {
 
         RunningActivityData[] runningActivityData = new RunningActivityData[DbContract.Activities.DIM_MAX];
         int currentPos = 0;
-
+        int activtiyId = 1;
         dbManager = new DbManager(getContext());
-
-
         runningActivityViewModel = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);
+
+
+
+        Cursor runningActivityCursor = dbManager.searchActivityById(activtiyId);
 
         runningActivityViewModel.getSelectedItem().observe(this.getActivity(),item ->
         {

@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,9 +27,29 @@ import android.widget.TextView;
 
 public class HomeFragment extends Fragment {
 
+    private RunningActivityViewModel runningActivityViewModel;
     private TextView clockTextView;
     private AnalogClockView analogClockView;
     private Handler handler = new Handler();
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        runningActivityViewModel = new ViewModelProvider(requireActivity()).get(RunningActivityViewModel.class);
+
+
+        int taskDuration = runningActivityViewModel.getSelectedItem().getValue().getCurrentTask().getDurationInt();
+
+        SimpleDateFormat newDeadline = new SimpleDateFormat("HH")
+
+        runningActivityViewModel.getSelectedItem().observe(this,item->
+        {
+            Log.i("HOME FRAGMENT","running activity VM observing");
+        });
+
+
+    }
 
     @Nullable
     @Override

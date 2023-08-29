@@ -20,17 +20,32 @@ public class RunningActivityData {
     private Choice choice;
     private Status status;
 
+    private TaskItem currentTask;
+
     public RunningActivityData()
     {
         this.choice = Choice.NoChoice;
         this.status = Status.NoStatus;
+        this.currentTask = null;
+
+
     }
 
     public RunningActivityData(Status currentStatus, Choice currentChoice)
     {
         this.choice = currentChoice;
         this.status = currentStatus;
+        this.currentTask = null;
     }
+
+    public  RunningActivityData(TaskItem currentTask)
+    {
+        this.choice = Choice.NoChoice;
+        this.status = Status.NoStatus;
+        this.currentTask = currentTask;
+    }
+
+
     public void setChoice(Choice currentChoice)
     {
         this.choice = currentChoice;
@@ -58,6 +73,16 @@ public class RunningActivityData {
             return false;
         }
         return true;
+    }
+
+    public void setCurrentTask(TaskItem currentTask)
+    {
+        this.currentTask = currentTask;
+    }
+
+    public TaskItem getCurrentTask()
+    {
+        return this.currentTask;
     }
 
 
