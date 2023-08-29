@@ -1,4 +1,4 @@
-package com.application.bit_time;
+package com.application.bit_time.Main_Activity;
 
 import androidx.fragment.app.Fragment;
 
@@ -9,11 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.application.bit_time.Main_Activity.ForgotPasswordFragment;
+import com.application.bit_time.R;
+import com.application.bit_time.SettingsActivity;
+
 public class CaregiverLoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.caregiver_login_layout, container, false);
+        View rootView = inflater.inflate(R.layout.a_caregiver_login_layout, container, false);
 
         Button backButton = rootView.findViewById(R.id.backButton);
         Button logInButton = rootView.findViewById(R.id.loginButton);

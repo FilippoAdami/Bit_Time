@@ -1,10 +1,13 @@
-package com.application.bit_time;
+package com.application.bit_time.Main_Activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+
+import com.application.bit_time.Main_Activity.TemporaryCodeFragment;
+import com.application.bit_time.R;
 
 public class ForgotPasswordFragment extends DialogFragment {
 

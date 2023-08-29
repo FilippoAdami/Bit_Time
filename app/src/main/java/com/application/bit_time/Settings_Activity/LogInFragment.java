@@ -1,2 +1,6 @@
-package com.application.bit_time.Settings_Activity;public class LogInFragment {
+package com.application.bit_time.Settings_Activity;
+
+import androidx.fragment.app.Fragment;
+
+public class LogInFragment extends Fragment {
 }

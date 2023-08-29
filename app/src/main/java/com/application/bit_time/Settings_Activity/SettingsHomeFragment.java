@@ -1,5 +1,6 @@
 package com.application.bit_time.Settings_Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,34 +11,36 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.application.bit_time.R;
+import com.application.bit_time.SettingsActivity;
 
-public class Settings_home_fragment extends Fragment {
+public class SettingsHomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_settings_home_layout, container, false);
 
-        Button buttonA = view.findViewById(R.id.buttonA);
-        Button buttonB = view.findViewById(R.id.buttonB);
-        Button buttonC = view.findViewById(R.id.buttonC);
+        Button buttonAS = view.findViewById(R.id.buttonAS);
+        Button buttonIP = view.findViewById(R.id.buttonIP);
+        Button buttonNA = view.findViewById(R.id.buttonNA);
 
-        buttonA.setOnClickListener(v -> {
+        buttonAS.setOnClickListener(v -> {
             // Navigate to FragmentA
             // Example: replaceFragment(new FragmentA());
         });
 
-        buttonB.setOnClickListener(v -> {
+        buttonIP.setOnClickListener(v -> {
             // Navigate to FragmentB
             // Example: replaceFragment(new FragmentB());
         });
 
-        buttonC.setOnClickListener(v -> {
-            // Navigate to FragmentC
-            // Example: replaceFragment(new FragmentC());
+        buttonNA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettingsActivity();
+            }
         });
 
         return view;
     }
 
-    // Add your navigation method (e.g., replaceFragment) here
 }

@@ -126,8 +126,6 @@ public class SettingsActivity extends AppCompatActivity {
                 {
                     //Toast.makeText(this,"received modify Task",Toast.LENGTH_SHORT).show();
                     modifyTask();
-
-
                 }
 
             });

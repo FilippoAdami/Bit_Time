@@ -1,4 +1,4 @@
-package com.application.bit_time;
+package com.application.bit_time.Main_Activity;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.application.bit_time.R;
 
 public class GameFragment extends Fragment {
 

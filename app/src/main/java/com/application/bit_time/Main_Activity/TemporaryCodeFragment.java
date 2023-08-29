@@ -1,4 +1,4 @@
-package com.application.bit_time;
+package com.application.bit_time.Main_Activity;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.application.bit_time.R;
+
 import java.util.Locale;
 
 public class TemporaryCodeFragment extends Fragment {
@@ -43,7 +46,7 @@ public class TemporaryCodeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.temporary_code_layout, container, false);
+        View rootView = inflater.inflate(R.layout.a_temporary_code_layout, container, false);
 
         // Initialize UI elements
         countdownTextView = rootView.findViewById(R.id.countdownTextView);

@@ -1,4 +1,4 @@
-package com.application.bit_time;
+package com.application.bit_time.utils;
 
 import android.content.Context;
 import android.graphics.Canvas;
