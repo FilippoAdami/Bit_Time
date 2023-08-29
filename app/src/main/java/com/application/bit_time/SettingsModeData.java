@@ -10,12 +10,11 @@ public class SettingsModeData {
     {
         Tasks,
         Activities,
-
         NewTask,
         NewActivity,
-
         ModifyTask,
-        ModifyActivity
+        ModifyActivity,
+        MainEntry
     }
 
     private Mode currentMode;

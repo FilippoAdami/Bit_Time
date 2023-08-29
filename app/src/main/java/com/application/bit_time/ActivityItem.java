@@ -3,41 +3,72 @@ package com.application.bit_time;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+
 
 public class ActivityItem {
 
     ActivityInfo activityInfo;
-    TaskItem[] subtask;
+    TaskItem[] subtasks;
+
+    boolean expanded;
 
 
     public ActivityItem()
     {
         this.activityInfo = new ActivityInfo();
 
-       // this.subtask = new TaskItem[DbContract.Activities.DIM_MAX];
-
-        /*for(TaskItem ti : this.subtask )
-        {
-            ti = new TaskItem();
-            Log.i("ACTITEM CONSTR",ti.toString());
-        }*/
+        subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+        expanded = false;
     }
 
     public ActivityItem(ActivityItem original)
     {
         this.activityInfo = new ActivityInfo(original.activityInfo);
 
-        /*for(int  i =0 ; i< DbContract.Activities.DIM_MAX ; i++)
-        {
-            this.subtask[i] = new TaskItem(original.subtask[i]);
-        }*/
+        subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+        expanded = false;
     }
 
     public ActivityItem(String id,String name,String duration)
     {
         this.activityInfo = new ActivityInfo(id,name,duration);
-        subtask = null;
+        expanded = false;
+        subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+
+    }
+
+
+    public ActivityItem(String id, String name, String duration, int[] subtasksA)
+    {
+        this(id,name,duration);
+
+        for(int i = 0;i< DbContract.Activities.DIM_MAX ;i++)
+        {
+            subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0);
+        }
+    }
+
+    public ActivityItem(String name, int duration, TaskItem[] subtasks)
+    {
+
+        Log.i("SUB2ADD",subtasks[0].toString());
+
+        this.activityInfo = new ActivityInfo(-1,name,duration);
+        this.subtasks =  new TaskItem[DbContract.Activities.DIM_MAX];
+
+        for(int i = 0; i< DbContract.Activities.DIM_MAX;i++)
+        {
+            if(i< subtasks.length)
+            {
+                this.subtasks[i] = new TaskItem(subtasks[i]);
+            }
+            else
+            {
+                this.subtasks[i] =  new TaskItem();
+            }
+        }
     }
 
 
@@ -49,6 +80,16 @@ public class ActivityItem {
   public String getTime()
   {
       return this.activityInfo.getTime();
+  }
+
+  public boolean isExpanded()
+  {
+      return this.expanded;
+  }
+
+  public void setExpanded(boolean expandedState)
+  {
+      this.expanded = expandedState;
   }
 
     @NonNull

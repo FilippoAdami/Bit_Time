@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 
+import com.application.bit_time.R;
+
 import java.util.ArrayList;
 
 public class OldSettingsLowerFragment extends ListFragment {
