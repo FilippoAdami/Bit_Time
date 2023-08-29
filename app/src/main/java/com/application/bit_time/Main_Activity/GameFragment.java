@@ -17,7 +17,7 @@ public class GameFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.game_layout, container, false);
+        View rootView = inflater.inflate(R.layout.a_game_layout, container, false);
 
         // Post a delayed action to return to the previous fragment after 5 seconds
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
