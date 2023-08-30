@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DbManager {
 
     private SQLiteDatabase db;
@@ -230,6 +233,26 @@ public class DbManager {
 
     }
 
+    public List<TaskItem> retrieveSubtasks(Cursor activityCursor)
+    {
+        activityCursor.moveToFirst();
+        List<TaskItem> subtasks = new ArrayList<>();
+
+        for(int i =0 ; i< DbContract.Activities.DIM_MAX; i++)
+        {
+            int subtaskId = activityCursor.getInt(3+i);
+            Log.i("testdbm",Integer.toString(subtaskId));
+            if(subtaskId != -1) {
+                TaskItem subtask = searchTask(subtaskId);
+                Log.i("retrieved subtask", subtask.getName());
+                subtasks.add(subtask);
+            }
+        }
+
+        return subtasks;
+
+
+    }
 
     public void closeDb()
     {

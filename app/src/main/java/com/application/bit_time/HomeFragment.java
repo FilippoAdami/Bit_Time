@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -27,25 +28,43 @@ import android.widget.TextView;
 
 public class HomeFragment extends Fragment {
 
+    int lastedTime;
+    private SimpleDateFormat timeFormat;
     private RunningActivityViewModel runningActivityViewModel;
     private TextView clockTextView;
     private AnalogClockView analogClockView;
     private Handler handler = new Handler();
+    private TaskItem currentTask;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+
+        currentTask = new TaskItem();
+
+        lastedTime = 0;
         super.onCreate(savedInstanceState);
+        timeFormat = new SimpleDateFormat(" HH : mm ", Locale.getDefault());
+
         runningActivityViewModel = new ViewModelProvider(requireActivity()).get(RunningActivityViewModel.class);
 
+        currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
 
-        int taskDuration = runningActivityViewModel.getSelectedItem().getValue().getCurrentTask().getDurationInt();
-
-        SimpleDateFormat newDeadline = new SimpleDateFormat("HH")
+        Log.i("RAVM currentTask dur ",currentTask.getDuration());
 
         runningActivityViewModel.getSelectedItem().observe(this,item->
         {
-            Log.i("HOME FRAGMENT","running activity VM observing");
+            currentTask = item.getCurrentTask();
+            if(currentTask != null) {
+                //Log.i("HOME FRAGMENT","running activity VM observing");
+                Log.i("HF observer", currentTask.toString());
+            }
+            else
+            {
+                Log.i("currentTask","isNull");
+            }
+
+
         });
 
 
@@ -93,6 +112,20 @@ public class HomeFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+
+                lastedTime++;
+
+                Log.i("lastedTime",Integer.toString(lastedTime));
+
+                if(lastedTime == currentTask.getDurationInt())
+                {
+                    Log.i("duration","reached");
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice));
+                    lastedTime = 0;
+                }
+
+                // qui credo vada anche il codice per regolare la colorazione dell'orologio
+
                 String currentTime = getCurrentTime();
 
                 String[] parts = currentTime.split(":");
@@ -112,7 +145,7 @@ public class HomeFragment extends Fragment {
     }
 
     private String getCurrentTime() {
-        SimpleDateFormat timeFormat = new SimpleDateFormat(" HH : mm ", Locale.getDefault());
+
         return timeFormat.format(new Date());
     }
 }

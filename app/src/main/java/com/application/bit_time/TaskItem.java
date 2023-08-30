@@ -5,6 +5,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.sql.Time;
+
 public class TaskItem {
 
 
@@ -130,6 +132,20 @@ public class TaskItem {
             return true;
         else return false;
     }
+
+
+    public TimeHelper getFormattedDuration()
+    {
+        int min = this.Duration%60;
+        int hrs = this.Duration - min;
+
+        return new TimeHelper(hrs,min,0);
+
+
+
+
+    }
+
 
     public String toStringShrt()
     {

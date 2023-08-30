@@ -15,20 +15,18 @@ public class RunningActivityData {
         NoStatus,
         OnTime,
         LittleDelay,
-        BigDelay
+        BigDelay,
+        Expired
     }
     private Choice choice;
     private Status status;
-
     private TaskItem currentTask;
 
     public RunningActivityData()
     {
         this.choice = Choice.NoChoice;
         this.status = Status.NoStatus;
-        this.currentTask = null;
-
-
+        this.currentTask = new TaskItem(-1,"testTask",10); // will be null
     }
 
     public RunningActivityData(Status currentStatus, Choice currentChoice)

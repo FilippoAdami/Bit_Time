@@ -16,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+
         runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
 
         setContentView(R.layout.activity_main);
