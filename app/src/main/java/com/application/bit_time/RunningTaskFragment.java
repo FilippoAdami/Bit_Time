@@ -33,6 +33,8 @@ public class RunningTaskFragment extends Fragment {
     private List<RunningActivityData> runningActivityData;
     private Cursor runningActivityCursor;
     LinearLayout lowerLinearLayout;
+    TextView runningTask;
+    TextView nextTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class RunningTaskFragment extends Fragment {
         subtasks = new ArrayList<>();
         int activityId = 5;
         dbManager = new DbManager(getContext());
+
         runningActivityViewModel = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);
 
         runningActivityCursor = dbManager.searchActivityById(activityId) ;
@@ -70,7 +73,8 @@ public class RunningTaskFragment extends Fragment {
         Log.i("subtask get1",subtasks.get(1).toString());
 
 
-        this.runningActivityViewModel.selectItem(new RunningActivityData(subtasks.get(0)));
+        this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,subtasks.get(0)));
+        Log.i("Running task fragment","selecting get0");
 
     }
 
@@ -84,55 +88,31 @@ public class RunningTaskFragment extends Fragment {
         View view = inflater.inflate(R.layout.front_running_activity_fragment_layout,container,false);
 
         lowerLinearLayout = view.findViewById(R.id.lowerLinearLayout);
-        TextView runningTask = view.findViewById(R.id.currentTaskTextView);
-        TextView nextTask = view.findViewById(R.id.nextTaskTextView);
+        runningTask = view.findViewById(R.id.currentTaskTextView);
+        nextTask = view.findViewById(R.id.nextTaskTextView);
         Button endTaskButton = view.findViewById(R.id.endTaskButton);
 
         runningTask.setText(subtasks.get(currentSubtask).getName());
         nextTask.setText(subtasks.get(currentSubtask+1).getName());
 
 
+        /* runningTaskFragment deve occuparsi di :
+            > mettere un nuovo task che possa essere mostrato su home fragment
+            > in caso di fine dei subtasks di gestire questa situazione
+            > segnarsi cosa è avvenuto nel task precedente (STATUS/choices/tempi, boh) prima del cambio */
+
         runningActivityViewModel.getSelectedItem().observe(this.getActivity(),item ->
         {
+
             Log.i("RTF viewModel",item.getChoice().toString() + " "+item.getStatus().toString());
 
-            if(item.getStatus().toString().equals("Expired"))
-            {
-                Log.i("task status","EXPIRED");
-                Log.i("subtasks size",Integer.toString(subtasks.size()));
-                Log.i("currentPos",Integer.toString(currentSubtask));
-
-                if(currentSubtask < subtasks.size()-2)
-                {
-                    currentSubtask++;
-                    runningTask.setText(subtasks.get(currentSubtask).getName());
-                    nextTask.setText(subtasks.get(currentSubtask+1).getName());
-                    TaskItem taskToUpload = subtasks.get(currentSubtask);
-                    Log.i("incrementing currPos",taskToUpload.toString());
-                    this.runningActivityViewModel.selectItem(new RunningActivityData(taskToUpload));
-
-                }
-                else if(currentSubtask < subtasks.size()-1)
-                {
-                    currentSubtask++;
-                    runningTask.setText(subtasks.get(currentSubtask).getName());
-                    lowerLinearLayout.setVisibility(View.GONE);
-                    TaskItem taskToUpload = subtasks.get(currentSubtask);
-                    Log.i("incrementing currPos",taskToUpload.toString());
-                    this.runningActivityViewModel.selectItem(new RunningActivityData(taskToUpload));
-
-                }
-
+            if (item.getStatus().toString().equals("Expired") || item.isFilled()) {
+                runningActivityData.add(new RunningActivityData(item.getStatus(), item.getChoice()));
+                updateCurrentTask();
             }
-            /*else if(item.isFilled())
-            {
-                Log.i("RTF viewModel","item filled");
-                runningActivityData.add(new RunningActivityData(item.getStatus(),item.getChoice()));
-            }
-            else
-            {
-                Log.i("RTF viewModel","item not filled");
-            }*/
+
+
+
 
 
         });
@@ -152,6 +132,32 @@ public class RunningTaskFragment extends Fragment {
 
         return view;
 
+
+
+    }
+
+    private void updateCurrentTask() {
+
+        if(currentSubtask < subtasks.size()-2)
+        {
+            currentSubtask++;
+            runningTask.setText(subtasks.get(currentSubtask).getName());
+            nextTask.setText(subtasks.get(currentSubtask+1).getName());
+            TaskItem taskToUpload = subtasks.get(currentSubtask);
+            //Log.i("incrementing currPos",taskToUpload.toString());
+            this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,taskToUpload));
+
+        }
+        else if(currentSubtask < subtasks.size()-1)
+        {
+            currentSubtask++;
+            runningTask.setText(subtasks.get(currentSubtask).getName());
+            lowerLinearLayout.setVisibility(View.GONE);
+            TaskItem taskToUpload = subtasks.get(currentSubtask);
+            //Log.i("incrementing currPos",taskToUpload.toString());
+            this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,taskToUpload));
+
+        }
 
 
     }

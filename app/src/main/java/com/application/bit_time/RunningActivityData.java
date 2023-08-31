@@ -13,6 +13,9 @@ public class RunningActivityData {
     public enum Status
     {
         NoStatus,
+        Uploaded,
+        Running,
+        OnWait,
         OnTime,
         LittleDelay,
         BigDelay,
@@ -29,6 +32,11 @@ public class RunningActivityData {
         this.currentTask = new TaskItem(-1,"testTask",10); // will be null
     }
 
+    public RunningActivityData(Status currentStatus, Choice currentChoice , TaskItem currentTask)
+    {
+        this(currentStatus,currentChoice);
+        this.currentTask = currentTask;
+    }
     public RunningActivityData(Status currentStatus, Choice currentChoice)
     {
         this.choice = currentChoice;
@@ -43,11 +51,27 @@ public class RunningActivityData {
         this.currentTask = currentTask;
     }
 
+    public RunningActivityData(Status currentStatus, TaskItem currentTask)
+    {
+        this.status = currentStatus;
+        this.choice = Choice.NoChoice;
+        this.currentTask = currentTask;
+    }
 
     public void setChoice(Choice currentChoice)
     {
         this.choice = currentChoice;
+        this.status = Status.OnWait;
     }
+
+    public RunningActivityData(Status currentStatus)
+    {
+        this.status = currentStatus;
+        this.choice = Choice.Yes;
+        this.currentTask = null;
+    }
+
+
     public void setStatus(Status currentStatus)
     {
         this.status = currentStatus;

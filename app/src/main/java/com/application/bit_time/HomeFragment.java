@@ -48,20 +48,42 @@ public class HomeFragment extends Fragment {
 
         runningActivityViewModel = new ViewModelProvider(requireActivity()).get(RunningActivityViewModel.class);
 
-        currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
+        //currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
 
         Log.i("RAVM currentTask dur ",currentTask.getDuration());
 
         runningActivityViewModel.getSelectedItem().observe(this,item->
         {
-            currentTask = item.getCurrentTask();
-            if(currentTask != null) {
-                //Log.i("HOME FRAGMENT","running activity VM observing");
-                Log.i("HF observer", currentTask.toString());
-            }
-            else
+            Log.i("Home fragment","notified by observer");
+            RunningActivityData.Status currentStatus = item.getStatus();
+
+            if(currentStatus.toString().equals("Uploaded"))
             {
-                Log.i("currentTask","isNull");
+                Log.i("HF in Uploaded",item.getCurrentTask().toString());
+                currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
+                runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Running, RunningActivityData.Choice.NoChoice,currentTask));
+            }else if(currentStatus.toString().equals("OnWait"))
+            {
+                int duration = currentTask.getDurationInt();
+                if(lastedTime <= duration/2)
+                {
+                    //Log.i("From OnWait ","to OnTime");
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.OnTime));
+                }
+                else if(lastedTime <= 3*duration/4)
+                {
+                    //Log.i("From OnWait","to LittleDelay");
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.LittleDelay));
+
+                }
+                else
+                {
+                    //Log.i("From OnWait","to BigDelay");
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.BigDelay));
+
+                }
+
+                lastedTime = 0;
             }
 
 
@@ -117,13 +139,13 @@ public class HomeFragment extends Fragment {
 
                 Log.i("lastedTime",Integer.toString(lastedTime));
 
-                if(lastedTime == currentTask.getDurationInt())
-                {
-                    Log.i("duration","reached");
-                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice));
-                    lastedTime = 0;
+                if(currentTask != null) {
+                    if (lastedTime == currentTask.getDurationInt()) {
+                        //Log.i("duration", "reached");
+                        runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice));
+                        lastedTime = 0;
+                    }
                 }
-
                 // qui credo vada anche il codice per regolare la colorazione dell'orologio
 
                 String currentTime = getCurrentTime();
