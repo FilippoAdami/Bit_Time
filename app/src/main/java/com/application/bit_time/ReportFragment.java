@@ -32,7 +32,7 @@ public class ReportFragment extends Fragment {
         runningActivityViewModel = new ViewModelProvider(getActivity()).get(RunningActivityViewModel.class);
         this.reportDataList = new ArrayList<>();
 
-        this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
+        //this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
         score = 101;
     }
 
