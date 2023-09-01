@@ -31,6 +31,7 @@ public class RunningTaskFragment extends Fragment {
     private int currentSubtask = 0;
     private List<TaskItem> subtasks;
     private List<RunningActivityData> runningActivityData;
+    private List<ReportData> reportDataList;
     private Cursor runningActivityCursor;
     LinearLayout lowerLinearLayout;
     TextView runningTask;
@@ -47,8 +48,9 @@ public class RunningTaskFragment extends Fragment {
 
         //SimpleDateFormat timeFormat = new SimpleDateFormat(" HH : mm ", Locale.getDefault());
         runningActivityData = new ArrayList<>();
+        reportDataList = new ArrayList<>();
         subtasks = new ArrayList<>();
-        int activityId = 5;
+        int activityId = 3;
         dbManager = new DbManager(getContext());
 
         runningActivityViewModel = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);
@@ -104,12 +106,14 @@ public class RunningTaskFragment extends Fragment {
         runningActivityViewModel.getSelectedItem().observe(this.getActivity(),item ->
         {
 
-            Log.i("RTF viewModel",item.getChoice().toString() + " "+item.getStatus().toString());
+            //Log.i("RTF viewModel",item.getChoice().toString() + " "+item.getStatus().toString());
+            if(item.getCurrentTask() != null) {
+                if (item.getStatus().toString().equals("Expired") || item.isFilled()) {
+                    runningActivityData.add(new RunningActivityData(item.getStatus(), item.getChoice(), item.getCurrentTask()));
+                    Log.i("RTF item", item.toString());
+                    updateCurrentTask();
+                }
 
-            if (item.getStatus().toString().equals("Expired") || item.isFilled()) {
-                Log.i("RTF item",item.toString());
-                runningActivityData.add(new RunningActivityData(item.getStatus(), item.getChoice(),item.getCurrentTask()));
-                updateCurrentTask();
             }
 
 
@@ -164,8 +168,11 @@ public class RunningTaskFragment extends Fragment {
                 for(RunningActivityData rad : runningActivityData)
                 {
                     Log.i("report",rad.toString());
+                    reportDataList.add(new ReportData(rad.getCurrentTask().getName(),rad.getStatus()));
                 }
                 printFlag = 1;
+                Log.i("RTF list size",Integer.toString(this.reportDataList.size()));
+                this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.ActivityDone,this.reportDataList));
             }
         }
 

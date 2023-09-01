@@ -2,6 +2,8 @@ package com.application.bit_time;
 
 import androidx.annotation.NonNull;
 
+import java.util.List;
+
 public class RunningActivityData {
 
 
@@ -21,29 +23,35 @@ public class RunningActivityData {
         OnTime,
         LittleDelay,
         BigDelay,
-        Expired
+        Expired,
+        ActivityDone
     }
     private Choice choice;
     private Status status;
     private TaskItem currentTask;
+
+    private List<ReportData> reportDataList;
 
     public RunningActivityData()
     {
         this.choice = Choice.NoChoice;
         this.status = Status.NoStatus;
         this.currentTask = new TaskItem(-1,"testTask",10); // will be null
+        reportDataList = null;
     }
 
     public RunningActivityData(Status currentStatus, Choice currentChoice , TaskItem currentTask)
     {
         this(currentStatus,currentChoice);
         this.currentTask = currentTask;
+        reportDataList = null;
     }
     public RunningActivityData(Status currentStatus, Choice currentChoice)
     {
         this.choice = currentChoice;
         this.status = currentStatus;
         this.currentTask = null;
+        reportDataList = null;
     }
 
     public  RunningActivityData(TaskItem currentTask)
@@ -51,6 +59,7 @@ public class RunningActivityData {
         this.choice = Choice.NoChoice;
         this.status = Status.NoStatus;
         this.currentTask = currentTask;
+        reportDataList = null;
     }
 
     public RunningActivityData(Status currentStatus, TaskItem currentTask)
@@ -58,6 +67,14 @@ public class RunningActivityData {
         this.status = currentStatus;
         this.choice = Choice.NoChoice;
         this.currentTask = currentTask;
+        reportDataList = null;
+    }
+
+
+    public RunningActivityData(Status currentStatus, List<ReportData> dataList)
+    {
+        this.status = currentStatus;
+        this.reportDataList = dataList;
     }
 
     public void setChoice(Choice currentChoice)
@@ -90,6 +107,10 @@ public class RunningActivityData {
     }
 
 
+    public List<ReportData> getReportDataList()
+    {
+        return this.reportDataList;
+    }
     public boolean isFilled()
     {
         if(this.choice.equals(Choice.NoChoice) || this.status.equals(Status.NoStatus))
