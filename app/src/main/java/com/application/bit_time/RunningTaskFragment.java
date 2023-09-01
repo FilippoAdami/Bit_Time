@@ -26,7 +26,7 @@ import java.util.Locale;
 public class RunningTaskFragment extends Fragment {
 
     DbManager dbManager;
-
+    int printFlag = 0;
     RunningActivityViewModel runningActivityViewModel;
     private int currentSubtask = 0;
     private List<TaskItem> subtasks;
@@ -107,12 +107,10 @@ public class RunningTaskFragment extends Fragment {
             Log.i("RTF viewModel",item.getChoice().toString() + " "+item.getStatus().toString());
 
             if (item.getStatus().toString().equals("Expired") || item.isFilled()) {
-                runningActivityData.add(new RunningActivityData(item.getStatus(), item.getChoice()));
+                Log.i("RTF item",item.toString());
+                runningActivityData.add(new RunningActivityData(item.getStatus(), item.getChoice(),item.getCurrentTask()));
                 updateCurrentTask();
             }
-
-
-
 
 
         });
@@ -157,6 +155,18 @@ public class RunningTaskFragment extends Fragment {
             //Log.i("incrementing currPos",taskToUpload.toString());
             this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,taskToUpload));
 
+        }
+        else
+        {
+            if(printFlag == 0)
+            {
+                Log.i("activity completed","print report");
+                for(RunningActivityData rad : runningActivityData)
+                {
+                    Log.i("report",rad.toString());
+                }
+                printFlag = 1;
+            }
         }
 
 

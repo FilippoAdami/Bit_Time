@@ -1,5 +1,7 @@
 package com.application.bit_time;
 
+import androidx.annotation.NonNull;
+
 public class RunningActivityData {
 
 
@@ -107,8 +109,17 @@ public class RunningActivityData {
         return this.currentTask;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+
+        String print=
+                this.currentTask.getName() + " " +
+                this.choice.toString() + " " +
+                this.status.toString();
+
+        return print;
 
 
-
-
+    }
 }

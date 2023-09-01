@@ -68,18 +68,18 @@ public class HomeFragment extends Fragment {
                 if(lastedTime <= duration/2)
                 {
                     //Log.i("From OnWait ","to OnTime");
-                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.OnTime));
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.OnTime, RunningActivityData.Choice.Yes,currentTask));
                 }
                 else if(lastedTime <= 3*duration/4)
                 {
                     //Log.i("From OnWait","to LittleDelay");
-                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.LittleDelay));
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.LittleDelay,RunningActivityData.Choice.Yes,currentTask));
 
                 }
                 else
                 {
                     //Log.i("From OnWait","to BigDelay");
-                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.BigDelay));
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.BigDelay,RunningActivityData.Choice.Yes,currentTask));
 
                 }
 
@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment {
                 if(currentTask != null) {
                     if (lastedTime == currentTask.getDurationInt()) {
                         //Log.i("duration", "reached");
-                        runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice));
+                        runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice,currentTask));
                         lastedTime = 0;
                     }
                 }
