@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment bottomFragment = new RunningTaskFragment();
+        //Fragment bottomFragment = new HomeBottomFragment();
+        Fragment upperFragment = new HomeFragment();
 
         runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
 
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, new HomeFragment())
+        fragmentTransaction.replace(R.id.fragmentContainer, upperFragment)
                            .replace(R.id.bottomFragmentContainer,bottomFragment);
         fragmentTransaction.commit();
     }

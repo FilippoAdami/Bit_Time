@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,6 +40,11 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
         ReportData reportData = this.reportDataList.get(position);
         Log.i("viewholder log",reportData.subtaskName);
         holder.subtaskName.setText(reportData.subtaskName);
+
+        /*holder.imageView.setImageResource(R.drawable.test_image);
+        holder.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        holder.imageView.setAdjustViewBounds(true);*/
+
     }
 
     @Override
@@ -49,11 +55,13 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
     public class ListItemHolder extends RecyclerView.ViewHolder {
 
         TextView subtaskName;
+        ImageView imageView;
 
         public ListItemHolder(View view)
         {
             super(view);
             this.subtaskName = view.findViewById(R.id.subtaskName);
+            this.imageView = view.findViewById(R.id.imageView);
         }
 
     }

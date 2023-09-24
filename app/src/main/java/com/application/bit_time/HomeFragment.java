@@ -100,9 +100,9 @@ public class HomeFragment extends Fragment {
         clockTextView = rootView.findViewById(R.id.clockTextView);
         analogClockView = rootView.findViewById(R.id.analogClockView);
         Button switchButton = rootView.findViewById(R.id.caregiver_button);
-        Button gameButton = rootView.findViewById(R.id.games_button);
+        //Button gameButton = rootView.findViewById(R.id.games_button);
 
-        gameButton.setOnClickListener(new View.OnClickListener() {
+        /*gameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Replace the current fragment with a new fragment
@@ -113,6 +113,9 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+        */
+
+
         switchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
