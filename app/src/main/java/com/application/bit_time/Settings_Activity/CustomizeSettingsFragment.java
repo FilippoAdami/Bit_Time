@@ -17,7 +17,6 @@ public class CustomizeSettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.s_customize_settings_layout, container, false);
 
         // Implement your settings UI and logic here
-
         return view;
     }
 }
