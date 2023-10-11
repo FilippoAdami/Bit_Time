@@ -122,7 +122,8 @@ public class HomeFragment extends Fragment {
                 // Replace the current fragment with a new fragment
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentContainer, new CaregiverLoginFragment());
+                //fragmentTransaction.replace(R.id.fragmentContainer, new CaregiverLoginFragment());
+                fragmentTransaction.replace(R.id.mainActivityFragmentWrapper, new CaregiverLoginFragment());
                 fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
                 fragmentTransaction.commit();
             }
