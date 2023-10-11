@@ -1,17 +1,23 @@
 package com.application.bit_time.Main_Activity;
 
+import android.content.SharedPreferences;
+import android.content.Context;
 import androidx.fragment.app.Fragment;
-
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.application.bit_time.Main_Activity.ForgotPasswordFragment;
 import com.application.bit_time.R;
 import com.application.bit_time.SettingsActivity;
+import com.application.bit_time.Settings_Activity.SettingsHomeFragment;
 
 public class CaregiverLoginFragment extends Fragment {
 
@@ -19,6 +25,9 @@ public class CaregiverLoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.a_caregiver_login_layout, container, false);
 
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String storedPIN = sharedPreferences.getString("storedPIN", "0000");
+        EditText PIN_txt_input = rootView.findViewById(R.id.PIN_txt_input);
         Button backButton = rootView.findViewById(R.id.backButton);
         Button logInButton = rootView.findViewById(R.id.loginButton);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -32,7 +41,19 @@ public class CaregiverLoginFragment extends Fragment {
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSettingsActivity();
+                String enteredPIN = PIN_txt_input.getText().toString();
+                if (enteredPIN.equals(storedPIN)) {
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.fragment_container, new SettingsHomeFragment());
+                    fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
+                    fragmentTransaction.commit();
+                } else {
+                    // Show error message
+                    Toast.makeText(getActivity(), "Incorrect PIN. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 

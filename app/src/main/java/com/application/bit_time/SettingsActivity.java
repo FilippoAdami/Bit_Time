@@ -33,17 +33,15 @@ public class SettingsActivity extends AppCompatActivity {
 
         currentDbViewModelData = new DbViewModelData(dbViewModel.getSelectedItem().getValue());
 
-
         viewModel = new ViewModelProvider(this).get(CustomViewModel.class);
 
         fManager = getSupportFragmentManager();
+
         Fragment frag = fManager.findFragmentById(R.id.fragmentsContainer);
 
         upperFrag = new SettingsUpperFragment();
         middleFrag = new SettingsMiddleFragment();
         lowerFrag = new SettingsLowerFragmentTasks();
-
-
 
         dbViewModel.getSelectedItem().observe(this, item ->
         {

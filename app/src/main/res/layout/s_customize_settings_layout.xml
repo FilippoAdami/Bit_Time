@@ -1,6 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Example settings options (customize as needed) -->
+
+    <!-- Switch to toggle between two types of gamification -->
+    <Switch
+        android:id="@+id/gamificationSwitch"
+        android:padding="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Gamification"/>
+
+    <!-- Spinner to select happy and sad icons -->
+    <Spinner
+        android:id="@+id/iconSpinner"
+        android:padding="13dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"/>
+
+    <!-- EditText to change points values -->
+    <EditText
+        android:id="@+id/pointsEditText"
+        android:padding="13dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Points Value"
+        android:inputType="number"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Button to change background -->
+    <Button
+        android:id="@+id/changeBackgroundButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Background"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Spinner to select themes -->
+    <Spinner
+        android:id="@+id/themeSpinner"
+        android:padding="13dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Button to change ringtones -->
+    <Button
+        android:id="@+id/changeRingtoneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Ringtone"
+        android:layout_marginTop="16dp"/>
+
+    <!-- SeekBar to adjust notification volume -->
+    <SeekBar
+        android:id="@+id/notificationVolumeSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Switch to toggle app sounds -->
+    <Switch
+        android:id="@+id/appSoundsSwitch"
+        android:padding="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable App Sounds"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Switch to enable/disable pop-up notifications -->
+    <Switch
+        android:id="@+id/popUpNotificationsSwitch"
+        android:padding="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Pop-up Notifications"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Switch to enable/disable focus mode -->
+    <Switch
+        android:id="@+id/focusModeSwitch"
+        android:padding="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Focus Mode"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

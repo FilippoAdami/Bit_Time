@@ -34,9 +34,10 @@
         />
 
     <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/PIN_txt_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
+        android:hint="PIN"
         android:textSize="28dp"
         android:layout_gravity="center"
         />
