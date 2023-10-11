@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Theme 1 -->
-    <style name="BWTheme">
+    <style name="BWTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/light_grey</item>
         <item name="colorSecondaryVariant">@color/dark_grey</item>
@@ -11,7 +11,7 @@
     </style>
 
     <!-- Theme 2 -->
-    <style name="PastelTheme">
+    <style name="PastelTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/pastel_yellow</item>
         <item name="colorPrimaryDark">@color/pastel_red</item>
         <item name="colorSecondaryVariant">@color/pastel_purple</item>
@@ -20,7 +20,7 @@
     </style>
 
     <!-- Theme 3 -->
-    <style name="VividTheme">
+    <style name="VividTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/yellow</item>
         <item name="colorPrimaryDark">@color/red</item>
         <item name="colorSecondaryVariant">@color/purple</item>
@@ -29,7 +29,7 @@
     </style>
 
     <!-- Theme 4 -->
-    <style name="EarthTheme">
+    <style name="EarthTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/earth_yellow</item>
         <item name="colorPrimaryDark">@color/earth_red</item>
         <item name="colorSecondaryVariant">@color/earth_purple</item>
