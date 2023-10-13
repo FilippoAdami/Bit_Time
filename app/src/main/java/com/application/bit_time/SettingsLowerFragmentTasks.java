@@ -14,6 +14,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.application.bit_time.DbManager;
+import com.application.bit_time.R;
+import com.application.bit_time.TaskAdapter;
+import com.application.bit_time.TaskItem;
+
 import java.util.ArrayList;
 import java.util.List;
 

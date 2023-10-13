@@ -15,8 +15,10 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -28,9 +30,69 @@ import com.application.bit_time.utils.AnalogClockView;
 
 public class HomeFragment extends Fragment {
 
+    int lastedTime;
+    private SimpleDateFormat timeFormat;
+    private RunningActivityViewModel runningActivityViewModel;
     private TextView clockTextView;
     private AnalogClockView analogClockView;
     private Handler handler = new Handler();
+    private TaskItem currentTask;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+
+        currentTask = new TaskItem();
+
+        lastedTime = 0;
+        super.onCreate(savedInstanceState);
+        timeFormat = new SimpleDateFormat(" HH : mm ", Locale.getDefault());
+
+        runningActivityViewModel = new ViewModelProvider(requireActivity()).get(RunningActivityViewModel.class);
+
+        //currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
+
+        Log.i("RAVM currentTask dur ",currentTask.getDuration());
+
+        runningActivityViewModel.getSelectedItem().observe(this,item->
+        {
+            Log.i("Home fragment","notified by observer");
+            RunningActivityData.Status currentStatus = item.getStatus();
+
+            if(currentStatus.toString().equals("Uploaded"))
+            {
+                Log.i("HF in Uploaded",item.getCurrentTask().toString());
+                currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
+                runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Running, RunningActivityData.Choice.NoChoice,currentTask));
+            }else if(currentStatus.toString().equals("OnWait"))
+            {
+                int duration = currentTask.getDurationInt();
+                if(lastedTime <= duration/2)
+                {
+                    //Log.i("From OnWait ","to OnTime");
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.OnTime, RunningActivityData.Choice.Yes,currentTask));
+                }
+                else if(lastedTime <= 3*duration/4)
+                {
+                    //Log.i("From OnWait","to LittleDelay");
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.LittleDelay,RunningActivityData.Choice.Yes,currentTask));
+
+                }
+                else
+                {
+                    //Log.i("From OnWait","to BigDelay");
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.BigDelay,RunningActivityData.Choice.Yes,currentTask));
+
+                }
+
+                lastedTime = 0;
+            }
+
+
+        });
+
+
+    }
 
     @Nullable
     @Override
@@ -48,7 +110,7 @@ public class HomeFragment extends Fragment {
                 // Replace the current fragment with a new fragment
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, new GameFragment());
+                fragmentTransaction.replace(R.id.fragmentContainer, new GameFragment());
                 fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
                 fragmentTransaction.commit();
             }
@@ -59,7 +121,7 @@ public class HomeFragment extends Fragment {
                 // Replace the current fragment with a new fragment
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, new CaregiverLoginFragment());
+                fragmentTransaction.replace(R.id.fragmentContainer, new CaregiverLoginFragment());
                 fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
                 fragmentTransaction.commit();
             }
@@ -74,6 +136,20 @@ public class HomeFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+
+                lastedTime++;
+
+                Log.i("lastedTime",Integer.toString(lastedTime));
+
+                if(currentTask != null) {
+                    if (lastedTime == currentTask.getDurationInt()) {
+                        //Log.i("duration", "reached");
+                        runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice,currentTask));
+                        lastedTime = 0;
+                    }
+                }
+                // qui credo vada anche il codice per regolare la colorazione dell'orologio
+
                 String currentTime = getCurrentTime();
 
                 String[] parts = currentTime.split(":");
@@ -93,7 +169,7 @@ public class HomeFragment extends Fragment {
     }
 
     private String getCurrentTime() {
-        SimpleDateFormat timeFormat = new SimpleDateFormat(" HH : mm ", Locale.getDefault());
+
         return timeFormat.format(new Date());
     }
 }

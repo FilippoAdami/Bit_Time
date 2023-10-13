@@ -1,6 +1,5 @@
 package com.application.bit_time;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +10,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder> {
@@ -57,7 +58,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
     }
 
-    @Override
+    public void updateTasksListItems(List<TaskItem> tasks) {
+        final TasksDiffCallback diffCallback = new TasksDiffCallback(this.taskList, tasks);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+
+        this.taskList.clear();
+        this.taskList.addAll(tasks);
+        diffResult.dispatchUpdatesTo(this);
+
+    }
+
+
+
+
+        @Override
     public int getItemCount() {
         return taskList.size();
     }
@@ -67,10 +82,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         int id;
         TextView labelName;
         TextView labelDuration;
-
         Button modifyButton;
         Button deleteButton;
         //immagine boh;
+
+
+
+
+
 
 
         public ListItemHolder(View view)
@@ -98,7 +117,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyTask));
 
-
+                    //notifyDataSetChanged();
 
                 }
             });
@@ -112,6 +131,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
                     DbViewModelData dbData = dbViewModel.getSelectedItem().getValue();
                     dbData.taskToDelete = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
                     dbViewModel.selectItem(dbData);
+
+                    List<TaskItem> newTasksList = taskList;
+                    newTasksList.remove(dbData.taskToDelete);
+
+                    for(TaskItem ti : taskList)
+                    {
+                        Log.i("currentTL",ti.toString());
+                    }
+
+                    for(TaskItem ti : newTasksList)
+                    {
+                        Log.i("newTL",ti.toString());
+                    }
+
+                    updateTasksListItems(newTasksList);
+
+
+
 
 
                 }

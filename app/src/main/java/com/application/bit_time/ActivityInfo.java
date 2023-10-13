@@ -1,6 +1,5 @@
 package com.application.bit_time;
 
-import android.app.Activity;
 import android.util.Log;
 
 import androidx.annotation.NonNull;

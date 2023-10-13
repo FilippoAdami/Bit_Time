@@ -2,16 +2,15 @@ package com.application.bit_time;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.application.bit_time.DbManager;
+import com.application.bit_time.R;
 
 public class DbActivity extends AppCompatActivity {
 
@@ -36,8 +35,8 @@ public class DbActivity extends AppCompatActivity {
             insertButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dbManager.insertActivityRecord("ginnastica","55");
-                    dbManager.insertTaskRecord("vestirsi","80");
+                    //dbManager.insertActivityRecord("ginnastica","55");
+                    //dbManager.insertTaskRecord("vestirsi","80");
                     Log.i("DB_INFO","record added");
                 }
             });

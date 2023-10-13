@@ -5,6 +5,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.sql.Time;
+
 public class TaskItem {
 
 
@@ -18,7 +20,7 @@ public class TaskItem {
     {
         this.IDpk = -1;
         this.Name = "emptyTask";
-        this.Duration = -1;
+        this.Duration = 0;
 
         Log.i("TASKITEMCONST",this.toString());
     }
@@ -41,6 +43,7 @@ public class TaskItem {
     {
         this.IDpk = id;
         this.Name = name;
+
         try {
             this.Duration = Integer.parseInt(duration);
         }catch(NumberFormatException ex)
@@ -86,6 +89,7 @@ public class TaskItem {
         return Integer.toString(this.IDpk);
     }
 
+
     @Override
     public boolean equals(@Nullable Object obj) {
 
@@ -94,7 +98,6 @@ public class TaskItem {
 
             TaskItem objData = (TaskItem) obj;
 
-            //if(this.Name == objData.getName() && this.Duration == objData.getDurationInt())
             if(this.IDpk == objData.IDpk)
                 return true;
         }
@@ -113,6 +116,36 @@ public class TaskItem {
 
 
     }
+
+
+
+
+    public boolean isEqualToEmpty()
+    {
+        TaskItem emptyTask = new TaskItem();
+
+        if(
+                this.IDpk == emptyTask.IDpk &&
+                this.Name.equals(emptyTask.getName()) &&
+                this.Duration == emptyTask.Duration
+        )
+            return true;
+        else return false;
+    }
+
+
+    public TimeHelper getFormattedDuration()
+    {
+        int min = this.Duration%60;
+        int hrs = this.Duration - min;
+
+        return new TimeHelper(hrs,min,0);
+
+
+
+
+    }
+
 
     public String toStringShrt()
     {

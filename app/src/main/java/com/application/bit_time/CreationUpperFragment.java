@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,14 +16,18 @@ import androidx.lifecycle.ViewModelProvider;
 public class CreationUpperFragment extends Fragment {
 
     DbViewModel dbViewModel;
+    SubtasksViewModel subtasksViewModel;
+    CustomViewModel viewModel;
+    TaskAdapter taskAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
+        subtasksViewModel = new ViewModelProvider(requireActivity()).get("dbTasksVM", SubtasksViewModel.class);
 
-
+        viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
 
 
     }
@@ -42,11 +45,6 @@ public class CreationUpperFragment extends Fragment {
         EditText edtTxtSec = view.findViewById(R.id.editTextSeconds);
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
-
-
-
-
-
 
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +66,9 @@ public class CreationUpperFragment extends Fragment {
                 data.taskToAdd = newTask;
 
                 dbViewModel.selectItem(data);
+
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
+
 
 
             }

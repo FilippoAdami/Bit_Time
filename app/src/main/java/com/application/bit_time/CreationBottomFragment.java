@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.application.bit_time.R;
+
 public class CreationBottomFragment extends Fragment {
 
     @Nullable

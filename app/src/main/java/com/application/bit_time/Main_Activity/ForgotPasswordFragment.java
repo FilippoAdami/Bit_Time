@@ -21,7 +21,7 @@ public class ForgotPasswordFragment extends DialogFragment {
                 // Open the TemporaryCodeFragment
                 TemporaryCodeFragment temporaryCodeFragment = new TemporaryCodeFragment();
                 requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, temporaryCodeFragment)
+                        .replace(R.id.fragmentContainer, temporaryCodeFragment)
                         .addToBackStack(null)
                         .commit();
             }
