@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.application.bit_time.Main_Activity.HomeFragment;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -18,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.a_activity_main);
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment bottomFragment = new RunningTaskFragment();
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Main act detection",Integer.toString(item.getReportDataList().size()));
                 fragmentManager
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer,new ReportFragment())
+                        .replace(R.id.fragment_container,new ReportFragment())
                         .detach(bottomFragment)
                         .commit();
             }
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, new HomeFragment())
+        fragmentTransaction.replace(R.id.fragment_container, new HomeFragment())
                            .replace(R.id.bottomFragmentContainer,bottomFragment);
         fragmentTransaction.commit();
     }

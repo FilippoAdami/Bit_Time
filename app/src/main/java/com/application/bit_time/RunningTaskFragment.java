@@ -68,7 +68,6 @@ public class RunningTaskFragment extends Fragment {
             }
         }*/
 
-
         subtasks.addAll(dbManager.retrieveSubtasks(runningActivityCursor));
 
         Log.i("subtasks test ret",Integer.toString(subtasks.size()));
