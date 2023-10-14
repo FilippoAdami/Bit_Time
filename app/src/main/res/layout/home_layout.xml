@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="visible"
-    tools:context=".MainActivity"
+    tools:context=".Main_Activity.MainActivity"
     tools:visibility="visible">
 
-    <com.application.bit_time.AnalogClockView
+    <com.application.bit_time.Main_Activity.AnalogClockView
         android:id="@+id/analogClockView"
         android:layout_width="0dp"
         android:layout_height="0dp"

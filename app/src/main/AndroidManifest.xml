@@ -13,13 +13,13 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="22">
         <activity
-            android:name=".DbActivity"
+            android:name=".Utils.Db.DbActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".Settings_Activity.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Main_Activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
