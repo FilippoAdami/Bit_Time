@@ -17,7 +17,9 @@ import androidx.fragment.app.FragmentContainer;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
-
+import com.application.bit_time.Main_Activity.HomeBottomFragment;
+import com.application.bit_time.Main_Activity.HomeBottomSecondaryFragment;
+import com.application.bit_time.Main_Activity.HomeFragment;
 
 
 public class WrapperFragment extends Fragment {

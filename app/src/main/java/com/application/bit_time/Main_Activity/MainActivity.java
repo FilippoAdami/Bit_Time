@@ -1,12 +1,19 @@
-package com.application.bit_time;
+package com.application.bit_time.Main_Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
+
+import com.application.bit_time.Main_Activity.HomeBottomFragment;
+import com.application.bit_time.Main_Activity.HomeFragment;
+import com.application.bit_time.Main_Activity.ReportFragment;
+import com.application.bit_time.R;
+import com.application.bit_time.Utils.RunningActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,13 +24,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
 
         // da qui
-        setContentView(R.layout.activity_main_wrapper_layout);
+        /*setContentView(R.layout.activity_main_wrapper_layout);
         Log.i("FMANAGER log",fragmentManager.toString());
         Fragment wrapperFragment = new WrapperFragment();
 
@@ -70,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
         // questo lo ho tolto provando a mettere i children fragment
 
-        /*FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainer, upperFragment)
                            .replace(R.id.bottomFragmentContainer,bottomFragment);
-        fragmentTransaction.commit();*/
+        fragmentTransaction.commit();
     }
 }

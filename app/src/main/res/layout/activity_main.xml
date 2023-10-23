@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Main_Activity.MainActivity">
+    tools:context="com.application.bit_time.Main_Activity.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,12 +22,5 @@
             android:id="@+id/bottomFragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </LinearLayout><![CDATA[
-
-
-
-    />
-
-
-]]>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
