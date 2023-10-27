@@ -14,9 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.application.bit_time.Main_Activity.ForgotPasswordFragment;
 import com.application.bit_time.R;
-import com.application.bit_time.SettingsActivity;
+import com.application.bit_time.Settings_Activity.SettingsActivity;
 import com.application.bit_time.Settings_Activity.SettingsHomeFragment;
 
 public class CaregiverLoginFragment extends Fragment {

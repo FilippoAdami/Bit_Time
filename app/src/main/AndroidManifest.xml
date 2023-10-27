@@ -11,10 +11,10 @@
         android:theme="@style/VividTheme"
         tools:targetApi="22">
         <activity
-            android:name=".DbActivity"
+            android:name=".utils.DbActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".Settings_Activity.SettingsActivity"
             android:exported="false" />
         <activity
             android:name=".Main_Activity.MainActivity"

@@ -1,8 +1,6 @@
 package com.application.bit_time.Settings_Activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.application.bit_time.R;
-import com.application.bit_time.SettingsActivity;
 
 public class SettingsHomeFragment extends Fragment {
     @Nullable

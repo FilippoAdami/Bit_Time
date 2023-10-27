@@ -19,7 +19,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -27,9 +26,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.application.bit_time.R;
-import com.application.bit_time.RunningActivityData;
-import com.application.bit_time.RunningActivityViewModel;
-import com.application.bit_time.TaskItem;
+import com.application.bit_time.utils.RunningActivityData;
+import com.application.bit_time.utils.RunningActivityViewModel;
+import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.AnalogClockView;
 
 public class HomeFragment extends Fragment {

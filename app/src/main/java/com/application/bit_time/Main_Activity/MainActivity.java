@@ -12,9 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.application.bit_time.R;
-import com.application.bit_time.ReportFragment;
-import com.application.bit_time.RunningActivityViewModel;
-import com.application.bit_time.RunningTaskFragment;
+import com.application.bit_time.utils.RunningActivityViewModel;
 import com.application.bit_time.Settings_Activity.LogInFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_main);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment bottomFragment = new RunningTaskFragment();
+        //Fragment bottomFragment = new RunningTaskFragment();
+
+        Fragment bottomFragment = new GameFragment();
 
         runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
 

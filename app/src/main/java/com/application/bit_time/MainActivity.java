@@ -9,7 +9,12 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.application.bit_time.Main_Activity.GameFragment;
 import com.application.bit_time.Main_Activity.HomeFragment;
+import com.application.bit_time.Main_Activity.ReportFragment;
+import com.application.bit_time.Main_Activity.RunningTaskFragment;
+import com.application.bit_time.R;
+import com.application.bit_time.utils.RunningActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.a_activity_main);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment bottomFragment = new RunningTaskFragment();
+
+        //Fragment bottomFragment = new RunningTaskFragment();
+        Fragment bottomFragment = new GameFragment();
 
         runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
 
