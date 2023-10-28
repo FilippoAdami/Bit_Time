@@ -16,10 +16,7 @@ public class DbManager {
 
     private SQLiteDatabase db;
 
-
-
-
-    public class DbHelper extends SQLiteOpenHelper
+    public static class DbHelper extends SQLiteOpenHelper
     {
         public static final int DATABASE_VERSION = 1;
         public static final String DATABASE_NAME = "Activities.db";
@@ -45,6 +42,7 @@ public class DbManager {
                 DbContract.Userdata._ID + " integer primary key autoincrement," +
                 DbContract.Userdata.COLUMN_NAME_USERNAME + " text," +
                 DbContract.Userdata.COLUMN_NAME_EMAIL +" text," +
+                DbContract.Userdata.COLUMN_NAME_PASSWORD + " text," +
                 DbContract.Userdata.COLUMN_NAME_PIN + " integer)";
 
         public DbHelper(Context context)
@@ -57,7 +55,6 @@ public class DbManager {
             db.execSQL(SQL_CREATE_TASKS_TABLE);
             db.execSQL(SQL_CREATE_ACTIVITIES_TABLE);
             db.execSQL(SQL_CREATE_USERDATA_TABLE);
-
         }
 
         @Override
@@ -67,19 +64,12 @@ public class DbManager {
             db.execSQL(SQL_DELETE_ENTRIES);
             onCreate(db);
         }
-
-
-
-
     }
-
 
     public String getDbName()
     {
         return db.getPath();
     }
-
-
     public DbManager(Context context)
     {
         DbHelper dbHelper = new DbHelper(context);
@@ -255,6 +245,54 @@ public class DbManager {
         return subtasks;
 
 
+    }
+
+    public Cursor searchUser(String email)
+    {
+        String searchQuery = "select * from "+DbContract.Userdata.TABLE_NAME+ " where "+
+                DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+
+        return db.rawQuery(searchQuery,null);
+    }
+    public void registerUser(String email,String password)
+    {
+        String insertQuery = "insert into "+ DbContract.Userdata.TABLE_NAME
+                +" ("+ DbContract.Userdata.COLUMN_NAME_EMAIL+","
+                + DbContract.Userdata.COLUMN_NAME_PASSWORD+") values("
+                + "'"+email+"','"+password+"');";
+
+        db.execSQL(insertQuery);
+    }
+    public boolean checkUser(Cursor cursor ,String password)
+    {
+        cursor.moveToFirst();
+        String dbPassword = cursor.getString(3);
+        if(dbPassword.equals(password))
+            return true;
+        else
+            return false;
+    }
+
+    public void updatePassword(String email,String password)
+    {
+        String updateQuery =
+                "update "+ DbContract.Userdata.TABLE_NAME +
+                        " set "
+                        + DbContract.Userdata.COLUMN_NAME_PASSWORD + "='" + password + "'"
+                        + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+
+        Log.i("SQLMOD",updateQuery.toString());
+        db.execSQL(updateQuery);
+    }
+
+    public void deleteUser(String email)
+    {
+        String deleteQuery =
+                "delete from "+ DbContract.Userdata.TABLE_NAME + " where "
+                        + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+
+        //Log.i("DB delTask",deleteQuery.toString());
+        db.execSQL(deleteQuery);
     }
 
     public void closeDb()

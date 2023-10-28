@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:padding="12dp"
         android:hint="Email"
         android:inputType="textEmailAddress" />
 
@@ -58,7 +59,7 @@
 
     <!-- Submit button -->
     <Button
-        android:id="@+id/sign_in_button"
+        android:id="@+id/submit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -66,6 +67,7 @@
 
     <!-- Text view for "Forgot Password?" -->
     <TextView
+        android:id="@+id/forgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -73,16 +75,17 @@
         android:text="Forgot Password?"
         android:textColor="#007aff" />
 
-    <!-- Alternative login button (e.g., for social login) -->
+    <!-- Alternative login button (e.g., for social login)
     <Button
         android:id="@+id/Glogin_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Alternative Login" />
-
+    -->
     <!-- Final text view at the bottom -->
     <TextView
+        android:id="@+id/switchMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
