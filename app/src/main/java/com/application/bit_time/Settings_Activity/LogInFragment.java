@@ -39,9 +39,6 @@ public class LogInFragment extends Fragment {
     private DbManager.DbHelper dbHelper;
     private boolean isLoginMode = true;
 
-    public LogInFragment() {
-    }
-
     // Define the ActivityResultLauncher for Google Sign-In
     /*
     private final ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(
@@ -195,18 +192,24 @@ public class LogInFragment extends Fragment {
             updateUIForMode();
             Toast.makeText(getActivity(), "User already registered. Please login.", Toast.LENGTH_SHORT).show();
             cursor.close();
+        } else if (dbManager.isUserRegistered()) {
+            // User not found, but some other user is already registered, so show an error message
+            isLoginMode = true;
+            updateUIForMode();
+            Toast.makeText(getActivity(), "Some other user is already registered. Please login.", Toast.LENGTH_SHORT).show();
+            cursor.close();
+        } else {
+            // User not found, so register the new user
+            dbManager.registerUser(email, password);
+
+            // Show a success message, clear the fields and switch to login mode
+            isLoginMode = true;
+            updateUIForMode();
+            Toast.makeText(getActivity(), "Registration successful. Please login.", Toast.LENGTH_SHORT).show();
+            emailEditText.setText("");
+            password_edit_text.setText("");
+            cursor.close();
         }
-
-        // User not found, so register the new user
-        dbManager.registerUser(email, password);
-
-        // Show a success message, clear the fields and switch to login mode
-        isLoginMode = true;
-        updateUIForMode();
-        Toast.makeText(getActivity(), "Registration successful. Please login.", Toast.LENGTH_SHORT).show();
-        emailEditText.setText("");
-        password_edit_text.setText("");
-        cursor.close();
     }
 
     private boolean isCredentialsValid(String email, String password) {

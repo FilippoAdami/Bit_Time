@@ -19,13 +19,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbManager;
 
 public class AccountFragment extends Fragment {
     private EditText emailEditText;
     private EditText pinEditText;
     private TextView showHidePassword;
     private EditText usernameEditText;
+    private EditText passwordEditText;
     private Button saveButton;
+    private DbManager dbManager; // Initialize DbManager
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,31 +62,22 @@ public class AccountFragment extends Fragment {
 
            }
         });
-
         showHidePassword = view.findViewById(R.id.showHidePassword);
         usernameEditText = view.findViewById(R.id.usernameEditText);
+        passwordEditText = view.findViewById(R.id.password_edit_text);
         saveButton = view.findViewById(R.id.submit);
 
-        //Find the saved data and set it to the UI elements
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String savedEmail = sharedPreferences.getString("user_email", "");
-        String savedPIN = sharedPreferences.getString("storedPIN", "");
-        String savedUsername = sharedPreferences.getString("user_name", "");
+        dbManager = new DbManager(getActivity());
 
-        emailEditText.setText(savedEmail);
-        pinEditText.setText(savedPIN);
-        usernameEditText.setText(savedUsername);
+        // Load and set user data in UI elements
+        loadUserData();
 
         // Set click listener for save button
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Save data to shared preferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("user_email", emailEditText.getText().toString());
-                editor.putString("storedPIN", pinEditText.getText().toString());
-                editor.putString("user_name", usernameEditText.getText().toString());
-                editor.apply();
+                // Save the data to the database
+                updateUserData();
                 Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -101,17 +95,46 @@ public class AccountFragment extends Fragment {
 
     // Toggle password visibility
     private void togglePasswordVisibility() {
-        int inputType = pinEditText.getInputType();
+        int inputType = passwordEditText.getInputType();
         if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             // Password is hidden, show it
-            pinEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             //showHidePassword.setImageResource(R.drawable.ic_visibility_on);
         } else {
             // Password is shown, hide it
-            pinEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             //showHidePassword.setImageResource(R.drawable.ic_visibility_off);
         }
         // Move cursor to the end of the text
-        pinEditText.setSelection(pinEditText.getText().length());
+        passwordEditText.setSelection(passwordEditText.getText().length());
+    }
+    // Load user data from the database and set it in UI elements
+    private void loadUserData() {
+        String email = dbManager.getUserEmail(); // Get user's email
+        String username = dbManager.getUsername(); // Get user's username
+        String pin = dbManager.getUserPin(); // Get user's PIN
+
+        emailEditText.setText(email);
+        usernameEditText.setText(username);
+        pinEditText.setText(pin);
+    }
+    // Update user data in the database
+    private void updateUserData() {
+        String email = emailEditText.getText().toString();
+        String username = usernameEditText.getText().toString();
+        String pin = pinEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        // Update email, username, and PIN
+        dbManager.updateEmail(dbManager.getUserEmail(), email);
+        dbManager.updateUsername(email, username);
+        dbManager.updatePin(email, pin);
+
+        // Update password if provided
+        if (!password.isEmpty()) {
+            dbManager.updatePassword(email, password);
+        }
+
+        Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
     }
 }

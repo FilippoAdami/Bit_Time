@@ -244,18 +244,23 @@ public class DbManager {
 
         return subtasks;
 
-
     }
 
-    public Cursor searchUser(String email)
-    {
+
+    public boolean isUserRegistered() {
+        // Check if there's at least one user in the database
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
+        boolean userExists = cursor.moveToFirst();
+        cursor.close();
+        return userExists;
+    }
+    public Cursor searchUser(String email) {
         String searchQuery = "select * from "+DbContract.Userdata.TABLE_NAME+ " where "+
                 DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
 
         return db.rawQuery(searchQuery,null);
     }
-    public void registerUser(String email,String password)
-    {
+    public void registerUser(String email,String password) {
         String insertQuery = "insert into "+ DbContract.Userdata.TABLE_NAME
                 +" ("+ DbContract.Userdata.COLUMN_NAME_EMAIL+","
                 + DbContract.Userdata.COLUMN_NAME_PASSWORD+") values("
@@ -263,8 +268,7 @@ public class DbManager {
 
         db.execSQL(insertQuery);
     }
-    public boolean checkUser(Cursor cursor ,String password)
-    {
+    public boolean checkUser(Cursor cursor ,String password) {
         cursor.moveToFirst();
         String dbPassword = cursor.getString(3);
         if(dbPassword.equals(password))
@@ -272,9 +276,66 @@ public class DbManager {
         else
             return false;
     }
+    public String getUserEmail() {
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
+        boolean userExists = cursor.moveToFirst();
+        if(userExists)
+            return cursor.getString(2);
+        else
+            return null;
+    }
+    public String getUserPin() {
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
+        boolean userExists = cursor.moveToFirst();
+        if(userExists){
+            String pin = cursor.getString(4);
+            //if the pin is saved return it, if it is null return string 0000
+            if(pin != null)
+                return pin;
+            else
+                return "0000";}
+        else //return string 0000 if no user is registered
+            return "0000";
+    }
+    public String getUsername() {
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
+        boolean userExists = cursor.moveToFirst();
+        if(userExists)
+            return cursor.getString(1);
+        else
+            return null;
+    }
+    public void updateEmail(String email,String newEmail) {
+        String updateQuery =
+                "update "+ DbContract.Userdata.TABLE_NAME +
+                        " set "
+                        + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + newEmail + "'"
+                        + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
 
-    public void updatePassword(String email,String password)
-    {
+        Log.i("SQLMOD",updateQuery.toString());
+        db.execSQL(updateQuery);
+    }
+    public void updateUsername(String email,String username) {
+        String updateQuery =
+                "update "+ DbContract.Userdata.TABLE_NAME +
+                        " set "
+                        + DbContract.Userdata.COLUMN_NAME_USERNAME + "='" + username + "'"
+                        + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+
+        Log.i("SQLMOD",updateQuery.toString());
+        db.execSQL(updateQuery);
+    }
+    public void updatePin(String email,String pin) {
+        String updateQuery =
+                "update "+ DbContract.Userdata.TABLE_NAME +
+                        " set "
+                        + DbContract.Userdata.COLUMN_NAME_PIN + "='" + pin + "'"
+                        + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+
+        Log.i("SQLMOD",updateQuery.toString());
+        db.execSQL(updateQuery);
+    }
+    public void updatePassword(String email,String password) {
         String updateQuery =
                 "update "+ DbContract.Userdata.TABLE_NAME +
                         " set "
@@ -285,8 +346,7 @@ public class DbManager {
         db.execSQL(updateQuery);
     }
 
-    public void deleteUser(String email)
-    {
+    public void deleteUser(String email) {
         String deleteQuery =
                 "delete from "+ DbContract.Userdata.TABLE_NAME + " where "
                         + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";

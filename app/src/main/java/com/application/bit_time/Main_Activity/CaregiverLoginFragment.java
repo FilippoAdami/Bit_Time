@@ -17,18 +17,19 @@ import android.widget.Toast;
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.SettingsActivity;
 import com.application.bit_time.Settings_Activity.SettingsHomeFragment;
+import com.application.bit_time.utils.Db.DbManager;
 
 public class CaregiverLoginFragment extends Fragment {
 
+    private DbManager dbManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.a_caregiver_login_layout, container, false);
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String storedPIN = sharedPreferences.getString("storedPIN", "0000");
         EditText PIN_txt_input = rootView.findViewById(R.id.PIN_txt_input);
         Button backButton = rootView.findViewById(R.id.backButton);
         Button logInButton = rootView.findViewById(R.id.loginButton);
+        dbManager = new DbManager(getActivity());
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,7 +42,7 @@ public class CaregiverLoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String enteredPIN = PIN_txt_input.getText().toString();
-                if (enteredPIN.equals(storedPIN)) {
+                if (enteredPIN.equals(dbManager.getUserPin())) {
                     FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_container, new SettingsHomeFragment());
@@ -49,7 +50,7 @@ public class CaregiverLoginFragment extends Fragment {
                     fragmentTransaction.commit();
                 } else {
                     // Show error message
-                    Toast.makeText(getActivity(), "Incorrect PIN. Please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Incorrect PIN. Please try again."+dbManager.getUserPin()+"", Toast.LENGTH_SHORT).show();
                 }
 
 
