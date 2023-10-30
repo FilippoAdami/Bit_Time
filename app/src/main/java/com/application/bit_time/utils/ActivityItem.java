@@ -3,6 +3,7 @@ package com.application.bit_time.utils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.application.bit_time.utils.Db.DbContract;
 
@@ -72,6 +73,20 @@ public class ActivityItem {
         }
     }
 
+    public ActivityItem(ActivityInfo info, TaskItem[] subtasks)
+    {
+        this.activityInfo = info ;
+
+        this.subtasks = new TaskItem[subtasks.length];
+
+        int i =0;
+        for(TaskItem subItem : subtasks)
+        {
+            this.subtasks[i]= new TaskItem(subItem);
+            i++;
+        }
+    }
+
 
   public String getName()
   {
@@ -83,6 +98,10 @@ public class ActivityItem {
       return this.activityInfo.getTime();
   }
 
+  public ActivityInfo getInfo()
+  {
+      return this.activityInfo;
+  }
   public boolean isExpanded()
   {
       return this.expanded;
@@ -92,6 +111,7 @@ public class ActivityItem {
   {
       this.expanded = expandedState;
   }
+
 
     @NonNull
     @Override
@@ -112,20 +132,24 @@ public class ActivityItem {
 
 
     //@Override
-    /*public boolean equals(@Nullable Object obj) {
+    public boolean equals(@Nullable Object obj)
+    {
 
         if(obj instanceof ActivityItem)
         {
             ActivityItem objAI = (ActivityItem) obj;
-            if(
-                    //this.activityInfo.equals(objAI.activityInfo));
 
-
+            if
+            (
+                    this.activityInfo.getIdInt() == objAI.activityInfo.getIdInt() &&
+                    this.activityInfo.getName().equals(objAI.getName()) &&
+                    this.activityInfo.getTimeInt() == objAI.activityInfo.getTimeInt()
+            )
+            {
+                return true;
+            }
         }
 
         return false;
-
-
-
-    }*/
+    }
 }

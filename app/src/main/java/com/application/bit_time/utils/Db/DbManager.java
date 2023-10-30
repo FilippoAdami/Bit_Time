@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.application.bit_time.utils.ActivityInfo;
+import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
@@ -166,6 +167,29 @@ public class DbManager {
         return db.rawQuery(searchQuery,null);
     }
 
+
+    public ActivityItem searchActivityItem(ActivityInfo activityInfo)
+    {
+        String searchQuery =
+                        "select * from "+DbContract.Activities.TABLE_NAME
+                        + " where " + DbContract.Activities._ID + "="+ activityInfo.getIdInt();
+
+        Log.i("searchqueryz",searchQuery);
+        Cursor c = db.rawQuery(searchQuery,null);
+        Log.i("searchqueryz",Integer.toString(c.getCount()));
+        List<TaskItem> taskItemList= this.retrieveSubtasks(c);
+
+        TaskItem[] taskItemArr = new TaskItem[taskItemList.size()];
+
+        for(int i =0; i< taskItemList.size();i++)
+        {
+                taskItemArr[i] = new TaskItem(taskItemList.get(i));
+        }
+
+        ActivityItem item = new ActivityItem(activityInfo,taskItemArr);
+
+        return item;
+    }
     public Cursor selectAllActivities()
     {
         String searchQuery= "select * from "+ DbContract.Activities.TABLE_NAME;

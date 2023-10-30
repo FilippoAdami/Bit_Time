@@ -58,6 +58,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager = getSupportFragmentManager();
 
+        Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
+
         Fragment frag = fManager.findFragmentById(R.id.fragmentsContainer);
 
         upperFrag = new SettingsUpperFragment();
@@ -120,6 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
             {
 
                 Log.i("SettingsActivity VM","item : "+item.toString());
+                Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
 
                 if(frag == null)
                 {
@@ -165,26 +168,60 @@ public class SettingsActivity extends AppCompatActivity {
     {
         lowerFrag = new SettingsLowerFragmentTasks();
 
+        if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
+        || fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("taskRender"))
+        {
+
+            if(fManager.popBackStackImmediate())
+            {
+                Log.i("popped","yes");
+            }
+            else
+            {
+                Log.i("popped","false");
+            }
+
+        }
+
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
-                //.addToBackStack("taskRender")
+                .addToBackStack("taskRender")
                 .commit();
 
-        //Log.i("SettingsActivity VM","taskRender called");
+
+
+
+        Log.i("current dim",Integer.toString(fManager.getBackStackEntryCount()));
+
 
     }
 
     private void activitiesRender()
     {
+
+        if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
+                || fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("taskRender"))
+        {
+
+            if(fManager.popBackStackImmediate())
+            {
+                Log.i("popped","yes");
+            }
+            else
+            {
+                Log.i("popped","false");
+            }
+
+        }
+
         lowerFrag = new SettingsLowerFragmentActivities();
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
-                //.addToBackStack("ActivitiesRender")
+                .addToBackStack("ActivitiesRender")
                 .commit();
 
         //Log.i("SettingsActivity VM","activitiesRender called");
     }
-
 
     @Override
     protected void onDestroy() {
@@ -200,6 +237,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .addToBackStack("newTask")
                 .commit();
     }
 
@@ -211,6 +249,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .addToBackStack("newAct")
                 .commit();
     }
 
@@ -222,6 +261,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .addToBackStack("modifyT")
                 .commit();
     }
 
@@ -235,6 +275,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view, upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .addToBackStack("modifyA")
                 .commit();
     }
 
@@ -255,9 +296,9 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         fManager.beginTransaction()
-                .add(R.id.top_fragment_container_view,upperFrag)
-                .add(R.id.middle_fragment_container_view,middleFrag)
-                .add(R.id.bottom_fragment_container_view,lowerFrag)
+                .replace(R.id.top_fragment_container_view,upperFrag)
+                .replace(R.id.middle_fragment_container_view,middleFrag)
+                .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .addToBackStack("MainEntry")
                 .commit();
     }

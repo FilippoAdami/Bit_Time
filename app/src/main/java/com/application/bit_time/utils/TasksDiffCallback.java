@@ -1,5 +1,7 @@
 package com.application.bit_time.utils;
 
+import android.util.Log;
+
 import androidx.recyclerview.widget.DiffUtil;
 
 import java.util.List;
@@ -29,7 +31,13 @@ public class TasksDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return this.oldTasksList.get(oldItemPosition).getID() == this.newTasksList.get(newItemPosition).getID();
+        if(this.oldTasksList.get(oldItemPosition).getID() == this.newTasksList.get(newItemPosition).getID())
+        {
+            Log.i(this.oldTasksList.get(oldItemPosition).toString(),this.newTasksList.get(newItemPosition).toString());
+            return true;
+        }
+
+        return false;
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.application.bit_time.Settings_Activity.SettingsModeData;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder> {
@@ -64,9 +65,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     }
 
     public void updateTasksListItems(List<TaskItem> tasks) {
+
+        Log.i("TASKADAPTER","updateTaskListItems called");
         final TasksDiffCallback diffCallback = new TasksDiffCallback(this.taskList, tasks);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
 
         this.taskList.clear();
         this.taskList.addAll(tasks);
@@ -137,7 +139,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
                     dbData.taskToDelete = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
                     dbViewModel.selectItem(dbData);
 
-                    List<TaskItem> newTasksList = taskList;
+                    List<TaskItem> newTasksList = new ArrayList<>(taskList);
                     newTasksList.remove(dbData.taskToDelete);
 
                     for(TaskItem ti : taskList)
