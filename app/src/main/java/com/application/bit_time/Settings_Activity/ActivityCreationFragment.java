@@ -44,6 +44,10 @@ public class ActivityCreationFragment extends Fragment {
     private DbViewModel dbViewModel;
     private TaskItem[] subtasksToAdd;
 
+    private int idToBeModified;
+    private String activityName;
+    private SettingsModeData currentState;
+
 
 
     @Override
@@ -55,6 +59,7 @@ public class ActivityCreationFragment extends Fragment {
         subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
         dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
 
+        idToBeModified=-1;
 
         subtasksToAdd = new TaskItem[DbContract.Activities.DIM_MAX];
 
@@ -63,7 +68,7 @@ public class ActivityCreationFragment extends Fragment {
             subtasksToAdd[i] = new TaskItem();
         }
 
-        SettingsModeData currentState = viewModel.getSelectedItem().getValue();
+        currentState = viewModel.getSelectedItem().getValue();
 
         if(currentState.equals("NewActivity"))
         {
@@ -77,6 +82,9 @@ public class ActivityCreationFragment extends Fragment {
             Cursor activityToModifyData = dbManager.searchActivityById(activityToModifyInfo.getIdInt());
 
             activityToModifyData.moveToFirst();
+
+            this.activityName = activityToModifyData.getString(1);
+            this.idToBeModified= activityToModifyData.getInt(0);
 
             for(int i = 0; i< DbContract.Activities.DIM_MAX; i++)
             {
@@ -103,6 +111,7 @@ public class ActivityCreationFragment extends Fragment {
             Log.i("adaptData state"," was null");
             AdaptData.subtaskAdapter = subtaskAdapter;
             Log.i("adaptData state","now is "+ AdaptData.subtaskAdapter.toString());
+            AdaptData.setActivityId(idToBeModified);
             subtasksViewModel.selectItem(AdaptData);
         }
 
@@ -129,6 +138,11 @@ public class ActivityCreationFragment extends Fragment {
         Button addButton = view.findViewById(R.id.addTaskButton);
         Button endButton = view.findViewById(R.id.fineButton);
 
+
+        if(currentState.equals("ModifyActivity"))
+        {
+            nameLabel.setHint(activityName);
+        }
 
 
 
@@ -189,6 +203,9 @@ public class ActivityCreationFragment extends Fragment {
 
                     dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
                 }
+
+
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
 
             }
         });

@@ -26,7 +26,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
     private DbViewModel dbViewModel;
     private CustomViewModel viewModel;
-
+    private SubtasksViewModel subtasksViewModel;
     private List<TaskItem> taskList;
     private SettingsLowerFragmentTasks settingsLowerFragmentTasks;
 
@@ -38,6 +38,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         this.taskList = taskList;
         dbViewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(DbViewModel.class);
         viewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(CustomViewModel.class);
+        this.subtasksViewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(SubtasksViewModel.class);
     }
 
 
@@ -59,6 +60,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         holder.labelName.setText(task.getName());
         holder.labelDuration.setText(task.getDuration());
         holder.id = task.getID();
+        Log.i("TaskAdapter idact",Integer.toString(holder.id));
         //immagine boh
 
 
@@ -108,6 +110,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
             deleteButton = view.findViewById(R.id.deleteTaskButton);
 
 
+
             //immagine boh
 
 
@@ -117,6 +120,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
                     Toast.makeText(view.getContext(), "modify pressed",Toast.LENGTH_SHORT).show();
 
 
+
                     DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
                     newData.taskToModify = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
                     Log.i("TASKAD newData ttm",newData.taskToModify.toString());
@@ -124,7 +128,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyTask));
 
-                    //notifyDataSetChanged();
+                    SubtasksViewModelData updatedSVMData = subtasksViewModel.getSelectedItem().getValue();
+                    updatedSVMData.setActivityId(id);
+                    subtasksViewModel.selectItem(updatedSVMData);
 
                 }
             });

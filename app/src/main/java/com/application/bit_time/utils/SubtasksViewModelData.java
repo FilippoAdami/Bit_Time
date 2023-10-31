@@ -10,6 +10,7 @@ public class SubtasksViewModelData {
     public TaskItem[] subtasks;
     public SubtaskAdapter subtaskAdapter;
 
+    private int activityId;
 
     public SubtasksViewModelData()
     {
@@ -22,6 +23,7 @@ public class SubtasksViewModelData {
       }
 
       subtaskAdapter = null;
+      activityId = -1;
     }
 
 
@@ -38,6 +40,17 @@ public class SubtasksViewModelData {
         this.subtaskAdapter = subtadapt;
 
     }
+
+    public void setActivityId(int id)
+    {
+        this.activityId=id;
+    }
+
+    public int getActivityId()
+    {
+        return this.activityId;
+    }
+
 
 
     @NonNull

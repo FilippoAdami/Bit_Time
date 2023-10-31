@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.R;
+import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -25,10 +26,12 @@ public class ModifyTasksFragment extends Fragment {
 
     private DbManager dbManager;
 
+    private CustomViewModel viewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
         dbManager = new DbManager(getContext());
 
         View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
@@ -76,6 +79,10 @@ public class ModifyTasksFragment extends Fragment {
 
 
                 dbManager.modifyTask(newItem);
+
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
+
+
 
 
             }
