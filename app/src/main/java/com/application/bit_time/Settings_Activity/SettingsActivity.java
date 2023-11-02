@@ -14,6 +14,7 @@ import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
+import com.application.bit_time.utils.TaskItem;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -75,13 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
             Log.i("FROM SETTINGS ACTIVITY"," new is "+item.toString());
 
 
-            if(!currentDbViewModelData.taskToAdd.equals(item.taskToAdd))
-            {
-                Log.i("FROM SETTINGS ACTIVITY"," entro qui ed inserisco task");
-                dbManager.insertTaskRecord(item.taskToAdd.getName(),item.taskToAdd.getDuration());
-
-            }
-            else if(!currentDbViewModelData.taskToDelete.equals(item.taskToDelete))
+            if(!currentDbViewModelData.taskToDelete.equals(item.taskToDelete))
             {
                 Log.i("FROM SETTINGS ACTIVITY","now i would delete the selected task, implement the method");
                 dbManager.deleteTask(item.taskToDelete);
@@ -103,6 +98,14 @@ public class SettingsActivity extends AppCompatActivity {
                         .replace(R.id.bottom_fragment_container_view,lowerFrag)
                         .commit();
             }
+            else if(!currentDbViewModelData.taskToAdd.equals(item.taskToAdd))
+            {
+                Log.i("FROM SETTINGS ACTIVITY"," entro qui ed inserisco task");
+                dbManager.insertTaskRecord(item.taskToAdd.getName(),item.taskToAdd.getDuration());
+            }
+
+            currentDbViewModelData = item;
+            Log.i("updatedDbViewModelData",currentDbViewModelData.toString());
 
         });
 

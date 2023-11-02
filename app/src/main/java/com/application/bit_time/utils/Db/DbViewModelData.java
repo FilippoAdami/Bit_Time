@@ -63,8 +63,6 @@ public class DbViewModelData {
             {
                 return true;
             }
-
-
         }
 
         return false;

@@ -192,14 +192,17 @@ public class ActivityCreationFragment extends Fragment {
                 if(viewModel.getSelectedItem().getValue().equals("NewActivity")) {
                     dbManager.insertActivityRecord(nameLabel.getText().toString(), subtasksToAdd);
                 }
-                else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity")) {
+                else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity"))
+                {
 
                     int[] subtasksId = new int[DbContract.Activities.DIM_MAX];
 
                     for(int i = 0;i< DbContract.Activities.DIM_MAX; i++)
                     {
                         subtasksId[i] = subtasksToAdd[i].getID();
+                        Log.i("changessub",Integer.toString(subtasksId[i]));
                     }
+
 
                     dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
                 }
