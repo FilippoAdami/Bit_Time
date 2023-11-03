@@ -73,6 +73,17 @@ public class DbViewModelData {
         this.selector = item;
         this.taskItem = new TaskItem(newItem);
     }
+
+    public DbViewModelData(ACTION_TYPE action, ITEM_TYPE item, ActivityItem newItem)
+    {
+        this();
+        this.action = action;
+        this.selector = item;
+        this.activityItem = new ActivityItem(newItem);
+    }
+
+
+
     public DbViewModelData(DbViewModelData original)
     {
         /*this.taskToDelete = new TaskItem(original.taskToDelete);

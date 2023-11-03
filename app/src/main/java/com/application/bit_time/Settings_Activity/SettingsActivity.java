@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -85,6 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
+
                     dbManager.insertActivityRecord(currentData.activityItem);
                 }
             }
@@ -108,7 +111,18 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
                     Log.i("FROM SETTINGS ACTIVITY","would modify activity");
-                    //dbManager.modifyActivity(currentData.activityItem.getInfo(),currentData.activityItem.getSubtasks());
+                    ActivityItem currentActivity = currentData.activityItem;
+                    Log.i("currentActivity",currentActivity.toString());
+                    TaskItem[] taskItems = new TaskItem[DbContract.Activities.DIM_MAX];
+                    int[] subtasksIds= new int[taskItems.length];
+
+                    int i=0;
+                    for(TaskItem ti: currentActivity.getSubtasks())
+                    {
+                        subtasksIds[i]=ti.getID();
+                        i++;
+                    }
+                    dbManager.modifyActivity(currentData.activityItem.getInfo(),subtasksIds);
                 }
             }
 

@@ -23,6 +23,7 @@ import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.SubtaskAdapter;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.SubtasksViewModelData;
@@ -198,15 +199,20 @@ public class ActivityCreationFragment extends Fragment {
 
                     int[] subtasksId = new int[DbContract.Activities.DIM_MAX];
 
+                    int duration = 0;
                     for(int i = 0;i< DbContract.Activities.DIM_MAX; i++)
                     {
                         subtasksId[i] = subtasksToAdd[i].getID();
+                        duration += subtasksToAdd[i].getDurationInt();
                         Log.i("changessub",Integer.toString(subtasksId[i]));
                     }
 
-
+                    dbViewModel.selectItem(new DbViewModelData(
+                            DbViewModelData.ACTION_TYPE.MODIFY,
+                            DbViewModelData.ITEM_TYPE.ACTIVITY,
+                            new ActivityItem(Integer.toString(idToBeModified),activityName,Integer.toString(duration),subtasksId)));
                     //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
-                    dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
+                    //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                 }
 
 
