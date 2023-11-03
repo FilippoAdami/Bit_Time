@@ -75,8 +75,46 @@ public class SettingsActivity extends AppCompatActivity {
 
             Log.i("FROM SETTINGS ACTIVITY"," new is "+item.toString());
 
+            DbViewModelData currentData = new DbViewModelData(item);
 
-            if(!currentDbViewModelData.taskToDelete.equals(item.taskToDelete))
+            if(currentData.action == DbViewModelData.ACTION_TYPE.INSERT)
+            {
+                if(currentData.selector == DbViewModelData.ITEM_TYPE.TASK)
+                {
+                    dbManager.insertTaskRecord(currentData.taskItem);
+                }
+                else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
+                {
+                    dbManager.insertActivityRecord(currentData.activityItem);
+                }
+            }
+            else if(currentData.action == DbViewModelData.ACTION_TYPE.DELETE)
+            {
+                if(currentData.selector == DbViewModelData.ITEM_TYPE.TASK)
+                {
+                    dbManager.deleteTask(currentData.taskItem);
+                }
+                else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
+                {
+                    dbManager.deleteActivity(currentData.activityItem.getInfo());
+                }
+            }
+            else if(currentData.action == DbViewModelData.ACTION_TYPE.MODIFY)
+            {
+                if(currentData.selector == DbViewModelData.ITEM_TYPE.TASK)
+                {
+                    dbManager.modifyTask(currentData.taskItem);
+                }
+                else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
+                {
+                    Log.i("FROM SETTINGS ACTIVITY","would modify activity");
+                    //dbManager.modifyActivity(currentData.activityItem.getInfo(),currentData.activityItem.getSubtasks());
+                }
+            }
+
+
+
+            /*if(!currentDbViewModelData.taskToDelete.equals(item.taskToDelete))
             {
                 Log.i("FROM SETTINGS ACTIVITY","now i would delete the selected task, implement the method");
                 dbManager.deleteTask(item.taskToDelete);
@@ -105,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             currentDbViewModelData = item;
-            Log.i("updatedDbViewModelData",currentDbViewModelData.toString());
+            Log.i("updatedDbViewModelData",currentDbViewModelData.toString());*/
 
         });
 

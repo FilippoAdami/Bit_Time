@@ -160,7 +160,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
 
                     DbViewModelData newDbData = new DbViewModelData(dbViewModel.getSelectedItem().getValue());
-                    newDbData.activityToModify = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
+                    newDbData.activityItem.activityInfo = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
                     dbViewModel.selectItem(newDbData);
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyActivity));
 
@@ -182,12 +182,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
 
                     Log.i("TEST",""+labelName.getText().toString()+" "+labelTime.getText().toString());
-                    Log.i("TEST","immediatly after "+ newData.activityToDelete.getName());
+                    Log.i("TEST","immediatly after "+ newData.activityItem.getName());
 
 
-                    newData.activityToDelete = itemToDelete;
+                    newData.activityItem.activityInfo = itemToDelete;
 
-                    Log.i("TEST","immediatly after again "+ newData.activityToDelete.getName());
+                    Log.i("TEST","immediatly after again "+ newData.activityItem.getName());
 
                     dbViewModel.selectItem(newData);
 

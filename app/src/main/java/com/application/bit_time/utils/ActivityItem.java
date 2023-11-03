@@ -102,6 +102,7 @@ public class ActivityItem {
   {
       return this.activityInfo;
   }
+  public TaskItem[] getSubtasks(){ return this.subtasks;}
   public boolean isExpanded()
   {
       return this.expanded;

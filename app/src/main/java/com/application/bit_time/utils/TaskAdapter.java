@@ -38,7 +38,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         this.taskList = taskList;
         dbViewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(DbViewModel.class);
         viewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(CustomViewModel.class);
-        this.subtasksViewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(SubtasksViewModel.class);
+        //this.subtasksViewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(SubtasksViewModel.class);
     }
 
 
@@ -121,16 +121,23 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
 
 
-                    DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
-                    newData.taskToModify = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
-                    Log.i("TASKAD newData ttm",newData.taskToModify.toString());
+                    //DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
+                    //newData.taskToModify = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
+                    TaskItem thisTaskItem = new TaskItem(id,labelName.getText().toString(), labelDuration.getText().toString());
+
+                    DbViewModelData newData = new DbViewModelData(
+                            DbViewModelData.ACTION_TYPE.UNDEFINED,
+                            DbViewModelData.ITEM_TYPE.UNDEFINED,
+                            thisTaskItem);
+
+                    //Log.i("TASKAD newData ttm",newData.taskItem.toString());
                     dbViewModel.selectItem(newData);
 
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyTask));
 
-                    SubtasksViewModelData updatedSVMData = subtasksViewModel.getSelectedItem().getValue();
-                    updatedSVMData.setActivityId(id);
-                    subtasksViewModel.selectItem(updatedSVMData);
+                    //SubtasksViewModelData updatedSVMData = subtasksViewModel.getSelectedItem().getValue();
+                    //updatedSVMData.setActivityId(id);
+                    //subtasksViewModel.selectItem(updatedSVMData);
 
                 }
             });
@@ -141,12 +148,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
                 public void onClick(View view) {
                     Log.i("TASKAD btn" ,"delete pressed");
 
-                    DbViewModelData dbData = dbViewModel.getSelectedItem().getValue();
-                    dbData.taskToDelete = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
-                    dbViewModel.selectItem(dbData);
+                    //DbViewModelData dbData = dbViewModel.getSelectedItem().getValue();
+                    //dbData.taskToDelete = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
+
+                    TaskItem currentTask = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
+
+                    dbViewModel.selectItem(new DbViewModelData(
+                            DbViewModelData.ACTION_TYPE.DELETE,
+                            DbViewModelData.ITEM_TYPE.TASK,
+                            currentTask));
+
+                    //dbViewModel.selectItem(dbData);
 
                     List<TaskItem> newTasksList = new ArrayList<>(taskList);
-                    newTasksList.remove(dbData.taskToDelete);
+                    //newTasksList.remove(dbData.taskToDelete);
+                    newTasksList.remove(currentTask);
 
                     for(TaskItem ti : taskList)
                     {

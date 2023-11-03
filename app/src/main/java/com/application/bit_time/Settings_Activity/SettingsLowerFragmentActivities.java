@@ -66,12 +66,12 @@ public class SettingsLowerFragmentActivities extends Fragment
 
             Log.i("FROM SETTINGS LOWER FRAGMENT","first step of observer");
 
-            dbManager.deleteActivity(item.activityToDelete);
+            //dbManager.deleteActivity(item.activityItem.getInfo());
 
-            if(!item.activityToDelete.equals(latestData.activityToDelete))
+            /*if(!item.activityItem.equals(latestData.activityItem))
             {
                 Log.i("FROM SETTINGS LOWER FRAGMENT","new activity to delete");
-            }
+            }*/
 
             latestData = item; // update di latest data
 

@@ -88,8 +88,9 @@ public class DbManager {
 
     }
 
-    public void insertActivityRecord(String name, TaskItem[] tasks)
+    public void insertActivityRecord(ActivityItem activity)
     {
+        TaskItem[] tasks = activity.getSubtasks();
 
         int totalTime = 0;
 
@@ -122,19 +123,19 @@ public class DbManager {
                 + DbContract.Activities.COLUMN_NAME_TASK3 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK4 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK5 + ") values ('"
-                + name + "'," + totalTime + "," +tasksStr +");";
+                + activity.getName()+ "'," + totalTime + "," +tasksStr +");";
 
 
         Log.i("insert act str",insertQuery);
         db.execSQL(insertQuery);
     }
 
-    public void insertTaskRecord(String name,String duration)
+    public void insertTaskRecord(TaskItem task)
     {
         String insertQuery = "insert into "+ DbContract.Tasks.TABLE_NAME
                 +" ("+ DbContract.Tasks.COLUMN_NAME_TASK_NAME+","
                 + DbContract.Tasks.COLUMN_NAME_TASK_DURATION+") values("
-                + "'"+name+"','"+duration+"');";
+                + "'"+task.getName()+"','"+task.getDuration()+"');";
 
         db.execSQL(insertQuery);
     }
@@ -194,19 +195,19 @@ public class DbManager {
         return db.rawQuery(searchQuery,null);
     }
 
-    public void modifyActivity(int Id,String Name,int duration,int[] subtasksId) {
+    public void modifyActivity(ActivityInfo info,int[] subtasksId) {
 
         String query =
                 "UPDATE "+ DbContract.Activities.TABLE_NAME
                 + " SET "
-                + DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME + "='"+ Name + "',"
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME + "='"+ info.getName() + "',"
                 + DbContract.Activities.COLUMN_NAME_TASK1 + "=" + Integer.toString(subtasksId[0]) +","
-                + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(duration) +","
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(info.getTimeInt()) +","
                 + DbContract.Activities.COLUMN_NAME_TASK2 + "=" + Integer.toString(subtasksId[1]) +","
                 + DbContract.Activities.COLUMN_NAME_TASK3 + "=" + Integer.toString(subtasksId[2]) +","
                 + DbContract.Activities.COLUMN_NAME_TASK4 + "=" + Integer.toString(subtasksId[3]) +","
                 + DbContract.Activities.COLUMN_NAME_TASK5 + "=" + Integer.toString(subtasksId[4])
-                + " WHERE "+ DbContract.Activities._ID + "=" +Integer.toString(Id);
+                + " WHERE "+ DbContract.Activities._ID + "=" +Integer.toString(info.getIdInt());
 
         Log.i("updatequery",query);
 

@@ -71,7 +71,12 @@ public class CreationUpperFragment extends Fragment {
 
                 DbViewModelData data = dbViewModel.getSelectedItem().getValue();
 
-                data.taskToAdd = newTask;
+                //data.taskToAdd = newTask;
+
+                data.taskItem = newTask;
+                data.action = DbViewModelData.ACTION_TYPE.INSERT;
+                data.selector = DbViewModelData.ITEM_TYPE.TASK;
+
 
                 dbViewModel.selectItem(data);
 

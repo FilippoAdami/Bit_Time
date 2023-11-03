@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.utils.ActivityInfo;
+import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.SubtaskAdapter;
@@ -75,7 +76,7 @@ public class ActivityCreationFragment extends Fragment {
 
         }else if(currentState.equals("ModifyActivity"))
         {
-            ActivityInfo activityToModifyInfo = dbViewModel.getSelectedItem().getValue().activityToModify;
+            ActivityInfo activityToModifyInfo = dbViewModel.getSelectedItem().getValue().activityItem.getInfo();//dbViewModel.getSelectedItem().getValue().activityToModify;
 
             Log.i("contentz",dbViewModel.getSelectedItem().getValue().toString());
 
@@ -190,7 +191,7 @@ public class ActivityCreationFragment extends Fragment {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
 
                 if(viewModel.getSelectedItem().getValue().equals("NewActivity")) {
-                    dbManager.insertActivityRecord(nameLabel.getText().toString(), subtasksToAdd);
+                    dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
                 }
                 else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity"))
                 {
@@ -204,7 +205,8 @@ public class ActivityCreationFragment extends Fragment {
                     }
 
 
-                    dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
+                    //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
+                    dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                 }
 
 
