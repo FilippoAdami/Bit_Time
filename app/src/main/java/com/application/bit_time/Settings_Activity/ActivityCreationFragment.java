@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.utils.ActivityInfo;
+import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.SubtaskAdapter;
@@ -44,6 +45,10 @@ public class ActivityCreationFragment extends Fragment {
     private DbViewModel dbViewModel;
     private TaskItem[] subtasksToAdd;
 
+    private int idToBeModified;
+    private String activityName;
+    private SettingsModeData currentState;
+
 
 
     @Override
@@ -55,6 +60,7 @@ public class ActivityCreationFragment extends Fragment {
         subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
         dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
 
+        idToBeModified=-1;
 
         subtasksToAdd = new TaskItem[DbContract.Activities.DIM_MAX];
 
@@ -63,20 +69,23 @@ public class ActivityCreationFragment extends Fragment {
             subtasksToAdd[i] = new TaskItem();
         }
 
-        SettingsModeData currentState = viewModel.getSelectedItem().getValue();
+        currentState = viewModel.getSelectedItem().getValue();
 
         if(currentState.equals("NewActivity"))
         {
 
         }else if(currentState.equals("ModifyActivity"))
         {
-            ActivityInfo activityToModifyInfo = dbViewModel.getSelectedItem().getValue().activityToModify;
+            ActivityInfo activityToModifyInfo = dbViewModel.getSelectedItem().getValue().activityItem.getInfo();//dbViewModel.getSelectedItem().getValue().activityToModify;
 
             Log.i("contentz",dbViewModel.getSelectedItem().getValue().toString());
 
             Cursor activityToModifyData = dbManager.searchActivityById(activityToModifyInfo.getIdInt());
 
             activityToModifyData.moveToFirst();
+
+            this.activityName = activityToModifyData.getString(1);
+            this.idToBeModified= activityToModifyData.getInt(0);
 
             for(int i = 0; i< DbContract.Activities.DIM_MAX; i++)
             {
@@ -103,6 +112,7 @@ public class ActivityCreationFragment extends Fragment {
             Log.i("adaptData state"," was null");
             AdaptData.subtaskAdapter = subtaskAdapter;
             Log.i("adaptData state","now is "+ AdaptData.subtaskAdapter.toString());
+            AdaptData.setActivityId(idToBeModified);
             subtasksViewModel.selectItem(AdaptData);
         }
 
@@ -129,6 +139,11 @@ public class ActivityCreationFragment extends Fragment {
         Button addButton = view.findViewById(R.id.addTaskButton);
         Button endButton = view.findViewById(R.id.fineButton);
 
+
+        if(currentState.equals("ModifyActivity"))
+        {
+            nameLabel.setHint(activityName);
+        }
 
 
 
@@ -176,19 +191,26 @@ public class ActivityCreationFragment extends Fragment {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
 
                 if(viewModel.getSelectedItem().getValue().equals("NewActivity")) {
-                    dbManager.insertActivityRecord(nameLabel.getText().toString(), subtasksToAdd);
+                    dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
                 }
-                else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity")) {
+                else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity"))
+                {
 
                     int[] subtasksId = new int[DbContract.Activities.DIM_MAX];
 
                     for(int i = 0;i< DbContract.Activities.DIM_MAX; i++)
                     {
                         subtasksId[i] = subtasksToAdd[i].getID();
+                        Log.i("changessub",Integer.toString(subtasksId[i]));
                     }
 
-                    dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
+
+                    //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
+                    dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                 }
+
+
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
 
             }
         });

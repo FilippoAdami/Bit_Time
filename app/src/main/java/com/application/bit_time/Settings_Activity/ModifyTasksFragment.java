@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.R;
+import com.application.bit_time.utils.CustomViewModel;
+import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -23,13 +25,14 @@ public class ModifyTasksFragment extends Fragment {
 
     private DbViewModel dbViewModel;
 
-    private DbManager dbManager;
 
+    private CustomViewModel viewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        dbManager = new DbManager(getContext());
+        viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
+
 
         View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
 
@@ -43,9 +46,9 @@ public class ModifyTasksFragment extends Fragment {
         dbViewModel = new ViewModelProvider(getActivity()).get(DbViewModel.class);
 
 
-        Log.i("TASKTOMOD",dbViewModel.getSelectedItem().getValue().taskToModify.toString());
+        Log.i("TASKTOMOD",dbViewModel.getSelectedItem().getValue().taskItem.toString());
 
-        TaskItem taskToModify = dbViewModel.getSelectedItem().getValue().taskToModify;
+        TaskItem taskToModify = dbViewModel.getSelectedItem().getValue().taskItem;
 
 
 
@@ -74,8 +77,16 @@ public class ModifyTasksFragment extends Fragment {
 
                 Log.i("UPDATE",newItem.toString());
 
+                DbViewModelData dbViewModelData = new DbViewModelData(
+                        DbViewModelData.ACTION_TYPE.MODIFY,
+                        DbViewModelData.ITEM_TYPE.TASK,
+                        newItem);
 
-                dbManager.modifyTask(newItem);
+                dbViewModel.selectItem(dbViewModelData);
+
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
+
+
 
 
             }

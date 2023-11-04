@@ -14,6 +14,7 @@ import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
+import com.application.bit_time.utils.TaskItem;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -58,6 +59,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager = getSupportFragmentManager();
 
+        Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
+
         Fragment frag = fManager.findFragmentById(R.id.fragmentsContainer);
 
         upperFrag = new SettingsUpperFragment();
@@ -72,14 +75,46 @@ public class SettingsActivity extends AppCompatActivity {
 
             Log.i("FROM SETTINGS ACTIVITY"," new is "+item.toString());
 
+            DbViewModelData currentData = new DbViewModelData(item);
 
-            if(!currentDbViewModelData.taskToAdd.equals(item.taskToAdd))
+            if(currentData.action == DbViewModelData.ACTION_TYPE.INSERT)
             {
-                Log.i("FROM SETTINGS ACTIVITY"," entro qui ed inserisco task");
-                dbManager.insertTaskRecord(item.taskToAdd.getName(),item.taskToAdd.getDuration());
-
+                if(currentData.selector == DbViewModelData.ITEM_TYPE.TASK)
+                {
+                    dbManager.insertTaskRecord(currentData.taskItem);
+                }
+                else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
+                {
+                    dbManager.insertActivityRecord(currentData.activityItem);
+                }
             }
-            else if(!currentDbViewModelData.taskToDelete.equals(item.taskToDelete))
+            else if(currentData.action == DbViewModelData.ACTION_TYPE.DELETE)
+            {
+                if(currentData.selector == DbViewModelData.ITEM_TYPE.TASK)
+                {
+                    dbManager.deleteTask(currentData.taskItem);
+                }
+                else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
+                {
+                    dbManager.deleteActivity(currentData.activityItem.getInfo());
+                }
+            }
+            else if(currentData.action == DbViewModelData.ACTION_TYPE.MODIFY)
+            {
+                if(currentData.selector == DbViewModelData.ITEM_TYPE.TASK)
+                {
+                    dbManager.modifyTask(currentData.taskItem);
+                }
+                else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
+                {
+                    Log.i("FROM SETTINGS ACTIVITY","would modify activity");
+                    //dbManager.modifyActivity(currentData.activityItem.getInfo(),currentData.activityItem.getSubtasks());
+                }
+            }
+
+
+
+            /*if(!currentDbViewModelData.taskToDelete.equals(item.taskToDelete))
             {
                 Log.i("FROM SETTINGS ACTIVITY","now i would delete the selected task, implement the method");
                 dbManager.deleteTask(item.taskToDelete);
@@ -101,6 +136,14 @@ public class SettingsActivity extends AppCompatActivity {
                         .replace(R.id.bottom_fragment_container_view,lowerFrag)
                         .commit();
             }
+            else if(!currentDbViewModelData.taskToAdd.equals(item.taskToAdd))
+            {
+                Log.i("FROM SETTINGS ACTIVITY"," entro qui ed inserisco task");
+                dbManager.insertTaskRecord(item.taskToAdd.getName(),item.taskToAdd.getDuration());
+            }
+
+            currentDbViewModelData = item;
+            Log.i("updatedDbViewModelData",currentDbViewModelData.toString());*/
 
         });
 
@@ -120,6 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
             {
 
                 Log.i("SettingsActivity VM","item : "+item.toString());
+                Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
 
                 if(frag == null)
                 {
@@ -165,26 +209,60 @@ public class SettingsActivity extends AppCompatActivity {
     {
         lowerFrag = new SettingsLowerFragmentTasks();
 
+        if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
+        || fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("taskRender"))
+        {
+
+            if(fManager.popBackStackImmediate())
+            {
+                Log.i("popped","yes");
+            }
+            else
+            {
+                Log.i("popped","false");
+            }
+
+        }
+
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
-                //.addToBackStack("taskRender")
+                .addToBackStack("taskRender")
                 .commit();
 
-        //Log.i("SettingsActivity VM","taskRender called");
+
+
+
+        Log.i("current dim",Integer.toString(fManager.getBackStackEntryCount()));
+
 
     }
 
     private void activitiesRender()
     {
+
+        if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
+                || fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("taskRender"))
+        {
+
+            if(fManager.popBackStackImmediate())
+            {
+                Log.i("popped","yes");
+            }
+            else
+            {
+                Log.i("popped","false");
+            }
+
+        }
+
         lowerFrag = new SettingsLowerFragmentActivities();
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
-                //.addToBackStack("ActivitiesRender")
+                .addToBackStack("ActivitiesRender")
                 .commit();
 
         //Log.i("SettingsActivity VM","activitiesRender called");
     }
-
 
     @Override
     protected void onDestroy() {
@@ -200,6 +278,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .addToBackStack("newTask")
                 .commit();
     }
 
@@ -211,6 +290,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .addToBackStack("newAct")
                 .commit();
     }
 
@@ -222,6 +302,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .addToBackStack("modifyT")
                 .commit();
     }
 
@@ -235,6 +316,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view, upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
+                .addToBackStack("modifyA")
                 .commit();
     }
 
@@ -255,9 +337,9 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         fManager.beginTransaction()
-                .add(R.id.top_fragment_container_view,upperFrag)
-                .add(R.id.middle_fragment_container_view,middleFrag)
-                .add(R.id.bottom_fragment_container_view,lowerFrag)
+                .replace(R.id.top_fragment_container_view,upperFrag)
+                .replace(R.id.middle_fragment_container_view,middleFrag)
+                .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .addToBackStack("MainEntry")
                 .commit();
     }

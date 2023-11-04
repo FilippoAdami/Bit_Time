@@ -115,8 +115,9 @@ public class ActivityInfo {
             ActivityInfo objLI = (ActivityInfo) obj;
 
         /*    if(this.labelName.equals(objLI.getName()) && this.labelTime == objLI.getTimeInt())*/
-                if(this.IDpk == objLI.getIdInt())
+                if(this.IDpk == objLI.getIdInt()) {
                     return true;
+                }
         }
 
         return false;

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
@@ -23,6 +24,7 @@ import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder>
@@ -63,6 +65,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     public void onBindViewHolder(@NonNull ListAdapter.ListItemHolder holder, int position) {
 
         ActivityItem activityItem = list.get(position);
+
+        Log.i("ADAPTonbind",activityItem.toString());
         holder.bind(activityItem);
         holder.id = activityItem.activityInfo.getIdInt();
 
@@ -86,6 +90,31 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     public int getItemCount() {
         return list.size();
     }
+
+    public void updateActivityListItems(List<ActivityItem> newList)
+    {
+        Log.i("dims",Integer.toString(this.list.size())+" "+Integer.toString(newList.size()));
+        final ActivityDiffCallback diffCallback = new ActivityDiffCallback(this.list,newList);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        for(ActivityItem ai : list)
+        {
+            Log.i("listprint",ai.toString());
+        }
+
+        this.list.clear();
+        this.list.addAll(newList);
+
+        for(ActivityItem ai : list)
+        {
+            Log.i("newlistprint",ai.toString());
+        }
+
+
+        diffResult.dispatchUpdatesTo(this);
+    }
+
+
 
     public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
@@ -131,7 +160,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
 
                     DbViewModelData newDbData = new DbViewModelData(dbViewModel.getSelectedItem().getValue());
-                    newDbData.activityToModify = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
+                    newDbData.activityItem.activityInfo = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
                     dbViewModel.selectItem(newDbData);
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyActivity));
 
@@ -145,19 +174,30 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                 public void onClick(View view) {
                     // magari aggiungiamo una richiesta di conferma
 
+                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
+                    ActivityItem item = dbManager.searchActivityItem(itemToDelete);
+
+
                     DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
 
 
                     Log.i("TEST",""+labelName.getText().toString()+" "+labelTime.getText().toString());
-                    Log.i("TEST","immediatly after "+ newData.activityToDelete.getName());
+                    Log.i("TEST","immediatly after "+ newData.activityItem.getName());
 
-                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
 
-                    newData.activityToDelete = itemToDelete;
+                    newData.activityItem.activityInfo = itemToDelete;
 
-                    Log.i("TEST","immediatly after again "+ newData.activityToDelete.getName());
+                    Log.i("TEST","immediatly after again "+ newData.activityItem.getName());
 
                     dbViewModel.selectItem(newData);
+
+                    List<ActivityItem> newList = new ArrayList<>(list);
+                    newList.remove(item);
+                    Log.i("newlist",newList.get(0).toString());
+                    updateActivityListItems(newList);
+
+
+
                 }
             });
 

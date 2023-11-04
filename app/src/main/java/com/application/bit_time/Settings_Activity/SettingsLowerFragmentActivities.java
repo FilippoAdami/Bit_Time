@@ -66,12 +66,12 @@ public class SettingsLowerFragmentActivities extends Fragment
 
             Log.i("FROM SETTINGS LOWER FRAGMENT","first step of observer");
 
-            dbManager.deleteActivity(item.activityToDelete);
+            //dbManager.deleteActivity(item.activityItem.getInfo());
 
-            if(!item.activityToDelete.equals(latestData.activityToDelete))
+            /*if(!item.activityItem.equals(latestData.activityItem))
             {
                 Log.i("FROM SETTINGS LOWER FRAGMENT","new activity to delete");
-            }
+            }*/
 
             latestData = item; // update di latest data
 
@@ -84,7 +84,7 @@ public class SettingsLowerFragmentActivities extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        Log.i("LOWFRAGACT","uptohere bro");
+        //Log.i("LOWFRAGACT","uptohere bro");
         View view = inflater.inflate(R.layout.settings_lower_fragment_layout,container,false);
 
         recyclerView= view.findViewById(R.id.recyclerView);
@@ -97,7 +97,7 @@ public class SettingsLowerFragmentActivities extends Fragment
         activityList = new ArrayList<>();
         activityList = getActivityData(dbManager.selectAllActivities());
         listAdapter = new ListAdapter(this,activityList);
-        Log.i("LOWFRAGACT adaptState",listAdapter.toString());
+        //Log.i("LOWFRAGACT adaptState",listAdapter.toString());
 
         recyclerView.setAdapter(listAdapter);
 
@@ -111,7 +111,7 @@ public class SettingsLowerFragmentActivities extends Fragment
         List<ActivityItem> list = new ArrayList<>();
 
 
-        Log.i("HELP"," "+c.getColumnCount());
+        //Log.i("HELP"," "+c.getColumnCount());
 
         while(c.moveToNext())
         {
