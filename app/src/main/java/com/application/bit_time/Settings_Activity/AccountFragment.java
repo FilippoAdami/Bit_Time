@@ -17,9 +17,14 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.application.bit_time.Main_Activity.GameFragment;
+import com.application.bit_time.Main_Activity.HomeFragment;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
+import com.application.bit_time.utils.EmptyFragment;
 
 public class AccountFragment extends Fragment {
     private EditText emailEditText;
@@ -28,12 +33,24 @@ public class AccountFragment extends Fragment {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private Button saveButton;
+    private Button logoutButton;
     private DbManager dbManager; // Initialize DbManager
+    private SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_account_and_stats_layout, container, false);
-
+        Fragment bottomFragment = new Fragment();
+        //check if user is logged in
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        if(!sharedPreferences.getBoolean("loggedIn", false)){
+            // If the user is not logged in, go to the LogInFragment
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, new LogInFragment())
+                    .replace(R.id.bottomFragmentContainer, bottomFragment);
+            fragmentTransaction.commit();
+        }
         // Initialize UI elements
         emailEditText = view.findViewById(R.id.emailEditText);
         pinEditText = view.findViewById(R.id.pinEditText);
@@ -66,6 +83,7 @@ public class AccountFragment extends Fragment {
         usernameEditText = view.findViewById(R.id.usernameEditText);
         passwordEditText = view.findViewById(R.id.password_edit_text);
         saveButton = view.findViewById(R.id.submit);
+        logoutButton = view.findViewById(R.id.logout);
 
         dbManager = new DbManager(getActivity());
 
@@ -79,6 +97,23 @@ public class AccountFragment extends Fragment {
                 // Save the data to the database
                 updateUserData();
                 Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set click listener for logout button
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Switch islogin to false
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("loggedIn", false);
+                editor.apply();
+
+                // Go to the home fragment
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, new HomeFragment())
+                        .replace(R.id.bottomFragmentContainer, bottomFragment);
+                fragmentTransaction.commit();
             }
         });
 
@@ -128,7 +163,7 @@ public class AccountFragment extends Fragment {
         // Update email, username, and PIN
         dbManager.updateEmail(dbManager.getUserEmail(), email);
         dbManager.updateUsername(email, username);
-        dbManager.updatePin(email, pin);
+        dbManager.updatePin(pin);
 
         // Update password if provided
         if (!password.isEmpty()) {

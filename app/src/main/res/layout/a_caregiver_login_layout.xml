@@ -45,14 +45,14 @@
         android:id="@+id/forgotPasswordButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="forgot password?"
+        android:text="reset PIN"
         android:layout_gravity="right"
         />
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Enter"
         android:layout_gravity="center"
         />
     <TextView
