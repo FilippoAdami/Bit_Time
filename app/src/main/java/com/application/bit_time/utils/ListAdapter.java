@@ -135,13 +135,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         public ListItemHolder (View view)
         {
             super(view);
-
+            ti0 = new TaskItem();
             this.subtaskItems = new TaskItem[DbContract.Activities.DIM_MAX];
-            for(TaskItem ti : this.subtaskItems)
-            {
-                ti = new TaskItem();
-            }
-
 
             labelName = view.findViewById(R.id.labelName);
             labelTime = view.findViewById(R.id.labelTime);
@@ -259,13 +254,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             labelName.setText(activityItem.getName());
             labelTime.setText(activityItem.getTime());
 
-            for(TaskItem ti : this.subtaskItems)
-            {
-                ti = new TaskItem();
-            }
 
 
-            ti0 = new TaskItem();
+            Log.i("ti0 from bind",ti0.toString());
+            //Log.i("subtasks from bind",subtaskItems[0].toString());
 
             for(int i = 0; i < subtasksNum ; i++)
             {

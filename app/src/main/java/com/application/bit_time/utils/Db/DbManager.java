@@ -235,9 +235,51 @@ public class DbManager {
                         + DbContract.Tasks.COLUMN_NAME_TASK_DURATION + "=" + modifiedItem.getDuration()
                         + " where " + DbContract.Tasks._ID + "=" + modifiedItem.getIdStr();
 
-        Log.i("SQLMOD",updateQuery.toString());
+        Log.i("SQLMOD",updateQuery);
         db.execSQL(updateQuery);
 
+        String scanQuery =
+                "select * from "+DbContract.Activities.TABLE_NAME
+                + " where ";
+
+        for(int i =1 ;i<=DbContract.Activities.DIM_MAX;i++)
+        {
+            String condition = DbContract.Activities.TABLE_NAME +".task"+Integer.toString(i) + "="+ modifiedItem.getIdStr();
+            //Log.i("condition",condition);
+            if(i<DbContract.Activities.DIM_MAX)
+            {
+                condition=condition.concat(" OR ");
+            }
+            scanQuery = scanQuery.concat(condition);
+        }
+
+        Log.i("scan query",scanQuery);
+
+        Cursor scanCursor = db.rawQuery(scanQuery,null);
+        scanCursor.moveToFirst();
+
+        do {
+            int currActivity = scanCursor.getInt(0);
+            int newDuration = 0;
+            for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
+                int currentElem = scanCursor.getInt(3 + i);
+                Log.i("scanCursor currElem", Integer.toString(currentElem));
+                if (currentElem > 0) {
+                    TaskItem currTask = this.searchTask(currentElem);
+                    newDuration += currTask.getDurationInt();
+                }
+            }
+            Log.i("new duration", Integer.toString(newDuration));
+
+            updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
+                    + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration)
+                    + " where " + DbContract.Activities._ID + "=" + Integer.toString(currActivity);
+            ;
+
+            Log.i("updateQueryAct", updateQuery);
+
+            db.execSQL(updateQuery);
+        }while(scanCursor.moveToNext());
     }
 
     public void deleteTask(TaskItem task)
