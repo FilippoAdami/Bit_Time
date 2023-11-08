@@ -47,7 +47,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         subtasksViewModel.getSelectedItem().observe(this,item ->
         {
-
             Log.i("SETT ACT ",item.toString());
         });
 
@@ -61,7 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager = getSupportFragmentManager();
 
-        Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
+        //Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
 
         Fragment frag = fManager.findFragmentById(R.id.fragmentsContainer);
 
@@ -77,6 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             Log.i("FROM SETTINGS ACTIVITY"," new is "+item.toString());
 
+
             DbViewModelData currentData = new DbViewModelData(item);
 
             if(currentData.action == DbViewModelData.ACTION_TYPE.INSERT)
@@ -88,6 +88,11 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
 
+                    Log.i("FROM SETTINGS ACTIVITY",item.activityItem.toString());
+                    for(TaskItem ti : item.activityItem.getSubtasks())
+                    {
+                        Log.i("FROM SETTING ACT",ti.toString());
+                    }
                     dbManager.insertActivityRecord(currentData.activityItem);
                 }
             }

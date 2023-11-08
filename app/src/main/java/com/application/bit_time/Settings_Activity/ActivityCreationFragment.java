@@ -123,8 +123,12 @@ public class ActivityCreationFragment extends Fragment {
                 if(subtaskToAddId > -1) {
 
                     subtasksToAdd[i] = new TaskItem(sharedSubtasks[i]);//dbManager.searchTask(subtaskToAddId);
-                    Log.i("subtoAdd", subtasksToAdd[i].toStringShrt());
+                    Log.i("subtoAdd", subtasksToAdd[i].toString());
                 }
+                /*else
+                {
+                    subtasksToAdd[i]=new TaskItem();
+                }*/
             }
 
             subtasksViewModel.selectItem(new SubtasksViewModelData(subtasksToAdd,null));
@@ -219,8 +223,24 @@ public class ActivityCreationFragment extends Fragment {
             public void onClick(View view) {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
 
+
+                DbViewModelData newData = new DbViewModelData();
+                newData.selector=DbViewModelData.ITEM_TYPE.ACTIVITY;
+
+
+                //dbViewModel.selectItem();
                 if(viewModel.getSelectedItem().getValue().equals("NewActivity")) {
+                    ActivityItem activity = new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd);
                    // dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
+                    newData.action= DbViewModelData.ACTION_TYPE.INSERT;
+                    newData.activityItem= new ActivityItem(activity);
+
+
+                    Log.i("activity is",activity.toString());
+                    for(TaskItem ti : activity.getSubtasks())
+                    {
+                        Log.i("actsubtaksks are",ti.toString());
+                    }
                 }
                 else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity"))
                 {
@@ -240,6 +260,7 @@ public class ActivityCreationFragment extends Fragment {
                     Log.i("ACT_CRE_FRA",activityName);
                     Log.i("ACT_CRE_FRA",Integer.toString(duration));
 
+                    newData.action= DbViewModelData.ACTION_TYPE.MODIFY;
 
                     dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.MODIFY,
@@ -248,6 +269,8 @@ public class ActivityCreationFragment extends Fragment {
                     //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
                     //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                 }
+
+                dbViewModel.selectItem(newData);
 
 
                 viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
