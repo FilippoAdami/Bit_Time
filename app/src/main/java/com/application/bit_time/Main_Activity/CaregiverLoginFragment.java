@@ -62,7 +62,7 @@ public class CaregiverLoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Show the custom dialog fragment
-                ForgotPasswordFragment dialogFragment = new ForgotPasswordFragment();
+                ResetPINDialog dialogFragment = new ResetPINDialog();
                 dialogFragment.show(getParentFragmentManager(), "ForgotPasswordDialog");
             }
         });

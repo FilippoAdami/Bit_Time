@@ -398,7 +398,10 @@ public class DbManager {
             String pin = cursor.getString(4);
             //if the pin is saved return it, if it is null return string 0000
             if(pin != null)
-                return pin;
+                if(pin.equals("0"))
+                    return "0000";
+                else
+                    return pin;
             else
                 return "0000";}
         else //return string 0000 if no user is registered
@@ -432,16 +435,15 @@ public class DbManager {
         Log.i("SQLMOD",updateQuery.toString());
         db.execSQL(updateQuery);
     }
-    public void updatePin(String email,String pin) {
+    public void updatePin(String pin) {
         String updateQuery =
-                "update "+ DbContract.Userdata.TABLE_NAME +
-                        " set "
-                        + DbContract.Userdata.COLUMN_NAME_PIN + "='" + pin + "'"
-                        + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+                "update " + DbContract.Userdata.TABLE_NAME +
+                        " set " + DbContract.Userdata.COLUMN_NAME_PIN + "='" + pin + "'";
 
-        Log.i("SQLMOD",updateQuery.toString());
+        Log.i("SQLMOD", updateQuery.toString());
         db.execSQL(updateQuery);
     }
+
     public void updatePassword(String email,String password) {
         String updateQuery =
                 "update "+ DbContract.Userdata.TABLE_NAME +
