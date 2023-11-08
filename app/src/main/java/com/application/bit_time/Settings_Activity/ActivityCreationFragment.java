@@ -77,23 +77,52 @@ public class ActivityCreationFragment extends Fragment {
 
         }else if(currentState.equals("ModifyActivity"))
         {
-            ActivityInfo activityToModifyInfo = dbViewModel.getSelectedItem().getValue().activityItem.getInfo();//dbViewModel.getSelectedItem().getValue().activityToModify;
+            ActivityItem activityToModifyInfo = dbViewModel.getSelectedItem().getValue().activityItem;
 
-            Log.i("contentz",dbViewModel.getSelectedItem().getValue().toString());
+            subtasksViewModel.getSelectedItem().observe(this,item -> {
+                if(subtasksViewModel.getSelectedItem().getValue().isAlreadyModified())
+                {
+                    for(TaskItem ti : subtasksViewModel.getSelectedItem().getValue().subtasks)
+                    {
+                        Log.i("ti modified",ti.toString());
+                    }
 
-            Cursor activityToModifyData = dbManager.searchActivityById(activityToModifyInfo.getIdInt());
+                }
+                else
+                {
+                    Log.i("ti modified","not really");
+                }
+            });
 
-            activityToModifyData.moveToFirst();
 
-            this.activityName = activityToModifyData.getString(1);
-            this.idToBeModified= activityToModifyData.getInt(0);
+
+            TaskItem[] sharedSubtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+            int pos =0 ;
+            for(TaskItem ti : activityToModifyInfo.getSubtasks())
+            {
+
+                Log.i("subtask shared",ti.toString());
+                sharedSubtasks[pos]=new TaskItem(ti);
+                pos++;
+            }
+
+
+            //Log.i("contentz",dbViewModel.getSelectedItem().getValue().toString());
+
+            //Cursor activityToModifyData = dbManager.searchActivityById(activityToModifyInfo.getIdInt());
+
+            //activityToModifyData.moveToFirst();
+
+            this.activityName = activityToModifyInfo.getName();//activityToModifyData.getString(1);
+            this.idToBeModified= activityToModifyInfo.getInfo().getIdInt();//activityToModifyData.getInt(0);
 
             for(int i = 0; i< DbContract.Activities.DIM_MAX; i++)
             {
-                int subtaskToAddId = activityToModifyData.getInt(3+i);
+                int subtaskToAddId = sharedSubtasks[i].getID();//activityToModifyData.getInt(3+i);
                 if(subtaskToAddId > -1) {
 
-                    subtasksToAdd[i] = dbManager.searchTask(subtaskToAddId);
+                    subtasksToAdd[i] = new TaskItem(sharedSubtasks[i]);//dbManager.searchTask(subtaskToAddId);
                     Log.i("subtoAdd", subtasksToAdd[i].toStringShrt());
                 }
             }
@@ -156,10 +185,6 @@ public class ActivityCreationFragment extends Fragment {
 
         subtasksRecyclerView.setAdapter(subtaskAdapter);
 
-
-
-
-
         subtasksViewModel.getSelectedItem().observe(this,item ->
                 {
 
@@ -180,7 +205,10 @@ public class ActivityCreationFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getContext(),"pressed and all ok", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),"pressed and all ok", Toast.LENGTH_SHORT).show();
+                SubtasksViewModelData SVMData = subtasksViewModel.getSelectedItem().getValue();
+                SVMData.setSubtasks(subtasksToAdd);
+                subtasksViewModel.selectItem(SVMData);
                 TaskSelectionDialog taskSelectionDialog = new TaskSelectionDialog();
                 taskSelectionDialog.show(getActivity().getSupportFragmentManager(),null);
             }
@@ -192,7 +220,7 @@ public class ActivityCreationFragment extends Fragment {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
 
                 if(viewModel.getSelectedItem().getValue().equals("NewActivity")) {
-                    dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
+                   // dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
                 }
                 else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity"))
                 {
@@ -206,6 +234,12 @@ public class ActivityCreationFragment extends Fragment {
                         duration += subtasksToAdd[i].getDurationInt();
                         Log.i("changessub",Integer.toString(subtasksId[i]));
                     }
+
+
+                    Log.i("ACT_CRE_FRA",Integer.toString(idToBeModified));
+                    Log.i("ACT_CRE_FRA",activityName);
+                    Log.i("ACT_CRE_FRA",Integer.toString(duration));
+
 
                     dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.MODIFY,

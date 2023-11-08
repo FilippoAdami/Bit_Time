@@ -9,6 +9,7 @@ public class SubtasksViewModelData {
 
     public TaskItem[] subtasks;
     public SubtaskAdapter subtaskAdapter;
+    private boolean alreadyModified;
 
     private int activityId;
 
@@ -24,6 +25,7 @@ public class SubtasksViewModelData {
 
       subtaskAdapter = null;
       activityId = -1;
+      alreadyModified=false;
     }
 
 
@@ -51,6 +53,30 @@ public class SubtasksViewModelData {
         return this.activityId;
     }
 
+    public boolean isAlreadyModified()
+    {
+        return this.alreadyModified;
+    }
+
+    public void hasBeenModified()
+    {
+        this.alreadyModified = true;
+    }
+
+    public void setSubtasks(TaskItem[] taskItems)
+    {
+        int pos=0;
+        for(TaskItem ti : taskItems)
+        {
+            this.subtasks[pos]=new TaskItem(ti);
+            pos++;
+        }
+    }
+
+    public void hasNotBeenModified()
+    {
+        this.alreadyModified=false;
+    }
 
 
     @NonNull

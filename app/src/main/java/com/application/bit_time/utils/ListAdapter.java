@@ -130,13 +130,19 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         TextView[] subtasks;
 
         TaskItem[] subtaskItems;
-        TaskItem ti0;
 
         public ListItemHolder (View view)
         {
             super(view);
-            ti0 = new TaskItem();
             this.subtaskItems = new TaskItem[DbContract.Activities.DIM_MAX];
+            //this.subtaskItems[0] = new TaskItem(4,"provainseritam",15);
+
+            for(int i = 0;i<DbContract.Activities.DIM_MAX ; i++)
+            {
+                this.subtaskItems[i] = new TaskItem();
+                Log.i("initSubtaskItems",this.subtaskItems[i].toString());
+            }
+
 
             labelName = view.findViewById(R.id.labelName);
             labelTime = view.findViewById(R.id.labelTime);
@@ -167,11 +173,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                 public void onClick(View view) {
                     Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
 
+                    //Log.i("HERE","look at me");
 
                     DbViewModelData newDbData = new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.MODIFY,
                             DbViewModelData.ITEM_TYPE.ACTIVITY,
                             new ActivityItem());
+
                     newDbData.activityItem.activityInfo = new ActivityInfo(
                             id,
                             labelName.getText().toString(),
@@ -188,12 +196,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
 
                     Log.i("actInfo",newDbData.activityItem.activityInfo.toString());
-                    Log.i("ti0",ti0.toString());
 
                     for(TaskItem ti : newDbData.activityItem.subtasks)
                     {
-                        Log.i("LISTADAPTER sub",ti.toString());
+                        Log.i("LISTADAPTERsub",ti.toString());
                     }
+
 
                     dbViewModel.selectItem(newDbData);
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyActivity));
@@ -246,6 +254,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         private void bind(ActivityItem activityItem) {
 
             Log.i("bind","is called");
+            Log.i("ACTIVITYITEM inside",activityItem.subtasks[0].toString());
+
             boolean expanded = activityItem.isExpanded();
             int subtasksNum = activityItem.subtasks.length;
 
@@ -254,9 +264,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             labelName.setText(activityItem.getName());
             labelTime.setText(activityItem.getTime());
 
-
-
-            Log.i("ti0 from bind",ti0.toString());
             //Log.i("subtasks from bind",subtaskItems[0].toString());
 
             for(int i = 0; i < subtasksNum ; i++)
@@ -265,18 +272,18 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                 if(activityItem.subtasks[i].getID() != -1) {
                     TaskItem ti = new TaskItem(dbManager.searchTask(activityItem.subtasks[i].getID()));
 
-                    if(this.subtaskItems[i] == null)
-                    {
-                        Log.i("subtaskItems","this is null");
-                    }
-                    ti0 = ti;
+                    this.subtaskItems[i]= new TaskItem(ti);
 
-
-                    Log.i("ti test",ti.toString());
 
                     subtasks[i].setText(ti.getName() + "    " + ti.getDurationInt());
                     subtasks[i].setVisibility(View.VISIBLE);
                 }
+                else
+                {
+                    this.subtaskItems[i]=new TaskItem();
+                }
+
+                Log.i("this subtask is",this.subtaskItems[i].toString());
             }
 
             //Log.i("print test",subtasksItems[subtasksItems.length-1].toString());

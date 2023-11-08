@@ -96,6 +96,15 @@ public class SettingsLowerFragmentActivities extends Fragment
 
         activityList = new ArrayList<>();
         activityList = getActivityData(dbManager.selectAllActivities());
+        //Log.i("ACTIVITYLIST",Integer.toString(activityList.size()));
+
+        /*for(ActivityItem ai : activityList)
+        {
+            for(TaskItem ti : ai.getSubtasks()) {
+                Log.i(ai.toString(),ti.toString());
+            }
+        }*/
+
         listAdapter = new ListAdapter(this,activityList);
         //Log.i("LOWFRAGACT adaptState",listAdapter.toString());
 
@@ -110,26 +119,26 @@ public class SettingsLowerFragmentActivities extends Fragment
     {
         List<ActivityItem> list = new ArrayList<>();
 
-
+        c.moveToFirst();
         //Log.i("HELP"," "+c.getColumnCount());
 
-        while(c.moveToNext())
+        if(c.getCount()>0)
         {
+            do {
 
-            int[] subtasksA = new int[DbContract.Activities.DIM_MAX];
+                int[] subtasksA = new int[DbContract.Activities.DIM_MAX];
 
-            for(int i = 0; i< DbContract.Activities.DIM_MAX; i++)
-            {
-                subtasksA[i] = c.getInt(3+i);
-                Log.i("currentsubtask",Integer.toString(subtasksA[i]));
-            }
+                for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
+                    subtasksA[i] = c.getInt(3 + i);
+                    Log.i("currentsubtask", Integer.toString(subtasksA[i]));
+                }
 
 
-            ActivityItem activityItem = new ActivityItem(c.getString(0),c.getString(1), c.getString(2),subtasksA);
-            //Log.i("activity item",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
-            list.add(activityItem);
+                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), subtasksA);
+                //Log.i("activity item",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
+                list.add(activityItem);
+            } while (c.moveToNext());
         }
-
 
         return list;
     }

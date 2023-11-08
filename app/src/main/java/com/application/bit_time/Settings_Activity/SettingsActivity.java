@@ -111,18 +111,23 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
                     Log.i("FROM SETTINGS ACTIVITY","would modify activity");
-                    ActivityItem currentActivity = currentData.activityItem;
+                    ActivityItem currentActivity = new ActivityItem(currentData.activityItem);
                     Log.i("currentActivity",currentActivity.toString());
-                    TaskItem[] taskItems = new TaskItem[DbContract.Activities.DIM_MAX];
-                    int[] subtasksIds= new int[taskItems.length];
 
-                    int i=0;
-                    for(TaskItem ti: currentActivity.getSubtasks())
-                    {
+                    //for(TaskItem ti : currentActivity.getSubtasks())
+                    //{
+                    //    Log.i("currAct",ti.getIdStr());
+                    //}
+                    //TaskItem[] taskItems = new TaskItem[DbContract.Activities.DIM_MAX];
+                    //int[] subtasksIds= new int[taskItems.length];
+
+                    //int i=0;
+                    //for(TaskItem ti: currentActivity.getSubtasks())
+                    /*{
                         subtasksIds[i]=ti.getID();
                         i++;
                     }
-                    dbManager.modifyActivity(currentData.activityItem.getInfo(),subtasksIds);
+                    dbManager.modifyActivity(currentData.activityItem.getInfo(),subtasksIds);*/
                 }
             }
 
