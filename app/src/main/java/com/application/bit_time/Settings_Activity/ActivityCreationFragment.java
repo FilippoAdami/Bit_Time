@@ -261,11 +261,12 @@ public class ActivityCreationFragment extends Fragment {
                     Log.i("ACT_CRE_FRA",Integer.toString(duration));
 
                     newData.action= DbViewModelData.ACTION_TYPE.MODIFY;
+                    newData.activityItem=new ActivityItem(Integer.toString(idToBeModified),nameLabel.getText().toString(),Integer.toString(duration),subtasksId);
 
-                    dbViewModel.selectItem(new DbViewModelData(
+                    /*dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.MODIFY,
                             DbViewModelData.ITEM_TYPE.ACTIVITY,
-                            new ActivityItem(Integer.toString(idToBeModified),activityName,Integer.toString(duration),subtasksId)));
+                            new ActivityItem(Integer.toString(idToBeModified),activityName,Integer.toString(duration),subtasksId)));*/
                     //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
                     //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                 }

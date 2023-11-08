@@ -63,6 +63,7 @@ public class ActivityItem {
     {
         this(id,name,duration);
 
+        //this.subtasks= new TaskItem[DbContract.Activities.DIM_MAX];
         for(int i = 0;i< DbContract.Activities.DIM_MAX ;i++)
         {
             subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0);
