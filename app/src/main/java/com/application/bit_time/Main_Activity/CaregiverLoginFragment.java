@@ -43,11 +43,10 @@ public class CaregiverLoginFragment extends Fragment {
             public void onClick(View v) {
                 String enteredPIN = PIN_txt_input.getText().toString();
                 if (enteredPIN.equals(dbManager.getUserPin())) {
-                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container, new SettingsHomeFragment());
-                    fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
-                    fragmentTransaction.commit();
+                    // Create an Intent to start the SettingsActivity
+                    Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                    // Start the new activity
+                    startActivity(intent);
                 } else {
                     // Show error message
                     Toast.makeText(getActivity(), "Incorrect PIN. Please try again."+dbManager.getUserPin()+"", Toast.LENGTH_SHORT).show();

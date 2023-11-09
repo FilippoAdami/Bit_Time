@@ -20,11 +20,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.application.bit_time.Main_Activity.GameFragment;
 import com.application.bit_time.Main_Activity.HomeFragment;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
-import com.application.bit_time.utils.EmptyFragment;
 
 public class AccountFragment extends Fragment {
     private EditText emailEditText;
@@ -40,15 +38,13 @@ public class AccountFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_account_and_stats_layout, container, false);
-        Fragment bottomFragment = new Fragment();
-        //check if user is logged in
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        //check if user is logged in
         sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         if(!sharedPreferences.getBoolean("loggedIn", false)){
             // If the user is not logged in, go to the LogInFragment
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, new LogInFragment())
-                    .replace(R.id.bottomFragmentContainer, bottomFragment);
+            fragmentTransaction.replace(R.id.middle_fragment_container_view, new LogInFragment());
             fragmentTransaction.commit();
         }
         // Initialize UI elements
@@ -111,8 +107,7 @@ public class AccountFragment extends Fragment {
 
                 // Go to the home fragment
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, new HomeFragment())
-                        .replace(R.id.bottomFragmentContainer, bottomFragment);
+                fragmentTransaction.replace(R.id.middle_fragment_container_view, new HomeFragment());
                 fragmentTransaction.commit();
             }
         });

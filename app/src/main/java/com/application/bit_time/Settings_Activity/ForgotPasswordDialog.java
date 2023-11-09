@@ -32,8 +32,7 @@ public class ForgotPasswordDialog extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 //navigate to TemporaryCodeFragment
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, new TemporaryCodeFragment())
-                        .replace(R.id.bottomFragmentContainer, new Fragment());
+                fragmentTransaction.replace(R.id.middle_fragment_container_view, new TemporaryCodeFragment());
                 fragmentTransaction.commit();
                 //show a toast message
                 Toast.makeText(getActivity(), "controlla la tua email", Toast.LENGTH_SHORT).show();

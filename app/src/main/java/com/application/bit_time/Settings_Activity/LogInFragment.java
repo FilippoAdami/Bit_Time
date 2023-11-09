@@ -40,7 +40,6 @@ public class LogInFragment extends Fragment {
     private DbManager.DbHelper dbHelper;
     private boolean isLoginMode = true;
     private SharedPreferences sharedPreferences;
-
     // Define the ActivityResultLauncher for Google Sign-In
     /*
     private final ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(
@@ -112,7 +111,7 @@ public class LogInFragment extends Fragment {
                         // redirect to home fragment
                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.fragment_container, new AccountFragment());
+                        fragmentTransaction.replace(R.id.middle_fragment_container_view, new AccountFragment());
                         fragmentTransaction.commit();
                     } else {
                         // Credentials are not valid, show an error message
@@ -168,8 +167,8 @@ public class LogInFragment extends Fragment {
             }
         });
 
-
         return view;
+
     }
     /*private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -187,6 +186,7 @@ public class LogInFragment extends Fragment {
         }
     }
      */
+
     private void updateUIForMode() {
         if (isLoginMode) {
             // Update UI elements for login mode

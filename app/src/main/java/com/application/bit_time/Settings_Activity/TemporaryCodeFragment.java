@@ -91,9 +91,7 @@ public class TemporaryCodeFragment extends Fragment {
                 if (currentInput.equals(code)) {
                     // Navigate to the ChangePasswordFragment
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container, new ChangePasswordFragment())
-                            .replace(R.id.bottomFragmentContainer, new Fragment());;
-                    fragmentTransaction.commit();
+                    fragmentTransaction.replace(R.id.middle_fragment_container_view, new ChangePasswordFragment());
                 } else {
                     // Show an error message
                     Toast.makeText(getActivity(), "Codice errato", Toast.LENGTH_SHORT).show();
