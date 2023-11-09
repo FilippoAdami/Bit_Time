@@ -146,8 +146,12 @@ public class DbManager {
                 DbContract.Tasks._ID + "=" + id;
 
         Cursor c = db.rawQuery(searchQuery,null);
-        c.moveToFirst();
-        return new TaskItem(c.getInt(0),c.getString(1),c.getInt(2));
+
+        if(c.getCount()>0) {
+            c.moveToFirst();
+            return new TaskItem(c.getInt(0), c.getString(1), c.getInt(2));
+        }
+        else return new TaskItem();
 
     }
 

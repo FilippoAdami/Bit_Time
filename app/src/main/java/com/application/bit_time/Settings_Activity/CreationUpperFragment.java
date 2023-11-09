@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
+import com.application.bit_time.utils.ErrorDialog;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.TaskAdapter;
 import com.application.bit_time.utils.TaskItem;
@@ -27,6 +28,11 @@ public class CreationUpperFragment extends Fragment {
     SubtasksViewModel subtasksViewModel;
     CustomViewModel viewModel;
     TaskAdapter taskAdapter;
+
+    EditText editName;
+    EditText edtTxtHrs;
+    EditText edtTxtMin;
+    EditText edtTxtSec;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,11 +52,15 @@ public class CreationUpperFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
 
-        EditText editName = view.findViewById(R.id.editTaskNameLabel);
-
+        /*EditText editName = view.findViewById(R.id.editTaskNameLabel);
         EditText edtTxtHrs = view.findViewById(R.id.editTextHours);
         EditText edtTxtMin = view.findViewById(R.id.editTextMinutes);
-        EditText edtTxtSec = view.findViewById(R.id.editTextSeconds);
+        EditText edtTxtSec = view.findViewById(R.id.editTextSeconds);*/
+        editName = view.findViewById(R.id.editTaskNameLabel);
+        edtTxtHrs = view.findViewById(R.id.editTextHours);
+        edtTxtMin = view.findViewById(R.id.editTextMinutes);
+        edtTxtSec = view.findViewById(R.id.editTextSeconds);
+
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
@@ -59,28 +69,34 @@ public class CreationUpperFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                int hours = Integer.parseInt(edtTxtHrs.getText().toString())*60;
-                int minutes = Integer.parseInt(edtTxtMin.getText().toString());
+                if(compulsoryFieldsAreFilled()) {
+                    int hours = Integer.parseInt(edtTxtHrs.getText().toString()) * 60;
+                    int minutes = Integer.parseInt(edtTxtMin.getText().toString());
 
-                int totalTime = hours+minutes;
-
-
-                TaskItem newTask = new TaskItem(-2,editName.getText().toString(),totalTime);
-
-                Log.i("INFOZ",newTask.getName()+" "+newTask.getDuration());
-
-                DbViewModelData data = dbViewModel.getSelectedItem().getValue();
-
-                //data.taskToAdd = newTask;
-
-                data.taskItem = newTask;
-                data.action = DbViewModelData.ACTION_TYPE.INSERT;
-                data.selector = DbViewModelData.ITEM_TYPE.TASK;
+                    int totalTime = hours + minutes;
 
 
-                dbViewModel.selectItem(data);
+                    TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime);
 
-                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
+                    Log.i("INFOZ", newTask.getName() + " " + newTask.getDuration());
+
+                    DbViewModelData data = dbViewModel.getSelectedItem().getValue();
+
+                    //data.taskToAdd = newTask;
+
+                    data.taskItem = newTask;
+                    data.action = DbViewModelData.ACTION_TYPE.INSERT;
+                    data.selector = DbViewModelData.ITEM_TYPE.TASK;
+
+
+                    dbViewModel.selectItem(data);
+
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
+                }
+                else
+                {
+                    showError();
+                }
 
 
 
@@ -89,4 +105,21 @@ public class CreationUpperFragment extends Fragment {
 
         return view;
     }
+
+    private boolean compulsoryFieldsAreFilled()
+    {
+        if(editName.length()>0)
+            return true;
+        return false;
+    }
+
+
+    private void showError()
+    {
+        ErrorDialog errorDialog = new ErrorDialog();
+        errorDialog.show(getActivity().getSupportFragmentManager(),null);
+    }
+
+
+
 }
