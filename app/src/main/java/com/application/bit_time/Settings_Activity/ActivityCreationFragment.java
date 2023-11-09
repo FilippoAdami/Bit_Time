@@ -255,13 +255,22 @@ public class ActivityCreationFragment extends Fragment {
                         Log.i("changessub",Integer.toString(subtasksId[i]));
                     }
 
+                    String currentName;
+
+                    if(nameLabel.length()>0) {
+                        currentName = nameLabel.getText().toString();
+                    }
+                    else
+                    {
+                        currentName = activityName;
+                    }
 
                     Log.i("ACT_CRE_FRA",Integer.toString(idToBeModified));
                     Log.i("ACT_CRE_FRA",activityName);
                     Log.i("ACT_CRE_FRA",Integer.toString(duration));
 
                     newData.action= DbViewModelData.ACTION_TYPE.MODIFY;
-                    newData.activityItem=new ActivityItem(Integer.toString(idToBeModified),nameLabel.getText().toString(),Integer.toString(duration),subtasksId);
+                    newData.activityItem=new ActivityItem(Integer.toString(idToBeModified),currentName,Integer.toString(duration),subtasksId);
 
                     /*dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.MODIFY,

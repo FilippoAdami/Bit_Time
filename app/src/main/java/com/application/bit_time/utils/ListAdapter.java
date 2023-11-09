@@ -233,7 +233,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
                     List<ActivityItem> newList = new ArrayList<>(list);
                     newList.remove(item);
-                    Log.i("newlist",newList.get(0).toString());
+                    if(newList.size()>0)
+                        Log.i("newlist",newList.get(0).toString());
                     updateActivityListItems(newList);
 
 
