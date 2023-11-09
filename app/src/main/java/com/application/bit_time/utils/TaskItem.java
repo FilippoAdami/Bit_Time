@@ -22,7 +22,7 @@ public class TaskItem {
         this.Name = "emptyTask";
         this.Duration = 0;
 
-        Log.i("TASKITEMCONST",this.toString());
+        //Log.i("TASKITEMCONST",this.toString());
     }
 
     public TaskItem(int id,String name, int duration)

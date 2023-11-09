@@ -25,6 +25,8 @@ import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder>
@@ -40,6 +42,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
     public ListAdapter(SettingsLowerFragmentActivities settingsLowerFragmentActivities, List<ActivityItem> list)
     {
+
         this.settingsLowerFragmentActivities = settingsLowerFragmentActivities;
         this.list = list;
         //Log.i("SUBTASKS[0] content",list.get(0).subtasks[0].toString());
@@ -125,9 +128,22 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         Button deleteButton;
         LinearLayout subitem;
         TextView[] subtasks;
+
+        TaskItem[] subtaskItems;
+
         public ListItemHolder (View view)
         {
             super(view);
+            this.subtaskItems = new TaskItem[DbContract.Activities.DIM_MAX];
+            //this.subtaskItems[0] = new TaskItem(4,"provainseritam",15);
+
+            for(int i = 0;i<DbContract.Activities.DIM_MAX ; i++)
+            {
+                this.subtaskItems[i] = new TaskItem();
+                Log.i("initSubtaskItems",this.subtaskItems[i].toString());
+            }
+
+
             labelName = view.findViewById(R.id.labelName);
             labelTime = view.findViewById(R.id.labelTime);
             modifyButton = view.findViewById(R.id.modifyButton);
@@ -152,19 +168,43 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
 
 
-
-
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
 
-                    DbViewModelData newDbData = new DbViewModelData(dbViewModel.getSelectedItem().getValue());
-                    newDbData.activityItem.activityInfo = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
+                    //Log.i("HERE","look at me");
+
+                    DbViewModelData newDbData = new DbViewModelData(
+                            DbViewModelData.ACTION_TYPE.MODIFY,
+                            DbViewModelData.ITEM_TYPE.ACTIVITY,
+                            new ActivityItem());
+
+                    newDbData.activityItem.activityInfo = new ActivityInfo(
+                            id,
+                            labelName.getText().toString(),
+                            labelTime.getText().toString());
+
+                    newDbData.activityItem.subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+                    int i =0;
+                    for(TaskItem ti : subtaskItems)
+                    {
+                        newDbData.activityItem.subtasks[i]= new TaskItem(ti);
+                        i++;
+                    }
+
+
+                    Log.i("actInfo",newDbData.activityItem.activityInfo.toString());
+
+                    for(TaskItem ti : newDbData.activityItem.subtasks)
+                    {
+                        Log.i("LISTADAPTERsub",ti.toString());
+                    }
+
+
                     dbViewModel.selectItem(newDbData);
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyActivity));
-
-
 
                 }
             });
@@ -178,11 +218,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     ActivityItem item = dbManager.searchActivityItem(itemToDelete);
 
 
-                    DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
+                    DbViewModelData newData = new DbViewModelData(DbViewModelData.ACTION_TYPE.DELETE, DbViewModelData.ITEM_TYPE.ACTIVITY,new ActivityItem());
 
 
                     Log.i("TEST",""+labelName.getText().toString()+" "+labelTime.getText().toString());
-                    Log.i("TEST","immediatly after "+ newData.activityItem.getName());
+                    Log.i("TEST","immediatly after "+ item.getName());
 
 
                     newData.activityItem.activityInfo = itemToDelete;
@@ -213,6 +253,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
         private void bind(ActivityItem activityItem) {
 
+            Log.i("bind","is called");
+            Log.i("ACTIVITYITEM inside",activityItem.subtasks[0].toString());
+
             boolean expanded = activityItem.isExpanded();
             int subtasksNum = activityItem.subtasks.length;
 
@@ -221,24 +264,29 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             labelName.setText(activityItem.getName());
             labelTime.setText(activityItem.getTime());
 
+            //Log.i("subtasks from bind",subtaskItems[0].toString());
+
             for(int i = 0; i < subtasksNum ; i++)
             {
+
                 if(activityItem.subtasks[i].getID() != -1) {
-                    TaskItem ti = dbManager.searchTask(activityItem.subtasks[i].getID());
-                    Log.i("ti test",ti.toString());
+                    TaskItem ti = new TaskItem(dbManager.searchTask(activityItem.subtasks[i].getID()));
+
+                    this.subtaskItems[i]= new TaskItem(ti);
+
+
                     subtasks[i].setText(ti.getName() + "    " + ti.getDurationInt());
                     subtasks[i].setVisibility(View.VISIBLE);
                 }
+                else
+                {
+                    this.subtaskItems[i]=new TaskItem();
+                }
+
+                Log.i("this subtask is",this.subtaskItems[i].toString());
             }
 
-
-
-
-
+            //Log.i("print test",subtasksItems[subtasksItems.length-1].toString());
         }
-
-
-
-
     }
 }

@@ -14,7 +14,9 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 
+import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
+import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.SubtaskAdapter;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.SubtasksViewModelData;
@@ -42,6 +44,8 @@ public class TaskSelectionDialog extends DialogFragment {
     SubtasksViewModel subtasksViewModel;
     SubtaskAdapter subtaskAdapter;
 
+    DbViewModel dbViewModel ;
+
 
 
     @Override
@@ -49,6 +53,7 @@ public class TaskSelectionDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
+        dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
         dbManager = new DbManager(getContext());
         tasksCursor= dbManager.selectAllTasks();
         selectedTasks = new ArrayList<>();
@@ -140,26 +145,19 @@ public class TaskSelectionDialog extends DialogFragment {
 
 
             //Log.i("activityId",Integer.toString(subtasksViewModel.getSelectedItem().getValue().getActivityId()));
-            Cursor activityCursor = dbManager.searchActivityById(subtasksViewModel.getSelectedItem().getValue().getActivityId());
+            //Cursor activityCursor = dbManager.searchActivityById(subtasksViewModel.getSelectedItem().getValue().getActivityId());
 
+            ActivityItem activity = dbViewModel.getSelectedItem().getValue().activityItem;
+            Log.i("activity in vm",activity.toString());
+            //fillAlreadySelectedTasks(activityCursor,stringList,subtasks,checkedItemsList);
+            fillAlreadySelectedTasks(activity,stringList,subtasks,checkedItemsList);
 
+            Log.i("filler check out",Integer.toString(subtasks.size()));
 
+            unselectedTasksFiller(stringList,subtasks,checkedItemsList);
 
-            fillAlreadySelectedTasks(activityCursor,stringList,subtasks,checkedItemsList);
+            Log.i("filler check out",Integer.toString(subtasks.size()));
 
-            tasksCursor.moveToFirst();
-            while(tasksCursor.moveToNext())
-            {
-                String currentElemName = tasksCursor.getString(1);
-                if(!stringList.contains(currentElemName))
-                {
-                    stringList.add(currentElemName);
-                    subtasks.add(new TaskItem(tasksCursor.getInt(0),tasksCursor.getString(1),tasksCursor.getInt(2)));
-                    Log.i("fromSetce",currentElemName);
-                    checkedItemsList.add(Boolean.FALSE);
-                }
-
-            }
 
            String[] subtasksStrings= new String[stringList.size()];
            boolean[] checkedItems = new boolean[stringList.size()];
@@ -182,12 +180,7 @@ public class TaskSelectionDialog extends DialogFragment {
            }
 
             builder.setTitle("Modify the tasks of the activity")
-                    .setMultiChoiceItems(subtasksStrings, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i, boolean b) {
 
-                        }
-                    })
                     .setMultiChoiceItems(subtasksStrings, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
@@ -198,6 +191,7 @@ public class TaskSelectionDialog extends DialogFragment {
                                     Toast.makeText(getContext(), "added " + subtasksArr[i].getName(), Toast.LENGTH_SHORT).show();
                                 } else
                                     Toast.makeText(getContext(), "DIM MAX reached", Toast.LENGTH_SHORT).show();
+
 
 
                             } else {
@@ -215,16 +209,28 @@ public class TaskSelectionDialog extends DialogFragment {
 
         builder.setPositiveButton("confirm", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(DialogInterface dialogInterface, int k) {
                 Log.i("SELECTED TASKS", "pressed positive");
 
-                TaskItem[] selectedTasksA = new TaskItem[selectedTasks.size()];
-                TaskItem[] oldSelectedTasksA = new TaskItem[oldSelectedTasks.size()];
+                TaskItem[] selectedTasksA = new TaskItem[DbContract.Activities.DIM_MAX];
 
-                selectedTasksA = selectedTasks.toArray(selectedTasksA);
+                for(int i =0;i<DbContract.Activities.DIM_MAX;i++)
+                {
+                    if(i< selectedTasks.size())
+                        selectedTasksA[i]= new TaskItem(selectedTasks.get(i));
+                    else
+                        selectedTasksA[i]= new TaskItem();
+
+                    Log.i("selectedTasksA",selectedTasksA[i].toString());
+                }
+
+                //selectedTasksA = selectedTasks.toArray(selectedTasksA);
                 //oldSelectedTasksA = oldSelectedTasks.toArray(oldSelectedTasks);
 
-                subtasksViewModel.selectItem(new SubtasksViewModelData(selectedTasksA, subtaskAdapter));
+
+                SubtasksViewModelData newSTVMData = new SubtasksViewModelData(selectedTasksA, subtaskAdapter);
+                newSTVMData.hasBeenModified();
+                subtasksViewModel.selectItem(newSTVMData);
 
                 for (TaskItem ti : selectedTasksA)
                     Log.i("SELTASK_A", ti.toString());
@@ -272,7 +278,41 @@ public class TaskSelectionDialog extends DialogFragment {
         }
     }
 
-}
+    public void fillAlreadySelectedTasks(ActivityItem activityItem,List<String> stringList, List<TaskItem> subtasks,List<Boolean> checkedItemsList)
+    {
+
+
+        for(TaskItem ti : activityItem.getSubtasks())
+        {
+            if(ti.getID()>0) {
+                Log.i("filler", ti.toString());
+                stringList.add(ti.getName());
+                checkedItemsList.add(Boolean.TRUE);
+                subtasks.add(ti);
+                selectedTasks.add(new TaskItem(ti));
+            }
+        }
+
+    }
+
+    public void unselectedTasksFiller(List<String> stringList,List<TaskItem> subtasks, List<Boolean> checkedItemsList)
+    {
+        tasksCursor.moveToFirst();
+        do
+        {
+            String currentElemName = tasksCursor.getString(1);
+            if(!stringList.contains(currentElemName))
+            {
+                stringList.add(currentElemName);
+                subtasks.add(new TaskItem(tasksCursor.getInt(0),tasksCursor.getString(1),tasksCursor.getInt(2)));
+                Log.i("fromSetce",currentElemName);
+                checkedItemsList.add(Boolean.FALSE);
+            }
+
+        }while(tasksCursor.moveToNext());
+        }
+    }
+
 
 
 

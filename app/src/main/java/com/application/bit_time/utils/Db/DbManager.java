@@ -235,9 +235,40 @@ public class DbManager {
                         + DbContract.Tasks.COLUMN_NAME_TASK_DURATION + "=" + modifiedItem.getDuration()
                         + " where " + DbContract.Tasks._ID + "=" + modifiedItem.getIdStr();
 
-        Log.i("SQLMOD",updateQuery.toString());
+        Log.i("SQLMOD",updateQuery);
         db.execSQL(updateQuery);
 
+        String scanQuery = scanQueryBuilder(modifiedItem);
+
+        Log.i("scan query",scanQuery);
+
+        Cursor scanCursor = db.rawQuery(scanQuery,null);
+        scanCursor.moveToFirst();
+
+        if(scanCursor.getCount()>0) {
+            do {
+                int currActivity = scanCursor.getInt(0);
+                int newDuration = 0;
+                for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
+                    int currentElem = scanCursor.getInt(3 + i);
+                    Log.i("scanCursor currElem", Integer.toString(currentElem));
+                    if (currentElem > 0) {
+                        TaskItem currTask = this.searchTask(currentElem);
+                        newDuration += currTask.getDurationInt();
+                    }
+                }
+                Log.i("new duration", Integer.toString(newDuration));
+
+                updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
+                        + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration)
+                        + " where " + DbContract.Activities._ID + "=" + Integer.toString(currActivity);
+                ;
+
+                Log.i("updateQueryAct", updateQuery);
+
+                db.execSQL(updateQuery);
+            } while (scanCursor.moveToNext());
+        }
     }
 
     public void deleteTask(TaskItem task)
@@ -248,6 +279,57 @@ public class DbManager {
 
         //Log.i("DB delTask",deleteQuery.toString());
         db.execSQL(deleteQuery);
+
+        String scanQuery = scanQueryBuilder(task);
+
+        Cursor scanCursor = db.rawQuery(scanQuery,null);
+
+        scanCursor.moveToFirst();
+
+        do{
+            int[] currSubtasks = new int[DbContract.Activities.DIM_MAX];
+            int pos =0 ;
+            int newDuration = 0;
+
+            for(int i = 0;i< DbContract.Activities.DIM_MAX;i++)
+            {
+                int currElem = scanCursor.getInt(3+i);
+                if(currElem != task.getID())
+                {
+                    currSubtasks[pos]=currElem;
+                    pos++;
+
+                    if(currElem>0)
+                    {
+                        TaskItem currItem = searchTask(currElem);
+                        newDuration += currItem.getDurationInt();
+                    }
+                }
+            }
+
+            currSubtasks[DbContract.Activities.DIM_MAX-1]=-1;
+
+
+
+            String updateQuery = "update "+ DbContract.Activities.TABLE_NAME + " set "
+                    + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration) +",";
+
+            for(int i = 1; i<=DbContract.Activities.DIM_MAX ; i++) {
+                String partial = " "+DbContract.Activities.TABLE_NAME+".task"+Integer.toString(i)+"="+Integer.toString(currSubtasks[i-1]);
+                if(i<DbContract.Activities.DIM_MAX)
+                    partial = partial.concat(",");
+                //Log.i("partial",partial);
+                updateQuery = updateQuery.concat(partial);
+
+            }
+
+            updateQuery = updateQuery.concat(" where "+DbContract.Activities._ID+"="+Integer.toString(scanCursor.getInt(0)));
+
+            Log.i("updateQuery2",updateQuery);
+            //db.execSQL(updateQuery);
+        }while(scanCursor.moveToNext());
+
+
 
     }
 
@@ -627,6 +709,27 @@ public class DbManager {
     public void closeDb()
     {
         db.close();
+
+    }
+
+    private String scanQueryBuilder(TaskItem itemToLookFor)
+    {
+        String scanQuery =
+                "select * from "+DbContract.Activities.TABLE_NAME
+                        + " where ";
+
+        for(int i =1 ;i<=DbContract.Activities.DIM_MAX;i++)
+        {
+            String condition = DbContract.Activities.TABLE_NAME +".task"+Integer.toString(i) + "="+ itemToLookFor.getIdStr();
+            //Log.i("condition",condition);
+            if(i<DbContract.Activities.DIM_MAX)
+            {
+                condition=condition.concat(" OR ");
+            }
+            scanQuery = scanQuery.concat(condition);
+        }
+
+        return scanQuery;
 
     }
 

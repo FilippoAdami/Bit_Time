@@ -7,6 +7,9 @@ import androidx.annotation.Nullable;
 
 import com.application.bit_time.utils.Db.DbContract;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 
 public class ActivityItem {
 
@@ -29,6 +32,20 @@ public class ActivityItem {
         this.activityInfo = new ActivityInfo(original.activityInfo);
 
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+        if(original.subtasks[0]!=null)
+        {
+            Iterator<TaskItem> tiIterator = Arrays.stream(original.getSubtasks()).iterator();
+            for(int i = 0;i<DbContract.Activities.DIM_MAX;i++) {
+                this.subtasks[i]= new TaskItem(tiIterator.next());
+            }
+
+        }else
+        {
+            for(int i = 0;i<DbContract.Activities.DIM_MAX;i++) {
+                this.subtasks[i]= new TaskItem();
+            }
+        }
         expanded = false;
     }
 
@@ -46,9 +63,11 @@ public class ActivityItem {
     {
         this(id,name,duration);
 
+        //this.subtasks= new TaskItem[DbContract.Activities.DIM_MAX];
         for(int i = 0;i< DbContract.Activities.DIM_MAX ;i++)
         {
             subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0);
+            Log.i("creatingAI",subtasks[i].toString());
         }
     }
 

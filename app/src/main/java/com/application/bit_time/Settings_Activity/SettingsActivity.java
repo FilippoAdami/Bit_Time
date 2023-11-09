@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -39,7 +41,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         subtasksViewModel.getSelectedItem().observe(this,item ->
         {
-
             Log.i("SETT ACT ",item.toString());
         });
 
@@ -53,7 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager = getSupportFragmentManager();
 
-        Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
+        //Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
 
         Fragment frag = fManager.findFragmentById(R.id.fragmentsContainer);
 
@@ -69,6 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             Log.i("FROM SETTINGS ACTIVITY"," new is "+item.toString());
 
+
             DbViewModelData currentData = new DbViewModelData(item);
 
             if(currentData.action == DbViewModelData.ACTION_TYPE.INSERT)
@@ -79,6 +81,12 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
+
+                    Log.i("FROM SETTINGS ACTIVITY",item.activityItem.toString());
+                    for(TaskItem ti : item.activityItem.getSubtasks())
+                    {
+                        Log.i("FROM SETTING ACT",ti.toString());
+                    }
                     dbManager.insertActivityRecord(currentData.activityItem);
                 }
             }
@@ -102,7 +110,22 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
                     Log.i("FROM SETTINGS ACTIVITY","would modify activity");
-                    //dbManager.modifyActivity(currentData.activityItem.getInfo(),currentData.activityItem.getSubtasks());
+                    ActivityItem currentActivity = new ActivityItem(currentData.activityItem);
+                    Log.i("currentActivity",currentActivity.toString());
+
+                    for(TaskItem ti : currentActivity.getSubtasks())
+                    {
+                        Log.i("currAct",ti.getIdStr());
+                    }
+                    int[] subtasksIds= new int[DbContract.Activities.DIM_MAX];
+
+                    int i=0;
+                    for(TaskItem ti: currentActivity.getSubtasks())
+                    {
+                        subtasksIds[i]=ti.getID();
+                        i++;
+                    }
+                    dbManager.modifyActivity(currentData.activityItem.getInfo(),subtasksIds);
                 }
             }
 
