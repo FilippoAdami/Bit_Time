@@ -7,6 +7,8 @@ import com.application.bit_time.utils.Db.DbContract;
 public class SubtasksViewModelData {
 
 
+    TaskItem[] allTaskItems;
+    boolean[] mask;
     public TaskItem[] subtasks;
     public SubtaskAdapter subtaskAdapter;
     private boolean alreadyModified;
@@ -15,6 +17,8 @@ public class SubtasksViewModelData {
 
     public SubtasksViewModelData()
     {
+        mask = null;
+        allTaskItems=null;
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
 
       for(int i = 0; i< DbContract.Activities.DIM_MAX ; i++)
@@ -70,6 +74,37 @@ public class SubtasksViewModelData {
         {
             this.subtasks[pos]=new TaskItem(ti);
             pos++;
+        }
+    }
+
+
+    public void setMask(boolean[] maskToSave)
+    {
+        this.mask = new boolean[maskToSave.length];
+
+        for(int i = 0; i< mask.length ;i++)
+        {
+            this.mask[i]= maskToSave[i];
+        }
+    }
+
+    public boolean[] getMask()
+    {
+        return this.mask;
+    }
+
+    public TaskItem[] getAllTaskItems()
+    {
+        return this.allTaskItems;
+    }
+
+    public void setAllTaskItems(TaskItem[] allItems)
+    {
+        this.allTaskItems= new TaskItem[allItems.length];
+
+        for(int i=0;i< allItems.length; i++)
+        {
+         this.allTaskItems[i]= new TaskItem(allItems[i]);
         }
     }
 

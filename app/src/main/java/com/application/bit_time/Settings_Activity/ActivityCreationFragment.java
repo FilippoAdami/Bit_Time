@@ -74,7 +74,7 @@ public class ActivityCreationFragment extends Fragment {
 
         if(currentState.equals("NewActivity"))
         {
-
+            this.subtasksViewModel.selectItem(new SubtasksViewModelData());
         }else if(currentState.equals("ModifyActivity"))
         {
             ActivityItem activityToModifyInfo = dbViewModel.getSelectedItem().getValue().activityItem;
@@ -210,9 +210,9 @@ public class ActivityCreationFragment extends Fragment {
             public void onClick(View view) {
 
                 //Toast.makeText(getContext(),"pressed and all ok", Toast.LENGTH_SHORT).show();
-                SubtasksViewModelData SVMData = subtasksViewModel.getSelectedItem().getValue();
-                SVMData.setSubtasks(subtasksToAdd);
-                subtasksViewModel.selectItem(SVMData);
+                //SubtasksViewModelData SVMData = subtasksViewModel.getSelectedItem().getValue();
+                //SVMData.setSubtasks(subtasksToAdd);
+                //subtasksViewModel.selectItem(SVMData);
                 TaskSelectionDialog taskSelectionDialog = new TaskSelectionDialog();
                 taskSelectionDialog.show(getActivity().getSupportFragmentManager(),null);
             }

@@ -337,17 +337,21 @@ public class DbManager {
 
     public List<TaskItem> retrieveSubtasks(Cursor activityCursor)
     {
-        activityCursor.moveToFirst();
         List<TaskItem> subtasks = new ArrayList<>();
 
-        for(int i =0 ; i< DbContract.Activities.DIM_MAX; i++)
+        if(activityCursor.getCount()>0)
         {
-            int subtaskId = activityCursor.getInt(3+i);
-            Log.i("testdbm",Integer.toString(subtaskId));
-            if(subtaskId != -1) {
-                TaskItem subtask = searchTask(subtaskId);
-                Log.i("retrieved subtask", subtask.getName());
-                subtasks.add(subtask);
+            activityCursor.moveToFirst();
+
+
+            for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
+                int subtaskId = activityCursor.getInt(3 + i);
+                Log.i("testdbm", Integer.toString(subtaskId));
+                if (subtaskId != -1) {
+                    TaskItem subtask = searchTask(subtaskId);
+                    Log.i("retrieved subtask", subtask.getName());
+                    subtasks.add(subtask);
+                }
             }
         }
 

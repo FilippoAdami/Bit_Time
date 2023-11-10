@@ -36,9 +36,10 @@ import java.util.Set;
 
 public class TaskSelectionDialog extends DialogFragment {
 
+    TaskItem[] allTaskItems;
     CustomViewModel viewModel;
     DbManager dbManager;
-    Cursor tasksCursor;
+    Cursor allTasksCursor;
     ArrayList<TaskItem> selectedTasks;
     ArrayList<TaskItem> oldSelectedTasks;
     SubtasksViewModel subtasksViewModel;
@@ -46,22 +47,25 @@ public class TaskSelectionDialog extends DialogFragment {
 
     DbViewModel dbViewModel ;
 
-
-
+    boolean[] checkedItems;
+    String[] allTasksNames;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
-        dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
+
         dbManager = new DbManager(getContext());
-        tasksCursor= dbManager.selectAllTasks();
+        allTasksCursor= dbManager.selectAllTasks();
+
+        dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
+
         selectedTasks = new ArrayList<>();
         subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
         subtaskAdapter = subtasksViewModel.getSelectedItem().getValue().subtaskAdapter;
         oldSelectedTasks = new ArrayList<>(Arrays.asList(subtasksViewModel.getSelectedItem().getValue().subtasks));
 
-        Log.i("taskCursor",Integer.toString(tasksCursor.getCount()));
+        Log.i("taskCursor",Integer.toString(allTasksCursor.getCount()));
         Log.i("subtAdapt Dialog is",""+subtaskAdapter.toString());
 
         Log.i("testfromdialog",subtasksViewModel.toString());
@@ -73,7 +77,8 @@ public class TaskSelectionDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+    {
 
         Log.i("from dialog vm",this.viewModel.getSelectedItem().getValue().toString());
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -82,75 +87,126 @@ public class TaskSelectionDialog extends DialogFragment {
         //Log.i("TASKSCURSOR log",""+tasksCursor.getColumnCount());
 
 
-        if(this.viewModel.getSelectedItem().getValue().toString().equals("NewActivity")) {
-
-            if(tasksCursor.getCount()>0) {
-                builder.setTitle("Choose tasks to add to activity")
-                        .setMultiChoiceItems(tasksCursor, DbContract.Tasks.COLUMN_NAME_TASK_DURATION, DbContract.Tasks.COLUMN_NAME_TASK_NAME, new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
-
-                                if (isChecked) {
-
-                                    if (selectedTasks.size() <= DbContract.Activities.DIM_MAX) {
-                                        selectedTasks.add(new TaskItem(tasksCursor.getInt(0), tasksCursor.getString(1), tasksCursor.getString(2)));
-                                        Toast.makeText(getContext(), "added " + tasksCursor.getString(1), Toast.LENGTH_SHORT).show();
-                                    } else
-                                        Toast.makeText(getContext(), "DIM MAX reached", Toast.LENGTH_SHORT).show();
+        if(this.viewModel.getSelectedItem().getValue().toString().equals("NewActivity"))
+        {
 
 
-                                } else {
-                                    Toast.makeText(getContext(), "UNselected" + i, Toast.LENGTH_SHORT).show();
-                                    selectedTasks.remove(new TaskItem(tasksCursor.getInt(0), tasksCursor.getString(1), tasksCursor.getString(2)));
-
-
-                                }
-                            }
-                        })
-                        .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.i("SELECTED TASKS", "pressed positive");
-
-                                TaskItem[] selectedTasksA = new TaskItem[selectedTasks.size()];
-                                TaskItem[] oldSelectedTasksA = new TaskItem[oldSelectedTasks.size()];
-
-                                selectedTasksA = selectedTasks.toArray(selectedTasksA);
-                                //oldSelectedTasksA = oldSelectedTasks.toArray(oldSelectedTasks);
-
-                                subtasksViewModel.selectItem(new SubtasksViewModelData(selectedTasksA, subtaskAdapter));
-
-                                for (TaskItem ti : selectedTasksA)
-                                    Log.i("SELTASK_A", ti.toString());
-
-                                Log.i("DIALOG", "subtasks submitted");
-
-                                //subtaskAdapter.notifyDataSetChanged();
-
-                                final TasksDiffCallback diffCallback = new TasksDiffCallback(oldSelectedTasks, selectedTasks);
-                                final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
-                                diffResult.dispatchUpdatesTo(subtaskAdapter);
-                            }
-                        });
-
-
-            }
-            else
+            if (this.subtasksViewModel.getSelectedItem().getValue().isAlreadyModified())
             {
-                //Log.i("TASK SEL DIALOG","empty cursor");
-                builder.setTitle("Non riesco a trovare nessun task !");
-                builder.setPositiveButton("Capito", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                SubtasksViewModelData currentSVMData = this.subtasksViewModel.getSelectedItem().getValue();
 
-                    }
-                });
-                return builder.create();
+                checkedItems = new boolean[currentSVMData.getMask().length];
+                allTaskItems = new TaskItem[checkedItems.length];
+                allTasksNames = new String[checkedItems.length];
+
+                int i = 0;
+                for (boolean b : currentSVMData.getMask()) {
+                    this.checkedItems[i] = new Boolean(b);
+                    i++;
+                }
+
+                i = 0;
+
+                for (TaskItem ti : currentSVMData.getAllTaskItems()) {
+                    this.allTaskItems[i] = new TaskItem(ti);
+                    this.allTasksNames[i]= new String(this.allTaskItems[i].getName());
+                    Log.i(this.allTaskItems[i].getName(), Boolean.toString(this.checkedItems[i]));
+                    i++;
+                }
+
+                Log.i("RESTORING", "completed");
+            }
+            else {
+
+                if (allTasksCursor.getCount() > 0)
+                {
+                    allTasksCursor.moveToFirst();
+                    checkedItems = new boolean[allTasksCursor.getCount()];
+                    allTasksNames = new String[allTasksCursor.getCount()];
+                    allTaskItems = new TaskItem[allTasksCursor.getCount()];
+                    int i = 0;
+                    do {
+                        checkedItems[i] = new Boolean(false);
+                        allTaskItems[i] = new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1), allTasksCursor.getInt(2));
+                        allTasksNames[i] = new String(allTaskItems[i].getName());
+
+                        Log.i("building dialog structs", allTasksNames[i] + " " + Boolean.toString(checkedItems[i]));
+                        i++;
+                    } while (allTasksCursor.moveToNext());
+
+
+
+
+                    builder.setTitle("Choose tasks to add to activity")
+                            .setMultiChoiceItems(allTasksNames, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
+
+                                    if (isChecked) {
+
+                                        if (selectedTasks.size() <= DbContract.Activities.DIM_MAX) {
+                                            //selectedTasks.add(new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1), allTasksCursor.getString(2)));
+                                            selectedTasks.add(new TaskItem(allTaskItems[i]));
+                                            //Toast.makeText(getContext(), "added " + allTasksCursor.getString(1), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "added " + allTasksNames[i], Toast.LENGTH_SHORT).show();
+
+                                        } else
+                                            Toast.makeText(getContext(), "DIM MAX reached", Toast.LENGTH_SHORT).show();
+
+
+                                    } else {
+                                        Toast.makeText(getContext(), "UNselected" + i, Toast.LENGTH_SHORT).show();
+                                        //selectedTasks.remove(new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1), allTasksCursor.getString(2)));
+                                        selectedTasks.remove(new TaskItem(allTaskItems[i]));
+
+                                    }
+                                }
+                            })
+                            .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.i("SELECTED TASKS", "pressed positive");
+                                    Log.i("before submitting",Boolean.toString(checkedItems[0]));
+                                    TaskItem[] selectedTasksA = new TaskItem[selectedTasks.size()];
+                                    selectedTasksA = selectedTasks.toArray(selectedTasksA);
+                                    //TaskItem[] oldSelectedTasksA = new TaskItem[oldSelectedTasks.size()];
+                                    //oldSelectedTasksA = oldSelectedTasks.toArray(oldSelectedTasks);
+
+
+                                    SubtasksViewModelData updatedData = new SubtasksViewModelData(selectedTasksA, subtaskAdapter);
+                                    updatedData.setAllTaskItems(allTaskItems);
+                                    updatedData.setMask(checkedItems);
+                                    updatedData.hasBeenModified();
+                                    subtasksViewModel.selectItem(updatedData);
+
+                                    for (TaskItem ti : selectedTasksA)
+                                        Log.i("SELTASK_A", ti.toString());
+
+                                    Log.i("DIALOG", "subtasks submitted");
+
+                                    //subtaskAdapter.notifyDataSetChanged();
+
+                                    final TasksDiffCallback diffCallback = new TasksDiffCallback(oldSelectedTasks, selectedTasks);
+                                    final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+                                    diffResult.dispatchUpdatesTo(subtaskAdapter);
+                                }
+                            });
+
+                } else {
+                    //Log.i("TASK SEL DIALOG","empty cursor");
+                    builder.setTitle("Non riesco a trovare nessun task !");
+                    builder.setPositiveButton("Capito", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    return builder.create();
+                }
             }
         }
-        else if(this.viewModel.getSelectedItem().getValue().toString().equals("ModifyActivity"))
-        {
+        else if(this.viewModel.getSelectedItem().getValue().toString().equals("ModifyActivity")) {
 
             List<TaskItem> subtasks = new ArrayList<>();
             List<String> stringList = new ArrayList<>();
@@ -161,36 +217,35 @@ public class TaskSelectionDialog extends DialogFragment {
             //Cursor activityCursor = dbManager.searchActivityById(subtasksViewModel.getSelectedItem().getValue().getActivityId());
 
             ActivityItem activity = dbViewModel.getSelectedItem().getValue().activityItem;
-            Log.i("activity in vm",activity.toString());
+            Log.i("activity in vm", activity.toString());
             //fillAlreadySelectedTasks(activityCursor,stringList,subtasks,checkedItemsList);
-            fillAlreadySelectedTasks(activity,stringList,subtasks,checkedItemsList);
+            fillAlreadySelectedTasks(activity, stringList, subtasks, checkedItemsList);
 
-            Log.i("filler check out",Integer.toString(subtasks.size()));
+            Log.i("filler check out", Integer.toString(subtasks.size()));
 
-            unselectedTasksFiller(stringList,subtasks,checkedItemsList);
+            unselectedTasksFiller(stringList, subtasks, checkedItemsList);
 
-            Log.i("filler check out",Integer.toString(subtasks.size()));
+            Log.i("filler check out", Integer.toString(subtasks.size()));
 
 
-           String[] subtasksStrings= new String[stringList.size()];
-           boolean[] checkedItems = new boolean[stringList.size()];
-           TaskItem[] subtasksArr = new TaskItem[subtasks.size()];
+            String[] subtasksStrings = new String[stringList.size()];
+            boolean[] checkedItems = new boolean[stringList.size()];
+            TaskItem[] subtasksArr = new TaskItem[subtasks.size()];
 
-           int i=0;
+            int i = 0;
 
-           Iterator<Boolean> checkIt = checkedItemsList.iterator();
-           Iterator<TaskItem> tasksIt = subtasks.iterator();
+            Iterator<Boolean> checkIt = checkedItemsList.iterator();
+            Iterator<TaskItem> tasksIt = subtasks.iterator();
 
             // converting from lists to arrays
-           for(String currentName : stringList)
-           {
-               TaskItem currentTask = tasksIt.next();
-               Log.i("taskitem",currentTask.toString());
-               subtasksArr[i]= new TaskItem(currentTask);
-               subtasksStrings[i] = currentName;
-               checkedItems[i]=checkIt.next();
-               i++;
-           }
+            for (String currentName : stringList) {
+                TaskItem currentTask = tasksIt.next();
+                Log.i("taskitem", currentTask.toString());
+                subtasksArr[i] = new TaskItem(currentTask);
+                subtasksStrings[i] = currentName;
+                checkedItems[i] = checkIt.next();
+                i++;
+            }
 
             builder.setTitle("Modify the tasks of the activity")
 
@@ -206,10 +261,9 @@ public class TaskSelectionDialog extends DialogFragment {
                                     Toast.makeText(getContext(), "DIM MAX reached", Toast.LENGTH_SHORT).show();
 
 
-
                             } else {
                                 Toast.makeText(getContext(), "UNselected" + i, Toast.LENGTH_SHORT).show();
-                                selectedTasks.remove(new TaskItem(subtasksArr[i].getID(), subtasksArr[i].getName(),subtasksArr[i].getDuration()));
+                                selectedTasks.remove(new TaskItem(subtasksArr[i].getID(), subtasksArr[i].getName(), subtasksArr[i].getDuration()));
 
 
                             }
@@ -217,47 +271,44 @@ public class TaskSelectionDialog extends DialogFragment {
                     });
 
 
-        }
+            builder.setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int k) {
+                    Log.i("SELECTED TASKS", "pressed positive");
+
+                    TaskItem[] selectedTasksA = new TaskItem[DbContract.Activities.DIM_MAX];
+
+                    for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
+                        if (i < selectedTasks.size())
+                            selectedTasksA[i] = new TaskItem(selectedTasks.get(i));
+                        else
+                            selectedTasksA[i] = new TaskItem();
+
+                        Log.i("selectedTasksA", selectedTasksA[i].toString());
+                    }
+
+                    //selectedTasksA = selectedTasks.toArray(selectedTasksA);
+                    //oldSelectedTasksA = oldSelectedTasks.toArray(oldSelectedTasks);
 
 
-        builder.setPositiveButton("confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int k) {
-                Log.i("SELECTED TASKS", "pressed positive");
+                    SubtasksViewModelData newSTVMData = new SubtasksViewModelData(selectedTasksA, subtaskAdapter);
+                    newSTVMData.hasBeenModified();
+                    subtasksViewModel.selectItem(newSTVMData);
 
-                TaskItem[] selectedTasksA = new TaskItem[DbContract.Activities.DIM_MAX];
+                    for (TaskItem ti : selectedTasksA)
+                        Log.i("SELTASK_A", ti.toString());
 
-                for(int i =0;i<DbContract.Activities.DIM_MAX;i++)
-                {
-                    if(i< selectedTasks.size())
-                        selectedTasksA[i]= new TaskItem(selectedTasks.get(i));
-                    else
-                        selectedTasksA[i]= new TaskItem();
+                    Log.i("DIALOG", "subtasks submitted");
 
-                    Log.i("selectedTasksA",selectedTasksA[i].toString());
+                    //subtaskAdapter.notifyDataSetChanged();
+
+                    final TasksDiffCallback diffCallback = new TasksDiffCallback(oldSelectedTasks, selectedTasks);
+                    final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+                    diffResult.dispatchUpdatesTo(subtaskAdapter);
                 }
-
-                //selectedTasksA = selectedTasks.toArray(selectedTasksA);
-                //oldSelectedTasksA = oldSelectedTasks.toArray(oldSelectedTasks);
-
-
-                SubtasksViewModelData newSTVMData = new SubtasksViewModelData(selectedTasksA, subtaskAdapter);
-                newSTVMData.hasBeenModified();
-                subtasksViewModel.selectItem(newSTVMData);
-
-                for (TaskItem ti : selectedTasksA)
-                    Log.i("SELTASK_A", ti.toString());
-
-                Log.i("DIALOG", "subtasks submitted");
-
-                //subtaskAdapter.notifyDataSetChanged();
-
-                final TasksDiffCallback diffCallback = new TasksDiffCallback(oldSelectedTasks, selectedTasks);
-                final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
-                diffResult.dispatchUpdatesTo(subtaskAdapter);
-            }
-        });
+            });
+        }
 
         return builder.create();
     }
@@ -310,21 +361,23 @@ public class TaskSelectionDialog extends DialogFragment {
 
     public void unselectedTasksFiller(List<String> stringList,List<TaskItem> subtasks, List<Boolean> checkedItemsList)
     {
-        tasksCursor.moveToFirst();
+        allTasksCursor.moveToFirst();
         do
         {
-            String currentElemName = tasksCursor.getString(1);
+            String currentElemName = allTasksCursor.getString(1);
             if(!stringList.contains(currentElemName))
             {
                 stringList.add(currentElemName);
-                subtasks.add(new TaskItem(tasksCursor.getInt(0),tasksCursor.getString(1),tasksCursor.getInt(2)));
+                subtasks.add(new TaskItem(allTasksCursor.getInt(0),allTasksCursor.getString(1),allTasksCursor.getInt(2)));
                 Log.i("fromSetce",currentElemName);
                 checkedItemsList.add(Boolean.FALSE);
             }
 
-        }while(tasksCursor.moveToNext());
+        }while(allTasksCursor.moveToNext());
         }
     }
+
+
 
 
 
