@@ -41,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
         subtasksViewModel = new ViewModelProvider(this).get("subTasksVM",SubtasksViewModel.class);
+        //Log.i("SETTACT svm",this.subtasksViewModel.);
         dbTasksViewModel = new ViewModelProvider(this).get("DbTasksVM",SubtasksViewModel.class);
 
 

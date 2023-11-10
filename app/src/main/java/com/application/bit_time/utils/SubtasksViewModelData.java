@@ -1,8 +1,11 @@
 package com.application.bit_time.utils;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.application.bit_time.utils.Db.DbContract;
+import com.application.bit_time.utils.Db.DbManager;
 
 public class SubtasksViewModelData {
 
@@ -12,11 +15,13 @@ public class SubtasksViewModelData {
     public TaskItem[] subtasks;
     public SubtaskAdapter subtaskAdapter;
     private boolean alreadyModified;
-
-    private int activityId;
+    private ActivityItem activityToModify;
+    //private int activityId;
 
     public SubtasksViewModelData()
     {
+
+        this.activityToModify = new ActivityItem("10","TESTPERCASO","3");
         mask = null;
         allTaskItems=null;
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
@@ -28,7 +33,6 @@ public class SubtasksViewModelData {
       }
 
       subtaskAdapter = null;
-      activityId = -1;
       alreadyModified=false;
     }
 
@@ -49,12 +53,12 @@ public class SubtasksViewModelData {
 
     public void setActivityId(int id)
     {
-        this.activityId=id;
+        this.activityToModify.setId(id);
     }
 
     public int getActivityId()
     {
-        return this.activityId;
+        return this.activityToModify.getInfo().getIdInt();
     }
 
     public boolean isAlreadyModified()
@@ -73,11 +77,20 @@ public class SubtasksViewModelData {
         for(TaskItem ti : taskItems)
         {
             this.subtasks[pos]=new TaskItem(ti);
+            Log.i("SET SUBTASK STEP",ti.toString());
             pos++;
         }
     }
 
+    public ActivityItem getActivityToModify()
+    {
+        return this.activityToModify;
+    }
 
+    public TaskItem[] getSubtasks()
+    {
+        return this.subtasks;
+    }
     public void setMask(boolean[] maskToSave)
     {
         this.mask = new boolean[maskToSave.length];
@@ -113,6 +126,17 @@ public class SubtasksViewModelData {
         this.alreadyModified=false;
     }
 
+
+    public void setActivityToModify(ActivityItem activityToModify) {
+
+
+        this.activityToModify = new ActivityItem(activityToModify);
+
+        this.subtasks = new TaskItem[this.activityToModify.getSubtasks().length];
+
+        setSubtasks(this.activityToModify.getSubtasks());
+
+    }
 
     @NonNull
     @Override

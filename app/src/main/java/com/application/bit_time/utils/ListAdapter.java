@@ -31,7 +31,7 @@ import java.util.List;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder>
 {
-
+    private SubtasksViewModel subtasksViewModel;
     private DbManager dbManager;
     private DbViewModel dbViewModel;
     private List<ActivityItem> list;
@@ -49,7 +49,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         dbViewModel = new ViewModelProvider(settingsLowerFragmentActivities.requireActivity()).get(DbViewModel.class);
         viewModel = new ViewModelProvider(settingsLowerFragmentActivities.requireActivity()).get(CustomViewModel.class);
         dbManager = new DbManager(settingsLowerFragmentActivities.requireActivity());
-
+        subtasksViewModel = new ViewModelProvider(settingsLowerFragmentActivities.requireActivity()).get("subTasksVM",SubtasksViewModel.class);
     }
 
 
@@ -171,28 +171,48 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.i("MODIFY","pressed");
+                    Log.i("MODIFY","would modify "+ id);
                     Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
 
-                    //Log.i("HERE","look at me");
-
-                    DbViewModelData newDbData = new DbViewModelData(
-                            DbViewModelData.ACTION_TYPE.MODIFY,
-                            DbViewModelData.ITEM_TYPE.ACTIVITY,
-                            new ActivityItem());
-
-                    newDbData.activityItem.activityInfo = new ActivityInfo(
+                    ActivityInfo activityToModifyInfo = new ActivityInfo(
                             id,
                             labelName.getText().toString(),
                             labelTime.getText().toString());
 
-                    newDbData.activityItem.subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+                    Log.i("ACT INFO",activityToModifyInfo.toString());
+                    TaskItem[] subtasksToBeAdded = new TaskItem[subtaskItems.length];
 
                     int i =0;
                     for(TaskItem ti : subtaskItems)
                     {
-                        newDbData.activityItem.subtasks[i]= new TaskItem(ti);
+                        subtasksToBeAdded[i]= new TaskItem(ti);
+                        Log.i("SUBT",subtasksToBeAdded[i].toString());
                         i++;
                     }
+
+
+
+
+
+
+                    ActivityItem activityToModify = new ActivityItem(activityToModifyInfo,subtasksToBeAdded);
+                    Log.i("ACTIVITY TO MOD",activityToModify.toString());
+                    SubtasksViewModelData SVMData = subtasksViewModel.getSelectedItem().getValue();
+                    SVMData.setActivityToModify(activityToModify);
+                    Log.i("subtcheck",SVMData.toString());
+                    subtasksViewModel.selectItem(SVMData);
+
+                    Log.i("DATA","SUBMITTED");
+                    /*DbViewModelData newDbData = new DbViewModelData(
+                            DbViewModelData.ACTION_TYPE.MODIFY,
+                            DbViewModelData.ITEM_TYPE.ACTIVITY,
+                            new ActivityItem());
+
+
+                    newDbData.activityItem.subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+
 
 
                     Log.i("actInfo",newDbData.activityItem.activityInfo.toString());
@@ -203,7 +223,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     }
 
 
-                    dbViewModel.selectItem(newDbData);
+                    dbViewModel.selectItem(newDbData);*/
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.ModifyActivity));
 
                 }

@@ -150,7 +150,10 @@ public class ActivityItem {
         return info;//+ " "+ subtasksInfo;
     }
 
-
+public void setId(int id)
+{
+    this.activityInfo.setId(id);
+}
     //@Override
     public boolean equals(@Nullable Object obj)
     {

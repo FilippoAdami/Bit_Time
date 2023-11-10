@@ -73,6 +73,9 @@ public class ActivityInfo {
             labelTime = -1 ;
             Log.e("ERROR","exception thrown when converting time for listItem obj");
         }
+
+
+        Log.i("ACTINFO CRE completed",this.toString());
     }
 
     public String getName()
@@ -122,6 +125,11 @@ public class ActivityInfo {
 
         return false;
 
+    }
+
+    public void setId(int id)
+    {
+        this.IDpk = id;
     }
 
     @NonNull
