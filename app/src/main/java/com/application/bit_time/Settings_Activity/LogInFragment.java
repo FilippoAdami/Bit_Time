@@ -1,5 +1,7 @@
 package com.application.bit_time.Settings_Activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputType;
@@ -23,7 +25,6 @@ import com.application.bit_time.Main_Activity.HomeFragment;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 public class LogInFragment extends Fragment {
 
@@ -38,7 +39,7 @@ public class LogInFragment extends Fragment {
     private View showHidePassword;
     private DbManager.DbHelper dbHelper;
     private boolean isLoginMode = true;
-
+    private SharedPreferences sharedPreferences;
     // Define the ActivityResultLauncher for Google Sign-In
     /*
     private final ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(
@@ -67,6 +68,7 @@ public class LogInFragment extends Fragment {
         */
         dbManager = new DbManager(getContext());
         dbHelper = new DbManager.DbHelper(getContext());
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
 
         emailEditText = view.findViewById(R.id.emailEditText);
         password_edit_text = view.findViewById(R.id.password_edit_text);
@@ -104,10 +106,12 @@ public class LogInFragment extends Fragment {
                 if (isLoginMode) {
                     // Check the credentials in the database
                     if (isCredentialsValid(email, password)) {
+                        // Set the user as logged in
+                        sharedPreferences.edit().putBoolean("loggedIn", true).apply();
                         // redirect to home fragment
                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.fragment_container, new HomeFragment());
+                        fragmentTransaction.replace(R.id.middle_fragment_container_view, new AccountFragment());
                         fragmentTransaction.commit();
                     } else {
                         // Credentials are not valid, show an error message
@@ -138,7 +142,33 @@ public class LogInFragment extends Fragment {
             }
         });
 
+        //set a click listener for the forgot password textview
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get the user-entered email
+                String email = emailEditText.getText().toString();
+                if (TextUtils.isEmpty(email)) {
+                    //show an error message if email is empty
+                    Toast.makeText(getActivity(), "Please enter your email first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                //search for the user in the database
+                Cursor cursor = dbManager.searchUser(email);
+                if (cursor.moveToFirst()) {
+                    //user found, show a dialog to get a temporary code
+                    ForgotPasswordDialog dialog = new ForgotPasswordDialog();
+                    dialog.show(getChildFragmentManager(), "ForgotPasswordDialog");
+                } else {
+                    //user not found, show an error message
+                    Toast.makeText(getActivity(), "User not found. Please sign up.", Toast.LENGTH_SHORT).show();
+                }
+                cursor.close();
+            }
+        });
+
         return view;
+
     }
     /*private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -156,6 +186,7 @@ public class LogInFragment extends Fragment {
         }
     }
      */
+
     private void updateUIForMode() {
         if (isLoginMode) {
             // Update UI elements for login mode
@@ -211,7 +242,6 @@ public class LogInFragment extends Fragment {
             cursor.close();
         }
     }
-
     private boolean isCredentialsValid(String email, String password) {
         // Search for the user in the database
         Cursor cursor = dbManager.searchUser(email);

@@ -1,96 +1,255 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <!-- Example settings options (customize as needed) -->
-
-    <!-- Switch to toggle between two types of gamification -->
-    <Switch
-        android:id="@+id/gamificationSwitch"
-        android:padding="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enable Gamification"/>
-
-    <!-- Spinner to select happy and sad icons -->
-    <Spinner
-        android:id="@+id/iconSpinner"
-        android:padding="13dp"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- EditText to change points values -->
-    <EditText
-        android:id="@+id/pointsEditText"
-        android:padding="13dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Points Value"
-        android:inputType="number"
-        android:layout_marginTop="16dp"/>
+        <!-- Aspetto -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aspetto"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:id="@+id/textAspetto"/>
 
-    <!-- Button to change background -->
-    <Button
-        android:id="@+id/changeBackgroundButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Change Background"
-        android:layout_marginTop="16dp"/>
+        <!-- Row with Columns (text1, text2, text3, text4, text5) -->
+        <LinearLayout
+            android:id="@+id/themeRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <!-- Spinner to select themes -->
-    <Spinner
-        android:id="@+id/themeSpinner"
-        android:padding="13dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:id="@+id/ThemeColumn1"
+                android:layout_height="wrap_content">
 
-    <!-- Button to change ringtones -->
-    <Button
-        android:id="@+id/changeRingtoneButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Change Ringtone"
-        android:layout_marginTop="16dp"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/square1">
+                </FrameLayout>
 
-    <!-- SeekBar to adjust notification volume -->
-    <SeekBar
-        android:id="@+id/notificationVolumeSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="100"
-        android:layout_marginTop="16dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="text1"
+                    android:id="@+id/text1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:id="@+id/ThemeColumn2">
 
-    <!-- Switch to toggle app sounds -->
-    <Switch
-        android:id="@+id/appSoundsSwitch"
-        android:padding="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enable App Sounds"
-        android:layout_marginTop="16dp"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/square2">
+                </FrameLayout>
 
-    <!-- Switch to enable/disable pop-up notifications -->
-    <Switch
-        android:id="@+id/popUpNotificationsSwitch"
-        android:padding="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enable Pop-up Notifications"
-        android:layout_marginTop="16dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="text2"
+                    android:id="@+id/text2"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:id="@+id/ThemeColumn3"
+                android:layout_height="wrap_content">
 
-    <!-- Switch to enable/disable focus mode -->
-    <Switch
-        android:id="@+id/focusModeSwitch"
-        android:padding="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enable Focus Mode"
-        android:layout_marginTop="16dp"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/square3">
+                </FrameLayout>
 
-</LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="text1"
+                    android:id="@+id/text3"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:id="@+id/ThemeColumn4"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/square4">
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="text1"
+                    android:id="@+id/text4"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Change Background -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change Background"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:id="@+id/textChangeBackground"/>
+
+        <!-- Button to Load Background from Internal Memory -->
+        <Button
+            android:id="@+id/loadBackgroundButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load Background"
+            android:layout_marginTop="16dp" />
+
+        <!-- Notifiche -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Notifiche"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:id="@+id/textNotifiche"
+            android:textAlignment="center"/>
+
+        <!-- Row with Two Columns: Checkbox/Switch and Text -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Text"
+                android:id="@+id/textCheckbox1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Text"
+                android:id="@+id/textCheckbox2"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Text"
+                android:id="@+id/textCheckbox3"/>
+        </LinearLayout>
+
+        <!-- Volume -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Volume"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:id="@+id/textVolume"/>
+
+        <!-- SeekBar to Adjust Volume -->
+        <SeekBar
+            android:id="@+id/volumeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Row with Two Columns: Button and Text -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/rowWithButton1">
+
+            <Button
+                android:id="@+id/loadRingtoneButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Load Ringtone"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Text"
+                android:id="@+id/textButton1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/rowWithButton2">
+
+            <Button
+                android:id="@+id/loadRingtoneButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Load Ringtone"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Text"
+                android:id="@+id/textButton2"/>
+        </LinearLayout>
+
+        <!-- Row with Two Columns: Button and Text (rowWithButton2, textButton2) -->
+
+        <!-- Additional Rows with Buttons and Text -->
+
+    </LinearLayout>
+</ScrollView>

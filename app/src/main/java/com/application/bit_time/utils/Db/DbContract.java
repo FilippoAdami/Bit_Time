@@ -47,9 +47,33 @@ public final class DbContract {
         public static final String COLUMN_NAME_PASSWORD = "password";
         public static final String COLUMN_NAME_PIN = "pin";
 
-
     }
 
+    public static class appSettings implements BaseColumns{
+        public static final String TABLE_NAME = "appSettings";
+        public static final String COLUMN_NAME_THEME = "theme";
+        public static final String COLUMN_NAME_BACKGROUND = "background";
+        public static final String COLUMN_NAME_VOLUME = "volume";
+        public static final String COLUMN_NAME_RINGTONE = "ringtone";
+        public static final String COLUMN_NAME_NOTIFICATION_SOUNDS = "notification_sounds";
+        public static final String COLUMN_NAME_NOTIFICATIONS = "notifications";
+        public static final String COLUMN_NAME_SOUNDS = "sounds";
+        public static final String COLUMN_NAME_FOCUS = "focus";
+    }
+
+    public static class gamificationSettings implements BaseColumns{
+        public static final String TABLE_NAME = "gamificationSettings";
+        public static final String COLUMN_NAME_GAMIFICATION = "gamification";
+        public static final String COLUMN_NAME_GAMIFICATION_TYPE = "gamificationType";
+        public static final String COLUMN_NAME_POSITIVE_ICON = "positiveIcon";
+        public static final String COLUMN_NAME_NEGATIVE_ICON = "negativeIcon";
+        public static final String COLUMN_NAME_GAMIFICATION_TIME_POINTS_1 = "gamificationTimePoints1";
+        public static final String COLUMN_NAME_GAMIFICATION_TIME_POINTS_2 = "gamificationTimePoints2";
+        public static final String COLUMN_NAME_GAMIFICATION_TIME_POINTS_3 = "gamificationTimePoints3";
+        public static final String COLUMN_NAME_GAMIFICATION_TIME_POINTS_4 = "gamificationTimePoints4";
+        public static final String COLUMN_NAME_GAMIFICATION_TIME_POINTS_5 = "gamificationTimePoints5";
+        public static final String COLUMN_NAME_GAMIFICATION_TIME_POINTS_6 = "gamificationTimePoints6";
+    }
 
 
 

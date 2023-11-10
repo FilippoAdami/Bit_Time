@@ -1,4 +1,4 @@
-package com.application.bit_time.Main_Activity;
+package com.application.bit_time.Settings_Activity;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,24 +8,33 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.application.bit_time.Main_Activity.HomeFragment;
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbManager;
+import com.application.bit_time.utils.JavaMail;
 
 import java.util.Locale;
+import java.util.Random;
 
 public class TemporaryCodeFragment extends Fragment {
 
     // Declare UI elements
     private EditText textInputEditText;
     String currentInput = "- - - - - -";
+    private Button submitButton;
     private TextView countdownTextView;
     private int remainingTime = 120; // Initial value in seconds
     private Handler countdownHandler;
-
     TextWatcher watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -42,23 +51,53 @@ public class TemporaryCodeFragment extends Fragment {
             // Do nothing
         }
     };
+    private DbManager dbManager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.a_temporary_code_layout, container, false);
-
+        View rootView = inflater.inflate(R.layout.s_temporary_code_layout, container, false);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         // Initialize UI elements
         countdownTextView = rootView.findViewById(R.id.countdownTextView);
         textInputEditText = rootView.findViewById(R.id.textInputEditText);
-
         // Set up TextWatcher to handle input changes
         textInputEditText.addTextChangedListener(watcher);
+        submitButton = rootView.findViewById(R.id.submitButton);
+
+        dbManager = new DbManager(getContext());
+        //get the email from the database
+        String email = dbManager.getUserEmail();
+        //generate a random code
+        Random random = new Random();
+        int randomNumber = random.nextInt(900000) + 100000;
+        String code = Integer.toString(randomNumber);
+        //save the code in the database as new password
+        dbManager.updatePassword(email, code);
+
+        //send email
+        JavaMail.sendEmail(email, "Temporary code", "Your temporary code is: " + code);
 
         // Set the initial countdown text
         updateCountdownText();
         // Start the countdown handler
         startCountdownHandler();
+
+        // Set click listener for submitButton
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Check if the input is correct
+                if (currentInput.equals(code)) {
+                    // Navigate to the ChangePasswordFragment
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.middle_fragment_container_view, new ChangePasswordFragment());
+                } else {
+                    // Show an error message
+                    Toast.makeText(getActivity(), "Codice errato", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         // Set click listener for countdownTextView
         countdownTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +109,14 @@ public class TemporaryCodeFragment extends Fragment {
                 remainingTime = 120;
                 startCountdownHandler();
 
-                // TODO: Handle resend code action
-                // For example, show a confirmation dialog before resending the code
+                int randomNumber = random.nextInt(900000) + 100000;
+                String code = Integer.toString(randomNumber);
+                //save the code in the database as new password
+                dbManager.updatePassword(email, code);
+                //send email
+                JavaMail.sendEmail(email, "Temporary code", "Your temporary code is: " + code);
+                //show a toast message
+                Toast.makeText(getActivity(), "controlla la tua email", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -24,8 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.a_activity_main);
         FragmentManager fragmentManager = getSupportFragmentManager();
         //Fragment bottomFragment = new RunningTaskFragment();
-
-        Fragment bottomFragment = new GameFragment();
+        Fragment bottomFragment = new Fragment();
 
         runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
 
@@ -42,13 +41,17 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         });
-
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, new HomeFragment()).replace(R.id.bottomFragmentContainer,bottomFragment);;
+        fragmentTransaction.commit();
+        /*
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         if(sharedPreferences.getBoolean("loggedIn", false)){
             // If the user is logged in, go to the HomeFragment
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, new HomeFragment()).replace(R.id.bottomFragmentContainer,bottomFragment);;
             fragmentTransaction.commit();
+            //here for a future implementation we will load the user data from the cloud database
         } else {
             // If the user is not logged in, go to the LogInFragment
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -56,5 +59,6 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.bottomFragmentContainer,bottomFragment);
             fragmentTransaction.commit();
         }
+        */
     }
 }

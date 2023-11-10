@@ -19,7 +19,6 @@ import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.TaskItem;
 
 public class SettingsActivity extends AppCompatActivity {
-
     private SubtasksViewModel subtasksViewModel;
     private SubtasksViewModel dbTasksViewModel;
     private DbManager dbManager;
@@ -31,20 +30,15 @@ public class SettingsActivity extends AppCompatActivity {
     Fragment lowerFrag;
     DbViewModelData currentDbViewModelData;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-
         dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
         subtasksViewModel = new ViewModelProvider(this).get("subTasksVM",SubtasksViewModel.class);
         //Log.i("SETTACT svm",this.subtasksViewModel.);
         dbTasksViewModel = new ViewModelProvider(this).get("DbTasksVM",SubtasksViewModel.class);
-
-
 
         subtasksViewModel.getSelectedItem().observe(this,item ->
         {
@@ -171,17 +165,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         });
 
-
-
-
         /*fManager.beginTransaction()
                 .add(R.id.top_fragment_container_view,upperFrag)
                 .add(R.id.middle_fragment_container_view,middleFrag)
                 .add(R.id.bottom_fragment_container_view,lowerFrag)
                 .addToBackStack("EntryPoint")
                 .commit();*/
-        mainEntry();
-
+        homeSettingsRedirect();
 
         viewModel.getSelectedItem().observe(this, item ->
             {
@@ -227,8 +217,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
     }
 
-
-
     private void taskRender()
     {
         lowerFrag = new SettingsLowerFragmentTasks();
@@ -260,7 +248,6 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     }
-
     private void activitiesRender()
     {
 
@@ -287,13 +274,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         //Log.i("SettingsActivity VM","activitiesRender called");
     }
-
     @Override
     protected void onDestroy() {
         dbManager.closeDb();
         super.onDestroy();
     }
-
     private void newTaskRender()
     {
         upperFrag = new CreationUpperFragment();
@@ -305,7 +290,6 @@ public class SettingsActivity extends AppCompatActivity {
                 .addToBackStack("newTask")
                 .commit();
     }
-
     private void newActivityRender()
     {
         upperFrag = new ActivityCreationFragment();
@@ -317,7 +301,6 @@ public class SettingsActivity extends AppCompatActivity {
                 .addToBackStack("newAct")
                 .commit();
     }
-
     private void modifyTask()
     {
         upperFrag = new ModifyTasksFragment();
@@ -329,9 +312,6 @@ public class SettingsActivity extends AppCompatActivity {
                 .addToBackStack("modifyT")
                 .commit();
     }
-
-
-
     public void modifyActivity() {
         upperFrag = new ActivityCreationFragment();
 
@@ -343,8 +323,6 @@ public class SettingsActivity extends AppCompatActivity {
                 .addToBackStack("modifyA")
                 .commit();
     }
-
-
     public void mainEntry()
     {
 
@@ -367,6 +345,12 @@ public class SettingsActivity extends AppCompatActivity {
                 .addToBackStack("MainEntry")
                 .commit();
     }
-
-
+    public void homeSettingsRedirect(){
+        fManager.beginTransaction()
+                .replace(R.id.top_fragment_container_view, new Fragment())
+                .replace(R.id.middle_fragment_container_view, new SettingsHomeFragment())
+                .replace(R.id.bottom_fragment_container_view,new Fragment())
+                .addToBackStack("HomeSettingsRedirect")
+                .commit();
+    }
 }

@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.application.bit_time.R;
 
-public class SettingsHomeFragment extends Fragment {
+public class CustomizationSettings extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class SettingsHomeFragment extends Fragment {
             // Replace the current fragment with a new fragment
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.middle_fragment_container_view, new AccountFragment());
+            fragmentTransaction.replace(R.id.middle_fragment_container_view, new CustomizeSettingsFragment());
             fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
             fragmentTransaction.commit();
         });
@@ -37,18 +37,21 @@ public class SettingsHomeFragment extends Fragment {
             // Replace the current fragment with a new fragment
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.middle_fragment_container_view, new CustomizationSettings());
+            fragmentTransaction.replace(R.id.middle_fragment_container_view, new GamificationSettings());
             fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
             fragmentTransaction.commit();
         });
 
-        buttonNA.setOnClickListener(v -> {
-            // Replace the current fragment with a new fragment
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.middle_fragment_container_view, new ActivityCreationFragment());
-            fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
-            fragmentTransaction.commit();
+        buttonNA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Replace the current fragment with a new fragment
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.middle_fragment_container_view, new ModifyTasksFragment());
+                fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
+                fragmentTransaction.commit();
+            }
         });
 
 
