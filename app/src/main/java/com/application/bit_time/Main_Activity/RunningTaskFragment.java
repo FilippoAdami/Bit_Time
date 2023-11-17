@@ -1,5 +1,7 @@
 package com.application.bit_time.Main_Activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,7 +55,12 @@ public class RunningTaskFragment extends Fragment {
         runningActivityData = new ArrayList<>();
         reportDataList = new ArrayList<>();
         subtasks = new ArrayList<>();
-        int activityId = 3;
+
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        int value = sharedPreferences.getInt("activityToRun",-78);
+        Log.i("sharedprefdataretr",Integer.toString(value));
+
+        int activityId = value;
         dbManager = new DbManager(getContext());
 
         runningActivityViewModel = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1021237739224",
+    "project_id": "bittime-396216",
+    "storage_bucket": "bittime-396216.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1021237739224:android:b94b8cd43eeb224499e1ad",
+        "android_client_info": {
+          "package_name": "com.application.bit_time"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1021237739224-sdeq2o9cc5q45t2jh9usf5k28peipbmo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACLiN2n8-zJQtDNx9uKgp2QfQk5X6StrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1021237739224-sdeq2o9cc5q45t2jh9usf5k28peipbmo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

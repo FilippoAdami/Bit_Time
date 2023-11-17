@@ -36,8 +36,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.711" />
 
-    <Button style="@style/MyStyledButton"
+    <Button
         android:id="@+id/games_button"
+        style="@style/MyStyledButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="20dp"
@@ -50,14 +51,15 @@
         app:layout_constraintTop_toBottomOf="@+id/clockTextView"
         app:layout_constraintVertical_bias="0.392" />
 
-    <Button style="@style/CaregiverButton"
+    <Button
         android:id="@+id/caregiver_button"
+        style="@style/CaregiverButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:layout_constraintDimensionRatio="1:1"
         android:text=" ."
-
         app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.016"
         app:layout_constraintStart_toStartOf="parent"

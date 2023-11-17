@@ -15,7 +15,12 @@ public class MainActivityStatusData {
 
    public MainActivityStatusData()
    {
-       this.currentStatus = Status.Idle;
+       this.currentStatus = Status.QuickstartMenu;
+   }
+
+   public MainActivityStatusData(Status newStatus)
+   {
+       this.currentStatus = newStatus;
    }
     public void setCurrentStatus(Status currentStatus) {
         this.currentStatus = currentStatus;
