@@ -12,10 +12,16 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.application.bit_time.R;
+import com.application.bit_time.utils.MainActivityStatusData;
+import com.application.bit_time.utils.MainActivityViewModel;
 import com.application.bit_time.utils.RunningActivityViewModel;
 import com.application.bit_time.Settings_Activity.LogInFragment;
 
 public class MainActivity extends AppCompatActivity {
+
+
+    private MainActivityViewModel statusVM;
+
     private SharedPreferences sharedPreferences;
     RunningActivityViewModel runningActivityViewModel;
     @Override
@@ -23,9 +29,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_main);
         FragmentManager fragmentManager = getSupportFragmentManager();
+
         //Fragment bottomFragment = new RunningTaskFragment();
         Fragment bottomFragment = new Fragment();
 
+        this.statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
         runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
 
         runningActivityViewModel.getSelectedItem().observe(this, item->
@@ -60,5 +68,29 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.commit();
         }
         */
+
+
+        this.statusVM.getSelectedItem().observe(this, item->
+        {
+            Log.i("STATUSVM DETECTION","MainActivity detected something");
+
+            if(item.getCurrentStatus().equals(MainActivityStatusData.Status.Idle))
+            {
+                Log.i("CURRENT STATUS MAINACT","IDLE");
+            }
+            else if( item.getCurrentStatus().equals(MainActivityStatusData.Status.QuickstartMenu))
+            {
+                Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
+            }
+            else if( item.getCurrentStatus().equals(MainActivityStatusData.Status.RunningActivity))
+            {
+                Log.i("CURRENT STATUS MAINACT","RUNNING ACTIVITY");
+            }
+
+
+        });
+
+
+
     }
 }
