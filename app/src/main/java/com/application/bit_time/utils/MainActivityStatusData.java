@@ -8,7 +8,8 @@ public class MainActivityStatusData {
         Idle,
         QuickstartMenu,
         RunningActivity,
-        CaregiverLogin
+        CaregiverLogin,
+        GameArea
     }
 
 

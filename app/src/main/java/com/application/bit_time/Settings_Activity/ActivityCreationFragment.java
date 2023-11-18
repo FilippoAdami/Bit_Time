@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbViewModelData;
+import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.SubtaskAdapter;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.SubtasksViewModelData;

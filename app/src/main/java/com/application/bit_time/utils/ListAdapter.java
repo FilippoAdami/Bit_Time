@@ -18,15 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.SettingsLowerFragmentActivities;
-import com.application.bit_time.Settings_Activity.SettingsModeData;
 import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder>

@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment {
         clockTextView = rootView.findViewById(R.id.clockTextView2);
         analogClockView = rootView.findViewById(R.id.analogClockView2);
         //Button switchButton = rootView.findViewById(R.id.caregiver_button);
-        Button gameButton = rootView.findViewById(R.id.games_button2);
+        /*Button gameButton = rootView.findViewById(R.id.games_button2);
 
         gameButton.setOnClickListener(new View.OnClickListener() {
             @Override

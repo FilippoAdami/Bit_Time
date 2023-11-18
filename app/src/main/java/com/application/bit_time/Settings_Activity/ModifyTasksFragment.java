@@ -16,8 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
+import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.TaskItem;
-import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
 
 public class ModifyTasksFragment extends Fragment {

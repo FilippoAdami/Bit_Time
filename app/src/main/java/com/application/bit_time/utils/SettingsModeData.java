@@ -1,4 +1,4 @@
-package com.application.bit_time.Settings_Activity;
+package com.application.bit_time.utils;
 
 
 import androidx.annotation.NonNull;
@@ -8,6 +8,7 @@ public class SettingsModeData {
 
     public enum Mode
     {
+        EntryPoint,
         Tasks,
         Activities,
         NewTask,

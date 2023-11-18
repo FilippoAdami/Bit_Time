@@ -11,10 +11,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.R;
+import com.application.bit_time.utils.CustomViewModel;
+import com.application.bit_time.utils.SettingsModeData;
 
 public class SettingsHomeFragment extends Fragment {
+
+    CustomViewModel customViewModel;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        this.customViewModel= new ViewModelProvider(this.requireActivity()).get(CustomViewModel.class);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,11 +58,12 @@ public class SettingsHomeFragment extends Fragment {
 
         buttonNA.setOnClickListener(v -> {
             // Replace the current fragment with a new fragment
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            /*FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.middle_fragment_container_view, new ActivityCreationFragment());
             fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
-            fragmentTransaction.commit();
+            fragmentTransaction.commit();*/
+            this.customViewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.EntryPoint));
         });
 
 

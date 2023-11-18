@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbViewModel;
+import com.application.bit_time.utils.SettingsModeData;
 
 public class SettingsMiddleFragment extends Fragment {
 

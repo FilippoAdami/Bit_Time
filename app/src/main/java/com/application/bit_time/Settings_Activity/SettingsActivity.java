@@ -59,9 +59,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         Fragment frag = fManager.findFragmentById(R.id.fragmentsContainer);
 
-        upperFrag = new SettingsUpperFragment();
-        middleFrag = new SettingsMiddleFragment();
-        lowerFrag = new SettingsLowerFragmentTasks();
+
+
+
+
 
         dbViewModel.getSelectedItem().observe(this, item ->
         {
@@ -83,11 +84,11 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
 
-                    Log.i("FROM SETTINGS ACTIVITY",item.activityItem.toString());
-                    for(TaskItem ti : item.activityItem.getSubtasks())
+                    //Log.i("FROM SETTINGS ACTIVITY",item.activityItem.toString());
+                    /*for(TaskItem ti : item.activityItem.getSubtasks())
                     {
                         Log.i("FROM SETTING ACT",ti.toString());
-                    }
+                    }*/
                     dbManager.insertActivityRecord(currentData.activityItem);
                 }
             }
@@ -110,14 +111,14 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
-                    Log.i("FROM SETTINGS ACTIVITY","would modify activity");
+                    //Log.i("FROM SETTINGS ACTIVITY","would modify activity");
                     ActivityItem currentActivity = new ActivityItem(currentData.activityItem);
-                    Log.i("currentActivity",currentActivity.toString());
+                    //Log.i("currentActivity",currentActivity.toString());
 
-                    for(TaskItem ti : currentActivity.getSubtasks())
+                    /*for(TaskItem ti : currentActivity.getSubtasks())
                     {
                         Log.i("currAct",ti.getIdStr());
-                    }
+                    }*/
                     int[] subtasksIds= new int[DbContract.Activities.DIM_MAX];
 
                     int i=0;
@@ -165,12 +166,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         });
 
-        /*fManager.beginTransaction()
-                .add(R.id.top_fragment_container_view,upperFrag)
-                .add(R.id.middle_fragment_container_view,middleFrag)
-                .add(R.id.bottom_fragment_container_view,lowerFrag)
-                .addToBackStack("EntryPoint")
-                .commit();*/
+
         homeSettingsRedirect();
 
         viewModel.getSelectedItem().observe(this, item ->
@@ -192,9 +188,11 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }
 
-
-
-                if(item.equals("NewTask"))
+                if(item.equals("EntryPoint"))
+                {
+                 managementEntryPoint();
+                }
+                else if(item.equals("NewTask"))
                 {
                     newTaskRender();
                 }else if(item.equals("NewActivity"))
@@ -351,6 +349,22 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.middle_fragment_container_view, new SettingsHomeFragment())
                 .replace(R.id.bottom_fragment_container_view,new Fragment())
                 .addToBackStack("HomeSettingsRedirect")
+                .commit();
+    }
+
+
+    public void managementEntryPoint()
+    {
+
+        upperFrag = new SettingsUpperFragment();
+        middleFrag = new SettingsMiddleFragment();
+        lowerFrag = new SettingsLowerFragmentActivities();
+
+        fManager.beginTransaction()
+                .replace(R.id.top_fragment_container_view,upperFrag)
+                .replace(R.id.middle_fragment_container_view,middleFrag)
+                .replace(R.id.bottom_fragment_container_view,lowerFrag)
+                .addToBackStack("EntryPoint")
                 .commit();
     }
 }

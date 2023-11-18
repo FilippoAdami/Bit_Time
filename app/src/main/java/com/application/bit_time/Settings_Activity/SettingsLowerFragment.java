@@ -20,6 +20,7 @@ import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.ListAdapter;
 import com.application.bit_time.R;
+import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.TaskAdapter;
 import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbContract;

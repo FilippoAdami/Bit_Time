@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.SettingsLowerFragmentTasks;
-import com.application.bit_time.Settings_Activity.SettingsModeData;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
