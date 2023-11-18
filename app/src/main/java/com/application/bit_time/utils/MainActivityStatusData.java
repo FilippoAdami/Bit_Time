@@ -7,7 +7,8 @@ public class MainActivityStatusData {
     {
         Idle,
         QuickstartMenu,
-        RunningActivity
+        RunningActivity,
+        CaregiverLogin
     }
 
 

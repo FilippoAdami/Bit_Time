@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         Fragment bottomFragment = new Fragment();
 
 
+        Fragment controlbarFragment = new ControlsFragment();
+
         this.statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
         runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
 
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager
                 .beginTransaction()
+                .replace(R.id.controlbarFragment,controlbarFragment)
                 .replace(R.id.fragment_container, new QuickstartMenuFragment())
                 .replace(R.id.bottomFragmentContainer,bottomFragment)
                 .commit();
@@ -92,7 +95,10 @@ public class MainActivity extends AppCompatActivity {
         {
             Log.i("STATUSVM DETECTION","MainActivity detected something");
 
-            if(item.getCurrentStatus().equals(MainActivityStatusData.Status.Idle))
+
+            MainActivityStatusData.Status currentStatus = item.getCurrentStatus();
+
+            if(currentStatus.equals(MainActivityStatusData.Status.Idle))
             {
                 Log.i("CURRENT STATUS MAINACT","IDLE");
                 fragmentManager
@@ -101,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                         //.add(R.id.bottomFragmentContainer,new GameFragment())
                         .commit();
             }
-            else if( item.getCurrentStatus().equals(MainActivityStatusData.Status.QuickstartMenu))
+            else if( currentStatus.equals(MainActivityStatusData.Status.QuickstartMenu))
             {
                 Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
                 fragmentManager
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                         .add(R.id.bottomFragmentContainer,new Fragment())
                         .commit();
             }
-            else if( item.getCurrentStatus().equals(MainActivityStatusData.Status.RunningActivity))
+            else if( currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
             {
                 Log.i("CURRENT STATUS MAINACT","RUNNING ACTIVITY");
 
@@ -123,6 +129,15 @@ public class MainActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.fragment_container,new HomeFragment())
                         .replace(R.id.bottomFragmentContainer,new RunningTaskFragment())
+                        .commit();
+            }
+            else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))
+            {
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_container,new CaregiverLoginFragment())
+                        .replace(R.id.bottomFragmentContainer,new Fragment())
+                        .addToBackStack(null)
                         .commit();
             }
 

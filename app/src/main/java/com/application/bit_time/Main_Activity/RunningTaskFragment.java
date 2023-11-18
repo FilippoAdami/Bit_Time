@@ -57,16 +57,19 @@ public class RunningTaskFragment extends Fragment {
         subtasks = new ArrayList<>();
 
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        int value = sharedPreferences.getInt("activityToRun",-78);
-        Log.i("sharedprefdataretr",Integer.toString(value));
+        int activityId = sharedPreferences.getInt("activityToRun",-100);
+        Log.i("sharedprefdataretr",Integer.toString(activityId));
 
-        int activityId = value;
+
         dbManager = new DbManager(getContext());
 
         runningActivityViewModel = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);
 
         runningActivityCursor = dbManager.searchActivityById(activityId) ;
-        runningActivityCursor.moveToFirst();
+
+        if(runningActivityCursor.getCount()>0) {
+            runningActivityCursor.moveToFirst();
+            Log.i("talkin' bout",runningActivityCursor.getString(1));
 
         /*for(int j =0 ; j<DbContract.Activities.DIM_MAX;j++)
         {
@@ -78,8 +81,8 @@ public class RunningTaskFragment extends Fragment {
             }
         }*/
 
-        subtasks.addAll(dbManager.retrieveSubtasks(runningActivityCursor));
-
+            subtasks.addAll(dbManager.retrieveSubtasks(runningActivityCursor));
+        }
         Log.i("subtasks test ret",Integer.toString(subtasks.size()));
         Log.i("subtask get1",subtasks.get(1).toString());
 

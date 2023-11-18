@@ -100,12 +100,13 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.a_home_layout, container, false);
+        //View rootView = inflater.inflate(R.layout.a_home_layout, container, false);
+        View rootView = inflater.inflate(R.layout.a_new_home_fragment_layout, container, false);
 
-        clockTextView = rootView.findViewById(R.id.clockTextView);
-        analogClockView = rootView.findViewById(R.id.analogClockView);
-        Button switchButton = rootView.findViewById(R.id.caregiver_button);
-        Button gameButton = rootView.findViewById(R.id.games_button);
+        clockTextView = rootView.findViewById(R.id.clockTextView2);
+        analogClockView = rootView.findViewById(R.id.analogClockView2);
+        //Button switchButton = rootView.findViewById(R.id.caregiver_button);
+        Button gameButton = rootView.findViewById(R.id.games_button2);
 
         gameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +119,7 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
-        switchButton.setOnClickListener(new View.OnClickListener() {
+        /*switchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Replace the current fragment with a new fragment
@@ -128,7 +129,7 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
                 fragmentTransaction.commit();
             }
-        });
+        });*/
 
         updateTime();
 
