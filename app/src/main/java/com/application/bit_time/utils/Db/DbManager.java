@@ -1,5 +1,6 @@
 package com.application.bit_time.utils.Db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +12,7 @@ import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DbManager {
@@ -46,6 +48,30 @@ public class DbManager {
                 DbContract.Userdata.COLUMN_NAME_PASSWORD + " text," +
                 DbContract.Userdata.COLUMN_NAME_PIN + " integer)";
 
+        private static final String SQL_CREATE_GAMIFICATION_SETTINGS_TABLE = "create table " + DbContract.gamificationSettings.TABLE_NAME +" (" +
+                DbContract.gamificationSettings._ID + " integer primary key autoincrement," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON + " text," +
+                DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON + " text," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_1 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_2 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_3 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_4 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_5 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_6 + " integer)";
+
+        private static final String SQL_CREATE_APP_SETTINGS_TABLE = "create table " + DbContract.appSettings.TABLE_NAME +" (" +
+                DbContract.appSettings._ID + " integer primary key autoincrement," +
+                DbContract.appSettings.COLUMN_NAME_THEME + " text," +
+                DbContract.appSettings.COLUMN_NAME_BACKGROUND + " text," +
+                DbContract.appSettings.COLUMN_NAME_VOLUME + " integer," +
+                DbContract.appSettings.COLUMN_NAME_RINGTONE + " text," +
+                DbContract.appSettings.COLUMN_NAME_NOTIFICATION_SOUNDS + " integer," +
+                DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS + " integer," +
+                DbContract.appSettings.COLUMN_NAME_SOUNDS + " integer," +
+                DbContract.appSettings.COLUMN_NAME_FOCUS + " integer)";
+
         public DbHelper(Context context)
         {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -56,6 +82,8 @@ public class DbManager {
             db.execSQL(SQL_CREATE_TASKS_TABLE);
             db.execSQL(SQL_CREATE_ACTIVITIES_TABLE);
             db.execSQL(SQL_CREATE_USERDATA_TABLE);
+            db.execSQL(SQL_CREATE_APP_SETTINGS_TABLE);
+            db.execSQL(SQL_CREATE_GAMIFICATION_SETTINGS_TABLE);
         }
 
         @Override
@@ -161,7 +189,6 @@ public class DbManager {
 
         return db.rawQuery(searchQuery,null);
     }
-
 
     public ActivityItem searchActivityItem(ActivityInfo activityInfo)
     {
@@ -616,46 +643,60 @@ public class DbManager {
         db.execSQL(updateQuery);
     }
     public void changeGamificationType(boolean gamificationType) {
-        String updateQuery =
-                "update "+ DbContract.gamificationSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE + "=" + gamificationType;
+        int gamificationTypeValue = gamificationType ? 1 : 0;
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            String updateQuery =
+                    "update " + DbContract.gamificationSettings.TABLE_NAME +
+                            " set " + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE + "=" + gamificationTypeValue;
+            db.execSQL(updateQuery);
+            Log.i("SQLMOD", updateQuery);
+        } else {
+            // If no row exists, create a new row with default values
+            ContentValues values = new ContentValues();
+            values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE, gamificationTypeValue);
+            db.insert(DbContract.gamificationSettings.TABLE_NAME, null, values);
+
+            Log.i("SQLMOD", "New row inserted with gamificationType: " + gamificationTypeValue);
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
     }
+
     public void changePositiveIcon(String positiveIcon) {
         String updateQuery =
                 "update "+ DbContract.gamificationSettings.TABLE_NAME +
                         " set "
                         + DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON + "='" + positiveIcon + "'";
-
-        Log.i("SQLMOD",updateQuery.toString());
         db.execSQL(updateQuery);
+        Log.i("SQLMOD",updateQuery.toString());
     }
     public void changeNegativeIcon(String negativeIcon) {
         String updateQuery =
                 "update "+ DbContract.gamificationSettings.TABLE_NAME +
                         " set "
                         + DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON + "='" + negativeIcon + "'";
-
-        Log.i("SQLMOD",updateQuery.toString());
         db.execSQL(updateQuery);
+        Log.i("SQLMOD",updateQuery.toString());
     }
     public void changeGamificationPoints(int gamificationPoints1, int gamificationPoints2, int gamificationPoints3, int gamificationPoints4, int gamificationPoints5, int gamificationPoints6) {
-        String updateQuery =
-                "update "+ DbContract.gamificationSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_1 + "=" + gamificationPoints1 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_2 + "=" + gamificationPoints2 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_3 + "=" + gamificationPoints3 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_4 + "=" + gamificationPoints4 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_5 + "=" + gamificationPoints5 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_6 + "=" + gamificationPoints6;
+        ContentValues values = new ContentValues();
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_1, gamificationPoints1);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_2, gamificationPoints2);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_3, gamificationPoints3);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_4, gamificationPoints4);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_5, gamificationPoints5);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_6, gamificationPoints6);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        db.update(DbContract.gamificationSettings.TABLE_NAME, values, null, null);
+
+        Log.i("SQLMOD", "Updated gamificationPoints in the database");
     }
+
     public boolean getGamification() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
@@ -667,49 +708,99 @@ public class DbManager {
     public boolean getGamificationType() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getInt(2) == 1;
-        else
-            return false;
+        boolean gamificationType = false;
+
+        if (userExists) {
+            int columnIndex = cursor.getColumnIndex(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE);
+
+            if (columnIndex != -1) {
+                gamificationType = cursor.getInt(columnIndex) == 1;
+                Log.i("getGamificationType", "Read gamificationType from database: " + gamificationType);
+            } else {
+                // Handle the case where the column index is not found
+                // You might want to log an error or set a default value
+                Log.e("getGamificationType", "Column index not found for gamificationType");
+            }
+        } else {
+            // If no row exists, you might want to set a default value
+            gamificationType = false;
+            Log.i("getGamificationType", "No rows found, returning default value");
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
+        return gamificationType;
     }
     public int[] getGamificationPoints() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
         int[] gamificationPoints = new int[6];
-        if(userExists) {
-            gamificationPoints[0] = cursor.getInt(3);
-            gamificationPoints[1] = cursor.getInt(4);
-            gamificationPoints[2] = cursor.getInt(5);
-            gamificationPoints[3] = cursor.getInt(6);
-            gamificationPoints[4] = cursor.getInt(7);
-            gamificationPoints[5] = cursor.getInt(8);
-        }
-        else {
+
+        if (userExists) {
+            for (int i = 0; i < 6; i++) {
+                String columnName = "gamificationTimePoints" + (i + 1);
+                int columnIndex = cursor.getColumnIndex(columnName);
+                if (columnIndex != -1) {
+                    gamificationPoints[i] = cursor.getInt(columnIndex);
+                } else {
+                    // Handle the case where the column index is not found
+                    // You might want to log an error or set a default value
+                    Log.e("getGamificationPoints", "Column index not found for gamificationPoints[" + i + "]");
+                }
+            }
+
+            Log.i("getGamificationPoints", "Read gamificationPoints from database: " + Arrays.toString(gamificationPoints));
+        } else {
+            // If no row exists, set default values
             gamificationPoints[0] = 10;
             gamificationPoints[1] = 50;
             gamificationPoints[2] = 100;
             gamificationPoints[3] = 10;
             gamificationPoints[4] = -10;
             gamificationPoints[5] = -50;
-        }
-        return gamificationPoints;
 
+            Log.i("getGamificationPoints", "No rows found, returning default values: " + Arrays.toString(gamificationPoints));
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
+        return gamificationPoints;
     }
     public String getPositiveIcon() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(9);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON);
+
+            if (columnIndex != -1) {
+                String positiveIcon = cursor.getString(columnIndex);
+                Log.i("PositiveIcon", positiveIcon);
+                return positiveIcon;
+            } else {
+                Log.e("PositiveIcon", "Column not found: " + DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON);
+            }
+        } else {
+            Log.e("PositiveIcon", "No data found in the cursor.");
+        }
+
+        return "happy_dog"; // Default value
     }
     public String getNegativeIcon() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(10);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON);
+
+            if (columnIndex != -1) {
+                String negativeIcon = cursor.getString(columnIndex);
+                Log.i("NegativeIcon", negativeIcon);
+                return negativeIcon;
+            } else {
+                Log.e("NegativeIcon", "Column not found: " + DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON);
+            }
+        } else {
+            Log.e("NegativeIcon", "No data found in the cursor.");
+        }
+
+        return "sad_dog"; // Default value
     }
 
     public void closeDb()

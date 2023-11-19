@@ -87,19 +87,43 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/iconSpinner1"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:padding="13dp"
-                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingRight="50dp">
+                <ImageView
+                    android:id="@+id/PositiveIcon"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/happy_dog" />
+                <Spinner
+                    android:id="@+id/iconSpinner1"
+                    android:layout_width="100dp"
+                    android:layout_weight="1"
+                    android:padding="13dp"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
-            <Spinner
-                android:id="@+id/iconSpinner2"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:padding="13dp"
-                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingLeft="50dp">
+                <ImageView
+                    android:id="@+id/NegativeIcon"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/sad_dog" />
+                <Spinner
+                    android:id="@+id/iconSpinner2"
+                    android:layout_width="100dp"
+                    android:layout_weight="1"
+                    android:padding="13dp"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
 
         <TextView
@@ -145,7 +169,7 @@
                     android:padding="12dp"
                     android:textAlignment="center"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="numberSigned"
                     android:autofillHints="" />
 
             </LinearLayout>

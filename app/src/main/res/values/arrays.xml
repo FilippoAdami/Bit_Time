@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="happy_icon_array">
+        <item>happy_dog</item>
+        <item>happy_cat</item>
+    </string-array>
+    <string-array name="sad_icon_array">
+        <item>sad_dog</item>
+        <item>sad_cat</item>
+    </string-array>
+</resources>
