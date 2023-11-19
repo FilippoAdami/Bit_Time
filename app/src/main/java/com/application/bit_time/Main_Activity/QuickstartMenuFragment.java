@@ -114,4 +114,52 @@ public class QuickstartMenuFragment extends Fragment {
 
         return view;
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+        Cursor allActivitiesCursor = this.dbManager.selectAllActivities();
+
+        if(allActivitiesCursor.getCount()>0) {
+            allActivitiesCursor.moveToFirst();
+
+            do {
+                ActivityInfo currentAIInfo = new ActivityInfo(
+                        allActivitiesCursor.getInt(0),
+                        allActivitiesCursor.getString(1),
+                        allActivitiesCursor.getInt(2));
+
+                Log.i("QMF db action",currentAIInfo.toString());
+
+                TaskItem[] currentAISubtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+                /*List<TaskItem> currentAISubtasksList = new ArrayList<>(this.dbManager.retrieveSubtasks(allActivitiesCursor));
+
+                int i =0;
+
+                for(TaskItem ti : currentAISubtasksList )
+                {
+                    Log.i("retrieved ti",ti.toString());
+                    currentAISubtasks[i]= new TaskItem(ti);
+                    i++;
+                }*/
+
+
+
+                this.activitiesList.add(new ActivityInfo(currentAIInfo));
+
+            }while(allActivitiesCursor.moveToNext());
+
+
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        this.activitiesList.clear();
+    }
 }

@@ -8,10 +8,12 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.application.bit_time.Main_Activity.GameFragment;
 import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbContract;
+import com.application.bit_time.utils.PlaceholderFragment;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -175,7 +177,8 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.i("SettingsActivity VM","item : "+item.toString());
                 Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
 
-                if(frag == null)
+                Log.i("SETTINGS ACT vm",item.toString());
+                /*if(frag == null)
                 {
                     //Log.i("INFOZ","entro in if");
                     if(item.equals("Tasks"))
@@ -186,7 +189,7 @@ public class SettingsActivity extends AppCompatActivity {
                     {
                         activitiesRender();
                     }
-                }
+                }*/
 
                 if(item.equals("EntryPoint"))
                 {
@@ -264,6 +267,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
 
+        Log.i("SETTINGS ACT log","also here");
         lowerFrag = new SettingsLowerFragmentActivities();
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
@@ -345,8 +349,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
     public void homeSettingsRedirect(){
         fManager.beginTransaction()
-                .replace(R.id.top_fragment_container_view, new Fragment())
-                .replace(R.id.middle_fragment_container_view, new SettingsHomeFragment())
+                .replace(R.id.top_fragment_container_view, new SettingsHomeFragment())
+                .replace(R.id.middle_fragment_container_view, new Fragment())
                 .replace(R.id.bottom_fragment_container_view,new Fragment())
                 .addToBackStack("HomeSettingsRedirect")
                 .commit();

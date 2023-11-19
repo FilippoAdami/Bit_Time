@@ -8,59 +8,58 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Welcome to Caregiver Fragment"
+        android:text="@string/caregiver_welcome_message"
         android:textSize="30sp" />
+
     <Button
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="torna indietro"
         android:layout_gravity="center"
-        />
+        android:text="@string/back_button_message" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="back"
-        android:textSize="20sp"
         android:layout_gravity="center"
-        />
+        android:text="@string/back_text"
+        android:textSize="20sp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Inserire password"
-        android:textSize="30sp"
         android:layout_gravity="center"
-        />
+        android:text="@string/insert_password_text"
+        android:textSize="30sp" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/PIN_txt_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="PIN"
-        android:textSize="28dp"
         android:layout_gravity="center"
-        />
+        android:hint="@string/pin_input_hint_text"
+        android:textSize="28sp" />
+
     <Button
         android:id="@+id/forgotPasswordButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="reset PIN"
         android:layout_gravity="right"
-        />
+        android:text="@string/reset_button" />
+
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter"
         android:layout_gravity="center"
-        />
+        android:text="@string/enter_text" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="default PIN 0000"
-        android:textSize="30sp"
         android:layout_gravity="center"
-        />
+        android:text="@string/default_pin_text"
+        android:textSize="30sp" />
 
 </LinearLayout>
