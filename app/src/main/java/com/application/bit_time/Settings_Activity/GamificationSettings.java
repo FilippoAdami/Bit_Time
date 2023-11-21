@@ -85,7 +85,6 @@ public class GamificationSettings extends Fragment {
         editText5.setText(String.valueOf(timePoints[4]));
         editText6.setText(String.valueOf(timePoints[5]));
 
-
     // when the user selects one of the radio buttons, the other one is deselected
         radio1.setOnClickListener(new View.OnClickListener() {
             @Override

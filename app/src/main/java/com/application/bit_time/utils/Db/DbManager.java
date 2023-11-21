@@ -496,13 +496,38 @@ public class DbManager {
     }
 
     public void changeTheme(String theme) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_THEME + "='" + theme + "'";
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_THEME, theme);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            int rowsAffected = db.update(
+                    DbContract.appSettings.TABLE_NAME,
+                    values,
+                    null,
+                    null
+            );
+
+            if (rowsAffected > 0) {
+                Log.i("DB_UPDATE", "Theme updated successfully: " + theme);
+            } else {
+                Log.e("DB_ERROR", "Failed to update theme");
+            }
+        } else {
+            // If no row exists, create a new row with default values
+            long newRowId = db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+
+            if (newRowId != -1) {
+                Log.i("DB_INSERT", "New row inserted with theme: " + theme);
+            } else {
+                Log.e("DB_ERROR", "Failed to insert new row");
+            }
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
     }
     public void changeBackground(String background) {
         String updateQuery =
@@ -569,11 +594,24 @@ public class DbManager {
     }
     public String getTheme() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(1);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.appSettings.COLUMN_NAME_THEME);
+
+            if (columnIndex != -1) {
+                String theme = cursor.getString(columnIndex);
+                cursor.close();  // Close the cursor to avoid potential memory leaks
+                return theme;
+            } else {
+                Log.e("DB_ERROR", "Column index is -1 for theme column");
+            }
+        } else {
+            Log.i("DB_INFO", "No rows found in the database, returning default theme");
+            return "PastelTheme";
+        }
+
+        cursor.close();
+        return null;
     }
     public String getBackground() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
@@ -666,7 +704,6 @@ public class DbManager {
 
         cursor.close();  // Close the cursor to avoid potential memory leaks
     }
-
     public void changePositiveIcon(String positiveIcon) {
         String updateQuery =
                 "update "+ DbContract.gamificationSettings.TABLE_NAME +
