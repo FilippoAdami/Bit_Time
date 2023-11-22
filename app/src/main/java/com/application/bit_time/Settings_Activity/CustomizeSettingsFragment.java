@@ -1,17 +1,12 @@
 package com.application.bit_time.Settings_Activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +31,6 @@ import android.widget.Toast;
 
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
-import com.application.bit_time.utils.RingtoneHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CustomizeSettingsFragment extends Fragment {
     DbManager dbManager;
@@ -73,7 +68,6 @@ public class CustomizeSettingsFragment extends Fragment {
     private CheckBox checkbox3;
     private CheckBox checkbox4;
     private SeekBar volumeSeekBar;
-    private RingtoneHelper ringtoneHelper;
     private Button loadRingtoneButton1;
     private TextView ringtoneText;
     private Button loadNotificationButton;
@@ -98,7 +92,6 @@ public class CustomizeSettingsFragment extends Fragment {
         checkbox3 = view.findViewById(R.id.checkbox3);
         checkbox4 = view.findViewById(R.id.checkbox4);
         volumeSeekBar = view.findViewById(R.id.volumeSeekBar);
-        ringtoneHelper = new RingtoneHelper();
         loadRingtoneButton1 = view.findViewById(R.id.loadRingtoneButton1);
         ringtoneText = view.findViewById(R.id.textButton1);
         loadNotificationButton = view.findViewById(R.id.loadRingtoneButton2);
@@ -124,73 +117,36 @@ public class CustomizeSettingsFragment extends Fragment {
         notificationText.setText(currentNotification);
 
         // Set the click listeners
-        themeDefault.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle the layout click event
-                switchTheme("PastelTheme");
-            }
+        themeDefault.setOnClickListener(v -> {
+            // Handle the layout click event
+            switchTheme("PastelTheme");
         });
-        themeVivid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle the layout click event
-                switchTheme("VividTheme");
-            }
+        themeVivid.setOnClickListener(v -> {
+            // Handle the layout click event
+            switchTheme("VividTheme");
         });
-        themeEarth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle the layout click event
-                switchTheme("EarthTheme");
-            }
+        themeEarth.setOnClickListener(v -> {
+            // Handle the layout click event
+            switchTheme("EarthTheme");
         });
-        themeBW.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle the layout click event
-                switchTheme("BWTheme");
-            }
+        themeBW.setOnClickListener(v -> {
+            // Handle the layout click event
+            switchTheme("BWTheme");
         });
-        loadBackgroundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] supportedExtensions = {"jpg", "jpeg", "png", "bmp", "webp"};
-                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension("jpg");
+        loadBackgroundButton.setOnClickListener(v -> {
+            String[] supportedExtensions = {"jpg", "jpeg", "png", "bmp", "webp"};
+            StringBuilder mimeType = new StringBuilder(Objects.requireNonNull(MimeTypeMap.getSingleton().getMimeTypeFromExtension("jpg")));
 
-                if (mimeType != null) {
-                    for (String extension : supportedExtensions) {
-                        mimeType += "|" + MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                    }
-                }
+            for (String extension : supportedExtensions) {
+                mimeType.append("|").append(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
+            }
 
-                backgroundPickerLauncher.launch(mimeType);
-            }
+            backgroundPickerLauncher.launch(mimeType.toString());
         });
-        checkbox1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbManager.changeSounds(checkbox1.isChecked());
-            }
-        });
-        checkbox2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbManager.changeNotifications(checkbox2.isChecked());
-            }
-        });
-        checkbox3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbManager.changeFocus(checkbox3.isChecked());
-            }
-        });
-        checkbox4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbManager.changeGamification(checkbox4.isChecked());
-            }
-        });
+        checkbox1.setOnClickListener(v -> dbManager.changeSounds(checkbox1.isChecked()));
+        checkbox2.setOnClickListener(v -> dbManager.changeNotifications(checkbox2.isChecked()));
+        checkbox3.setOnClickListener(v -> dbManager.changeFocus(checkbox3.isChecked()));
+        checkbox4.setOnClickListener(v -> dbManager.changeGamification(checkbox4.isChecked()));
         volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int volume, boolean fromUser) {
@@ -204,26 +160,20 @@ public class CustomizeSettingsFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        loadRingtoneButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                type = "ringtone";
-                try {
-                    retrieveAndShowRingtones();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        loadRingtoneButton1.setOnClickListener(v -> {
+            type = "ringtone";
+            try {
+                retrieveAndShowRingtones();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
-        loadNotificationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                type = "notification";
-                try {
-                    retrieveAndShowRingtones();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        loadNotificationButton.setOnClickListener(v -> {
+            type = "notification";
+            try {
+                retrieveAndShowRingtones();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
 
@@ -291,7 +241,7 @@ public class CustomizeSettingsFragment extends Fragment {
                 currentTheme = "VividTheme";
                 break;
             default:
-                currentTheme.equals("PastelTheme");
+                currentTheme ="PastelTheme";
                 break;
         }
         //set new theme
@@ -324,11 +274,11 @@ public class CustomizeSettingsFragment extends Fragment {
 
         try {
             // Open an InputStream from the selected image URI
-            InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
 
             // Determine the file extension from the MIME type
             String extension;
-            String mimeType = getActivity().getContentResolver().getType(uri);
+            String mimeType = requireActivity().getContentResolver().getType(uri);
             if ("image/jpeg".equals(mimeType)) {
                 extension = ".jpg";
             } else if ("image/png".equals(mimeType)) {
@@ -342,7 +292,7 @@ public class CustomizeSettingsFragment extends Fragment {
             String fileName = "background_image" + extension;
 
             // Create an OutputStream to write the image to internal storage
-            FileOutputStream outputStream = getActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
+            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
 
             // Copy the image data from InputStream to OutputStream
             byte[] buffer = new byte[1024];
@@ -404,7 +354,7 @@ public class CustomizeSettingsFragment extends Fragment {
         String[] items = ringtoneTitles.toArray(new String[0]);
         Uri[] uris = ringtoneUris.toArray(new Uri[0]);
 
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(requireActivity())
                 .setTitle("Choose a " + type)
                 .setItems(items, (dialog, which) -> {
                     Log.d("RingtonePicker", "Inside AlertDialog");

@@ -1,5 +1,6 @@
 package com.application.bit_time.utils.Db;
 
+import org.mindrot.jbcrypt.BCrypt;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -46,7 +47,8 @@ public class DbManager {
                 DbContract.Userdata.COLUMN_NAME_USERNAME + " text," +
                 DbContract.Userdata.COLUMN_NAME_EMAIL +" text," +
                 DbContract.Userdata.COLUMN_NAME_PASSWORD + " text," +
-                DbContract.Userdata.COLUMN_NAME_PIN + " integer)";
+                DbContract.Userdata.COLUMN_NAME_PIN + " integer," +
+                DbContract.Userdata.COLUMN_NAME_SALT + " text)";
 
         private static final String SQL_CREATE_GAMIFICATION_SETTINGS_TABLE = "create table " + DbContract.gamificationSettings.TABLE_NAME +" (" +
                 DbContract.gamificationSettings._ID + " integer primary key autoincrement," +
@@ -400,22 +402,43 @@ public class DbManager {
 
         return db.rawQuery(searchQuery,null);
     }
-    public void registerUser(String email,String password) {
-        String insertQuery = "insert into "+ DbContract.Userdata.TABLE_NAME
-                +" ("+ DbContract.Userdata.COLUMN_NAME_EMAIL+","
-                + DbContract.Userdata.COLUMN_NAME_PASSWORD+") values("
-                + "'"+email+"','"+password+"');";
+    public void registerUser(String email, String password) {
+        // Generate a random salt
+        String salt = BCrypt.gensalt();
 
-        db.execSQL(insertQuery);
+        // Hash the password with the salt
+        String hashedPassword = BCrypt.hashpw(password, salt);
+        Log.i("DB_INFO", "Hashed password: " + hashedPassword);
+
+        String insertQuery = "INSERT INTO " + DbContract.Userdata.TABLE_NAME +
+                " (" + DbContract.Userdata.COLUMN_NAME_EMAIL + ", " +
+                DbContract.Userdata.COLUMN_NAME_PASSWORD + ", " +
+                DbContract.Userdata.COLUMN_NAME_SALT + ") VALUES (?, ?, ?)";
+
+        // Use parameterized query to avoid SQL injection
+        db.execSQL(insertQuery, new String[]{email, hashedPassword, salt});
     }
-    public boolean checkUser(Cursor cursor ,String password) {
-        cursor.moveToFirst();
-        String dbPassword = cursor.getString(3);
-        if(dbPassword.equals(password))
-            return true;
-        else
+
+    public boolean checkUser(Cursor cursor, String password) {
+        int columnIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_PASSWORD);
+        int saltIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_SALT);
+
+        if (columnIndex == -1 || saltIndex == -1) {
+            Log.e("DB_ERROR", "Column index is -1 for password or salt column");
             return false;
+        }
+        cursor.moveToFirst();
+        String dbPasswordHash = cursor.getString(columnIndex);
+        String salt = cursor.getString(saltIndex);
+
+        // Hash the input password with the retrieved salt
+        String hashedPassword = BCrypt.hashpw(password, salt);
+        Log.i("DB_INFO", "Hashed password: " + hashedPassword);
+
+        // Compare the hashed input password with the saved hash
+        return hashedPassword.equals(dbPasswordHash);
     }
+
     public String getUserEmail() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
@@ -476,14 +499,21 @@ public class DbManager {
         Log.i("SQLMOD", updateQuery.toString());
         db.execSQL(updateQuery);
     }
-    public void updatePassword(String email,String password) {
-        String updateQuery =
-                "update "+ DbContract.Userdata.TABLE_NAME +
-                        " set "
-                        + DbContract.Userdata.COLUMN_NAME_PASSWORD + "='" + password + "'"
-                        + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+    public void updatePassword(String email, String password) {
+        // Generate a salt
+        String salt = BCrypt.gensalt();
 
-        Log.i("SQLMOD",updateQuery.toString());
+        // Hash the password with the generated salt
+        String hashedPassword = BCrypt.hashpw(password, salt);
+
+        String updateQuery =
+                "UPDATE " + DbContract.Userdata.TABLE_NAME +
+                        " SET "
+                        + DbContract.Userdata.COLUMN_NAME_PASSWORD + "='" + hashedPassword + "', "
+                        + DbContract.Userdata.COLUMN_NAME_SALT + "='" + salt + "'"
+                        + " WHERE " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+
+        Log.i("SQLMOD", updateQuery);
         db.execSQL(updateQuery);
     }
     public void deleteUser(String email) {
@@ -843,7 +873,6 @@ public class DbManager {
     }
 
 
-
     public void changeGamification(boolean gamification) {
         ContentValues values = new ContentValues();
         values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION, gamification ? 1 : 0);
@@ -1033,14 +1062,11 @@ public class DbManager {
         return "sad_dog"; // Default value
     }
 
-    public void closeDb()
-    {
+    public void closeDb() {
         db.close();
 
     }
-
-    private String scanQueryBuilder(TaskItem itemToLookFor)
-    {
+    private String scanQueryBuilder(TaskItem itemToLookFor) {
         String scanQuery =
                 "select * from "+DbContract.Activities.TABLE_NAME
                         + " where ";
@@ -1059,5 +1085,4 @@ public class DbManager {
         return scanQuery;
 
     }
-
 }

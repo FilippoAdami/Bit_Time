@@ -43,7 +43,7 @@ public final class DbContract {
         public static final String COLUMN_NAME_EMAIL = "email";
         public static final String COLUMN_NAME_PASSWORD = "password";
         public static final String COLUMN_NAME_PIN = "pin";
-
+        public static final String COLUMN_NAME_SALT = "salt";
     }
 
     public static class appSettings implements BaseColumns{
