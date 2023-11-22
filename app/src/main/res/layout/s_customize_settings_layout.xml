@@ -168,7 +168,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="pop-up"
                 android:id="@+id/textCheckbox1"/>
         </LinearLayout>
         <LinearLayout
@@ -184,9 +184,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="background"
                 android:id="@+id/textCheckbox2"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -196,12 +201,17 @@
                 android:id="@+id/checkbox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="focus"
                 android:id="@+id/textCheckbox3"/>
+        </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="focus mode description"
+                android:id="@+id/subtextCheckbox3"/>
         </LinearLayout>
 
         <!-- Volume -->
@@ -239,7 +249,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="Suoneria"
                 android:id="@+id/textButton1"/>
         </LinearLayout>
         <LinearLayout
@@ -257,8 +267,25 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="Notifiche"
                 android:id="@+id/textButton2"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="gamification"
+                android:id="@+id/textCheckbox4"/>
         </LinearLayout>
 
         <!--Save button-->
