@@ -18,29 +18,32 @@
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:paddingTop="16dp"
+            android:paddingTop="2dp"
             android:paddingBottom="8dp"
             android:id="@+id/textAspetto"/>
 
-        <!-- Row with Columns (text1, text2, text3, text4, text5) -->
+        <!-- Themes section -->
         <LinearLayout
             android:id="@+id/themeRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_weight="1"
                 android:orientation="vertical"
                 android:id="@+id/ThemeColumn1"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp">
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/square1">
-                </FrameLayout>
+                <ImageView
+                    android:id="@+id/PastelTheme"
+                    android:layout_width="90dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/pastel" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -51,15 +54,15 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:orientation="vertical"
-                android:id="@+id/ThemeColumn2">
+                android:id="@+id/ThemeColumn2"
+                android:padding="2dp">
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/square2">
-                </FrameLayout>
+                <ImageView
+                    android:id="@+id/VividTheme"
+                    android:layout_width="90dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/vivid" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -69,16 +72,16 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_weight="1"
                 android:orientation="vertical"
                 android:id="@+id/ThemeColumn3"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="2dp">
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/square3">
-                </FrameLayout>
+                <ImageView
+                    android:id="@+id/EarthTheme"
+                    android:layout_width="90dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/earth" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -88,16 +91,16 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_weight="1"
                 android:orientation="vertical"
                 android:id="@+id/ThemeColumn4"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="2dp">
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/square4">
-                </FrameLayout>
+                <ImageView
+                    android:id="@+id/PositiveIcon"
+                    android:layout_width="90dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/bw" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -120,6 +123,11 @@
             android:paddingBottom="8dp"
             android:id="@+id/textChangeBackground"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/background">
         <!-- Button to Load Background from Internal Memory -->
         <Button
             android:id="@+id/loadBackgroundButton"
@@ -127,6 +135,12 @@
             android:layout_height="wrap_content"
             android:text="Load Background"
             android:layout_marginTop="16dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Text"
+                android:id="@+id/currentBackground"/>
+        </LinearLayout>
 
         <!-- Notifiche -->
         <TextView
@@ -154,7 +168,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="pop-up"
                 android:id="@+id/textCheckbox1"/>
         </LinearLayout>
         <LinearLayout
@@ -170,9 +184,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="background"
                 android:id="@+id/textCheckbox2"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -182,12 +201,17 @@
                 android:id="@+id/checkbox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="focus"
                 android:id="@+id/textCheckbox3"/>
+        </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="focus mode description"
+                android:id="@+id/subtextCheckbox3"/>
         </LinearLayout>
 
         <!-- Volume -->
@@ -225,7 +249,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="Suoneria"
                 android:id="@+id/textButton1"/>
         </LinearLayout>
         <LinearLayout
@@ -243,13 +267,34 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Text"
+                android:text="Notifiche"
                 android:id="@+id/textButton2"/>
         </LinearLayout>
 
-        <!-- Row with Two Columns: Button and Text (rowWithButton2, textButton2) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <!-- Additional Rows with Buttons and Text -->
+            <CheckBox
+                android:id="@+id/checkbox4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="gamification"
+                android:id="@+id/textCheckbox4"/>
+        </LinearLayout>
+
+        <!--Save button-->
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 </ScrollView>

@@ -27,7 +27,6 @@ public final class DbContract {
 
     }
 
-
     public static class Tasks implements  BaseColumns
     {
         public static final String TABLE_NAME = "tasks";
@@ -38,15 +37,13 @@ public final class DbContract {
 
     }
 
-
-    public static class Userdata implements  BaseColumns
-    {
+    public static class Userdata implements  BaseColumns{
         public static final String TABLE_NAME = "userdata";
         public static final String COLUMN_NAME_USERNAME = "username";
         public static final String COLUMN_NAME_EMAIL = "email";
         public static final String COLUMN_NAME_PASSWORD = "password";
         public static final String COLUMN_NAME_PIN = "pin";
-
+        public static final String COLUMN_NAME_SALT = "salt";
     }
 
     public static class appSettings implements BaseColumns{
@@ -74,8 +71,4 @@ public final class DbContract {
         public static final String COLUMN_NAME_GAMIFICATION_TIME_POINTS_5 = "gamificationTimePoints5";
         public static final String COLUMN_NAME_GAMIFICATION_TIME_POINTS_6 = "gamificationTimePoints6";
     }
-
-
-
-
 }

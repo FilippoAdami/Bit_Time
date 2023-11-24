@@ -1,5 +1,7 @@
 package com.application.bit_time.utils.Db;
 
+import org.mindrot.jbcrypt.BCrypt;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +13,7 @@ import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DbManager {
@@ -44,7 +47,32 @@ public class DbManager {
                 DbContract.Userdata.COLUMN_NAME_USERNAME + " text," +
                 DbContract.Userdata.COLUMN_NAME_EMAIL +" text," +
                 DbContract.Userdata.COLUMN_NAME_PASSWORD + " text," +
-                DbContract.Userdata.COLUMN_NAME_PIN + " integer)";
+                DbContract.Userdata.COLUMN_NAME_PIN + " integer," +
+                DbContract.Userdata.COLUMN_NAME_SALT + " text)";
+
+        private static final String SQL_CREATE_GAMIFICATION_SETTINGS_TABLE = "create table " + DbContract.gamificationSettings.TABLE_NAME +" (" +
+                DbContract.gamificationSettings._ID + " integer primary key autoincrement," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON + " text," +
+                DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON + " text," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_1 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_2 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_3 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_4 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_5 + " integer," +
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_6 + " integer)";
+
+        private static final String SQL_CREATE_APP_SETTINGS_TABLE = "create table " + DbContract.appSettings.TABLE_NAME +" (" +
+                DbContract.appSettings._ID + " integer primary key autoincrement," +
+                DbContract.appSettings.COLUMN_NAME_THEME + " text," +
+                DbContract.appSettings.COLUMN_NAME_BACKGROUND + " text," +
+                DbContract.appSettings.COLUMN_NAME_VOLUME + " integer," +
+                DbContract.appSettings.COLUMN_NAME_RINGTONE + " text," +
+                DbContract.appSettings.COLUMN_NAME_NOTIFICATION_SOUNDS + " integer," +
+                DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS + " integer," +
+                DbContract.appSettings.COLUMN_NAME_SOUNDS + " integer," +
+                DbContract.appSettings.COLUMN_NAME_FOCUS + " integer)";
 
         public DbHelper(Context context)
         {
@@ -56,6 +84,8 @@ public class DbManager {
             db.execSQL(SQL_CREATE_TASKS_TABLE);
             db.execSQL(SQL_CREATE_ACTIVITIES_TABLE);
             db.execSQL(SQL_CREATE_USERDATA_TABLE);
+            db.execSQL(SQL_CREATE_APP_SETTINGS_TABLE);
+            db.execSQL(SQL_CREATE_GAMIFICATION_SETTINGS_TABLE);
         }
 
         @Override
@@ -161,7 +191,6 @@ public class DbManager {
 
         return db.rawQuery(searchQuery,null);
     }
-
 
     public ActivityItem searchActivityItem(ActivityInfo activityInfo)
     {
@@ -373,22 +402,43 @@ public class DbManager {
 
         return db.rawQuery(searchQuery,null);
     }
-    public void registerUser(String email,String password) {
-        String insertQuery = "insert into "+ DbContract.Userdata.TABLE_NAME
-                +" ("+ DbContract.Userdata.COLUMN_NAME_EMAIL+","
-                + DbContract.Userdata.COLUMN_NAME_PASSWORD+") values("
-                + "'"+email+"','"+password+"');";
+    public void registerUser(String email, String password) {
+        // Generate a random salt
+        String salt = BCrypt.gensalt();
 
-        db.execSQL(insertQuery);
+        // Hash the password with the salt
+        String hashedPassword = BCrypt.hashpw(password, salt);
+        Log.i("DB_INFO", "Hashed password: " + hashedPassword);
+
+        String insertQuery = "INSERT INTO " + DbContract.Userdata.TABLE_NAME +
+                " (" + DbContract.Userdata.COLUMN_NAME_EMAIL + ", " +
+                DbContract.Userdata.COLUMN_NAME_PASSWORD + ", " +
+                DbContract.Userdata.COLUMN_NAME_SALT + ") VALUES (?, ?, ?)";
+
+        // Use parameterized query to avoid SQL injection
+        db.execSQL(insertQuery, new String[]{email, hashedPassword, salt});
     }
-    public boolean checkUser(Cursor cursor ,String password) {
-        cursor.moveToFirst();
-        String dbPassword = cursor.getString(3);
-        if(dbPassword.equals(password))
-            return true;
-        else
+
+    public boolean checkUser(Cursor cursor, String password) {
+        int columnIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_PASSWORD);
+        int saltIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_SALT);
+
+        if (columnIndex == -1 || saltIndex == -1) {
+            Log.e("DB_ERROR", "Column index is -1 for password or salt column");
             return false;
+        }
+        cursor.moveToFirst();
+        String dbPasswordHash = cursor.getString(columnIndex);
+        String salt = cursor.getString(saltIndex);
+
+        // Hash the input password with the retrieved salt
+        String hashedPassword = BCrypt.hashpw(password, salt);
+        Log.i("DB_INFO", "Hashed password: " + hashedPassword);
+
+        // Compare the hashed input password with the saved hash
+        return hashedPassword.equals(dbPasswordHash);
     }
+
     public String getUserEmail() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
@@ -449,14 +499,21 @@ public class DbManager {
         Log.i("SQLMOD", updateQuery.toString());
         db.execSQL(updateQuery);
     }
-    public void updatePassword(String email,String password) {
-        String updateQuery =
-                "update "+ DbContract.Userdata.TABLE_NAME +
-                        " set "
-                        + DbContract.Userdata.COLUMN_NAME_PASSWORD + "='" + password + "'"
-                        + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+    public void updatePassword(String email, String password) {
+        // Generate a salt
+        String salt = BCrypt.gensalt();
 
-        Log.i("SQLMOD",updateQuery.toString());
+        // Hash the password with the generated salt
+        String hashedPassword = BCrypt.hashpw(password, salt);
+
+        String updateQuery =
+                "UPDATE " + DbContract.Userdata.TABLE_NAME +
+                        " SET "
+                        + DbContract.Userdata.COLUMN_NAME_PASSWORD + "='" + hashedPassword + "', "
+                        + DbContract.Userdata.COLUMN_NAME_SALT + "='" + salt + "'"
+                        + " WHERE " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
+
+        Log.i("SQLMOD", updateQuery);
         db.execSQL(updateQuery);
     }
     public void deleteUser(String email) {
@@ -468,258 +525,548 @@ public class DbManager {
         db.execSQL(deleteQuery);
     }
 
-    public void changeTheme(String theme) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_THEME + "='" + theme + "'";
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+    public void changeTheme(String theme) {
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_THEME, theme);
+
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            int rowsAffected = db.update(
+                    DbContract.appSettings.TABLE_NAME,
+                    values,
+                    null,
+                    null
+            );
+
+            if (rowsAffected > 0) {
+                Log.i("DB_UPDATE", "Theme updated successfully: " + theme);
+            } else {
+                Log.e("DB_ERROR", "Failed to update theme");
+            }
+        } else {
+            // If no row exists, create a new row with default values
+            long newRowId = db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+
+            if (newRowId != -1) {
+                Log.i("DB_INSERT", "New row inserted with theme: " + theme);
+            } else {
+                Log.e("DB_ERROR", "Failed to insert new row");
+            }
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
     }
     public void changeBackground(String background) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_BACKGROUND + "='" + background + "'";
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_BACKGROUND, background);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            int rowsAffected = db.update(
+                    DbContract.appSettings.TABLE_NAME,
+                    values,
+                    null,
+                    null
+            );
+
+            if (rowsAffected > 0) {
+                Log.i("DB_UPDATE", "Background updated successfully: " + background);
+            } else {
+                Log.e("DB_ERROR", "Failed to update background");
+            }
+        } else {
+            // If no row exists, create a new row with default values
+            long newRowId = db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+
+            if (newRowId != -1) {
+                Log.i("DB_INSERT", "New row inserted with background: " + background);
+            } else {
+                Log.e("DB_ERROR", "Failed to insert new row");
+            }
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
     }
     public void changeVolume(int volume) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_VOLUME + "=" + volume;
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_VOLUME, volume);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        int rowsAffected = db.update(DbContract.appSettings.TABLE_NAME, values, null, null);
+
+        if (rowsAffected == 0) {
+            // No row was updated, so insert a new row
+            db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+        }
+
+        Log.i("SQLMOD", "changeFocus: Rows affected - " + rowsAffected);
     }
     public void changeRingtone(String ringtone) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_RINGTONE + "='" + ringtone + "'";
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_RINGTONE, ringtone);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            int rowsAffected = db.update(
+                    DbContract.appSettings.TABLE_NAME,
+                    values,
+                    null,
+                    null
+            );
+
+            if (rowsAffected > 0) {
+                Log.i("DB_UPDATE", "Ringtone updated successfully: " + ringtone);
+            } else {
+                Log.e("DB_ERROR", "Failed to update ringtone");
+            }
+        } else {
+            // If no row exists, create a new row with default values
+            long newRowId = db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+
+            if (newRowId != -1) {
+                Log.i("DB_INSERT", "New row inserted with ringtone: " + ringtone);
+            } else {
+                Log.e("DB_ERROR", "Failed to insert new row");
+            }
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
     }
-    public void changeNotificationSounds(boolean notificationSounds) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_NOTIFICATION_SOUNDS + "=" + notificationSounds;
+    public void changeNotification(String notification) {
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_NOTIFICATION_SOUNDS, notification);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            int rowsAffected = db.update(
+                    DbContract.appSettings.TABLE_NAME,
+                    values,
+                    null,
+                    null
+            );
+
+            if (rowsAffected > 0) {
+                Log.i("DB_UPDATE", "Notification updated successfully: " + notification);
+            } else {
+                Log.e("DB_ERROR", "Failed to update theme");
+            }
+        } else {
+            // If no row exists, create a new row with default values
+            long newRowId = db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+
+            if (newRowId != -1) {
+                Log.i("DB_INSERT", "New row inserted with theme: " + notification);
+            } else {
+                Log.e("DB_ERROR", "Failed to insert new row");
+            }
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
     }
     public void changeNotifications(boolean notifications) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS + "=" + notifications;
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS, notifications ? 1 : 0);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        int rowsAffected = db.update(DbContract.appSettings.TABLE_NAME, values, null, null);
+
+        if (rowsAffected == 0) {
+            // No row was updated, so insert a new row
+            db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+        }
+
+        Log.i("SQLMOD", "changeNotifications: Rows affected - " + rowsAffected);
     }
     public void changeSounds(boolean sounds) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_SOUNDS + "=" + sounds;
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_SOUNDS, sounds ? 1 : 0);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        int rowsAffected = db.update(DbContract.appSettings.TABLE_NAME, values, null, null);
+
+        if (rowsAffected == 0) {
+            // No row was updated, so insert a new row
+            db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+        }
+
+        Log.i("SQLMOD", "changeSounds: Rows affected - " + rowsAffected);
     }
     public void changeFocus(boolean focus) {
-        String updateQuery =
-                "update "+ DbContract.appSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.appSettings.COLUMN_NAME_FOCUS + "=" + focus;
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_FOCUS, focus ? 1 : 0);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        int rowsAffected = db.update(DbContract.appSettings.TABLE_NAME, values, null, null);
+
+        if (rowsAffected == 0) {
+            // No row was updated, so insert a new row
+            db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+        }
+
+        Log.i("SQLMOD", "changeFocus: Rows affected - " + rowsAffected);
     }
+
     public String getTheme() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(1);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.appSettings.COLUMN_NAME_THEME);
+
+            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                String theme = cursor.getString(columnIndex);
+                cursor.close();  // Close the cursor to avoid potential memory leaks
+                return theme;
+            } else {
+                Log.e("DB_ERROR", "Column index is -1 for theme column");
+                cursor.close();
+                return "PastelTheme";
+            }
+        } else {
+            Log.i("DB_INFO", "No rows found in the database, returning default theme");
+            cursor.close();
+            return "PastelTheme";
+        }
     }
     public String getBackground() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(2);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.appSettings.COLUMN_NAME_BACKGROUND);
+
+            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                String theme = cursor.getString(columnIndex);
+                cursor.close();  // Close the cursor to avoid potential memory leaks
+                return theme;
+            } else {
+                Log.e("DB_ERROR", "Column index is -1 for background column");
+                cursor.close();
+                return "no background";
+            }
+        } else {
+            Log.i("DB_INFO", "No rows found in the database, returning default theme");
+            cursor.close();
+            return "no background";
+        }
     }
     public int getVolume() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getInt(3);
-        else
-            return 0;
+
+        try {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_VOLUME);
+                return cursor.getInt(columnIndex);
+            } else {
+                return 5;
+            }
+        } catch (IllegalArgumentException e) {
+            // Log the error or handle it as needed
+            e.printStackTrace();
+            return 5;
+        } finally {
+            cursor.close();  // Close the cursor to avoid potential memory leaks
+        }
     }
     public String getRingtone() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(4);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.appSettings.COLUMN_NAME_RINGTONE);
+
+            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                String theme = cursor.getString(columnIndex);
+                cursor.close();  // Close the cursor to avoid potential memory leaks
+                return theme;
+            } else {
+                Log.e("DB_ERROR", "Column index is -1 for theme column");
+                cursor.close();
+                return "default ringtone";
+            }
+        } else {
+            Log.i("DB_INFO", "No rows found in the database, returning default theme");
+            cursor.close();
+            return "default ringtone";
+        }
     }
-    public String getNotificationSounds() {
+    public String getNotification() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(5);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.appSettings.COLUMN_NAME_NOTIFICATION_SOUNDS);
+
+            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                String theme = cursor.getString(columnIndex);
+                cursor.close();  // Close the cursor to avoid potential memory leaks
+                return theme;
+            } else {
+                Log.e("DB_ERROR", "Column index is -1 for theme column");
+                cursor.close();
+                return "default notification";
+            }
+        } else {
+            Log.i("DB_INFO", "No rows found in the database, returning default theme");
+            cursor.close();
+            return "default notification";
+        }
     }
     public boolean getNotifications() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getInt(6) == 1;
-        else
+
+        try {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS);
+                return cursor.getInt(columnIndex) == 1;
+            } else {
+                return false;
+            }
+        } catch (IllegalArgumentException e) {
+            // Log the error or handle it as needed
+            e.printStackTrace();
             return false;
+        } finally {
+            cursor.close();  // Close the cursor to avoid potential memory leaks
+        }
     }
     public boolean getSounds() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getInt(7) == 1;
-        else
+
+        try {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_SOUNDS);
+                return cursor.getInt(columnIndex) == 1;
+            } else {
+                return false;
+            }
+        } catch (IllegalArgumentException e) {
+            // Log the error or handle it as needed
+            e.printStackTrace();
             return false;
+        } finally {
+            cursor.close();  // Close the cursor to avoid potential memory leaks
+        }
     }
     public boolean getFocus() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getInt(8) == 1;
-        else
+
+        try {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_FOCUS);
+                return cursor.getInt(columnIndex) == 1;
+            } else {
+                return false;
+            }
+        } catch (IllegalArgumentException e) {
+            // Log the error or handle it as needed
+            e.printStackTrace();
             return false;
+        } finally {
+            cursor.close();  // Close the cursor to avoid potential memory leaks
+        }
     }
 
 
     public void changeGamification(boolean gamification) {
-        String updateQuery =
-                "update "+ DbContract.gamificationSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION + "=" + gamification;
+        ContentValues values = new ContentValues();
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION, gamification ? 1 : 0);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        int rowsAffected = db.update(
+                DbContract.gamificationSettings.TABLE_NAME,
+                values,
+                null,
+                null
+        );
+
+        if (rowsAffected == 0) {
+            // No rows were updated, insert a new row
+            db.insert(DbContract.gamificationSettings.TABLE_NAME, null, values);
+        }
+
+        Log.i("SQLMOD", "Gamification updated: " + gamification);
     }
     public void changeGamificationType(boolean gamificationType) {
-        String updateQuery =
-                "update "+ DbContract.gamificationSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE + "=" + gamificationType;
+        int gamificationTypeValue = gamificationType ? 1 : 0;
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            String updateQuery =
+                    "update " + DbContract.gamificationSettings.TABLE_NAME +
+                            " set " + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE + "=" + gamificationTypeValue;
+            db.execSQL(updateQuery);
+            Log.i("SQLMOD", updateQuery);
+        } else {
+            // If no row exists, create a new row with default values
+            ContentValues values = new ContentValues();
+            values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE, gamificationTypeValue);
+            db.insert(DbContract.gamificationSettings.TABLE_NAME, null, values);
+
+            Log.i("SQLMOD", "New row inserted with gamificationType: " + gamificationTypeValue);
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
     }
     public void changePositiveIcon(String positiveIcon) {
         String updateQuery =
                 "update "+ DbContract.gamificationSettings.TABLE_NAME +
                         " set "
                         + DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON + "='" + positiveIcon + "'";
-
-        Log.i("SQLMOD",updateQuery.toString());
         db.execSQL(updateQuery);
+        Log.i("SQLMOD",updateQuery.toString());
     }
     public void changeNegativeIcon(String negativeIcon) {
         String updateQuery =
                 "update "+ DbContract.gamificationSettings.TABLE_NAME +
                         " set "
                         + DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON + "='" + negativeIcon + "'";
-
-        Log.i("SQLMOD",updateQuery.toString());
         db.execSQL(updateQuery);
+        Log.i("SQLMOD",updateQuery.toString());
     }
     public void changeGamificationPoints(int gamificationPoints1, int gamificationPoints2, int gamificationPoints3, int gamificationPoints4, int gamificationPoints5, int gamificationPoints6) {
-        String updateQuery =
-                "update "+ DbContract.gamificationSettings.TABLE_NAME +
-                        " set "
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_1 + "=" + gamificationPoints1 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_2 + "=" + gamificationPoints2 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_3 + "=" + gamificationPoints3 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_4 + "=" + gamificationPoints4 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_5 + "=" + gamificationPoints5 + ","
-                        + DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_6 + "=" + gamificationPoints6;
+        ContentValues values = new ContentValues();
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_1, gamificationPoints1);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_2, gamificationPoints2);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_3, gamificationPoints3);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_4, gamificationPoints4);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_5, gamificationPoints5);
+        values.put(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TIME_POINTS_6, gamificationPoints6);
 
-        Log.i("SQLMOD",updateQuery.toString());
-        db.execSQL(updateQuery);
+        db.update(DbContract.gamificationSettings.TABLE_NAME, values, null, null);
+
+        Log.i("SQLMOD", "Updated gamificationPoints in the database");
     }
+
     public boolean getGamification() {
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
+        String[] projection = {
+                DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION
+        };
+
+        Cursor cursor = db.query(
+                DbContract.gamificationSettings.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
         boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getInt(1) == 1;
-        else
-            return false;
+        boolean gamificationValue = true;
+
+        if (userExists && !cursor.isNull(cursor.getColumnIndexOrThrow(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION))) {
+            gamificationValue = cursor.getInt(cursor.getColumnIndexOrThrow(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION)) == 1;
+        }
+
+        cursor.close();
+        return gamificationValue;
     }
     public boolean getGamificationType() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getInt(2) == 1;
-        else
-            return false;
+        boolean gamificationType = false;
+
+        if (userExists) {
+            int columnIndex = cursor.getColumnIndex(DbContract.gamificationSettings.COLUMN_NAME_GAMIFICATION_TYPE);
+
+            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                gamificationType = cursor.getInt(columnIndex) == 1;
+                Log.i("getGamificationType", "Read gamificationType from database: " + gamificationType);
+            } else {
+                // Handle the case where the column index is not found
+                // You might want to log an error or set a default value
+                Log.e("getGamificationType", "Column index not found for gamificationType");
+            }
+        } else {
+            // If no row exists, you might want to set a default value
+            gamificationType = false;
+            Log.i("getGamificationType", "No rows found, returning default value");
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
+        return gamificationType;
     }
     public int[] getGamificationPoints() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
         int[] gamificationPoints = new int[6];
-        if(userExists) {
-            gamificationPoints[0] = cursor.getInt(3);
-            gamificationPoints[1] = cursor.getInt(4);
-            gamificationPoints[2] = cursor.getInt(5);
-            gamificationPoints[3] = cursor.getInt(6);
-            gamificationPoints[4] = cursor.getInt(7);
-            gamificationPoints[5] = cursor.getInt(8);
-        }
-        else {
-            gamificationPoints[0] = 10;
-            gamificationPoints[1] = 50;
-            gamificationPoints[2] = 100;
-            gamificationPoints[3] = 10;
-            gamificationPoints[4] = -10;
-            gamificationPoints[5] = -50;
-        }
-        return gamificationPoints;
+        gamificationPoints[0] = 10;
+        gamificationPoints[1] = 50;
+        gamificationPoints[2] = 100;
+        gamificationPoints[3] = 10;
+        gamificationPoints[4] = -10;
+        gamificationPoints[5] = -50;
 
+        if (userExists ) {
+            for (int i = 0; i < 6; i++) {
+                String columnName = "gamificationTimePoints" + (i + 1);
+                int columnIndex = cursor.getColumnIndex(columnName);
+                if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                    gamificationPoints[i] = cursor.getInt(columnIndex);
+                } else {
+                    Log.e("getGamificationPoints", "Column index not found or null value for gamificationPoints[" + i + "]");
+                }
+            }
+            Log.i("getGamificationPoints", "Read gamificationPoints from database");
+        } else {
+            // If no row exists, set default values
+            Log.i("getGamificationPoints", "No rows found, returning default values");
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
+        return gamificationPoints;
     }
     public String getPositiveIcon() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(9);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON);
+
+            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                String positiveIcon = cursor.getString(columnIndex);
+                return positiveIcon;
+            } else {
+                Log.e("PositiveIcon", "Column not found or null" + DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON);
+            }
+        } else {
+            Log.e("PositiveIcon", "No data found in the cursor.");
+        }
+
+        return "happy_dog"; // Default value
     }
     public String getNegativeIcon() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
-        boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(10);
-        else
-            return null;
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON);
+
+            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                String negativeIcon = cursor.getString(columnIndex);
+                return negativeIcon;
+            } else {
+                Log.e("NegativeIcon", "Column not found: " + DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON);
+            }
+        } else {
+            Log.e("NegativeIcon", "No data found in the cursor.");
+        }
+
+        return "sad_dog"; // Default value
     }
 
-    public void closeDb()
-    {
+    public void closeDb() {
         db.close();
 
     }
-
-    private String scanQueryBuilder(TaskItem itemToLookFor)
-    {
+    private String scanQueryBuilder(TaskItem itemToLookFor) {
         String scanQuery =
                 "select * from "+DbContract.Activities.TABLE_NAME
                         + " where ";
@@ -738,5 +1085,4 @@ public class DbManager {
         return scanQuery;
 
     }
-
 }
