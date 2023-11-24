@@ -2,6 +2,7 @@ package com.application.bit_time.Settings_Activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class SettingsUpperFragment extends Fragment {
                 rightLabel.setTypeface(null, Typeface.NORMAL);
                 leftLabel.setTypeface(null,Typeface.BOLD);
 
-
+                Log.i("SETTACT topfrag","left pressed");
                 //Toast.makeText(getContext(),"left label pressed",Toast.LENGTH_SHORT).show();
                 viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Tasks));
             }
@@ -57,6 +58,8 @@ public class SettingsUpperFragment extends Fragment {
                 leftLabel.setTypeface(null, Typeface.NORMAL);
                 rightLabel.setTypeface(null,Typeface.BOLD);
 
+
+                Log.i("SETTACT topfrag","right pressed");
                 //Toast.makeText(getContext(),"right label pressed",Toast.LENGTH_SHORT).show();
                 viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Activities));
             }

@@ -178,20 +178,20 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
 
                 Log.i("SETTINGS ACT vm",item.toString());
-                /*if(frag == null)
-                {
-                    //Log.i("INFOZ","entro in if");
-                    if(item.equals("Tasks"))
-                    {
-                        taskRender();
-                    }
-                    else if(item.equals("Activities"))
-                    {
-                        activitiesRender();
-                    }
-                }*/
 
-                if(item.equals("EntryPoint"))
+                //if(frag == null)
+                //{
+                    //Log.i("INFOZ","entro in if");
+
+                if(item.equals("Tasks"))
+                {
+                    taskRender();
+                }
+                else if(item.equals("Activities"))
+                {
+                    activitiesRender();
+                }
+                else if(item.equals("EntryPoint"))
                 {
                  managementEntryPoint();
                 }
@@ -213,7 +213,8 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 else if(item.equals("MainEntry"))
                 {
-                    mainEntry();
+                    homeSettingsRedirect();
+                    //mainEntry();
                 }
             });
     }

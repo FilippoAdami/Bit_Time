@@ -20,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.AdaptiveSpacingItemDecoration;
 import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.QuickstartAdapter;
 import com.application.bit_time.utils.TaskItem;
+import com.google.android.material.divider.MaterialDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,66 +40,11 @@ public class QuickstartMenuFragment extends Fragment {
 
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-
-
-        this.dbManager = new DbManager(this.getContext());
-
-        this.activitiesList = new ArrayList<>();
-
-        Cursor allActivitiesCursor = this.dbManager.selectAllActivities();
-
-        if(allActivitiesCursor.getCount()>0) {
-            allActivitiesCursor.moveToFirst();
-
-            do {
-                ActivityInfo currentAIInfo = new ActivityInfo(
-                        allActivitiesCursor.getInt(0),
-                        allActivitiesCursor.getString(1),
-                        allActivitiesCursor.getInt(2));
-
-                Log.i("QMF db action",currentAIInfo.toString());
-
-                TaskItem[] currentAISubtasks = new TaskItem[DbContract.Activities.DIM_MAX];
-
-                /*List<TaskItem> currentAISubtasksList = new ArrayList<>(this.dbManager.retrieveSubtasks(allActivitiesCursor));
-
-                int i =0;
-
-                for(TaskItem ti : currentAISubtasksList )
-                {
-                    Log.i("retrieved ti",ti.toString());
-                    currentAISubtasks[i]= new TaskItem(ti);
-                    i++;
-                }*/
-
-
-
-                this.activitiesList.add(new ActivityInfo(currentAIInfo));
-
-            }while(allActivitiesCursor.moveToNext());
-
-
-        }
-
-
-
-
-        this.adapter = new QuickstartAdapter(this,this.activitiesList);
-
-        Log.i("QMF","onCreate called");
-
-    }
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        setup();
 
         View view = inflater.inflate(R.layout.a_quickstart_menu_layout,container,false);
 
@@ -106,7 +53,12 @@ public class QuickstartMenuFragment extends Fragment {
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        this.recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),LinearLayoutManager.VERTICAL));
+        //RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL);
+        //this.recyclerView.addItemDecoration(itemDecoration);
+
+        AdaptiveSpacingItemDecoration adaptiveSpacingItemDecoration = new AdaptiveSpacingItemDecoration(150,true);
+        this.recyclerView.addItemDecoration(adaptiveSpacingItemDecoration);
+
 
         this.recyclerView.setAdapter(this.adapter);
 
@@ -116,11 +68,22 @@ public class QuickstartMenuFragment extends Fragment {
     }
 
 
+
+
+
+
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStop() {
+        super.onStop();
+        this.activitiesList.clear();
+    }
 
 
+    private void setup()
+    {
+
+        this.activitiesList = new ArrayList<>();
+        this.dbManager = new DbManager(this.getContext());
         Cursor allActivitiesCursor = this.dbManager.selectAllActivities();
 
         if(allActivitiesCursor.getCount()>0) {
@@ -155,11 +118,12 @@ public class QuickstartMenuFragment extends Fragment {
 
 
         }
+
+
+        this.adapter = new QuickstartAdapter(this,this.activitiesList);
+        Log.i("QMF","onCreate called");
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        this.activitiesList.clear();
-    }
+
+
 }
