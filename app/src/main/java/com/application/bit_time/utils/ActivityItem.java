@@ -35,9 +35,14 @@ public class ActivityItem {
 
         if(original.subtasks[0]!=null)
         {
-            Iterator<TaskItem> tiIterator = Arrays.stream(original.getSubtasks()).iterator();
+            //Iterator<TaskItem> tiIterator = Arrays.stream(original.getSubtasks()).iterator();
+
+            this.subtasks = new TaskItem[original.getSubtasks().length];
+
+            this.subtasks= original.getSubtasks();
+
             for(int i = 0;i<DbContract.Activities.DIM_MAX;i++) {
-                this.subtasks[i]= new TaskItem(tiIterator.next());
+                //this.subtasks[i]= new TaskItem(tiIterator.next());
             }
 
         }else

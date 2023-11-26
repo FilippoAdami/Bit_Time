@@ -1,15 +1,14 @@
 package com.application.bit_time.Main_Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.datastore.preferences.core.MutablePreferences;
-import androidx.datastore.preferences.core.Preferences;
-import androidx.datastore.preferences.rxjava2.RxPreferenceDataStoreBuilder;
-import androidx.datastore.rxjava2.RxDataStore;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlarmManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,8 +27,16 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
+
+    BroadcastReceiver timeBroadcastReceiver;
+    IntentFilter timeBrFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_main);
 
@@ -146,5 +153,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregisterReceiver(android.content.BroadcastReceiver);
     }
 }
