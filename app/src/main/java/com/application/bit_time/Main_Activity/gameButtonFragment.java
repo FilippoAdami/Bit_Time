@@ -24,7 +24,7 @@ public class gameButtonFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.mainActivityViewModel = new ViewModelProvider(this.getActivity()).get(MainActivityViewModel.class);
+        this.mainActivityViewModel = new ViewModelProvider(this.requireActivity()).get(MainActivityViewModel.class);
 
 
     }
@@ -38,12 +38,7 @@ public class gameButtonFragment extends Fragment {
 
         Button gameButton = view.findViewById(R.id.gameButton);
 
-        gameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivityViewModel.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.GameArea));
-            }
-        });
+        gameButton.setOnClickListener(view1 -> mainActivityViewModel.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.GameArea)));
 
 
         return view;

@@ -1,10 +1,7 @@
 package com.application.bit_time.Main_Activity;
 
-import android.content.SharedPreferences;
-import android.content.Context;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +13,6 @@ import android.widget.Toast;
 
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.SettingsActivity;
-import com.application.bit_time.Settings_Activity.SettingsHomeFragment;
 import com.application.bit_time.utils.Db.DbManager;
 
 public class CaregiverLoginFragment extends Fragment {
@@ -30,47 +26,38 @@ public class CaregiverLoginFragment extends Fragment {
         Button backButton = rootView.findViewById(R.id.backButton);
         Button logInButton = rootView.findViewById(R.id.loginButton);
         dbManager = new DbManager(getActivity());
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate back to the previous fragment or perform another action
-                requireActivity().onBackPressed();
-            }
+        backButton.setOnClickListener(v -> {
+            // Navigate back to the previous fragment or perform another action
+            requireActivity().onBackPressed();
         });
 
-        logInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String enteredPIN = PIN_txt_input.getText().toString();
-                if (enteredPIN.equals(dbManager.getUserPin())) {
-                    // Create an Intent to start the SettingsActivity
-                    Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                    // Start the new activity
-                    startActivity(intent);
-                } else {
-                    // Show error message
-                    Toast.makeText(getActivity(), "Incorrect PIN. Please try again."+dbManager.getUserPin()+"", Toast.LENGTH_SHORT).show();
-                }
-
-
+        logInButton.setOnClickListener(v -> {
+            String enteredPIN = PIN_txt_input.getText().toString();
+            if (enteredPIN.equals(dbManager.getUserPin())) {
+                // Create an Intent to start the SettingsActivity
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                //close the login fragment
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().remove(CaregiverLoginFragment.this).commit();
+                fragmentManager.popBackStack();
+                // Start the new activity
+                startActivity(intent);
+            } else {
+                // Show error message
+                Toast.makeText(getActivity(), "Incorrect PIN. Please try again.", Toast.LENGTH_SHORT).show();
             }
+
+
         });
 
         Button forgotPasswordButton = rootView.findViewById(R.id.forgotPasswordButton);
-        forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show the custom dialog fragment
-                ResetPINDialog dialogFragment = new ResetPINDialog();
-                dialogFragment.show(getParentFragmentManager(), "ForgotPasswordDialog");
-            }
+        forgotPasswordButton.setOnClickListener(v -> {
+            // Show the custom dialog fragment
+            ResetPINDialog dialogFragment = new ResetPINDialog();
+            dialogFragment.show(getParentFragmentManager(), "ForgotPasswordDialog");
         });
 
         return rootView;
-    }
-    private void openSettingsActivity() {
-        Intent intent = new Intent(getActivity(), SettingsActivity.class);
-        startActivity(intent);
     }
 }
 

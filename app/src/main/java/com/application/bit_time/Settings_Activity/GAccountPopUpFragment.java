@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import com.application.bit_time.R;
 
@@ -19,20 +18,14 @@ public class GAccountPopUpFragment extends DialogFragment{
         Button connectButton = view.findViewById(R.id.connectButton);
         Button dismissButton = view.findViewById(R.id.dismissButton);
 
-        connectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle connecting with Google
-                // You can launch the Google Sign-In flow from here.
-            }
+        connectButton.setOnClickListener(v -> {
+            // Handle connecting with Google
+            // You can launch the Google Sign-In flow from here.
         });
 
-        dismissButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Dismiss the pop-up fragment
-                dismiss();
-            }
+        dismissButton.setOnClickListener(v -> {
+            // Dismiss the pop-up fragment
+            dismiss();
         });
 
         return view;

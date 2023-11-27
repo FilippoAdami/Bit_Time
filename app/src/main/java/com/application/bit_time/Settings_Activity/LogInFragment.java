@@ -11,33 +11,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.database.sqlite.SQLiteDatabase;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.application.bit_time.Main_Activity.HomeFragment;
 import com.application.bit_time.R;
-import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LogInFragment extends Fragment {
 
     private DbManager dbManager;
     //private GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 9001;
+    //private static final int RC_SIGN_IN = 9001;
     private Button submitButton;
     private TextView forgotPassword;
     private EditText password_edit_text;
     private EditText emailEditText;
     private TextView switchMode;
-    private View showHidePassword;
-    private DbManager.DbHelper dbHelper;
     private boolean isLoginMode = true;
     private SharedPreferences sharedPreferences;
     // Define the ActivityResultLauncher for Google Sign-In
@@ -57,6 +56,15 @@ public class LogInFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_login_fragment_layout, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().remove(LogInFragment.this).commit();
+                fragmentManager.popBackStack();
+            }
+
+        });
 
         /*
         // Configure Google Sign-In
@@ -67,60 +75,53 @@ public class LogInFragment extends Fragment {
         mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
         */
         dbManager = new DbManager(getContext());
-        dbHelper = new DbManager.DbHelper(getContext());
-        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
 
         emailEditText = view.findViewById(R.id.emailEditText);
         password_edit_text = view.findViewById(R.id.password_edit_text);
-        showHidePassword = view.findViewById(R.id.showHidePassword);
+        View showHidePassword = view.findViewById(R.id.showHidePassword);
         switchMode = view.findViewById(R.id.switchMode);
         submitButton = view.findViewById(R.id.submit_button);
         forgotPassword = view.findViewById(R.id.forgotPassword);
 
         // Set initial mode (login)
         updateUIForMode();
-        switchMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Toggle between login and sign-up modes
-                isLoginMode = !isLoginMode;
-                updateUIForMode();
-            }
+        switchMode.setOnClickListener(v -> {
+            // Toggle between login and sign-up modes
+            isLoginMode = !isLoginMode;
+            updateUIForMode();
         });
 
         // Set a click listener for the sign-in button
-        view.findViewById(R.id.submit_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        view.findViewById(R.id.submit_button).setOnClickListener(v -> {
 
-                // Get the user-entered email and password
-                String email = emailEditText.getText().toString();
-                String password = password_edit_text.getText().toString();
-                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                    // Show an error message if email or password is empty
-                    Toast.makeText(getActivity(), "insert email and password first", Toast.LENGTH_SHORT).show();
-                return;
-                }
+            // Get the user-entered email and password
+            String email = emailEditText.getText().toString();
+            String password = password_edit_text.getText().toString();
+            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+                // Show an error message if email or password is empty
+                Toast.makeText(getActivity(), "insert email and password first", Toast.LENGTH_SHORT).show();
+            return;
+            }
 
-                // Handle login or sign-up based on the mode
-                if (isLoginMode) {
-                    // Check the credentials in the database
-                    if (isCredentialsValid(email, password)) {
-                        // Set the user as logged in
-                        sharedPreferences.edit().putBoolean("loggedIn", true).apply();
-                        // redirect to home fragment
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.middle_fragment_container_view, new AccountFragment());
-                        fragmentTransaction.commit();
-                    } else {
-                        // Credentials are not valid, show an error message
-                        Toast.makeText(getActivity(), "Invalid credentials. Please try again.", Toast.LENGTH_SHORT).show();                    }
-
+            // Handle login or sign-up based on the mode
+            if (isLoginMode) {
+                // Check the credentials in the database
+                if (isCredentialsValid(email, password)) {
+                    // Set the user as logged in
+                    sharedPreferences.edit().putBoolean("loggedIn", true).apply();
+                    // redirect to home fragment
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.middle_fragment_container_view, new AccountFragment());
+                    fragmentTransaction.commit();
                 } else {
-                    // Insert the email and password into the database
-                    saveCredentialsToDatabase(email, password);
-                }
+                    // Credentials are not valid, show an error message
+                    Toast.makeText(getActivity(), "Invalid credentials. Please try again.", Toast.LENGTH_SHORT).show();                    }
+
+            } else {
+                // Insert the email and password into the database
+                saveCredentialsToDatabase(email, password);
             }
         });
         /*view.findViewById(R.id.Glogin_button).setOnClickListener(new View.OnClickListener() {
@@ -135,36 +136,28 @@ public class LogInFragment extends Fragment {
             }
         });
          */
-        showHidePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                togglePasswordVisibility();
-            }
-        });
+        showHidePassword.setOnClickListener(v -> togglePasswordVisibility());
 
         //set a click listener for the forgot password textview
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //get the user-entered email
-                String email = emailEditText.getText().toString();
-                if (TextUtils.isEmpty(email)) {
-                    //show an error message if email is empty
-                    Toast.makeText(getActivity(), "Please enter your email first", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                //search for the user in the database
-                Cursor cursor = dbManager.searchUser(email);
-                if (cursor.moveToFirst()) {
-                    //user found, show a dialog to get a temporary code
-                    ForgotPasswordDialog dialog = new ForgotPasswordDialog();
-                    dialog.show(getChildFragmentManager(), "ForgotPasswordDialog");
-                } else {
-                    //user not found, show an error message
-                    Toast.makeText(getActivity(), "User not found. Please sign up.", Toast.LENGTH_SHORT).show();
-                }
-                cursor.close();
+        forgotPassword.setOnClickListener(v -> {
+            //get the user-entered email
+            String email = emailEditText.getText().toString();
+            if (TextUtils.isEmpty(email) || email.trim().isEmpty()) {
+                //show an error message if email is empty
+                Toast.makeText(getActivity(), "Please enter your email first", Toast.LENGTH_SHORT).show();
+                return;
             }
+            //search for the user in the database
+            Cursor cursor = dbManager.searchUser(email);
+            if (cursor.moveToFirst()) {
+                //user found, show a dialog to get a temporary code
+                ForgotPasswordDialog dialog = new ForgotPasswordDialog();
+                dialog.show(getChildFragmentManager(), "ForgotPasswordDialog");
+            } else {
+                //user not found, show an error message
+                Toast.makeText(getActivity(), "User not found. Please sign up.", Toast.LENGTH_SHORT).show();
+            }
+            cursor.close();
         });
 
         return view;
@@ -190,12 +183,12 @@ public class LogInFragment extends Fragment {
     private void updateUIForMode() {
         if (isLoginMode) {
             // Update UI elements for login mode
-            submitButton.setText("Login");
+            submitButton.setText(R.string.login);
             switchMode.setText("Don't have an account yet? \n click here to Sign Up");
             forgotPassword.setVisibility(View.VISIBLE);
         } else {
             // Update UI elements for sign-up mode
-            submitButton.setText("Sign Up");
+            submitButton.setText(R.string.sign_up);
             switchMode.setText("Already have an account? \n click here to Login");
             forgotPassword.setVisibility(View.GONE);
         }
@@ -231,14 +224,37 @@ public class LogInFragment extends Fragment {
             cursor.close();
         } else {
             // User not found, so register the new user
-            dbManager.registerUser(email, password);
+            //validate the email
+            String[] COMMON_EMAIL_DOMAINS = {
+                    "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "aol.com", "unitn.it", "studenti.unitn.it"
+            };
+            String EMAIL_PATTERN ="^[_a-z0-9-+]+(\\.[_a-z0-9-]+)*@" + "[a-z0-9-]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
+            Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+            Matcher matcher = pattern.matcher(email);
 
-            // Show a success message, clear the fields and switch to login mode
-            isLoginMode = true;
-            updateUIForMode();
-            Toast.makeText(getActivity(), "Registration successful. Please login.", Toast.LENGTH_SHORT).show();
-            emailEditText.setText("");
-            password_edit_text.setText("");
+            if(matcher.matches()){
+                String[] parts = email.split("@");
+                if (parts.length == 2) {
+                    String domain = parts[1];
+                    for (String commonDomain : COMMON_EMAIL_DOMAINS) {
+                        if (domain.equalsIgnoreCase(commonDomain)) {
+                            dbManager.registerUser(email, password);
+                            // Show a success message, clear the fields and switch to login mode
+                            isLoginMode = true;
+                            updateUIForMode();
+                            Toast.makeText(getActivity(), "Registration successful. Please login.", Toast.LENGTH_SHORT).show();
+                            emailEditText.setText("");
+                            password_edit_text.setText("");
+                        }else {
+                            Toast.makeText(getActivity(), "Invalid email domain", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }else {
+                    Toast.makeText(getActivity(), "Invalid email format", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(getActivity(), "Invalid email", Toast.LENGTH_SHORT).show();
+            }
             cursor.close();
         }
     }

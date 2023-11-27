@@ -18,12 +18,10 @@ import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.TaskItem;
 
+import java.util.Objects;
+
 public class SettingsActivity extends AppCompatActivity {
-    private SubtasksViewModel subtasksViewModel;
-    private SubtasksViewModel dbTasksViewModel;
     private DbManager dbManager;
-    private CustomViewModel viewModel;
-    private DbViewModel dbViewModel;
     FragmentManager fManager;
     Fragment upperFrag;
     Fragment middleFrag;
@@ -35,23 +33,21 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
-        subtasksViewModel = new ViewModelProvider(this).get("subTasksVM",SubtasksViewModel.class);
+        DbViewModel dbViewModel;
+        SubtasksViewModel subtasksViewModel = new ViewModelProvider(this).get("subTasksVM", SubtasksViewModel.class);
         //Log.i("SETTACT svm",this.subtasksViewModel.);
-        dbTasksViewModel = new ViewModelProvider(this).get("DbTasksVM",SubtasksViewModel.class);
+        SubtasksViewModel dbTasksViewModel = new ViewModelProvider(this).get("DbTasksVM", SubtasksViewModel.class);
 
-        subtasksViewModel.getSelectedItem().observe(this,item ->
-        {
-            Log.i("SETT ACT ",item.toString());
-        });
+        subtasksViewModel.getSelectedItem().observe(this, item ->
+                Log.i("SETT ACT ",item.toString()));
 
         dbManager = new DbManager(getApplicationContext());
 
         dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
 
-        currentDbViewModelData = new DbViewModelData(dbViewModel.getSelectedItem().getValue());
+        currentDbViewModelData = new DbViewModelData(Objects.requireNonNull(dbViewModel.getSelectedItem().getValue()));
 
-        viewModel = new ViewModelProvider(this).get(CustomViewModel.class);
+        CustomViewModel viewModel = new ViewModelProvider(this).get(CustomViewModel.class);
 
         fManager = getSupportFragmentManager();
 

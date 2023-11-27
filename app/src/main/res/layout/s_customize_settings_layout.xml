@@ -19,7 +19,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:paddingTop="2dp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="6dp"
             android:id="@+id/textAspetto"/>
 
         <!-- Themes section -->
@@ -111,46 +111,21 @@
 
         </LinearLayout>
 
-        <!-- Change Background -->
-        <TextView
+        <Button
+            android:id="@+id/loadBackgroundButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Change Background"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp"
-            android:id="@+id/textChangeBackground"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/background">
-        <!-- Button to Load Background from Internal Memory -->
-        <Button
-            android:id="@+id/loadBackgroundButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Load Background"
             android:layout_marginTop="16dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Text"
-                android:id="@+id/currentBackground"/>
-        </LinearLayout>
 
-        <!-- Notifiche -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Notifiche"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"
             android:id="@+id/textNotifiche"
             android:textAlignment="center"/>
 
@@ -187,7 +162,6 @@
                 android:text="background"
                 android:id="@+id/textCheckbox2"/>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -204,72 +178,42 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="focus"
+                android:text="enable focus mode"
                 android:id="@+id/textCheckbox3"/>
         </LinearLayout>
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="focus mode description"
-                android:id="@+id/subtextCheckbox3"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="focus mode description"
+                    android:id="@+id/subtextCheckbox3"/>
         </LinearLayout>
 
-        <!-- Volume -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Volume"
+            android:text="Volume e Suoni"
+            android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"
             android:id="@+id/textVolume"/>
-
-        <!-- SeekBar to Adjust Volume -->
         <SeekBar
             android:id="@+id/volumeSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:layout_marginTop="16dp"/>
-
-        <!-- Row with Two Columns: Button and Text -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/rowWithButton1">
-
+            android:layout_marginTop="2dp"/>
             <Button
                 android:id="@+id/loadRingtoneButton1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Load Ringtone"/>
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Suoneria"
-                android:id="@+id/textButton1"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/rowWithButton2">
-
+                android:text="Suono di notifica"/>
             <Button
                 android:id="@+id/loadRingtoneButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Load Ringtone"/>
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Notifiche"
-                android:id="@+id/textButton2"/>
-        </LinearLayout>
+                android:text="Cambia suoneria"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -284,16 +228,44 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="gamification"
+                android:text="enable gamification"
                 android:id="@+id/textCheckbox4"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <!--Save button-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Default homepage"
+                android:textSize="18sp"
+                android:id="@+id/switch1off"/>
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alternative homepage"
+                android:textSize="18sp"
+                android:id="@+id/switch1on"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Default homepage with the clock or Alternative homepage where you can start the activities"
+            android:id="@+id/subtextSwitch1"/>
+
         <Button
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save"
+            android:text="Save changes"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

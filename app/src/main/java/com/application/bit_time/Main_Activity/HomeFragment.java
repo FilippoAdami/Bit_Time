@@ -14,15 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.application.bit_time.R;
@@ -38,7 +36,7 @@ public class HomeFragment extends Fragment {
     private RunningActivityViewModel runningActivityViewModel;
     private TextView clockTextView;
     private AnalogClockView analogClockView;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private TaskItem currentTask;
 
 
@@ -65,7 +63,7 @@ public class HomeFragment extends Fragment {
             if(currentStatus.toString().equals("Uploaded"))
             {
                 Log.i("HF in Uploaded",item.getCurrentTask().toString());
-                currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
+                currentTask= Objects.requireNonNull(runningActivityViewModel.getSelectedItem().getValue()).getCurrentTask();
                 runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Running, RunningActivityData.Choice.NoChoice,currentTask));
             }else if(currentStatus.toString().equals("OnWait"))
             {
@@ -137,38 +135,35 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateTime() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        handler.postDelayed(() -> {
 
-                lastedTime++;
+            lastedTime++;
 
-                Log.i("lastedTime",Integer.toString(lastedTime));
+            Log.i("lastedTime",Integer.toString(lastedTime));
 
-                if(currentTask != null) {
-                    if (lastedTime == currentTask.getDurationInt()) {
-                        //Log.i("duration", "reached");
-                        runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice,currentTask));
-                        lastedTime = 0;
-                    }
+            if(currentTask != null) {
+                if (lastedTime == currentTask.getDurationInt()) {
+                    //Log.i("duration", "reached");
+                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice,currentTask));
+                    lastedTime = 0;
                 }
-                // qui credo vada anche il codice per regolare la colorazione dell'orologio
-
-                String currentTime = getCurrentTime();
-
-                String[] parts = currentTime.split(":");
-                String hours = parts[0];
-                String minutes = parts[1];
-
-                SpannableString spannableTime = new SpannableString(currentTime);
-                spannableTime.setSpan(new ForegroundColorSpan(Color.BLUE), 0, hours.length(), 0);
-                spannableTime.setSpan(new ForegroundColorSpan(Color.RED), hours.length() + 1, currentTime.length(), 0);
-                clockTextView.setText(spannableTime);
-
-                analogClockView.invalidate();
-
-                updateTime();
             }
+            // qui credo vada anche il codice per regolare la colorazione dell'orologio
+
+            String currentTime = getCurrentTime();
+
+            String[] parts = currentTime.split(":");
+            String hours = parts[0];
+            String minutes = parts[1];
+
+            SpannableString spannableTime = new SpannableString(currentTime);
+            spannableTime.setSpan(new ForegroundColorSpan(Color.BLUE), 0, hours.length(), 0);
+            spannableTime.setSpan(new ForegroundColorSpan(Color.RED), hours.length() + 1, currentTime.length(), 0);
+            clockTextView.setText(spannableTime);
+
+            analogClockView.invalidate();
+
+            updateTime();
         }, 1000);
     }
 

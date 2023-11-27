@@ -103,7 +103,7 @@ public class ActivityCreationFragment extends Fragment {
             SubtasksViewModelData SVMData = subtasksViewModel.getSelectedItem().getValue();
             ActivityItem activityToModify = SVMData.getActivityToModify();
 
-            Log.i("activityToModify retrieved",activityToModify.toString());
+            Log.i("activityToModRetrieve",activityToModify.toString());
 
             subtasksViewModel.getSelectedItem().observe(this,item -> {
                 if(subtasksViewModel.getSelectedItem().getValue().isAlreadyModified())
@@ -215,7 +215,7 @@ public class ActivityCreationFragment extends Fragment {
 
         subtasksRecyclerView.setAdapter(subtaskAdapter);
 
-        subtasksViewModel.getSelectedItem().observe(this,item ->
+        subtasksViewModel.getSelectedItem().observe(getViewLifecycleOwner(),item ->
                 {
 
                     int totalTime = 0;

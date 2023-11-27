@@ -1,10 +1,6 @@
 package com.application.bit_time.Main_Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.datastore.preferences.core.MutablePreferences;
-import androidx.datastore.preferences.core.Preferences;
-import androidx.datastore.preferences.rxjava2.RxPreferenceDataStoreBuilder;
-import androidx.datastore.rxjava2.RxDataStore;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,29 +17,19 @@ import com.application.bit_time.utils.RunningActivityViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
-
-
-    private MainActivityViewModel statusVM;
-    private RunningActivityViewModel runningActivityViewModel;
-
-    private SharedPreferences sharedPreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_main);
 
-
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         //Fragment bottomFragment = new RunningTaskFragment();
         Fragment bottomFragment = new Fragment();
 
-
         Fragment controlbarFragment = new ControlsFragment();
 
-        this.statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
+        MainActivityViewModel statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        RunningActivityViewModel runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
 
         runningActivityViewModel.getSelectedItem().observe(this, item->
         {
@@ -90,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
         }
         */
 
-
-        this.statusVM.getSelectedItem().observe(this, item->
+        statusVM.getSelectedItem().observe(this, item->
         {
             Log.i("STATUSVM DETECTION","MainActivity detected something");
 
@@ -135,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 fragmentManager
                         .beginTransaction()
+                        .remove(controlbarFragment)
                         .replace(R.id.fragment_container,new CaregiverLoginFragment())
                         .replace(R.id.bottomFragmentContainer,new Fragment())
                         .addToBackStack(null)
@@ -143,8 +129,5 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-
-
-
     }
 }
