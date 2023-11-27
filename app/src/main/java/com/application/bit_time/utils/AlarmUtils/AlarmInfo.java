@@ -25,12 +25,20 @@ public class AlarmInfo {
        Log.i("AlarmInfo","new calendar set ;)");
    }
 
+   public AlarmInfo(GregorianCalendar calendarInfo)
+   {
+        this.calendar = calendarInfo;
+   }
+
    public long getAlarmTimeLong()
    {
        return this.calendar.getTimeInMillis();
    }
 
-
+    public GregorianCalendar getInfo()
+    {
+        return this.calendar;
+    }
 
 
 }

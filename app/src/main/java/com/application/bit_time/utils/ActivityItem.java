@@ -15,6 +15,7 @@ public class ActivityItem {
 
     ActivityInfo activityInfo;
     TaskItem[] subtasks;
+    PlanningInfo planningInfo;
 
     boolean expanded;
 
@@ -180,4 +181,10 @@ public void setId(int id)
 
         return false;
     }
+
+    public void setPlanningInfo(PlanningInfo info)
+    {
+        this.planningInfo = new PlanningInfo(info);
+    }
+
 }

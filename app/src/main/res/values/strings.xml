@@ -52,5 +52,9 @@
     <string name="reset_button">RESET PIN</string>
     <string name="enter_text">ENTER</string>
     <string name="default_pin_text">default PIN 0000</string>
+    <string name="planSwitchText">PLAN</string>
+    <string name="addPlanButton">Add Plan</string>
+    <string name="pickDateButton">SCEGLI LA DATA</string>
+    <string name="pickTimeButton">SCEGLI IL TEMPO</string>
 
 </resources>

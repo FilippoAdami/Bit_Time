@@ -7,12 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -81,9 +84,6 @@ public class ActivityCreationFragment extends Fragment {
             subtasksViewModel.getSelectedItem().getValue().setAllTaskItems(allTasks);
         }
 
-
-
-
         subtasksToAdd = new TaskItem[DbContract.Activities.DIM_MAX];
 
         for(int i =0 ;i <DbContract.Activities.DIM_MAX ; i++)
@@ -103,7 +103,7 @@ public class ActivityCreationFragment extends Fragment {
             SubtasksViewModelData SVMData = subtasksViewModel.getSelectedItem().getValue();
             ActivityItem activityToModify = SVMData.getActivityToModify();
 
-            Log.i("activityToModify retrieved",activityToModify.toString());
+            Log.i("activityToModify retr",activityToModify.toString());
 
             subtasksViewModel.getSelectedItem().observe(this,item -> {
                 if(subtasksViewModel.getSelectedItem().getValue().isAlreadyModified())
@@ -192,6 +192,8 @@ public class ActivityCreationFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        FragmentManager fManager= getChildFragmentManager();
+
         View view = inflater.inflate(R.layout.activity_creation_fragment_layout,container,false);
 
         TextView nameLabel = view.findViewById(R.id.editNameLabel);
@@ -199,10 +201,14 @@ public class ActivityCreationFragment extends Fragment {
         Button addButton = view.findViewById(R.id.addTaskButton);
         Button endButton = view.findViewById(R.id.fineButton);
 
+        Switch planningSwitch = view.findViewById(R.id.planSwitch);
+
+
 
         if(currentState.equals("ModifyActivity"))
         {
             nameLabel.setHint(activityName);
+            //TODO: set stuff if the activity to be modified was previously planned
         }
 
 
@@ -241,6 +247,30 @@ public class ActivityCreationFragment extends Fragment {
                 //subtasksViewModel.selectItem(SVMData);
                 TaskSelectionDialog taskSelectionDialog = new TaskSelectionDialog();
                 taskSelectionDialog.show(getActivity().getSupportFragmentManager(),null);
+            }
+        });
+
+
+
+
+        planningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked)
+                {
+                    Log.i("planningSwitch","checked");
+                    fManager.beginTransaction()
+                            .add(R.id.planningFragment,new PlanningFragment(),"currentPlanningFragment")
+                            .commit();
+                }
+                else
+                {
+                    Log.i("planningSwitch","NOT checked");
+
+                    fManager.beginTransaction()
+                            .remove(fManager.findFragmentByTag("currentPlanningFragment"))
+                            .commit();
+                }
             }
         });
 
