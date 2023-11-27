@@ -3,31 +3,34 @@ package com.application.bit_time.utils.AlarmUtils;
 import android.util.Log;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class AlarmInfo {
 
 
-
-   DateTimeUtil dateTimeUtil;
-
-    public void setDateTimeUtil(DateTimeUtil dateTimeUtil)
-    {
-        this.dateTimeUtil= new DateTimeUtil(dateTimeUtil);
-    }
-
-    public long getAlarmTimeLong()
-    {
-        long res = 0;
+  private GregorianCalendar calendar;
 
 
-        return res;
 
-    }
+   public AlarmInfo(int year,int month, int dayOfMonth, int hourOfDay, int minute, int second)
+   {
+       Log.i("AlarmInfo","new calendar set ;)");
+       this.calendar = new GregorianCalendar(year,month,dayOfMonth,hourOfDay,minute);
+   }
 
-    public AlarmInfo()
-    {
-        this.dateTimeUtil = null;
-    }
+   public AlarmInfo()
+   {
+       this.calendar = (GregorianCalendar) Calendar.getInstance();
+       Log.i("AlarmInfo","new calendar set ;)");
+   }
+
+   public long getAlarmTimeLong()
+   {
+       return this.calendar.getTimeInMillis();
+   }
+
+
 
 
 }

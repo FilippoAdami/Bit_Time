@@ -2,39 +2,61 @@ package com.application.bit_time.utils.AlarmUtils;
 
 
 
+import static android.Manifest.permission.SCHEDULE_EXACT_ALARM;
+
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.util.Log;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import androidx.core.content.ContextCompat;
+
+
 
 public class AlarmScheduler implements AlarmSchedulerInterface
 {
     private Context context;
     private AlarmManager alarmManager;
 
+    @SuppressLint("ScheduleExactAlarm")
     @Override
     public void schedule(AlarmInfo info) {
-        //Intent intent = new Intent(context,AlarmReceiver.class);
+
+        Intent intent = new Intent(context.getApplicationContext(),AlarmReceiver.class);
 
         long alarmTime = info.getAlarmTimeLong();
-        //this.alarmManager.setExact(AlarmManager.RTC_WAKEUP,alarmTime, PendingIntent.getBroadcast(context,alarmItem.hashCode(),intent,PendingIntent.FLAG_UPDATE_CURRENT));
+        Log.i("alarmtimeLOG",Long.toString(alarmTime)+" is alarmTimeLNG");
+
+        //TODO : must put conditions on the API version
+        if(ContextCompat.checkSelfPermission(context,SCHEDULE_EXACT_ALARM) == PackageManager.PERMISSION_GRANTED) {
+            Log.i("ALARMPERMS","can be set");
+            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, PendingIntent.getBroadcast(context, info.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        }
+        else
+        {
+            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, PendingIntent.getBroadcast(context, info.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT));
+            //Log.i("ALARMPERMS","cannot be set");
+        }
 
 
     }
 
     @Override
     public void cancel(AlarmInfo info) {
-
+        alarmManager.cancel(PendingIntent.getBroadcast(context,info.hashCode(),new Intent(context, AlarmReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
 
 
-    public AlarmScheduler()
+    public AlarmScheduler(Context context)
     {
-        this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            this.context = context;
+            this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
     }
 

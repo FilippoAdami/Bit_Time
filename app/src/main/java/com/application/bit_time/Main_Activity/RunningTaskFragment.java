@@ -85,6 +85,7 @@ public class RunningTaskFragment extends Fragment {
         }
         Log.i("subtasks test ret",Integer.toString(subtasks.size()));
         Log.i("subtask get1",subtasks.get(1).toString());
+        // TODO : sometimes gives problems, fix this
 
 
         this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,subtasks.get(0)));

@@ -8,6 +8,8 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
+import com.application.bit_time.utils.NotificationsUtils.NotificationsSupervisor;
+
 public class PlanningBroadcastReceiver extends BroadcastReceiver {
 
     BroadcastReceiver timeBrRec;
@@ -17,6 +19,7 @@ public class PlanningBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("brRec log",intent.getAction().toString());
+        NotificationsSupervisor notificationsSupervisor = new NotificationsSupervisor(appContext.getApplicationContext());
 
 
         /*this.appContext = context.getApplicationContext();
