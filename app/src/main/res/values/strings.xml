@@ -45,4 +45,14 @@
     </string>
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
+
+    <string name="caregiver_welcome_message">Welcome to Caregiver Fragment</string>
+    <string name="back_button_message">torna indietro</string>
+    <string name="insert_password_text">Inserire password</string>
+    <string name="pin_input_hint_text">PIN</string>
+    <string name="back_text">BACK</string>
+    <string name="reset_button">RESET PIN</string>
+    <string name="enter_text">ENTER</string>
+    <string name="default_pin_text">default PIN 0000</string>
+
 </resources>

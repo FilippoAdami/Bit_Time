@@ -20,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.AdaptiveSpacingItemDecoration;
 import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.QuickstartAdapter;
 import com.application.bit_time.utils.TaskItem;
+import com.google.android.material.divider.MaterialDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +40,50 @@ public class QuickstartMenuFragment extends Fragment {
 
 
 
+    @Nullable
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        setup();
+
+        View view = inflater.inflate(R.layout.a_quickstart_menu_layout,container,false);
+
+        this.recyclerView = view.findViewById(R.id.quickstartRecyclerView);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());
+        this.recyclerView.setLayoutManager(layoutManager);
+        this.recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        //RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL);
+        //this.recyclerView.addItemDecoration(itemDecoration);
+
+        AdaptiveSpacingItemDecoration adaptiveSpacingItemDecoration = new AdaptiveSpacingItemDecoration(150,true);
+        this.recyclerView.addItemDecoration(adaptiveSpacingItemDecoration);
+
+
+        this.recyclerView.setAdapter(this.adapter);
+
+
+
+        return view;
+    }
 
 
 
 
-        this.dbManager = new DbManager(this.getContext());
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        this.activitiesList.clear();
+    }
+
+
+    private void setup()
+    {
 
         this.activitiesList = new ArrayList<>();
-
+        this.dbManager = new DbManager(this.getContext());
         Cursor allActivitiesCursor = this.dbManager.selectAllActivities();
 
         if(allActivitiesCursor.getCount()>0) {
@@ -85,33 +120,10 @@ public class QuickstartMenuFragment extends Fragment {
         }
 
 
-
-
         this.adapter = new QuickstartAdapter(this,this.activitiesList);
-
         Log.i("QMF","onCreate called");
-
     }
 
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
-        View view = inflater.inflate(R.layout.a_quickstart_menu_layout,container,false);
-
-        this.recyclerView = view.findViewById(R.id.quickstartRecyclerView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());
-        this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        this.recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),LinearLayoutManager.VERTICAL));
-
-        this.recyclerView.setAdapter(this.adapter);
-
-
-
-        return view;
-    }
 }

@@ -22,7 +22,7 @@ public class SettingsModeData {
 
     public SettingsModeData()
     {
-        currentMode = Mode.Activities;
+        currentMode = Mode.MainEntry;
     }
 
     public SettingsModeData(Mode mode)
