@@ -346,8 +346,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
     public void homeSettingsRedirect(){
         fManager.beginTransaction()
-                .replace(R.id.top_fragment_container_view, new SettingsHomeFragment())
-                .replace(R.id.middle_fragment_container_view, new Fragment())
+                .replace(R.id.top_fragment_container_view, new Fragment())
+                .replace(R.id.middle_fragment_container_view, new SettingsHomeFragment())
                 .replace(R.id.bottom_fragment_container_view,new Fragment())
                 .addToBackStack("HomeSettingsRedirect")
                 .commit();

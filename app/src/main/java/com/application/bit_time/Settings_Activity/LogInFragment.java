@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class LogInFragment extends Fragment {
     private Button submitButton;
     private TextView forgotPassword;
     private EditText password_edit_text;
+    private ImageView showHidePassword;
     private EditText emailEditText;
     private TextView switchMode;
     private boolean isLoginMode = true;
@@ -79,7 +81,7 @@ public class LogInFragment extends Fragment {
 
         emailEditText = view.findViewById(R.id.emailEditText);
         password_edit_text = view.findViewById(R.id.password_edit_text);
-        View showHidePassword = view.findViewById(R.id.showHidePassword);
+        showHidePassword = view.findViewById(R.id.showHidePassword);
         switchMode = view.findViewById(R.id.switchMode);
         submitButton = view.findViewById(R.id.submit_button);
         forgotPassword = view.findViewById(R.id.forgotPassword);
@@ -198,11 +200,11 @@ public class LogInFragment extends Fragment {
         if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             // Password is hidden, show it
             password_edit_text.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            //showHidePassword.setImageResource(R.drawable.ic_visibility_on);
+            showHidePassword.setImageResource(R.drawable.eye);
         } else {
             // Password is shown, hide it
             password_edit_text.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            //showHidePassword.setImageResource(R.drawable.ic_visibility_off);
+            showHidePassword.setImageResource(R.drawable.closed_eye);
         }
         // Move cursor to the end of the text
         password_edit_text.setSelection(password_edit_text.getText().length());

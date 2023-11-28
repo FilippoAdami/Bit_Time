@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.text.InputFilter;
 import android.widget.Toast;
 
@@ -30,7 +30,8 @@ public class AccountFragment extends Fragment {
     private EditText pinEditText;
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private DbManager dbManager; // Initialize DbManager
+    private ImageView showHidePassword;
+    private DbManager dbManager;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -82,7 +83,7 @@ public class AccountFragment extends Fragment {
 
            }
         });
-        TextView showHidePassword = view.findViewById(R.id.showHidePassword);
+        showHidePassword = view.findViewById(R.id.showHidePassword);
         usernameEditText = view.findViewById(R.id.usernameEditText);
         passwordEditText = view.findViewById(R.id.password_edit_text);
         Button saveButton = view.findViewById(R.id.submit);
@@ -125,11 +126,11 @@ public class AccountFragment extends Fragment {
         if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             // Password is hidden, show it
             passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            //showHidePassword.setImageResource(R.drawable.ic_visibility_on);
+            showHidePassword.setImageResource(R.drawable.eye);
         } else {
             // Password is shown, hide it
             passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            //showHidePassword.setImageResource(R.drawable.ic_visibility_off);
+            showHidePassword.setImageResource(R.drawable.closed_eye);
         }
         // Move cursor to the end of the text
         passwordEditText.setSelection(passwordEditText.getText().length());
