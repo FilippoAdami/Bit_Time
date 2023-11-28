@@ -1,30 +1,41 @@
 package com.application.bit_time.Settings_Activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.R;
 import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.AlarmUtils.DatePlanDialog;
 import com.application.bit_time.utils.AlarmUtils.TimePlanDialog;
+import com.application.bit_time.utils.PlannerViewModel;
 
 import java.util.Date;
 
 public class PlanFragment extends Fragment {
+
+
+    PlannerViewModel plannerViewModel;
 
     AlarmInfo alarmToPlan;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        plannerViewModel = new ViewModelProvider(this.getActivity()).get(PlannerViewModel.class);
+
 
     }
 
@@ -35,6 +46,27 @@ public class PlanFragment extends Fragment {
 
         Button pickDateBtn = view.findViewById(R.id.pickDateButton);
         Button pickTimeBtn = view.findViewById(R.id.pickTimeButton);
+        Button ScheduleBtn = view.findViewById(R.id.scheduleButton);
+        TextView DateText = view.findViewById(R.id.dateTextView);
+        TextView TimeText = view.findViewById(R.id.timeTextView);
+
+
+        plannerViewModel.getSelectedItem().observe(this, item->
+        {
+            Log.i("PlanFragment observs",item.toString());
+
+            if(item.isDateSet())
+            {
+                DateText.setText(item.printDate());
+            }
+
+            if(item.isTimeSet())
+            {
+                TimeText.setText(item.printTime());
+            }
+
+
+        });
 
 
 
@@ -44,7 +76,7 @@ public class PlanFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 TimePlanDialog planningDialog = new TimePlanDialog();
-                planningDialog.show(getActivity().getSupportFragmentManager(),"time_picker");
+                planningDialog.show(getChildFragmentManager(),"time_picker");
 
             }
         });
@@ -59,20 +91,36 @@ public class PlanFragment extends Fragment {
         });
 
 
+        ScheduleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                alarmToPlan = plannerViewModel.getSelectedItem().getValue();
+
+                if(alarmToPlan.isDateSet() && alarmToPlan.isTimeSet())
+                {
+                    AlarmScheduler scheduler = new AlarmScheduler(getContext());
+                    scheduler.schedule(alarmToPlan);
+                    Log.i("PLANFRAGMENT success","set at "+alarmToPlan.printDate()+" "+alarmToPlan.printTime());
+                }
+                else
+                {
+                    Log.i("PLANFRAGMENT alert","Some alarmInfo fields are still empty");
+                }
 
 
-        //TODO : these hardcoded values will be erased
-        int year=2023;
-        int month =11;
-        int day = 27;
-        int hour = 13;
-        int min = 20;
 
-        this.alarmToPlan = new AlarmInfo(year,month,day,hour,min,0);
-        AlarmScheduler scheduler = new AlarmScheduler(this.getActivity().getApplicationContext());
-        scheduler.schedule(alarmToPlan);
+            }
+        });
+
+
+
+
+
 
 
         return view;
     }
+
+
 }

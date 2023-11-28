@@ -34,8 +34,8 @@ public class PlanningInfo {
         return this.planned;
     }
 
-    public GregorianCalendar getInfo()
+    public AlarmInfo getInfo()
     {
-        return this.info.getInfo();
+        return this.info;
     }
 }

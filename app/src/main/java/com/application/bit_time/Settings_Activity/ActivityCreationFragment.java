@@ -275,6 +275,8 @@ public class ActivityCreationFragment extends Fragment {
         });
 
         endButton.setOnClickListener(new View.OnClickListener() {
+
+            //TODO: make this override plannerviewmodel so that next activity will find a new AlarmInfo obj
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
