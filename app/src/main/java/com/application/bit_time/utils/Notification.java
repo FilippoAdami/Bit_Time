@@ -23,15 +23,14 @@ public class Notification {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(R.drawable.happy_dog) // TODO : happy_dog is just a placeholder, change it before the delivery
-                        .setContentTitle("test notification")
-                        .setContentText("test notification text")
+                        .setContentTitle("Attività imminente programmata")
+                        .setContentText("Activity "+"nome"+" sta per partire")
                         .setPriority(NotificationCompat.PRIORITY_HIGH);
 
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-
-        //notificationManager.notify(supervisor.incrementNotificationsN(), builder.build());
+        notificationManager.notify(supervisor.getNotificationsN(), builder.build());
 
 
 

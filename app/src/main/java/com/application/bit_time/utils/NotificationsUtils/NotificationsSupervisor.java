@@ -6,10 +6,12 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.application.bit_time.utils.Notification;
+
 public class NotificationsSupervisor {
 
     Context applicationContext;
-    int notificationsN;
+    static int notificationsN;
 
 
     public NotificationsSupervisor(Context context)
@@ -44,12 +46,14 @@ public class NotificationsSupervisor {
 
     }
 
-
-    public int incrementNotificationsN()
+    public void createNotification()
     {
+        String channelId = "tobedefined"; //TODO: handle this
         this.notificationsN+=1;
-        return this.notificationsN;
+        Notification notification = new Notification(this.applicationContext,channelId,this);
+
     }
+
 
     public int getNotificationsN()
     {

@@ -1,5 +1,6 @@
 package com.application.bit_time.Settings_Activity;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,13 +21,19 @@ import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.AlarmUtils.DatePlanDialog;
 import com.application.bit_time.utils.AlarmUtils.TimePlanDialog;
+import com.application.bit_time.utils.CustomViewModel;
+import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.PlannerViewModel;
+import com.application.bit_time.utils.SubtasksViewModel;
+import com.application.bit_time.utils.SubtasksViewModelData;
 
 import java.util.Date;
 
 public class PlanFragment extends Fragment {
 
 
+    CustomViewModel viewModel;
+    SubtasksViewModel subtasksViewModel;
     PlannerViewModel plannerViewModel;
 
     AlarmInfo alarmToPlan;
@@ -35,6 +42,11 @@ public class PlanFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         plannerViewModel = new ViewModelProvider(this.getActivity()).get(PlannerViewModel.class);
+        subtasksViewModel = new ViewModelProvider(this.getActivity()).get("subTasksVM",SubtasksViewModel.class);
+        viewModel  = new ViewModelProvider(this.getActivity()).get(CustomViewModel.class);
+
+
+
 
 
     }
@@ -97,11 +109,24 @@ public class PlanFragment extends Fragment {
 
                 alarmToPlan = plannerViewModel.getSelectedItem().getValue();
 
+
+
                 if(alarmToPlan.isDateSet() && alarmToPlan.isTimeSet())
                 {
-                    AlarmScheduler scheduler = new AlarmScheduler(getContext());
-                    scheduler.schedule(alarmToPlan);
-                    Log.i("PLANFRAGMENT success","set at "+alarmToPlan.printDate()+" "+alarmToPlan.printTime());
+                    DbManager dbManager = new DbManager(getContext());
+
+                    alarmToPlan = plannerViewModel.getSelectedItem().getValue();
+                    if(viewModel.getSelectedItem().getValue().equals("ModifyActivity"))
+                    {
+                        SubtasksViewModelData svmData = subtasksViewModel.getSelectedItem().getValue();
+                        Log.i("PLANFRAG",svmData.toStringId());
+                        AlarmScheduler scheduler = new AlarmScheduler(getContext());
+                        scheduler.schedule(alarmToPlan);
+                        Log.i("PLANFRAGMENT success","set at "+alarmToPlan.printDate()+" "+alarmToPlan.printTime());
+
+                        dbManager.insertActivitySchedule(svmData.getActivityId(),alarmToPlan.getInfoGC());
+                    }
+
                 }
                 else
                 {

@@ -14,6 +14,8 @@ import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class DbManager {
@@ -74,6 +76,17 @@ public class DbManager {
                 DbContract.appSettings.COLUMN_NAME_SOUNDS + " integer," +
                 DbContract.appSettings.COLUMN_NAME_FOCUS + " integer)";
 
+
+        public static final String SQL_CREATE_ACTIVITY_SCHEDULE_TABLE =
+                "create table "+DbContract.ActivitySchedule.TABLE_NAME +"(" +
+                        DbContract.ActivitySchedule._ID +" integer primary key autoincrement," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_YEAR + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_MONTH + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_DAY + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_HOUR +" integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_MINUTES + " integer)";
+
         public DbHelper(Context context)
         {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -86,6 +99,7 @@ public class DbManager {
             db.execSQL(SQL_CREATE_USERDATA_TABLE);
             db.execSQL(SQL_CREATE_APP_SETTINGS_TABLE);
             db.execSQL(SQL_CREATE_GAMIFICATION_SETTINGS_TABLE);
+            db.execSQL(SQL_CREATE_ACTIVITY_SCHEDULE_TABLE);
         }
 
         @Override
@@ -1085,4 +1099,78 @@ public class DbManager {
         return scanQuery;
 
     }
+
+
+    public void insertActivitySchedule(int activityId,GregorianCalendar infoCalendarFormat)
+    {
+        String queryStr = "insert into "+DbContract.ActivitySchedule.TABLE_NAME + "("+
+                DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "," +
+                DbContract.ActivitySchedule.COLUMN_NAME_YEAR +"," +
+                DbContract.ActivitySchedule.COLUMN_NAME_MONTH +","+
+                DbContract.ActivitySchedule.COLUMN_NAME_DAY +","+
+                DbContract.ActivitySchedule.COLUMN_NAME_HOUR +"," +
+                DbContract.ActivitySchedule.COLUMN_NAME_MINUTES +") values( "+
+                activityId +"," +
+                infoCalendarFormat.get(Calendar.YEAR) + "," +
+                infoCalendarFormat.get(Calendar.MONTH) + "," +
+                infoCalendarFormat.get(Calendar.DAY_OF_MONTH) + "," +
+                infoCalendarFormat.get(Calendar.HOUR) + "," +
+                infoCalendarFormat.get(Calendar.MINUTE) +")";
+
+
+        db.execSQL(queryStr);
+
+
+    }
+
+    public void deleteActivitySchedule(int scheduleId)
+    {
+        String queryStr =
+                "delete from "+DbContract.ActivitySchedule.TABLE_NAME +
+                " where " +DbContract.ActivitySchedule._ID + "=" +scheduleId;
+
+        db.execSQL(queryStr);
+    }
+
+
+
+    public Cursor getActivityScheduleInfo(int activityId)
+    {
+        String queryStr = "select * from "+DbContract.ActivitySchedule.TABLE_NAME +
+                " where " + DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "=" + Integer.toString(activityId);
+
+        Cursor c = db.rawQuery(queryStr,null);
+
+        return c;
+    }
+
+
+    public GregorianCalendar getActivityScheduleInfoGC(int activityId,int scheduleId) {
+        GregorianCalendar calendar;
+        boolean notfound = true;
+
+        Cursor c = getActivityScheduleInfo(activityId);
+
+        if (c.getCount() > 0) {
+            c.moveToFirst();
+
+            do {
+                if (c.getInt(0) == scheduleId) {
+                    notfound = false;
+                }
+            } while (c.moveToNext() && notfound);
+
+
+            calendar = new GregorianCalendar(c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6));
+
+
+        } else
+            calendar = new GregorianCalendar(); //TODO : what does this return ?
+
+
+        return calendar;
+    }
+
+
+
 }
