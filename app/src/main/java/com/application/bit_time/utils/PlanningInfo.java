@@ -16,6 +16,11 @@ public class PlanningInfo {
         info = null;
     }
 
+    public PlanningInfo(AlarmInfo info)
+    {
+        this();
+        this.info = new AlarmInfo(info);
+    }
     public PlanningInfo(PlanningInfo info)
     {
         this.planned = info.isPlanned();

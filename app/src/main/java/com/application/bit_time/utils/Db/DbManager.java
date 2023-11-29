@@ -1103,21 +1103,21 @@ public class DbManager {
 
     public void insertActivitySchedule(int activityId,GregorianCalendar infoCalendarFormat)
     {
-        String queryStr = "insert into "+DbContract.ActivitySchedule.TABLE_NAME + "("+
+        String queryStr = "insert into "+DbContract.ActivitySchedule.TABLE_NAME + " ("+
                 DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "," +
                 DbContract.ActivitySchedule.COLUMN_NAME_YEAR +"," +
                 DbContract.ActivitySchedule.COLUMN_NAME_MONTH +","+
                 DbContract.ActivitySchedule.COLUMN_NAME_DAY +","+
                 DbContract.ActivitySchedule.COLUMN_NAME_HOUR +"," +
-                DbContract.ActivitySchedule.COLUMN_NAME_MINUTES +") values( "+
+                DbContract.ActivitySchedule.COLUMN_NAME_MINUTES +") values ( "+
                 activityId +"," +
                 infoCalendarFormat.get(Calendar.YEAR) + "," +
                 infoCalendarFormat.get(Calendar.MONTH) + "," +
                 infoCalendarFormat.get(Calendar.DAY_OF_MONTH) + "," +
                 infoCalendarFormat.get(Calendar.HOUR) + "," +
-                infoCalendarFormat.get(Calendar.MINUTE) +")";
+                infoCalendarFormat.get(Calendar.MINUTE) +");";
 
-
+        Log.i("queryStr",queryStr);
         db.execSQL(queryStr);
 
 
@@ -1132,13 +1132,19 @@ public class DbManager {
         db.execSQL(queryStr);
     }
 
+    public Cursor selectAllActivitySchedule()
+    {
+        String queryStr = "select * from "+ DbContract.ActivitySchedule.TABLE_NAME;
 
+        return db.rawQuery(queryStr,null);
+    }
 
     public Cursor getActivityScheduleInfo(int activityId)
     {
         String queryStr = "select * from "+DbContract.ActivitySchedule.TABLE_NAME +
                 " where " + DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "=" + Integer.toString(activityId);
 
+        Log.i("selectQuery",queryStr);
         Cursor c = db.rawQuery(queryStr,null);
 
         return c;
