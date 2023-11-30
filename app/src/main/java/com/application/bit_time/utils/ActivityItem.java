@@ -203,13 +203,19 @@ public void setId(int id)
         return false;
     }
 
-    public void setPlanningInfo(PlanningInfo info)
+    public void setPlans(List<PlanningInfo> plans)
     {
         if(this.plans == null) {
             this.plans = new ArrayList<>();
         }
 
-        this.plans.add(info);
+        for(PlanningInfo pi : plans)
+        {
+            this.plans.add(pi);
+        }
     }
+
+
+
 
 }

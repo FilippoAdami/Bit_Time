@@ -326,16 +326,59 @@ public class DbManager {
 
         db.execSQL(query);
 
+
+
+    }
+
+    public void modifyActivity(ActivityItem item,int[] subtasksId)
+    {
+        modifyActivity(item.getInfo(),subtasksId);
+
+        if(item.isPlanned())
+        {
+            for(PlanningInfo pi : item.getPlans())
+            {
+                insertActivitySchedule(item.getInfo().getIdInt(),pi.getInfo().getInfoGC());
+            }
+        }
+    }
+
+    public void deletePlanById(int planId)
+    {
+        String str = "delete from "+ DbContract.ActivitySchedule.TABLE_NAME +
+                " where "+ DbContract.ActivitySchedule._ID + "="+ planId;
+
+        Log.i("deletePlan str",str);
+
+        db.execSQL(str);
+    }
+
+    public void deleteAllPlansByActivityId(int activityId)
+    {
+        //TODO : here we'll also remove plans from alarm manager
+
+        String str= "delete from "+DbContract.ActivitySchedule.TABLE_NAME +
+                " where " + DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "=" + activityId;
+
+        Log.i("deletePlans str",str);
+
+        db.execSQL(str);
+
     }
 
     public void deleteActivity(ActivityInfo item)
     {
+        deleteAllPlansByActivityId(item.getIdInt());
+
         String deleteQuery = "delete from "+ DbContract.Activities.TABLE_NAME
                              + " where " + DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME + "='" +item.getName() +
                 "' and "+ DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "='"+ item.getTime()+"';";
 
         Log.i("QUERY",deleteQuery);
         db.execSQL(deleteQuery);
+
+
+
     }
 
     public void modifyTask(TaskItem modifiedItem)

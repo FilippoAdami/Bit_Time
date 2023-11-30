@@ -130,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
                         subtasksIds[i]=ti.getID();
                         i++;
                     }
-                    dbManager.modifyActivity(currentData.activityItem.getInfo(),subtasksIds);
+                    dbManager.modifyActivity(currentData.activityItem,subtasksIds);
                 }
             }
 

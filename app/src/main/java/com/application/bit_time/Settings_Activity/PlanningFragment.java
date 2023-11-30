@@ -49,7 +49,8 @@ public class PlanningFragment extends Fragment {
         DbManager dbManager = new DbManager(this.getActivity());
         Cursor c = dbManager.getActivityScheduleInfo(subtasksViewModel.getSelectedItem().getValue().getActivityId());
 
-        if(c.getCount()>0)
+        n=c.getCount();
+        if(n>0)
         {
 
             Log.i("PLAN FRAG","actual schedule for the selected activity");

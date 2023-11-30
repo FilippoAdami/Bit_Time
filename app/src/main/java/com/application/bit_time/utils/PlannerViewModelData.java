@@ -42,14 +42,13 @@ public class PlannerViewModelData {
         return this.plans.size();
     }
 
-    public void clearPlans()
-    {
-        this.plans.clear();
-    }
-
     public PlanningInfo getLatestPlan()
     {
         return this.latestPlan;
     }
 
+    public List<PlanningInfo> getPlans()
+    {
+        return this.plans;
+    }
 }

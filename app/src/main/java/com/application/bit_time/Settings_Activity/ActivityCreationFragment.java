@@ -26,6 +26,8 @@ import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbViewModelData;
+import com.application.bit_time.utils.PlannerViewModel;
+import com.application.bit_time.utils.PlannerViewModelData;
 import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.SubtaskAdapter;
 import com.application.bit_time.utils.SubtasksViewModel;
@@ -44,7 +46,7 @@ public class ActivityCreationFragment extends Fragment {
     private RecyclerView subtasksRecyclerView;
     private SubtaskAdapter subtaskAdapter;
     private CustomViewModel viewModel;
-
+    private PlannerViewModel plannerViewModel;
     private SubtasksViewModel subtasksViewModel;
     private DbViewModel dbViewModel;
     private TaskItem[] subtasksToAdd;
@@ -64,7 +66,7 @@ public class ActivityCreationFragment extends Fragment {
         subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
         //Log.i("ACTCREFRAG svm",this.subtasksViewModel.toString());
         dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
-
+        plannerViewModel = new ViewModelProvider(requireActivity()).get(PlannerViewModel.class);
         idToBeModified=-1;
 
         Cursor allTasksCursor = dbManager.selectAllTasks();
@@ -281,9 +283,14 @@ public class ActivityCreationFragment extends Fragment {
             public void onClick(View view) {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
 
-
                 DbViewModelData newData = new DbViewModelData();
                 newData.selector=DbViewModelData.ITEM_TYPE.ACTIVITY;
+
+
+
+
+
+
 
 
                 //dbViewModel.selectItem();
@@ -338,8 +345,15 @@ public class ActivityCreationFragment extends Fragment {
                     //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                 }
 
-                dbViewModel.selectItem(newData);
+                PlannerViewModelData plannerViewModelData = plannerViewModel.getSelectedItem().getValue();
 
+                newData.activityItem.setPlans(plannerViewModelData.getPlans());
+
+                Log.i("setPlans res",""+newData.activityItem.getPlans().size());
+
+
+                dbViewModel.selectItem(newData);
+                plannerViewModel.selectItem(new PlannerViewModelData());
 
                 viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
 
