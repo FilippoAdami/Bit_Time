@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.PlanningFragment;
+import com.application.bit_time.utils.Db.DbManager;
 
 import java.util.List;
 
@@ -38,13 +39,9 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
     public void onBindViewHolder(@NonNull PlanAdapter.ListItemHolder holder, int position) {
 
         PlanningInfo currentPlan = planList.get(position);
+        holder.id = currentPlan.getPlanId();
         holder.fullDate.setText(currentPlan.getInfo().toString());
-        holder.removeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("removePlanButton","pressed");
-            }
-        });
+
 
 
     }
@@ -58,6 +55,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
 
     class ListItemHolder extends RecyclerView.ViewHolder {
 
+        int id;
         TextView fullDate;
         Button removeButton;
         public ListItemHolder(View view)
@@ -68,6 +66,9 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
             this.removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.i("removePlanButton","pressed, will remove plan "+id);
+                    DbManager dbManager = new DbManager(planningFragment.getActivity());
+                    dbManager.deletePlanById(id);
 
                 }
             });

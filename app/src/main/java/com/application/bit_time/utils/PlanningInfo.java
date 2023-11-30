@@ -9,23 +9,34 @@ import java.util.GregorianCalendar;
 public class PlanningInfo {
 
     boolean planned;
+    private int planId;
     AlarmInfo info;
 
 
     public PlanningInfo()
     {
+        planId=-1;
         planned= false;
         //info = null;
         this.info = new AlarmInfo();
     }
+
 
     public PlanningInfo(AlarmInfo info)
     {
         this();
         this.info = new AlarmInfo(info);
     }
+
+    public PlanningInfo(int planId,AlarmInfo info)
+    {
+        this(info);
+        this.planId = planId;
+    }
+
     public PlanningInfo(PlanningInfo info)
     {
+        this();
         this.planned = info.isPlanned();
         this.info = new AlarmInfo(info.getInfo());
     }
@@ -36,6 +47,8 @@ public class PlanningInfo {
         this.info = new AlarmInfo(info);
         this.planned = true;
     }
+
+
 
     public boolean isPlanned()
     {
@@ -52,5 +65,10 @@ public class PlanningInfo {
     public String toString() {
 
         return this.info.toString();
+    }
+
+    public int getPlanId()
+    {
+        return this.planId;
     }
 }
