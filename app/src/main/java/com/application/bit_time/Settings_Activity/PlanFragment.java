@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.R;
@@ -24,6 +25,7 @@ import com.application.bit_time.utils.AlarmUtils.TimePlanDialog;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.PlannerViewModel;
+import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.SubtasksViewModelData;
 
@@ -45,10 +47,6 @@ public class PlanFragment extends Fragment {
         subtasksViewModel = new ViewModelProvider(this.getActivity()).get("subTasksVM",SubtasksViewModel.class);
         viewModel  = new ViewModelProvider(this.getActivity()).get(CustomViewModel.class);
 
-
-
-
-
     }
 
     @Nullable
@@ -59,24 +57,36 @@ public class PlanFragment extends Fragment {
         Button pickDateBtn = view.findViewById(R.id.pickDateButton);
         Button pickTimeBtn = view.findViewById(R.id.pickTimeButton);
         Button ScheduleBtn = view.findViewById(R.id.scheduleButton);
-        TextView DateText = view.findViewById(R.id.dateTextView);
-        TextView TimeText = view.findViewById(R.id.timeTextView);
+        TextView dateText = view.findViewById(R.id.dateTextView);
+        TextView timeText = view.findViewById(R.id.timeTextView);
 
 
-        plannerViewModel.getSelectedItem().observe(this, item->
+
+
+        this.plannerViewModel.getSelectedItem().observe(this,item->
         {
-            Log.i("PlanFragment observs",item.toString());
+            alarmToPlan = item.getLatestPlan().getInfo();
 
-            if(item.isDateSet())
+            Log.i("plannerVM PlanFrag",""+alarmToPlan.printFlags());
+            Log.i("plannerVM PlanFrag",""+item.countPlans());
+
+            if(alarmToPlan.isDateSet())
             {
-                DateText.setText(item.printDate());
+                dateText.setText(alarmToPlan.printDate());
+            }
+            else
+            {
+                dateText.setText(R.string.pickDateButton);
             }
 
-            if(item.isTimeSet())
+            if(alarmToPlan.isTimeSet())
             {
-                TimeText.setText(item.printTime());
+                timeText.setText(alarmToPlan.printTime());
             }
-
+            else
+            {
+                timeText.setText(R.string.pickTimeButton);
+            }
 
         });
 
@@ -107,15 +117,15 @@ public class PlanFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                alarmToPlan = plannerViewModel.getSelectedItem().getValue();
-
-
 
                 if(alarmToPlan.isDateSet() && alarmToPlan.isTimeSet())
                 {
-                    DbManager dbManager = new DbManager(getContext());
 
-                    alarmToPlan = plannerViewModel.getSelectedItem().getValue();
+                    plannerViewModel.addPlanToSchedule(new PlanningInfo(alarmToPlan));
+                    Log.i("after.addPlanToSchedule",Integer.toString(plannerViewModel.getSelectedItem().getValue().countPlans()));
+                    /*DbManager dbManager = new DbManager(getContext());
+
+                    //alarmToPlan = plannerViewModel.getSelectedItem().getValue();
                     if(viewModel.getSelectedItem().getValue().equals("ModifyActivity"))
                     {
                         SubtasksViewModelData svmData = subtasksViewModel.getSelectedItem().getValue();
@@ -125,12 +135,13 @@ public class PlanFragment extends Fragment {
                         Log.i("PLANFRAGMENT success","set at "+alarmToPlan.printDate()+" "+alarmToPlan.printTime());
 
                         dbManager.insertActivitySchedule(svmData.getActivityId(),alarmToPlan.getInfoGC());
-                    }
+                    }*/
 
                 }
                 else
                 {
                     Log.i("PLANFRAGMENT alert","Some alarmInfo fields are still empty");
+                    // TODO : dialog to the user that shows to fill all the fields -- subclass di error dialog ?
                 }
 
 

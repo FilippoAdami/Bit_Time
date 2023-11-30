@@ -43,6 +43,7 @@ public class AlarmInfo {
    {
        this.TimeField = Field.NOT_SET;
        this.DateField = Field.NOT_SET;
+
        //TODO: this is a test, todo as placeholder to find it quicker
 
        GregorianCalendar calendar = new GregorianCalendar();
@@ -58,6 +59,9 @@ public class AlarmInfo {
 
    public AlarmInfo(AlarmInfo info)
    {
+       this();
+       this.TimeField = info.TimeField;
+       this.DateField = info.DateField;
        this.year = info.year;
        this.month = info.month;
        this.day = info.day;
@@ -69,7 +73,8 @@ public class AlarmInfo {
 
    public long getAlarmTimeLong()
    {
-       return new GregorianCalendar(this.year,this.month,this.day,this.hour,this.min).getTimeInMillis();
+       return new GregorianCalendar(this.year,this.month,this.day,this.hour,this.min)
+               .getTimeInMillis();
    }
 
     public GregorianCalendar getInfoGC()
@@ -106,6 +111,32 @@ public class AlarmInfo {
     }
 
 
+    public String printFlags()
+    {
+        String str = "DATE : ";
+        if(isDateSet())
+        {
+            str = str.concat("SET");
+        }
+        else
+        {
+            str =str.concat(("UNSET"));
+        }
+
+
+        str = str.concat(" TIME ");
+
+        if(isTimeSet())
+        {
+            str = str.concat("SET");
+        }else
+        {
+            str = str.concat("UNSET");
+        }
+
+        return str;
+    }
+
     public String toString()
     {
 
@@ -132,4 +163,6 @@ public class AlarmInfo {
 
         return false;
     }
+
+
 }

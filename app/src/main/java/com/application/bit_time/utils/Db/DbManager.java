@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
@@ -172,6 +173,70 @@ public class DbManager {
 
         Log.i("insert act str",insertQuery);
         db.execSQL(insertQuery);
+
+
+        if(activity.isPlanned()) {
+            Cursor c = selectLatestActivity();
+
+            int latestActId = -1;
+
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                latestActId = c.getInt(0);
+
+            }
+
+                for(PlanningInfo pi : activity.getPlans())
+                {
+                    Log.i("pi to be added",pi.toString());
+                    insertActivitySchedule(latestActId,pi.getInfo().getInfoGC());
+                }
+
+
+        }
+
+
+    }
+
+    public Cursor selectLatestActivity()
+    {
+
+
+        String queryMaxStr = "select max(" +DbContract.Activities._ID +") from "+ DbContract.Activities.TABLE_NAME;
+
+        Cursor  c = db.rawQuery(queryMaxStr,null);
+
+
+        int latestActivityId=-1;
+
+        if(c.getCount()==1)
+        {
+            c.moveToFirst();
+            latestActivityId = c.getInt(0);
+            //Log.i("count","max actId is "+latestActivityId);
+            String queryStr = "select * from "+ DbContract.Activities.TABLE_NAME +
+                    " where "+ DbContract.Activities._ID +"="+ Integer.toString(latestActivityId);
+
+            c= db.rawQuery(queryStr,null);
+
+            if(c.getCount()>0)
+            {
+                c.moveToFirst();
+                Log.i("latest act inserted has",c.getColumnCount() +" columns");
+            }
+
+
+
+
+        }
+
+        return c;
+
+
+
+
+
+
     }
 
     public void insertTaskRecord(TaskItem task)

@@ -1,5 +1,7 @@
 package com.application.bit_time.utils;
 
+import androidx.annotation.NonNull;
+
 import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 
 import java.util.GregorianCalendar;
@@ -13,7 +15,8 @@ public class PlanningInfo {
     public PlanningInfo()
     {
         planned= false;
-        info = null;
+        //info = null;
+        this.info = new AlarmInfo();
     }
 
     public PlanningInfo(AlarmInfo info)
@@ -28,9 +31,9 @@ public class PlanningInfo {
     }
 
 
-    public void setInfo()
+    public void setInfo(AlarmInfo info)
     {
-        this.info = new AlarmInfo();
+        this.info = new AlarmInfo(info);
         this.planned = true;
     }
 
@@ -42,5 +45,12 @@ public class PlanningInfo {
     public AlarmInfo getInfo()
     {
         return this.info;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+
+        return this.info.toString();
     }
 }

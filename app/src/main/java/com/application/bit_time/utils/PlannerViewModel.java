@@ -10,14 +10,26 @@ public class PlannerViewModel extends ViewModel {
 
 
 
-    private final MutableLiveData<AlarmInfo> selectedItem = new MutableLiveData(new AlarmInfo());
+    private final MutableLiveData<PlannerViewModelData> selectedItem = new MutableLiveData(new PlannerViewModelData() );
 
-    public void selectItem(AlarmInfo item)
+    public void addPlanToSchedule(PlanningInfo piToAdd)
+    {
+        this.selectedItem.getValue().addPlan(piToAdd);
+        //this.selectedItem.getValue().setLatestPlan(new PlanningInfo());
+        selectItem(this.selectedItem.getValue());
+    }
+
+    public void clearSelectedItem()
+    {
+        this.selectedItem.setValue(new PlannerViewModelData());
+        selectItem(this.selectedItem.getValue());
+    }
+    public void selectItem(PlannerViewModelData item)
     {
         selectedItem.setValue(item);
     }
 
-    public LiveData<AlarmInfo> getSelectedItem()
+    public LiveData<PlannerViewModelData> getSelectedItem()
     {
         return selectedItem;
     }

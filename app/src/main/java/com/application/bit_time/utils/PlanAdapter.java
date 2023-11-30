@@ -65,6 +65,12 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
             super(view);
             this.fullDate = view.findViewById(R.id.fullDateTextView);
             this.removeButton = view.findViewById(R.id.deletePlanButton);
+            this.removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
 
         }
     }

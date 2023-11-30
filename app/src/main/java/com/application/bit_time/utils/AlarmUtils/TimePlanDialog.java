@@ -15,6 +15,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.utils.PlannerViewModel;
+import com.application.bit_time.utils.PlannerViewModelData;
+import com.application.bit_time.utils.PlanningInfo;
 
 import java.util.Calendar;
 
@@ -31,7 +33,7 @@ public class TimePlanDialog extends DialogFragment implements TimePickerDialog.O
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
         plannerViewModel = new ViewModelProvider(this.getActivity()).get(PlannerViewModel.class);
-        currentInfo = plannerViewModel.getSelectedItem().getValue();
+        currentInfo = plannerViewModel.getSelectedItem().getValue().getLatestPlan().getInfo();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -51,6 +53,9 @@ public class TimePlanDialog extends DialogFragment implements TimePickerDialog.O
         Log.i("TIME PLAN DIAL","ready to update");
 
         currentInfo.setTime(i,i1);
-        this.plannerViewModel.selectItem(currentInfo);
+
+        PlannerViewModelData dataToBeUploaded = this.plannerViewModel.getSelectedItem().getValue();
+        dataToBeUploaded.setLatestPlan(new PlanningInfo(currentInfo));
+        this.plannerViewModel.selectItem(dataToBeUploaded);
     }
 }
