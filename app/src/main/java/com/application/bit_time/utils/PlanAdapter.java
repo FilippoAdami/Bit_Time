@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.PlanningFragment;
+import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.Db.DbManager;
+import com.application.bit_time.utils.NotificationsUtils.NotificationsSupervisor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,13 +93,13 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
                     Log.i("removePlanButton","pressed, will remove plan "+id);
                     DbManager dbManager = new DbManager(planningFragment.getActivity());
                     dbManager.deletePlanById(id);
-                    Cursor c = dbManager.selectAllActivitySchedule();
+                    //Cursor c = dbManager.selectAllActivitySchedule();
 
                     List<PlanningInfo> newplanList = new ArrayList<>();
 
+                    AlarmScheduler alarmScheduler = new AlarmScheduler(planningFragment.getActivity());
 
-
-
+                    alarmScheduler.cancel(planningInfo.info);
 
                     for(PlanningInfo pi : planList)
                     {

@@ -23,11 +23,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.PlannerViewModel;
 import com.application.bit_time.utils.PlannerViewModelData;
+import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.SubtaskAdapter;
 import com.application.bit_time.utils.SubtasksViewModel;
@@ -347,11 +349,17 @@ public class ActivityCreationFragment extends Fragment {
 
                 PlannerViewModelData plannerViewModelData = plannerViewModel.getSelectedItem().getValue();
 
-                newData.activityItem.setPlans(plannerViewModelData.getPlans());
+                if(plannerViewModelData != null) {
+                    newData.activityItem.setPlans(plannerViewModelData.getPlans());
+                    AlarmScheduler alarmScheduler =  new AlarmScheduler(getActivity().getApplicationContext());
 
-                Log.i("setPlans res",""+newData.activityItem.getPlans().size());
+                    for(PlanningInfo pi : newData.activityItem.getPlans()) {
+                        alarmScheduler.schedule(pi.getInfo());
+                    }
 
+                    Log.i("setPlans res", "" + newData.activityItem.getPlans().size());
 
+                }
                 dbViewModel.selectItem(newData);
                 plannerViewModel.selectItem(new PlannerViewModelData());
 
