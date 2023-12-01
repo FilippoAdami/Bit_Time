@@ -3,6 +3,7 @@ package com.application.bit_time.utils.AlarmUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -57,8 +58,7 @@ public class AlarmInfo {
        Log.i("default constr",toString());
    }
 
-   public AlarmInfo(AlarmInfo info)
-   {
+   public AlarmInfo(AlarmInfo info) {
        this();
        this.TimeField = info.TimeField;
        this.DateField = info.DateField;
@@ -66,12 +66,10 @@ public class AlarmInfo {
        this.month = info.month;
        this.day = info.day;
        this.hour = info.hour;
-       this.min =info.min;
+       this.min = info.min;
    }
 
-
-
-   public long getAlarmTimeLong()
+    public long getAlarmTimeLong()
    {
        return new GregorianCalendar(this.year,this.month,this.day,this.hour,this.min)
                .getTimeInMillis();

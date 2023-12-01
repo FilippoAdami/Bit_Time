@@ -1,6 +1,9 @@
 package com.application.bit_time.utils;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 
@@ -9,7 +12,7 @@ import java.util.GregorianCalendar;
 public class PlanningInfo {
 
     boolean planned;
-    private int planId;
+    int planId;
     AlarmInfo info;
 
 
@@ -70,5 +73,21 @@ public class PlanningInfo {
     public int getPlanId()
     {
         return this.planId;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+
+        if(obj instanceof PlanningInfo)
+        {
+            PlanningInfo objPI = (PlanningInfo) obj;
+            Log.i("objtoStr" , objPI.toString() + objPI.planId);
+
+            Log.i("equals log",this.planId + " =?=" + objPI.getPlanId());
+            if(this.planId == objPI.getPlanId())
+                return true;
+        }
+
+        return false;
     }
 }

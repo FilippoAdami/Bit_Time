@@ -1,5 +1,6 @@
 package com.application.bit_time.utils;
 
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,12 +9,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.PlanningFragment;
 import com.application.bit_time.utils.Db.DbManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder>{
@@ -41,7 +44,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
         PlanningInfo currentPlan = planList.get(position);
         holder.id = currentPlan.getPlanId();
         holder.fullDate.setText(currentPlan.getInfo().toString());
-
+        holder.planningInfo = new PlanningInfo(currentPlan);
 
 
     }
@@ -53,11 +56,30 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
         return count;
     }
 
+
+
+    public void updatePlans(List<PlanningInfo> newPlans)
+    {
+        final PlansDiffCallback diffCallback = new PlansDiffCallback(this.planList,newPlans);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.planList.clear();
+        this.planList.addAll(newPlans);
+
+        for(PlanningInfo pi : planList)
+        {
+            Log.i("newplanList item",pi.toString());
+        }
+
+        diffResult.dispatchUpdatesTo(this);
+    }
+
     class ListItemHolder extends RecyclerView.ViewHolder {
 
         int id;
         TextView fullDate;
         Button removeButton;
+        PlanningInfo planningInfo;
         public ListItemHolder(View view)
         {
             super(view);
@@ -69,10 +91,43 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
                     Log.i("removePlanButton","pressed, will remove plan "+id);
                     DbManager dbManager = new DbManager(planningFragment.getActivity());
                     dbManager.deletePlanById(id);
+                    Cursor c = dbManager.selectAllActivitySchedule();
+
+                    List<PlanningInfo> newplanList = new ArrayList<>();
+
+
+
+
+
+                    for(PlanningInfo pi : planList)
+                    {
+                        if(id != pi.getPlanId()) {
+                            newplanList.add(pi);
+                            Log.i("added to newplanList",pi.toString() +" "+ pi.getPlanId() + " "+id);
+                        }
+                    }
+
+                    Log.i("planning info",planningInfo.toString());
+
+                    for(PlanningInfo pi : newplanList)
+                    {
+                        Log.i("newplans item",pi.toString());
+                    }
+
+                    updatePlans(newplanList);
+                    /*if (c.getCount()>0)
+                    {
+                        c.moveToFirst();
+                         do {
+                             Log.i("ACTSCHED report",""+c.getInt(0)+ " " +c.getInt(1) + " "+ c.getInt(2));
+                         }while(c.moveToNext());
+                    }*/
 
                 }
             });
 
         }
     }
+
+
 }
