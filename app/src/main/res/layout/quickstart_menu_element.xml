@@ -8,19 +8,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="TextView" />
+        android:text="@string/activity_name"
+        style="@style/RegularText"/>
 
     <TextView
         android:id="@+id/activityDurationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="TextView" />
+        android:text="@string/time"
+        style="@style/RegularText"/>
 
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Button" />
+        android:text="@string/start"
+        style="@style/ActionButton"/>
 </LinearLayout>

@@ -13,24 +13,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Tasks"
-        android:textAlignment="textStart" />
+        android:text="@string/tasks"
+        android:textAlignment="textStart"
+        style="@style/RegularText"/>
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="|"
+        android:text="@string/separatore"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="14sp" />
+        style="@style/RegularText" />
 
     <TextView
         android:id="@+id/rightLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Activities"
-        android:textAlignment="textEnd" />
+        android:text="@string/activities"
+        android:textAlignment="textEnd"
+        style="@style/RegularText"/>
 </LinearLayout>

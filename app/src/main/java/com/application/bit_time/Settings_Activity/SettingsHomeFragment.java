@@ -1,5 +1,6 @@
 package com.application.bit_time.Settings_Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.application.bit_time.Main_Activity.MainActivity;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.SettingsModeData;
@@ -40,6 +42,10 @@ public class SettingsHomeFragment extends Fragment {
                 fragmentManager.beginTransaction().remove(SettingsHomeFragment.this).commit();
                 fragmentManager.popBackStack();
                 requireActivity().finish();
+                // Create an Intent to start the SettingsActivity
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                // Start the new activity
+                startActivity(intent);
             }
         });
 

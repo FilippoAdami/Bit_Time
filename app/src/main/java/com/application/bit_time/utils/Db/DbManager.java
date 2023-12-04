@@ -17,7 +17,7 @@ import java.util.List;
 
 public class DbManager {
 
-    private final SQLiteDatabase db;
+    private static SQLiteDatabase db = null;
 
     public static class DbHelper extends SQLiteOpenHelper
     {
@@ -738,7 +738,7 @@ public class DbManager {
         Log.i("SQLMOD", "changeHomeType: Rows affected - " + rowsAffected);
     }
 
-    public String getTheme() {
+    public static String getTheme() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {

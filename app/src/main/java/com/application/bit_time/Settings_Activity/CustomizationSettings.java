@@ -22,6 +22,9 @@ public class CustomizationSettings extends Fragment {
         Button buttonAS = view.findViewById(R.id.buttonAS);
         Button buttonIP = view.findViewById(R.id.buttonIP);
         Button buttonNA = view.findViewById(R.id.buttonNA);
+        buttonAS.setText(R.string.customize_app);
+        buttonIP.setText(R.string.gamification);
+        buttonNA.setText(R.string.start_activity);
 
         buttonAS.setOnClickListener(v -> {
             // Replace the current fragment with a new fragment

@@ -5,15 +5,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.application.bit_time.Main_Activity.GameFragment;
 import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbContract;
-import com.application.bit_time.utils.PlaceholderFragment;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -29,9 +29,50 @@ public class SettingsActivity extends AppCompatActivity {
     Fragment middleFrag;
     Fragment lowerFrag;
     DbViewModelData currentDbViewModelData;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        dbManager = new DbManager(getApplicationContext());
+        sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        //check if there is a shared preference for the theme
+        String currentTheme = sharedPreferences.getString("CurrentTheme", null);
+        if (currentTheme == null) {
+            //if there is no shared preference for the theme, set the default theme to PastelTheme
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("CurrentTheme", "PastelTheme");
+            editor.apply();
+        }
+
+        String theme = dbManager.getTheme();
+        if (theme != null && !(theme.equals(currentTheme))) {
+            int newTheme = R.style.PastelTheme;
+            switch (theme) {
+                case "PastelTheme":
+                    newTheme = R.style.PastelTheme;
+                    theme = "PastelTheme";
+                    break;
+                case "BWTheme":
+                    newTheme = R.style.BWTheme;
+                    theme = "BWTheme";
+                    break;
+                case "EarthTheme":
+                    newTheme = R.style.EarthTheme;
+                    theme = "EarthTheme";
+                    break;
+                case "VividTheme":
+                    newTheme = R.style.VividTheme;
+                    theme = "VividTheme";
+                    break;
+                default:
+                    break;
+            }
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("theme", theme);
+            editor.apply();
+            setTheme(newTheme);
+            Log.i("Theme", "Theme changed");
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -42,8 +83,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         subtasksViewModel.getSelectedItem().observe(this, item ->
                 Log.i("SETT ACT ",item.toString()));
-
-        dbManager = new DbManager(getApplicationContext());
 
         dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
 

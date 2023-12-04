@@ -11,24 +11,28 @@
         android:id="@+id/textView5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="NOME DEL TASK"
-        android:textAlignment="center" />
+        android:text="@string/nome_del_task"
+        android:textAlignment="center"
+        style="@style/TitleText"/>
 
     <EditText
         android:id="@+id/editTaskNameLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="inserire il nome del task"
-        android:inputType="text" />
+        android:hint="@string/inserire_il_nome_del_task"
+        android:inputType="text"
+        android:autofillHints="name"
+        style="@style/TextInputStyle"/>
 
     <TextView
+        android:layout_marginTop="20dp"
         android:id="@+id/timeLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textAllCaps="true"
-        tools:text="Durata prevista" />
+        tools:text="@string/durata"
+        style="@style/TitleText"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,33 +43,47 @@
             android:id="@+id/editTextHours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="ORE"
-            android:inputType="number" />
+            android:ems="5"
+            android:autofillHints="time"
+            android:hint="@string/ore"
+            android:inputType="number"
+            style="@style/TextInputStyle"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
 
         <EditText
             android:id="@+id/editTextMinutes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints="time"
             android:ems="10"
-            android:hint="MINUTI"
-            android:inputType="number" />
+            android:hint="@string/minuti"
+            android:inputType="number"
+            style="@style/TextInputStyle"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
 
         <EditText
             android:id="@+id/editTextSeconds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints="time"
             android:ems="10"
-            android:hint="SEC"
-            android:inputType="number" />
+            android:hint="@string/sec"
+            android:inputType="number"
+            style="@style/TextInputStyle"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
     </LinearLayout>
 
     <Button
         android:id="@+id/confirmButton"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="@string/save"
+        style="@style/SubmitButton"/>
 
 </LinearLayout>

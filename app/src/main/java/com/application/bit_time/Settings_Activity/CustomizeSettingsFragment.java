@@ -241,7 +241,6 @@ public class CustomizeSettingsFragment extends Fragment {
     }
     private void switchTheme(String theme) {
         int newTheme = R.style.PastelTheme;
-        Log.i("theme", "switchTheme: "+theme);
         switch (theme) {
             case "PastelTheme":
                 if (currentTheme.equals("PastelTheme")) {

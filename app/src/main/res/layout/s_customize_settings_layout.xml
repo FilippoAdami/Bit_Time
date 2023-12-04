@@ -14,13 +14,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Aspetto"
+            android:text="@string/aspetto"
             android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:paddingTop="2dp"
             android:paddingBottom="6dp"
-            android:id="@+id/textAspetto"/>
+            android:id="@+id/textAspetto"
+            style="@style/TitleText"/>
 
         <!-- Themes section -->
         <LinearLayout
@@ -43,13 +42,15 @@
                     android:id="@+id/PastelTheme"
                     android:layout_width="90dp"
                     android:layout_height="120dp"
-                    android:src="@drawable/pastel" />
+                    android:src="@drawable/pastel"
+                    android:contentDescription="@string/PastelTheme"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="text1"
-                    android:id="@+id/text1"/>
+                    android:text="@string/PastelTheme"
+                    android:id="@+id/text1"
+                    style="@style/NormalText"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -62,13 +63,15 @@
                     android:id="@+id/VividTheme"
                     android:layout_width="90dp"
                     android:layout_height="120dp"
-                    android:src="@drawable/vivid" />
+                    android:src="@drawable/vivid"
+                    android:contentDescription="@string/VividTheme"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="text2"
-                    android:id="@+id/text2"/>
+                    android:text="@string/VividTheme"
+                    android:id="@+id/text2"
+                    style="@style/NormalText"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -81,13 +84,15 @@
                     android:id="@+id/EarthTheme"
                     android:layout_width="90dp"
                     android:layout_height="120dp"
-                    android:src="@drawable/earth" />
+                    android:src="@drawable/earth"
+                    android:contentDescription="@string/EarthTheme"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="text1"
-                    android:id="@+id/text3"/>
+                    android:text="@string/EarthTheme"
+                    android:id="@+id/text3"
+                    style="@style/NormalText"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -100,13 +105,15 @@
                     android:id="@+id/PositiveIcon"
                     android:layout_width="90dp"
                     android:layout_height="120dp"
-                    android:src="@drawable/bw" />
+                    android:src="@drawable/bw"
+                    android:contentDescription="@string/BWTheme"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="text1"
-                    android:id="@+id/text4"/>
+                    android:text="@string/BWTheme"
+                    android:id="@+id/text4"
+                    style="@style/NormalText"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -115,19 +122,19 @@
             android:id="@+id/loadBackgroundButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Change Background"
-            android:layout_marginTop="16dp" />
+            android:text="@string/change_background"
+            android:layout_marginTop="16dp"
+            style="@style/ActionButton"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Notifiche"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:text="@string/notifiche"
             android:paddingTop="8dp"
             android:paddingBottom="4dp"
             android:id="@+id/textNotifiche"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            style="@style/TitleText"/>
 
         <!-- Row with Two Columns: Checkbox/Switch and Text -->
         <LinearLayout
@@ -137,14 +144,15 @@
 
             <CheckBox
                 android:id="@+id/checkbox1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="pop-up"
-                android:id="@+id/textCheckbox1"/>
+                android:text="@string/notifications"
+                android:id="@+id/textCheckbox1"
+                style="@style/NormalText"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -153,14 +161,15 @@
 
             <CheckBox
                 android:id="@+id/checkbox2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="background"
-                android:id="@+id/textCheckbox2"/>
+                android:text="@string/background_notifications"
+                android:id="@+id/textCheckbox2"
+                style="@style/NormalText"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -173,47 +182,52 @@
 
             <CheckBox
                 android:id="@+id/checkbox3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="enable focus mode"
-                android:id="@+id/textCheckbox3"/>
+                android:text="@string/enable_focus_mode"
+                android:id="@+id/textCheckbox3"
+                style="@style/NormalText"/>
         </LinearLayout>
             <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="focus mode description"
-                    android:id="@+id/subtextCheckbox3"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/focus_mode_description"
+            android:id="@+id/subtextCheckbox3"
+            style="@style/SmallText"/>
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Volume e Suoni"
+            android:text="@string/volume_e_suoni"
             android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingTop="8dp"
+            android:layout_marginTop="10dp"
             android:paddingBottom="4dp"
-            android:id="@+id/textVolume"/>
+            android:id="@+id/textVolume"
+            style="@style/TitleText"/>
         <SeekBar
             android:id="@+id/volumeSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:layout_marginTop="2dp"/>
+            android:paddingTop="10dp"/>
             <Button
-                android:id="@+id/loadRingtoneButton1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Suono di notifica"/>
+            android:id="@+id/loadRingtoneButton1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/notifications_sound"
+            style="@style/ActionButton"/>
             <Button
-                android:id="@+id/loadRingtoneButton2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Cambia suoneria"/>
+            android:id="@+id/loadRingtoneButton2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/change_ringtone"
+            style="@style/ActionButton"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -222,14 +236,15 @@
 
             <CheckBox
                 android:id="@+id/checkbox4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="enable gamification"
-                android:id="@+id/textCheckbox4"/>
+                android:text="@string/enable_gamification"
+                android:id="@+id/textCheckbox4"
+                style="@style/NormalText"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -239,34 +254,36 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Default homepage"
+                android:text="@string/default_homepage"
                 android:textSize="18sp"
-                android:id="@+id/switch1off"/>
+                android:id="@+id/switch1off"
+                style="@style/NormalText"/>
 
             <Switch
                 android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Alternative homepage"
+                android:text="@string/alternative_homepage"
                 android:textSize="18sp"
+                style="@style/NormalText"
                 android:id="@+id/switch1on"/>
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Default homepage with the clock or Alternative homepage where you can start the activities"
-            android:id="@+id/subtextSwitch1"/>
+            android:layout_height="wrap_content"
+            android:text="@string/default_homepage_with_the_clock_or_alternative_homepage_where_you_can_start_the_activities"
+            android:id="@+id/subtextSwitch1"
+            style="@style/SmallText"/>
 
         <Button
             android:id="@+id/saveButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save changes"
-            android:layout_marginTop="16dp" />
+            android:text="@string/save"
+            android:layout_marginTop="16dp"
+            style="@style/SubmitButton"/>
 
     </LinearLayout>
 </ScrollView>

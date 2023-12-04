@@ -40,6 +40,7 @@ public class CaregiverLoginFragment extends Fragment {
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().remove(CaregiverLoginFragment.this).commit();
                 fragmentManager.popBackStack();
+                requireActivity().finish();
                 // Start the new activity
                 startActivity(intent);
             } else {
