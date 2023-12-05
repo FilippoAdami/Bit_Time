@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.widget.Switch;
@@ -231,6 +232,7 @@ public class CustomizeSettingsFragment extends Fragment {
                 break;
         }
         newTheme = currentTheme;
+        Log.i("newTheme", "highlightCurrentTheme: "+newTheme);
     }
     private void clearThemeHighlights() {
         // Clear all theme highlights by removing the blue border
@@ -277,6 +279,9 @@ public class CustomizeSettingsFragment extends Fragment {
         //set new theme
         dbManager.changeTheme(currentTheme);
         requireActivity().setTheme(newTheme);
+        FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.middle_fragment_container_view, new CustomizeSettingsFragment());
+        fragmentTransaction.commit();
     }
     private String saveToInternalStorage(Uri uri) {
         //check API version
@@ -456,8 +461,9 @@ public class CustomizeSettingsFragment extends Fragment {
         }
     }
     private void updateUserData() {
-        // Handle the save button click event
-        Log.i("update", "updateUserData: "+newTheme);
+        if(newTheme == null){
+            newTheme = currentTheme;
+        }
         switchTheme(newTheme);
         if(currentBackground != null && backgroundExtension != null){
             String backgroundPath = saveFile(Uri.parse(currentBackground), backgroundExtension);
