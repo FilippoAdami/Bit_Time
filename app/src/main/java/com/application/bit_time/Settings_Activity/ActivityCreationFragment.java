@@ -347,19 +347,19 @@ public class ActivityCreationFragment extends Fragment {
                     //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                 }
 
+
                 PlannerViewModelData plannerViewModelData = plannerViewModel.getSelectedItem().getValue();
 
                 if(plannerViewModelData != null) {
                     newData.activityItem.setPlans(plannerViewModelData.getPlans());
-                    AlarmScheduler alarmScheduler =  new AlarmScheduler(getActivity().getApplicationContext());
+                    Log.i("ActCreFrag","plans set");
 
-                    for(PlanningInfo pi : newData.activityItem.getPlans()) {
-                        alarmScheduler.schedule(pi.getInfo());
+                    for(PlanningInfo pi : newData.activityItem.getPlans())
+                    {
+                        Log.i("form setting ACF",pi.toString());
                     }
-
-                    Log.i("setPlans res", "" + newData.activityItem.getPlans().size());
-
                 }
+
                 dbViewModel.selectItem(newData);
                 plannerViewModel.selectItem(new PlannerViewModelData());
 

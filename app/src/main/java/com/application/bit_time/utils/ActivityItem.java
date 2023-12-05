@@ -17,7 +17,7 @@ public class ActivityItem {
 
     ActivityInfo activityInfo;
     TaskItem[] subtasks;
-    ArrayList<PlanningInfo> plans;
+    List<PlanningInfo> plans;
 
     boolean expanded;
 
@@ -35,7 +35,7 @@ public class ActivityItem {
 
     public ActivityItem(ActivityItem original)
     {
-        this.plans = null;
+
         this.activityInfo = new ActivityInfo(original.activityInfo);
 
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
@@ -59,6 +59,14 @@ public class ActivityItem {
             }
         }
         expanded = false;
+
+        if(original.getPlans() != null)
+            this.plans = new ArrayList<>(original.getPlans());
+        else
+            this.plans = null;
+
+
+
     }
 
     public ActivityItem(String id,String name,String duration)

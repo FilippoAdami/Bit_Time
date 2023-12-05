@@ -1,5 +1,7 @@
 package com.application.bit_time.utils;
 
+
+import android.content.Context;
 import android.util.Log;
 
 import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
@@ -12,6 +14,8 @@ public class PlannerViewModelData {
 
     private List<PlanningInfo> plans;
     private PlanningInfo latestPlan;
+
+
 
     public PlannerViewModelData()
     {
@@ -51,4 +55,7 @@ public class PlannerViewModelData {
     {
         return this.plans;
     }
+
+
+
 }

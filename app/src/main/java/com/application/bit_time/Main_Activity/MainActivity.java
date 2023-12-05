@@ -30,12 +30,25 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
 
-    BroadcastReceiver timeBroadcastReceiver;
-    IntentFilter timeBrFilter;
+    //BroadcastReceiver timeBroadcastReceiver;
+    //IntentFilter timeBrFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
 
+        Bundle intentBundle = getIntent().getExtras();
+
+        if(intentBundle != null)
+        {
+            String sourceAct = (String) intentBundle.get("sourceAct");
+
+            Log.i("sourceAct",sourceAct);
+
+        }
+        else
+        {
+            Log.i("sourceAct", "intentBundle was null");
+        }
 
 
 

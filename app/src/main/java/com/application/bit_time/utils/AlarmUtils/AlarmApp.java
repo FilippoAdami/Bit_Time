@@ -27,8 +27,6 @@ public class AlarmApp extends Application {
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        AlarmScheduler alarmScheduler = new AlarmScheduler(this);
-        alarmScheduler.schedule(new AlarmInfo());
 
     }
 }

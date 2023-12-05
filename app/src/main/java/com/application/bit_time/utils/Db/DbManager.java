@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.TaskItem;
 
@@ -190,7 +191,9 @@ public class DbManager {
                 {
                     Log.i("pi to be added",pi.toString());
                     insertActivitySchedule(latestActId,pi.getInfo().getInfoGC());
+
                 }
+
 
 
         }
