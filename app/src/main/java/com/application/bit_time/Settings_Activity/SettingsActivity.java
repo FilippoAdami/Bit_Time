@@ -103,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
                     Log.i("plans list contains ",Integer.toString(currentData.activityItem.getPlans().size()));
 
 
-                    alarmScheduler.scheduleAll(currentData.activityItem.getPlans(),currentData.activityItem.getName());
+                    alarmScheduler.scheduleAll(currentData.activityItem.getPlans(),currentData.activityItem.getName(),currentData.activityItem.getInfo().getIdInt());
 
                 }
             }
@@ -152,7 +152,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.i("SettAct here plans","is not null");
                     }
 
-                    alarmScheduler.scheduleAll(currentActivity.getPlans(), currentActivity.getName());
+                    alarmScheduler.scheduleAll(currentActivity.getPlans(), currentActivity.getName(),currentActivity.getInfo().getIdInt());
                 }
             }
 

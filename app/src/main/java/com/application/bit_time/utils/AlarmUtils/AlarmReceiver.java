@@ -17,8 +17,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        int actId = intent.getExtras().getInt("actId");
 
         Intent resultIntent = new Intent(context, MainActivity.class);
+        resultIntent.putExtra("actId",actId);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntent(resultIntent);
@@ -27,8 +29,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 
-        String actName = intent.getExtras().getString("actName","unnamed activity");
 
+
+
+        String actName = intent.getExtras().getString("actName","unnamed activity");
 
         Log.i("ALARMRECEIVER","log from me");
 

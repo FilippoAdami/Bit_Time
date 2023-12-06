@@ -36,19 +36,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
 
-        Bundle intentBundle = getIntent().getExtras();
 
-        if(intentBundle != null)
-        {
-            String sourceAct = (String) intentBundle.get("sourceAct");
-
-            Log.i("sourceAct",sourceAct);
-
-        }
-        else
-        {
-            Log.i("sourceAct", "intentBundle was null");
-        }
 
 
 
@@ -65,52 +53,6 @@ public class MainActivity extends AppCompatActivity {
         Fragment controlbarFragment = new ControlsFragment();
 
         this.statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
-
-        runningActivityViewModel.getSelectedItem().observe(this, item->
-        {
-            if(item.getStatus().toString().equals("ActivityDone"))
-            {
-                Log.i("Main Activity detection","ActivityDone detected");
-                Log.i("Main act detection",Integer.toString(item.getReportDataList().size()));
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new ReportFragment())
-                        .detach(bottomFragment)
-                        .commit();
-            }
-        });
-
-
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.controlbarFragment,controlbarFragment)
-                .replace(R.id.fragment_container, new QuickstartMenuFragment())
-                .replace(R.id.bottomFragmentContainer,bottomFragment)
-                .commit();
-        /*fragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment())
-                .replace(R.id.bottomFragmentContainer,bottomFragment)
-                .commit();
-
-         */
-        /*
-        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        if(sharedPreferences.getBoolean("loggedIn", false)){
-            // If the user is logged in, go to the HomeFragment
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, new HomeFragment()).replace(R.id.bottomFragmentContainer,bottomFragment);;
-            fragmentTransaction.commit();
-            //here for a future implementation we will load the user data from the cloud database
-        } else {
-            // If the user is not logged in, go to the LogInFragment
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, new LogInFragment())
-                    .replace(R.id.bottomFragmentContainer,bottomFragment);
-            fragmentTransaction.commit();
-        }
-        */
 
 
         this.statusVM.getSelectedItem().observe(this, item->
@@ -165,6 +107,82 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
+
+
+        runningActivityViewModel = new ViewModelProvider(this).get(RunningActivityViewModel.class);
+
+        runningActivityViewModel.getSelectedItem().observe(this, item->
+        {
+            if(item.getStatus().toString().equals("ActivityDone"))
+            {
+                Log.i("Main Activity detection","ActivityDone detected");
+                Log.i("Main act detection",Integer.toString(item.getReportDataList().size()));
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_container,new ReportFragment())
+                        .detach(bottomFragment)
+                        .commit();
+            }
+        });
+
+
+
+        Bundle intentBundle = getIntent().getExtras();
+
+        if(intentBundle != null)
+        {
+            int actId = (int) intentBundle.get("actId");
+            Log.i("sourceAct"," actId : " + actId);
+
+            SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+            sharedPrefs
+                    .edit()
+                    .putInt("activityToRun",actId)
+                    .commit();
+            this.statusVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
+
+
+        }
+        else
+        {
+            Log.i("sourceAct", "intentBundle was null");
+        }
+
+
+
+
+
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.controlbarFragment,controlbarFragment)
+                .replace(R.id.fragment_container, new QuickstartMenuFragment())
+                .replace(R.id.bottomFragmentContainer,bottomFragment)
+                .commit();
+        /*fragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, new HomeFragment())
+                .replace(R.id.bottomFragmentContainer,bottomFragment)
+                .commit();
+
+         */
+        /*
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        if(sharedPreferences.getBoolean("loggedIn", false)){
+            // If the user is logged in, go to the HomeFragment
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, new HomeFragment()).replace(R.id.bottomFragmentContainer,bottomFragment);;
+            fragmentTransaction.commit();
+            //here for a future implementation we will load the user data from the cloud database
+        } else {
+            // If the user is not logged in, go to the LogInFragment
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, new LogInFragment())
+                    .replace(R.id.bottomFragmentContainer,bottomFragment);
+            fragmentTransaction.commit();
+        }
+        */
+
+
 
 
 

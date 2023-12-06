@@ -26,12 +26,15 @@ public class AlarmScheduler implements AlarmSchedulerInterface
     private AlarmManager alarmManager;
     private String actName;
 
+    private int actId;
+
     @SuppressLint("ScheduleExactAlarm")
     @Override
     public void schedule(AlarmInfo info) {
 
         Intent intent = new Intent(context.getApplicationContext(),AlarmReceiver.class);
         intent.putExtra("actName",actName);
+        intent.putExtra("actId",actId);
 
         long alarmTime = info.getAlarmTimeLong();
         Log.i("alarmtimeLOG",Long.toString(alarmTime)+" is alarmTimeLNG");
@@ -66,9 +69,10 @@ public class AlarmScheduler implements AlarmSchedulerInterface
 
     }
 
-    public void scheduleAll(List<PlanningInfo> plans, String actName)
+    public void scheduleAll(List<PlanningInfo> plans, String actName,int actId)
     {
         this.actName = actName;
+        this.actId = actId;
 
         for(PlanningInfo pi : plans)
         {
