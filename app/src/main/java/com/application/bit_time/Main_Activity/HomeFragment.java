@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
 
         //currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
 
-        Log.i("RAVM currentTask dur ",currentTask.getDuration());
+        //Log.i("RAVM currentTask dur ",currentTask.getDuration());
 
         runningActivityViewModel.getSelectedItem().observe(this,item->
         {
@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment {
 
             if(currentStatus.toString().equals("Uploaded"))
             {
-                Log.i("HF in Uploaded",item.getCurrentTask().toString());
+                Log.i("HomeFrag in Uploaded",item.getCurrentTask().toString());
                 currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
                 runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Running, RunningActivityData.Choice.NoChoice,currentTask));
             }else if(currentStatus.toString().equals("OnWait"))

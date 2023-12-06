@@ -42,6 +42,7 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
         ReportData reportData = this.reportDataList.get(position);
         Log.i("viewholder log",reportData.subtaskName);
         holder.subtaskName.setText(reportData.subtaskName);
+        holder.subtaskTime.setText(reportData.endStatus.toString());
     }
 
     @Override
@@ -52,11 +53,15 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
     public class ListItemHolder extends RecyclerView.ViewHolder {
 
         TextView subtaskName;
+        TextView subtaskScore;
+        TextView subtaskTime;
 
         public ListItemHolder(View view)
         {
             super(view);
             this.subtaskName = view.findViewById(R.id.subtaskName);
+            this.subtaskScore = view.findViewById(R.id.subtaskScore);
+            this.subtaskTime = view.findViewById(R.id.subtaskTime);
         }
 
     }

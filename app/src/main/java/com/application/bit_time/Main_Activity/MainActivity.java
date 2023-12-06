@@ -23,7 +23,7 @@ import com.application.bit_time.utils.RunningActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    //TODO: link score inside report fragment with those selected inside settings
     private MainActivityViewModel statusVM;
     private RunningActivityViewModel runningActivityViewModel;
     private SharedPreferences sharedPreferences;

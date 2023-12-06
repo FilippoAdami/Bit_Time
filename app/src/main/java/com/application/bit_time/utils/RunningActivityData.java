@@ -1,5 +1,7 @@
 package com.application.bit_time.utils;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import java.util.List;
@@ -113,10 +115,15 @@ public class RunningActivityData {
     }
     public boolean isFilled()
     {
-        if(this.choice.equals(Choice.NoChoice) || this.status.equals(Status.NoStatus))
+        Log.i("inside isfilled","choice "+this.choice.toString() + " status "+this.status.toString());
+        if(this.choice.equals(Choice.NoChoice) || this.choice.equals(Choice.No) || this.status.equals(Status.NoStatus))
         {
+            Log.i("inside isfilled","will return false");
             return false;
         }
+
+
+        Log.i("inside isfilled","will return true");
         return true;
     }
 
