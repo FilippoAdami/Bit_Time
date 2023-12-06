@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
     private MainActivityViewModel statusVM;
     private RunningActivityViewModel runningActivityViewModel;
-
     private SharedPreferences sharedPreferences;
 
 
@@ -34,11 +33,6 @@ public class MainActivity extends AppCompatActivity {
     //IntentFilter timeBrFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-
-
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_main);
@@ -131,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(intentBundle != null)
         {
+
             int actId = (int) intentBundle.get("actId");
             Log.i("sourceAct"," actId : " + actId);
 

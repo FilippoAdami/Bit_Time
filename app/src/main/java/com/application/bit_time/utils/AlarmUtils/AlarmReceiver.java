@@ -14,6 +14,10 @@ import com.application.bit_time.Main_Activity.MainActivity;
 import com.application.bit_time.R;
 
 public class AlarmReceiver extends BroadcastReceiver {
+
+
+    int durMax = 0;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -43,7 +47,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                         .setContentTitle("test notification")
                         .setContentText(actName + " is ready to start")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setContentIntent(resultPendingIntent);
+                        .setContentIntent(resultPendingIntent)
+                        .setAutoCancel(true)
+                        .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                        .setTimeoutAfter(durMax);
 
 
 
