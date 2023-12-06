@@ -32,6 +32,8 @@ public class AlarmScheduler implements AlarmSchedulerInterface
     @Override
     public void schedule(AlarmInfo info) {
 
+        Log.i("alarmScheduler","actId "+actId + " actName "+actName);
+
         Intent intent = new Intent(context.getApplicationContext(),AlarmReceiver.class);
         intent.putExtra("actName",actName);
         intent.putExtra("actId",actId);

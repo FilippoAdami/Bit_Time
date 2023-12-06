@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
                     .edit()
                     .putInt("activityToRun",actId)
                     .commit();
+
+
             this.statusVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
 
 

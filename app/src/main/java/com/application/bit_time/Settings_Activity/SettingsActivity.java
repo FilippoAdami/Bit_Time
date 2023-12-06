@@ -98,12 +98,12 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
 
-                    dbManager.insertActivityRecord(currentData.activityItem);
+                    int currentActId = dbManager.insertActivityRecord(currentData.activityItem);
 
                     Log.i("plans list contains ",Integer.toString(currentData.activityItem.getPlans().size()));
 
 
-                    alarmScheduler.scheduleAll(currentData.activityItem.getPlans(),currentData.activityItem.getName(),currentData.activityItem.getInfo().getIdInt());
+                    alarmScheduler.scheduleAll(currentData.activityItem.getPlans(),currentData.activityItem.getName(),currentActId);
 
                 }
             }

@@ -134,7 +134,7 @@ public class DbManager {
 
     }
 
-    public void insertActivityRecord(ActivityItem activity)
+    public int insertActivityRecord(ActivityItem activity)
     {
         TaskItem[] tasks = activity.getSubtasks();
 
@@ -176,16 +176,18 @@ public class DbManager {
         db.execSQL(insertQuery);
 
 
+        Cursor c = selectLatestActivity();
+        int latestActId = -1;
+
+        if (c.getCount() > 0) {
+            c.moveToFirst();
+            latestActId = c.getInt(0);
+
+        }
+
         if(activity.isPlanned()) {
-            Cursor c = selectLatestActivity();
 
-            int latestActId = -1;
 
-            if (c.getCount() > 0) {
-                c.moveToFirst();
-                latestActId = c.getInt(0);
-
-            }
 
                 for(PlanningInfo pi : activity.getPlans())
                 {
@@ -197,6 +199,9 @@ public class DbManager {
 
 
         }
+
+
+        return latestActId;
 
 
     }
