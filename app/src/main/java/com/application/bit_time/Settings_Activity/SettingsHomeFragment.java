@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.application.bit_time.Main_Activity.MainActivity;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.SettingsModeData;
@@ -33,6 +35,20 @@ public class SettingsHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_settings_home_layout, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().remove(SettingsHomeFragment.this).commit();
+                fragmentManager.popBackStack();
+                requireActivity().finish();
+                // Create an Intent to start the SettingsActivity
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                // Start the new activity
+                startActivity(intent);
+            }
+        });
+
 
         Button buttonAS = view.findViewById(R.id.buttonAS);
         Button buttonIP = view.findViewById(R.id.buttonIP);

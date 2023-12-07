@@ -14,25 +14,37 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
 
-import java.io.Console;
-
 public class GamificationSettings extends Fragment {
-
     private RadioButton radio1, radio2;
     private ImageView happyIcon, sadIcon;
     private Spinner spinner1, spinner2;
     private EditText editText1, editText2, editText3, editText4, editText5, editText6;
-    private Button applyButton;
     private DbManager dbManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_gamification_layout, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if(checkChanges()) {
+                    showConfirmationDialog();
+                } else {
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction().remove(GamificationSettings.this).commit();
+                    fragmentManager.popBackStack();
+                }
+            }
+        });
+
         dbManager = new DbManager(getActivity());
 
     // Initialize UI elements
@@ -48,7 +60,7 @@ public class GamificationSettings extends Fragment {
         editText4 = view.findViewById(R.id.timePoints4);
         editText5 = view.findViewById(R.id.timePoints5);
         editText6 = view.findViewById(R.id.timePoints6);
-        applyButton = view.findViewById(R.id.submitButton);
+        Button applyButton = view.findViewById(R.id.submitButton);
 
     // When the fragment is created, load the user's settings
         boolean gamificationType = dbManager.getGamificationType();
@@ -58,7 +70,7 @@ public class GamificationSettings extends Fragment {
         } else {radio2.setChecked(true);}
         String positiveIcon = dbManager.getPositiveIcon();
         ArrayAdapter<CharSequence> adapterx = ArrayAdapter.createFromResource(
-                getContext(),
+                requireContext(),
                 R.array.happy_icon_array,  // Create a string array resource containing the icon names
                 android.R.layout.simple_spinner_item
         );
@@ -67,7 +79,7 @@ public class GamificationSettings extends Fragment {
         int spinner1Position = adapterx.getPosition(positiveIcon);
         spinner1.setSelection(spinner1Position);
         ArrayAdapter<CharSequence> adaptery = ArrayAdapter.createFromResource(
-                getContext(),
+                requireContext(),
                 R.array.sad_icon_array,  // Create a string array resource containing the icon names
                 android.R.layout.simple_spinner_item
         );
@@ -76,7 +88,7 @@ public class GamificationSettings extends Fragment {
         String negativeIcon = dbManager.getNegativeIcon();
         int spinner2Position = adaptery.getPosition(negativeIcon);
         spinner2.setSelection(spinner2Position);
-        int timePoints[] = dbManager.getGamificationPoints();
+        int[] timePoints = dbManager.getGamificationPoints();
         Log.println(Log.DEBUG, "timePoints", String.valueOf(timePoints[0]) );
         editText1.setText(String.valueOf(timePoints[0]));
         editText2.setText(String.valueOf(timePoints[1]));
@@ -86,18 +98,8 @@ public class GamificationSettings extends Fragment {
         editText6.setText(String.valueOf(timePoints[5]));
 
     // when the user selects one of the radio buttons, the other one is deselected
-        radio1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                radio2.setChecked(false);
-            }
-        });
-        radio2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                radio1.setChecked(false);
-            }
-        });
+        radio1.setOnClickListener(v -> radio2.setChecked(false));
+        radio2.setOnClickListener(v -> radio1.setChecked(false));
 
     // when the user clicks a spinner, the icon list appears
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -134,31 +136,85 @@ public class GamificationSettings extends Fragment {
                 // Do nothing when nothing is selected
             }
         });
-        applyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get user inputs from UI elements
-                boolean radioSelection = radio1.isChecked() ? false : true;
-                String spinner1Selection = spinner1.getSelectedItem().toString();
-                String spinner2Selection = spinner2.getSelectedItem().toString();
-                int editText1Value = Integer.parseInt(editText1.getText().toString());
-                int editText2Value = Integer.parseInt(editText2.getText().toString());
-                int editText3Value = Integer.parseInt(editText3.getText().toString());
-                int editText4Value = Integer.parseInt(editText4.getText().toString());
-                int editText5Value = Integer.parseInt(editText5.getText().toString());
-                int editText6Value = Integer.parseInt(editText6.getText().toString());
-
-                dbManager.changeGamificationType(radioSelection);
-                dbManager.changePositiveIcon(spinner1Selection);
-                dbManager.changeNegativeIcon(spinner2Selection);
-                dbManager.changeGamificationPoints(editText1Value, editText2Value, editText3Value, editText4Value, editText5Value, editText6Value);
-
-                // toast message
-                Toast.makeText(getActivity(), "Gamification settings updated" , Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
+        applyButton.setOnClickListener(v -> updateUserData());
         return view;
+    }
+
+    private void updateUserData() {
+        boolean radioSelection = !radio1.isChecked();
+        String spinner1Selection = spinner1.getSelectedItem().toString();
+        String spinner2Selection = spinner2.getSelectedItem().toString();
+        int editText1Value = Integer.parseInt(editText1.getText().toString());
+        int editText2Value = Integer.parseInt(editText2.getText().toString());
+        int editText3Value = Integer.parseInt(editText3.getText().toString());
+        int editText4Value = Integer.parseInt(editText4.getText().toString());
+        int editText5Value = Integer.parseInt(editText5.getText().toString());
+        int editText6Value = Integer.parseInt(editText6.getText().toString());
+
+        dbManager.changeGamificationType(radioSelection);
+        dbManager.changePositiveIcon(spinner1Selection);
+        dbManager.changeNegativeIcon(spinner2Selection);
+        dbManager.changeGamificationPoints(editText1Value, editText2Value, editText3Value, editText4Value, editText5Value, editText6Value);
+
+        // toast message
+        Toast.makeText(getActivity(), "Gamification settings updated" , Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void showConfirmationDialog() {
+        Log.i("back", "showConfirmationDialog: ");
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Save Changes?");
+        builder.setMessage("Do you want to save your changes before exiting?");
+        builder.setPositiveButton("Save", (dialogInterface, i) -> {
+            // Save the changes
+            updateUserData();
+            requireActivity().onBackPressed();
+        });
+        builder.setNegativeButton("Discard", (dialogInterface, i) -> {
+            // Discard the changes
+            requireActivity().onBackPressed();
+        });
+        builder.setNeutralButton("Cancel", (dialogInterface, i) -> {
+            // Cancel the dialog, do nothing
+        });
+        builder.show();
+    }
+    public boolean checkChanges(){
+        boolean radioSelection = !radio1.isChecked();
+        String spinner1Selection = spinner1.getSelectedItem().toString();
+        String spinner2Selection = spinner2.getSelectedItem().toString();
+        int editText1Value = Integer.parseInt(editText1.getText().toString());
+        int editText2Value = Integer.parseInt(editText2.getText().toString());
+        int editText3Value = Integer.parseInt(editText3.getText().toString());
+        int editText4Value = Integer.parseInt(editText4.getText().toString());
+        int editText5Value = Integer.parseInt(editText5.getText().toString());
+        int editText6Value = Integer.parseInt(editText6.getText().toString());
+
+        if (radioSelection != dbManager.getGamificationType()) {
+            return true;
+        }
+        if (!spinner1Selection.equals(dbManager.getPositiveIcon())) {
+            return true;
+        }
+        if (!spinner2Selection.equals(dbManager.getNegativeIcon())) {
+            return true;
+        }
+        if (editText1Value != dbManager.getGamificationPoints()[0]) {
+            return true;
+        }
+        if (editText2Value != dbManager.getGamificationPoints()[1]) {
+            return true;
+        }
+        if (editText3Value != dbManager.getGamificationPoints()[2]) {
+            return true;
+        }
+        if (editText4Value != dbManager.getGamificationPoints()[3]) {
+            return true;
+        }
+        if (editText5Value != dbManager.getGamificationPoints()[4]) {
+            return true;
+        }
+        return editText6Value != dbManager.getGamificationPoints()[5];
     }
 }

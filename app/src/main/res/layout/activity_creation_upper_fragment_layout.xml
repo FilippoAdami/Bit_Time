@@ -11,5 +11,6 @@
         android:ems="10"
         android:hint="Insert Activity Name"
         android:inputType="text"
-        android:text="Name" />
+        android:text="Name"
+        style="@style/TextInputStyle"/>
 </LinearLayout>

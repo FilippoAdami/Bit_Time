@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DbManager {
 
-    private SQLiteDatabase db;
+    private static SQLiteDatabase db = null;
 
     public static class DbHelper extends SQLiteOpenHelper
     {
@@ -76,7 +76,8 @@ public class DbManager {
                 DbContract.appSettings.COLUMN_NAME_NOTIFICATION_SOUNDS + " integer," +
                 DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS + " integer," +
                 DbContract.appSettings.COLUMN_NAME_SOUNDS + " integer," +
-                DbContract.appSettings.COLUMN_NAME_FOCUS + " integer)";
+                DbContract.appSettings.COLUMN_NAME_FOCUS + " integer," +
+                DbContract.appSettings.COLUMN_NAME_HOME_TYPE + " integer)";
 
 
         public static final String SQL_CREATE_ACTIVITY_SCHEDULE_TABLE =
@@ -555,6 +556,7 @@ public class DbManager {
 
         if (columnIndex == -1 || saltIndex == -1) {
             Log.e("DB_ERROR", "Column index is -1 for password or salt column");
+            cursor.close();
             return false;
         }
         cursor.moveToFirst();
@@ -564,7 +566,7 @@ public class DbManager {
         // Hash the input password with the retrieved salt
         String hashedPassword = BCrypt.hashpw(password, salt);
         Log.i("DB_INFO", "Hashed password: " + hashedPassword);
-
+        cursor.close();
         // Compare the hashed input password with the saved hash
         return hashedPassword.equals(dbPasswordHash);
     }
@@ -572,16 +574,21 @@ public class DbManager {
     public String getUserEmail() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(2);
-        else
+        if(userExists) {
+            String email = cursor.getString(2);
+            cursor.close();
+            return email;
+        } else {
+            cursor.close();
             return null;
+        }
     }
     public String getUserPin() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
         if(userExists){
             String pin = cursor.getString(4);
+            cursor.close();
             //if the pin is saved return it, if it is null return string 0000
             if(pin != null)
                 if(pin.equals("0"))
@@ -591,15 +598,23 @@ public class DbManager {
             else
                 return "0000";}
         else //return string 0000 if no user is registered
+        {
+            cursor.close();
             return "0000";
+        }
     }
     public String getUsername() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
-        if(userExists)
-            return cursor.getString(1);
-        else
+        if(userExists){
+            String username = cursor.getString(1);
+            cursor.close();
+            return username;
+        }
+        else {
+            cursor.close();
             return null;
+        }
     }
     public void updateEmail(String email,String newEmail) {
         String updateQuery =
@@ -608,7 +623,7 @@ public class DbManager {
                         + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + newEmail + "'"
                         + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
 
-        Log.i("SQLMOD",updateQuery.toString());
+        Log.i("SQLMOD", updateQuery);
         db.execSQL(updateQuery);
     }
     public void updateUsername(String email,String username) {
@@ -618,7 +633,7 @@ public class DbManager {
                         + DbContract.Userdata.COLUMN_NAME_USERNAME + "='" + username + "'"
                         + " where " + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
 
-        Log.i("SQLMOD",updateQuery.toString());
+        Log.i("SQLMOD", updateQuery);
         db.execSQL(updateQuery);
     }
     public void updatePin(String pin) {
@@ -626,7 +641,7 @@ public class DbManager {
                 "update " + DbContract.Userdata.TABLE_NAME +
                         " set " + DbContract.Userdata.COLUMN_NAME_PIN + "='" + pin + "'";
 
-        Log.i("SQLMOD", updateQuery.toString());
+        Log.i("SQLMOD", updateQuery);
         db.execSQL(updateQuery);
     }
     public void updatePassword(String email, String password) {
@@ -687,8 +702,7 @@ public class DbManager {
                 Log.e("DB_ERROR", "Failed to insert new row");
             }
         }
-
-        cursor.close();  // Close the cursor to avoid potential memory leaks
+        cursor.close();
     }
     public void changeBackground(String background) {
         ContentValues values = new ContentValues();
@@ -844,8 +858,21 @@ public class DbManager {
 
         Log.i("SQLMOD", "changeFocus: Rows affected - " + rowsAffected);
     }
+    public void changeHomeType(boolean homeType) {
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_HOME_TYPE, homeType ? 1 : 0);
 
-    public String getTheme() {
+        int rowsAffected = db.update(DbContract.appSettings.TABLE_NAME, values, null, null);
+
+        if (rowsAffected == 0) {
+            // No row was updated, so insert a new row
+            db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+        }
+
+        Log.i("SQLMOD", "changeHomeType: Rows affected - " + rowsAffected);
+    }
+
+    public static String getTheme() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
@@ -893,13 +920,17 @@ public class DbManager {
         try {
             if (cursor.moveToFirst()) {
                 int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_VOLUME);
-                return cursor.getInt(columnIndex);
+                int volume = cursor.getInt(columnIndex);
+                cursor.close();
+                return volume;
             } else {
+                cursor.close();
                 return 5;
             }
         } catch (IllegalArgumentException e) {
             // Log the error or handle it as needed
             e.printStackTrace();
+            cursor.close();
             return 5;
         } finally {
             cursor.close();  // Close the cursor to avoid potential memory leaks
@@ -953,13 +984,17 @@ public class DbManager {
         try {
             if (cursor.moveToFirst()) {
                 int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS);
-                return cursor.getInt(columnIndex) == 1;
+                int notifications = cursor.getInt(columnIndex);
+                cursor.close();
+                return notifications == 1;
             } else {
+                cursor.close();
                 return false;
             }
         } catch (IllegalArgumentException e) {
             // Log the error or handle it as needed
             e.printStackTrace();
+            cursor.close();
             return false;
         } finally {
             cursor.close();  // Close the cursor to avoid potential memory leaks
@@ -971,13 +1006,17 @@ public class DbManager {
         try {
             if (cursor.moveToFirst()) {
                 int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_SOUNDS);
-                return cursor.getInt(columnIndex) == 1;
+                int sounds = cursor.getInt(columnIndex);
+                cursor.close();
+                return sounds == 1;
             } else {
+                cursor.close();
                 return false;
             }
         } catch (IllegalArgumentException e) {
             // Log the error or handle it as needed
             e.printStackTrace();
+            cursor.close();
             return false;
         } finally {
             cursor.close();  // Close the cursor to avoid potential memory leaks
@@ -989,13 +1028,38 @@ public class DbManager {
         try {
             if (cursor.moveToFirst()) {
                 int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_FOCUS);
-                return cursor.getInt(columnIndex) == 1;
+                int focus = cursor.getInt(columnIndex);
+                cursor.close();
+                return focus == 1;
             } else {
+                cursor.close();
                 return false;
             }
         } catch (IllegalArgumentException e) {
             // Log the error or handle it as needed
             e.printStackTrace();
+            cursor.close();
+            return false;
+        } finally {
+            cursor.close();  // Close the cursor to avoid potential memory leaks
+        }
+    }
+    public boolean getHomeType() {
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+        try {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_HOME_TYPE);
+                int homeType = cursor.getInt(columnIndex);
+                cursor.close();
+                return homeType == 1;
+            } else {
+                cursor.close();
+                return false;
+            }
+        } catch (IllegalArgumentException e) {
+            // Log the error or handle it as needed
+            e.printStackTrace();
+            cursor.close();
             return false;
         } finally {
             cursor.close();  // Close the cursor to avoid potential memory leaks
@@ -1051,7 +1115,7 @@ public class DbManager {
                         " set "
                         + DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON + "='" + positiveIcon + "'";
         db.execSQL(updateQuery);
-        Log.i("SQLMOD",updateQuery.toString());
+        Log.i("SQLMOD", updateQuery);
     }
     public void changeNegativeIcon(String negativeIcon) {
         String updateQuery =
@@ -1059,7 +1123,7 @@ public class DbManager {
                         " set "
                         + DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON + "='" + negativeIcon + "'";
         db.execSQL(updateQuery);
-        Log.i("SQLMOD",updateQuery.toString());
+        Log.i("SQLMOD", updateQuery);
     }
     public void changeGamificationPoints(int gamificationPoints1, int gamificationPoints2, int gamificationPoints3, int gamificationPoints4, int gamificationPoints5, int gamificationPoints6) {
         ContentValues values = new ContentValues();
@@ -1117,8 +1181,6 @@ public class DbManager {
                 Log.e("getGamificationType", "Column index not found for gamificationType");
             }
         } else {
-            // If no row exists, you might want to set a default value
-            gamificationType = false;
             Log.i("getGamificationType", "No rows found, returning default value");
         }
 
@@ -1163,6 +1225,7 @@ public class DbManager {
 
             if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
                 String positiveIcon = cursor.getString(columnIndex);
+                cursor.close();
                 return positiveIcon;
             } else {
                 Log.e("PositiveIcon", "Column not found or null" + DbContract.gamificationSettings.COLUMN_NAME_POSITIVE_ICON);
@@ -1170,7 +1233,7 @@ public class DbManager {
         } else {
             Log.e("PositiveIcon", "No data found in the cursor.");
         }
-
+        cursor.close();
         return "happy_dog"; // Default value
     }
     public String getNegativeIcon() {
@@ -1181,6 +1244,7 @@ public class DbManager {
 
             if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
                 String negativeIcon = cursor.getString(columnIndex);
+                cursor.close();
                 return negativeIcon;
             } else {
                 Log.e("NegativeIcon", "Column not found: " + DbContract.gamificationSettings.COLUMN_NAME_NEGATIVE_ICON);
@@ -1188,7 +1252,7 @@ public class DbManager {
         } else {
             Log.e("NegativeIcon", "No data found in the cursor.");
         }
-
+        cursor.close();
         return "sad_dog"; // Default value
     }
 
@@ -1203,7 +1267,7 @@ public class DbManager {
 
         for(int i =1 ;i<=DbContract.Activities.DIM_MAX;i++)
         {
-            String condition = DbContract.Activities.TABLE_NAME +".task"+Integer.toString(i) + "="+ itemToLookFor.getIdStr();
+            String condition = DbContract.Activities.TABLE_NAME +".task"+ i + "="+ itemToLookFor.getIdStr();
             //Log.i("condition",condition);
             if(i<DbContract.Activities.DIM_MAX)
             {

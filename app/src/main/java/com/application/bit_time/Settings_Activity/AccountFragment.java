@@ -11,10 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.text.InputFilter;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,20 +28,27 @@ import com.application.bit_time.utils.Db.DbManager;
 public class AccountFragment extends Fragment {
     private EditText emailEditText;
     private EditText pinEditText;
-    private TextView showHidePassword;
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private Button saveButton;
-    private Button logoutButton;
-    private DbManager dbManager; // Initialize DbManager
+    private ImageView showHidePassword;
+    private DbManager dbManager;
     private SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_account_and_stats_layout, container, false);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction().remove(AccountFragment.this).commit();
+                    fragmentManager.popBackStack();
+                }
+
+        });
         //check if user is logged in
-        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         if(!sharedPreferences.getBoolean("loggedIn", false)){
             // If the user is not logged in, go to the LogInFragment
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -78,8 +86,8 @@ public class AccountFragment extends Fragment {
         showHidePassword = view.findViewById(R.id.showHidePassword);
         usernameEditText = view.findViewById(R.id.usernameEditText);
         passwordEditText = view.findViewById(R.id.password_edit_text);
-        saveButton = view.findViewById(R.id.submit);
-        logoutButton = view.findViewById(R.id.logout);
+        Button saveButton = view.findViewById(R.id.submit);
+        Button logoutButton = view.findViewById(R.id.logout);
 
         dbManager = new DbManager(getActivity());
 
@@ -87,38 +95,27 @@ public class AccountFragment extends Fragment {
         loadUserData();
 
         // Set click listener for save button
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Save the data to the database
-                updateUserData();
-                Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
-            }
+        saveButton.setOnClickListener(v -> {
+            // Save the data to the database
+            updateUserData();
+            Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
         });
 
         // Set click listener for logout button
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Switch islogin to false
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("loggedIn", false);
-                editor.apply();
+        logoutButton.setOnClickListener(v -> {
+            // Switch islogin to false
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("loggedIn", false);
+            editor.apply();
 
-                // Go to the home fragment
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.middle_fragment_container_view, new HomeFragment());
-                fragmentTransaction.commit();
-            }
+            // Go to the home fragment
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.middle_fragment_container_view, new HomeFragment());
+            fragmentTransaction.commit();
         });
 
         // Set click listener for show/hide password toggle
-        showHidePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                togglePasswordVisibility();
-            }
-        });
+        showHidePassword.setOnClickListener(v -> togglePasswordVisibility());
 
         return view;
     }
@@ -129,11 +126,11 @@ public class AccountFragment extends Fragment {
         if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             // Password is hidden, show it
             passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            //showHidePassword.setImageResource(R.drawable.ic_visibility_on);
+            showHidePassword.setImageResource(R.drawable.eye);
         } else {
             // Password is shown, hide it
             passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            //showHidePassword.setImageResource(R.drawable.ic_visibility_off);
+            showHidePassword.setImageResource(R.drawable.closed_eye);
         }
         // Move cursor to the end of the text
         passwordEditText.setSelection(passwordEditText.getText().length());

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp">
 
     <TextView
         android:id="@+id/subtaskName"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
-        android:text="TextView" />
+        android:text="@string/TaskName"
+        style="@style/RegularText"/>
 
     <TextView
         android:id="@+id/subtaskTime"
@@ -22,6 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
-        android:text="TextView" />
-
+        android:text="@string/TotalScore"
+        style="@style/RegularText"/>
 </LinearLayout>

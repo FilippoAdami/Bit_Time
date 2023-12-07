@@ -9,7 +9,9 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="QUICKSTART MENU" />
+        android:text="@string/quickstart_menu"
+        android:textAlignment="center"
+        style="@style/TitleText"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quickstartRecyclerView"

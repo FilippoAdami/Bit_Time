@@ -8,4 +8,7 @@
         <item>sad_dog</item>
         <item>sad_cat</item>
     </string-array>
+    <array name="roboto_regular_certs">
+        <item>@integer/roboto_regular_cert</item>
+    </array>
 </resources>

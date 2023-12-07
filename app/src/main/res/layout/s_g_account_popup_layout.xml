@@ -12,25 +12,24 @@
         android:id="@+id/messageTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Connect your app with Google to sync preferences across devices."
+        android:text="@string/connect_your_app_with_google_to_sync_preferences_across_devices"
         android:textSize="18sp"
         android:textColor="@android:color/black"
-        android:gravity="center"/>
+        android:gravity="center"
+        style="@style/RegularText"/>
 
     <Button
         android:id="@+id/connectButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Connect with Google"
-        android:textColor="@android:color/white"
-        android:background="@color/white"
-        android:layout_marginTop="16dp"/>
+        android:text="@string/connect_with_google"
+        android:layout_marginTop="16dp"
+        style="@style/SubmitButton"/>
 
     <Button
         android:id="@+id/dismissButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dismiss"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="16dp"/>
+        android:text="@string/dismiss"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        style="@style/RedActionButton"/>
 </LinearLayout>

@@ -16,8 +16,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -25,8 +25,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.application.bit_time.R;
@@ -42,13 +45,15 @@ import java.util.Objects;
 
 public class CustomizeSettingsFragment extends Fragment {
     DbManager dbManager;
-
+    private boolean preferencesChanged = false;
     private LinearLayout themeDefault;
     private LinearLayout themeBW;
     private LinearLayout themeVivid;
     private LinearLayout themeEarth;
-    private Button loadBackgroundButton;
-    private TextView backgroundText;
+    public String currentTheme;
+    public String newTheme;
+    private String currentBackground;
+    private String backgroundExtension;
     private final ActivityResultLauncher<String> backgroundPickerLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
@@ -56,9 +61,8 @@ public class CustomizeSettingsFragment extends Fragment {
                 if (uri != null) {
                     //Save the new background in the database
                     type = "background";
-                    String image = saveToInternalStorage(uri);
-                    backgroundText.setText(image);
-                    dbManager.changeBackground(image);
+                    currentBackground = uri.toString();
+                    backgroundExtension = saveToInternalStorage(uri);
                 }
             }
     );
@@ -67,71 +71,78 @@ public class CustomizeSettingsFragment extends Fragment {
     private CheckBox checkbox2;
     private CheckBox checkbox3;
     private CheckBox checkbox4;
-    private SeekBar volumeSeekBar;
-    private Button loadRingtoneButton1;
-    private TextView ringtoneText;
-    private Button loadNotificationButton;
-    private TextView notificationText;
+    private int currentVolume;
+    private Uri currentRingtone;
+    private String ringtoneExtension;
+    private Uri currentNotification;
+    private String notificationExtension;
+    private Switch switch1;
     private Uri tempUri;
     private String type = "background";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_customize_settings_layout, container, false);
-
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if(preferencesChanged) {
+                    showConfirmationDialog();
+                } else {
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction().remove(CustomizeSettingsFragment.this).commit();
+                    fragmentManager.popBackStack();
+                }
+            }
+        });
         dbManager = new DbManager(getActivity());
         // Initialize UI elements
         themeDefault = view.findViewById(R.id.ThemeColumn1);
         themeVivid = view.findViewById(R.id.ThemeColumn2);
         themeEarth = view.findViewById(R.id.ThemeColumn3);
         themeBW = view.findViewById(R.id.ThemeColumn4);
-        loadBackgroundButton = view.findViewById(R.id.loadBackgroundButton);
-        backgroundText = view.findViewById(R.id.currentBackground);
+        Button loadBackgroundButton = view.findViewById(R.id.loadBackgroundButton);
         checkbox1 = view.findViewById(R.id.checkbox1);
         checkbox2 = view.findViewById(R.id.checkbox2);
         checkbox3 = view.findViewById(R.id.checkbox3);
         checkbox4 = view.findViewById(R.id.checkbox4);
-        volumeSeekBar = view.findViewById(R.id.volumeSeekBar);
-        loadRingtoneButton1 = view.findViewById(R.id.loadRingtoneButton1);
-        ringtoneText = view.findViewById(R.id.textButton1);
-        loadNotificationButton = view.findViewById(R.id.loadRingtoneButton2);
-        notificationText = view.findViewById(R.id.textButton2);
+        SeekBar volumeSeekBar = view.findViewById(R.id.volumeSeekBar);
+        Button loadRingtoneButton1 = view.findViewById(R.id.loadRingtoneButton1);
+        Button loadNotificationButton = view.findViewById(R.id.loadRingtoneButton2);
+        Button saveButton = view.findViewById(R.id.saveButton);
+        switch1 = view.findViewById(R.id.switch1);
 
         // Set the saved values
-        String currentTheme = dbManager.getTheme();
+        currentTheme = dbManager.getTheme();
         highlightCurrentTheme(currentTheme);
-
-        String currentBackground = dbManager.getBackground();
-        backgroundText.setText(currentBackground);
-
-        checkbox1.setChecked(dbManager.getSounds());
-        checkbox2.setChecked(dbManager.getNotifications());
-        checkbox3.setChecked(dbManager.getFocus());
-        checkbox4.setChecked(dbManager.getGamification());
-
+        currentBackground = dbManager.getBackground();
+        boolean check1 = dbManager.getSounds();
+        checkbox1.setChecked(check1);
+        boolean check2 = dbManager.getNotifications();
+        checkbox2.setChecked(check2);
+        boolean check3 = dbManager.getFocus();
+        checkbox3.setChecked(check3);
+        boolean check4 = dbManager.getGamification();
+        checkbox4.setChecked(check4);
         volumeSeekBar.setProgress(dbManager.getVolume());
-
-        String currentRingtone = dbManager.getRingtone();
-        ringtoneText.setText(currentRingtone);
-        String currentNotification = dbManager.getNotification();
-        notificationText.setText(currentNotification);
+        switch1.setChecked(dbManager.getHomeType());
 
         // Set the click listeners
         themeDefault.setOnClickListener(v -> {
             // Handle the layout click event
-            switchTheme("PastelTheme");
+            highlightCurrentTheme("PastelTheme");
         });
         themeVivid.setOnClickListener(v -> {
             // Handle the layout click event
-            switchTheme("VividTheme");
+            highlightCurrentTheme("VividTheme");
         });
         themeEarth.setOnClickListener(v -> {
             // Handle the layout click event
-            switchTheme("EarthTheme");
+            highlightCurrentTheme("EarthTheme");
         });
         themeBW.setOnClickListener(v -> {
             // Handle the layout click event
-            switchTheme("BWTheme");
+            highlightCurrentTheme("BWTheme");
         });
         loadBackgroundButton.setOnClickListener(v -> {
             String[] supportedExtensions = {"jpg", "jpeg", "png", "bmp", "webp"};
@@ -143,15 +154,15 @@ public class CustomizeSettingsFragment extends Fragment {
 
             backgroundPickerLauncher.launch(mimeType.toString());
         });
-        checkbox1.setOnClickListener(v -> dbManager.changeSounds(checkbox1.isChecked()));
-        checkbox2.setOnClickListener(v -> dbManager.changeNotifications(checkbox2.isChecked()));
-        checkbox3.setOnClickListener(v -> dbManager.changeFocus(checkbox3.isChecked()));
-        checkbox4.setOnClickListener(v -> dbManager.changeGamification(checkbox4.isChecked()));
+        checkbox1.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
+        checkbox2.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
+        checkbox3.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
+        checkbox4.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
         volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int volume, boolean fromUser) {
-                dbManager.changeVolume(volume);
-                Log.i("updated volume", String.valueOf(dbManager.getVolume()));
+                currentVolume = volume;
+                preferencesChanged = true;
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -176,6 +187,11 @@ public class CustomizeSettingsFragment extends Fragment {
                 throw new RuntimeException(e);
             }
         });
+        switch1.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
+        saveButton.setOnClickListener(v -> {
+            // Handle the save button click event
+            updateUserData();
+        });
 
         return view;
     }
@@ -188,17 +204,35 @@ public class CustomizeSettingsFragment extends Fragment {
         switch (currentTheme) {
             case "PastelTheme":
                 themeDefault.setBackgroundResource(R.drawable.theme_border);
+                if (this.currentTheme.equals("PastelTheme")) {
+                    return;
+                }
+                preferencesChanged = true;
                 break;
             case "BWTheme":
                 themeBW.setBackgroundResource(R.drawable.theme_border);
+                if (this.currentTheme.equals("BWTheme")) {
+                    return;
+                }
+                preferencesChanged = true;
                 break;
             case "EarthTheme":
                 themeEarth.setBackgroundResource(R.drawable.theme_border);
+                if (this.currentTheme.equals("EarthTheme")) {
+                    return;
+                }
+                preferencesChanged = true;
                 break;
             case "VividTheme":
                 themeVivid.setBackgroundResource(R.drawable.theme_border);
+                if (this.currentTheme.equals("VividTheme")) {
+                    return;
+                }
+                preferencesChanged = true;
                 break;
         }
+        newTheme = currentTheme;
+        Log.i("newTheme", "highlightCurrentTheme: "+newTheme);
     }
     private void clearThemeHighlights() {
         // Clear all theme highlights by removing the blue border
@@ -208,8 +242,6 @@ public class CustomizeSettingsFragment extends Fragment {
         themeVivid.setBackgroundResource(0);
     }
     private void switchTheme(String theme) {
-        //get current theme
-        String currentTheme = dbManager.getTheme();
         int newTheme = R.style.PastelTheme;
         switch (theme) {
             case "PastelTheme":
@@ -245,15 +277,25 @@ public class CustomizeSettingsFragment extends Fragment {
                 break;
         }
         //set new theme
-        highlightCurrentTheme(currentTheme);
         dbManager.changeTheme(currentTheme);
         requireActivity().setTheme(newTheme);
+        FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.middle_fragment_container_view, new CustomizeSettingsFragment());
+        fragmentTransaction.commit();
     }
-
     private String saveToInternalStorage(Uri uri) {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+        //check API version
+        int apiLevel = android.os.Build.VERSION.SDK_INT;
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (apiLevel > 32){
+            permission = Manifest.permission.READ_MEDIA_AUDIO;
+            if(type.equals("background")) {
+                permission = Manifest.permission.READ_MEDIA_IMAGES;
+            }
+        }
+        if (ContextCompat.checkSelfPermission(requireContext(), permission)
                 != PackageManager.PERMISSION_GRANTED) {
-
+            preferencesChanged = true;
             tempUri = uri;
             // Request the permission
             ActivityCompat.requestPermissions(requireActivity(),
@@ -269,56 +311,22 @@ public class CustomizeSettingsFragment extends Fragment {
         return null;
     }
     public String saveImageOperations(Uri uri){
-
-        String imagePath = null;
-
-        try {
-            // Open an InputStream from the selected image URI
-            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
-
-            // Determine the file extension from the MIME type
-            String extension;
-            String mimeType = requireActivity().getContentResolver().getType(uri);
-            if ("image/jpeg".equals(mimeType)) {
-                extension = ".jpg";
-            } else if ("image/png".equals(mimeType)) {
-                extension = ".png";
-            } else {
-                // Handle unsupported file types
-                return null;
-            }
-
-            // Create a unique file name
-            String fileName = "background_image" + extension;
-
-            // Create an OutputStream to write the image to internal storage
-            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
-
-            // Copy the image data from InputStream to OutputStream
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            // Close the streams
-            inputStream.close();
-            outputStream.close();
-
-            // Get the path of the saved image
-            File file = new File(getActivity().getFilesDir(), fileName);
-            imagePath = file.getAbsolutePath();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle the exception
+        // Determine the file extension from the MIME type
+        String extension;
+        String mimeType = requireActivity().getContentResolver().getType(uri);
+        if ("image/jpeg".equals(mimeType)) {
+            extension = ".jpg";
+        } else if ("image/png".equals(mimeType)) {
+            extension = ".png";
+        } else {
+            // Toast unsupported file types
+            Toast.makeText(getActivity(), "Unsupported file type", Toast.LENGTH_SHORT).show();
+            return null;
         }
-
-        return imagePath;
+        Toast.makeText(getActivity(), "Background changed", Toast.LENGTH_SHORT).show();
+        return "background_image" + extension;
     }
     private void retrieveAndShowRingtones() throws IOException {
-        Log.d("RingtonePicker", "retrieveAndShowRingtones - Start");
-
         RingtoneManager ringtoneManager = new RingtoneManager(getActivity());
         ringtoneManager.setType(RingtoneManager.TYPE_RINGTONE);
         Cursor cursor = ringtoneManager.getCursor();
@@ -327,15 +335,9 @@ public class CustomizeSettingsFragment extends Fragment {
         List<Uri> ringtoneUris = new ArrayList<>();
 
         while (cursor.moveToNext()) {
-            Log.d("RingtonePicker", "Inside Loop");
-
             String title = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
             Uri uri = ringtoneManager.getRingtoneUri(cursor.getPosition());
-            Log.d("RingtonePicker", "Ringtone Title: " + title + ", URI: " + uri);
-
             int duration = getRingtoneDuration(getActivity(), uri) / 1000;
-            Log.d("RingtonePicker", "Duration: " + duration + " seconds");
-
             if (type.equals("notification")) {
                 if (duration > 30) {
                     ringtoneTitles.add(title);
@@ -348,33 +350,23 @@ public class CustomizeSettingsFragment extends Fragment {
                 }
             }
         }
-
-        Log.d("RingtonePicker", "Before AlertDialog");
-
         String[] items = ringtoneTitles.toArray(new String[0]);
         Uri[] uris = ringtoneUris.toArray(new Uri[0]);
 
         new AlertDialog.Builder(requireActivity())
                 .setTitle("Choose a " + type)
                 .setItems(items, (dialog, which) -> {
-                    Log.d("RingtonePicker", "Inside AlertDialog");
-
                     Uri selectedRingtoneUri = uris[which];
-
-                    Log.d("RingtonePicker", "Selected Ringtone URI: " + selectedRingtoneUri);
-
                     String sound = saveRingtoneOperations(selectedRingtoneUri);
                     if (type.equals("notification")) {
-                        notificationText.setText(sound);
-                        dbManager.changeNotification(sound);
+                        currentNotification = selectedRingtoneUri;
+                        notificationExtension = sound;
                     } else {
-                        ringtoneText.setText(sound);
-                        dbManager.changeRingtone(sound);
+                        currentRingtone = selectedRingtoneUri;
+                        ringtoneExtension = sound;
                     }
                 })
                 .show();
-
-        Log.d("RingtonePicker", "retrieveAndShowRingtones - End");
     }
     private int getRingtoneDuration(Context context, Uri uri) throws IOException {
         Log.d("RingtonePicker", "Inside getRingtoneDuration");
@@ -402,35 +394,37 @@ public class CustomizeSettingsFragment extends Fragment {
         }
     }
     public String saveRingtoneOperations(Uri uri) {
-        Log.d("RingtonePicker", "saveRingtoneOperations - Start");
+        String extension;
+        String mimeType = requireActivity().getContentResolver().getType(uri);
+        Log.i("mimeType", "saveRingtoneOperations: "+mimeType);
+        if ("audio/mpeg".equals(mimeType) || "application/mpeg".equals(mimeType)) {
+            extension = ".mp3";
+        } else if ("audio/ogg".equals(mimeType) || "application/ogg".equals(mimeType)) {
+            extension = ".ogg";
+        } else if ("audio/x-wav".equals(mimeType) || "application/x-wav".equals(mimeType)) {
+            extension = ".wav";
+        } else if ("audio/mp4a-latm".equals(mimeType) || "application/mp4a-latm".equals(mimeType)) {
+            extension = ".m4a";
+        } else {
+            return null;
+        }
+
+        String fileName = "ringtone" + extension;
+        if (type.equals("notification")) {
+            Toast.makeText(getActivity(), "Notification sound changed", Toast.LENGTH_SHORT).show();
+            fileName = "notification" + extension;
+        }else if (type.equals("ringtone")){
+            Toast.makeText(getActivity(), "Ringtone changed", Toast.LENGTH_SHORT).show();
+        }
+        return fileName;
+    }
+    public String saveFile(Uri uri, String fileName){
+        Log.i("saveFile", "saveFile: "+uri+" "+fileName);
 
         String soundPath = null;
-
         try {
-            InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-
-            String extension;
-            String mimeType = getActivity().getContentResolver().getType(uri);
-            Log.i("mimeType", "saveRingtoneOperations: "+mimeType);
-            if ("audio/mpeg".equals(mimeType) || "application/mpeg".equals(mimeType)) {
-                extension = ".mp3";
-            } else if ("audio/ogg".equals(mimeType) || "application/ogg".equals(mimeType)) {
-                extension = ".ogg";
-            } else if ("audio/x-wav".equals(mimeType) || "application/x-wav".equals(mimeType)) {
-                extension = ".wav";
-            } else if ("audio/mp4a-latm".equals(mimeType) || "application/mp4a-latm".equals(mimeType)) {
-                extension = ".m4a";
-            } else {
-                return null;
-            }
-
-            String fileName = "ringtone" + extension;
-            if (type.equals("notification")) {
-                fileName = "notification" + extension;
-            }
-            Log.i("fileName", "saveRingtoneOperations: "+fileName);
-
-            FileOutputStream outputStream = getActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
+            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -441,22 +435,15 @@ public class CustomizeSettingsFragment extends Fragment {
             inputStream.close();
             outputStream.close();
 
-            File file = new File(getActivity().getFilesDir(), fileName);
+            File file = new File(requireActivity().getFilesDir(), fileName);
             soundPath = file.getAbsolutePath();
-
-            Log.d("RingtonePicker", "Saved Ringtone Path: " + soundPath);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Log.d("RingtonePicker", "saveRingtoneOperations - End");
-
         return soundPath;
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d("RingtonePicker", "onRequestPermissionsResult - Start");
 
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -472,8 +459,57 @@ public class CustomizeSettingsFragment extends Fragment {
                 tempUri = null;
             }
         }
-
-        Log.d("RingtonePicker", "onRequestPermissionsResult - End");
     }
-
+    private void updateUserData() {
+        if(newTheme == null){
+            newTheme = currentTheme;
+        }
+        switchTheme(newTheme);
+        if(currentBackground != null && backgroundExtension != null){
+            String backgroundPath = saveFile(Uri.parse(currentBackground), backgroundExtension);
+            dbManager.changeBackground(backgroundPath);
+        }
+        dbManager.changeSounds(checkbox1.isChecked());
+        dbManager.changeNotifications(checkbox2.isChecked());
+        dbManager.changeFocus(checkbox3.isChecked());
+        dbManager.changeGamification(checkbox4.isChecked());
+        dbManager.changeVolume(currentVolume);
+        if(currentRingtone != null && ringtoneExtension != null){
+            String ringtonePath = saveFile(currentRingtone, ringtoneExtension);
+            dbManager.changeRingtone(ringtonePath);
+        }
+        if(currentNotification != null && notificationExtension != null){
+            String notificationPath = saveFile(currentNotification, notificationExtension);
+            dbManager.changeNotification(notificationPath);
+        }
+        dbManager.changeHomeType(switch1.isChecked());
+        preferencesChanged = false;
+        Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
+    }
+    private void showConfirmationDialog() {
+        Log.i("back", "showConfirmationDialog: ");
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Save Changes?");
+        builder.setMessage("Do you want to save your changes before exiting?");
+        builder.setPositiveButton("Save", (dialogInterface, i) -> {
+            // Save the changes
+            updateUserData();
+            preferencesChanged = false;
+            requireActivity().onBackPressed();
+        });
+        builder.setNegativeButton("Discard", (dialogInterface, i) -> {
+            // Discard the changes
+            preferencesChanged = false;
+            requireActivity().onBackPressed();
+        });
+        builder.setNeutralButton("Cancel", (dialogInterface, i) -> {
+            // Cancel the dialog, do nothing
+        });
+        builder.show();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        preferencesChanged = false;
+    }
 }

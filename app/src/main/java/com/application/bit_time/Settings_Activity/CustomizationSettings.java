@@ -1,6 +1,5 @@
 package com.application.bit_time.Settings_Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +22,9 @@ public class CustomizationSettings extends Fragment {
         Button buttonAS = view.findViewById(R.id.buttonAS);
         Button buttonIP = view.findViewById(R.id.buttonIP);
         Button buttonNA = view.findViewById(R.id.buttonNA);
+        buttonAS.setText(R.string.customize_app);
+        buttonIP.setText(R.string.gamification);
+        buttonNA.setText(R.string.start_activity);
 
         buttonAS.setOnClickListener(v -> {
             // Replace the current fragment with a new fragment
@@ -42,16 +44,13 @@ public class CustomizationSettings extends Fragment {
             fragmentTransaction.commit();
         });
 
-        buttonNA.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Replace the current fragment with a new fragment
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.middle_fragment_container_view, new ModifyTasksFragment());
-                fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
-                fragmentTransaction.commit();
-            }
+        buttonNA.setOnClickListener(v -> {
+            // Replace the current fragment with a new fragment
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.middle_fragment_container_view, new ModifyTasksFragment());
+            fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
+            fragmentTransaction.commit();
         });
 
 

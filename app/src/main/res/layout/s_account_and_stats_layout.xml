@@ -10,35 +10,33 @@
         android:id="@+id/modificaTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Modifica i tuoi dati"
+        android:text="@string/modifica_i_tuoi_dati"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginTop="28dp"
         app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TitleText"/>
 
 
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="example@email.com"
-        android:padding="12dp"
+        android:hint="@string/example_email"
+        android:inputType="textEmailAddress"
+        android:autofillHints="emailAddress"
         app:layout_constraintBottom_toTopOf="@+id/passwordLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/modificaTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/modificaTitle"
+        style="@style/TextInputStyle"/>
 
     <RelativeLayout
         android:id="@+id/passwordLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,76 +45,69 @@
 
         <EditText
             android:id="@+id/password_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="password"
-            android:padding="12dp"
+            android:hint="@string/password"
             android:inputType="textPassword"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/showHidePassword"/>
+            android:autofillHints="password"
+            android:layout_toStartOf="@+id/showHidePassword"
+            style="@style/TextInputStyle"/>
 
-        <TextView
+        <ImageView
             android:id="@+id/showHidePassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="O"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/closed_eye"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/togglevisibility"/>
 
     </RelativeLayout>
 
     <EditText
         android:id="@+id/usernameEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Username"
-        android:padding="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:hint="@string/username"
+        android:inputType="text"
+        android:autofillHints="username"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordLayout"
-        app:layout_constraintBottom_toTopOf="@+id/pinEditText"/>
+        app:layout_constraintBottom_toTopOf="@+id/pinEditText"
+        style="@style/TextInputStyle"/>
 
     <EditText
         android:id="@+id/pinEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="PIN (default: 0000)"
-        android:padding="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:hint="@string/pin_input_hint_text"
+        android:inputType="numberPassword"
+        android:autofillHints="PIN"
         app:layout_constraintTop_toBottomOf="@+id/usernameEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/TextInputStyle"/>
 
     <Button
         android:id="@+id/submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
+        android:text="@string/save"
         android:layout_marginTop="12dp"
         app:layout_constraintBottom_toTopOf="@+id/logout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pinEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/pinEditText"
+        style="@style/SubmitButton"/>
 
     <Button
         android:id="@+id/logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
+        android:text="@string/logout"
         android:layout_marginTop="12dp"
         app:layout_constraintBottom_toTopOf="@+id/statisticheTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/submit" />
+        app:layout_constraintTop_toBottomOf="@+id/submit"
+        style="@style/RedActionButton"/>
 
     <TextView
         android:id="@+id/statisticheTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Statistiche"
+        android:text="@string/statistiche"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
@@ -141,7 +132,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="This section is in development and will be available soon."
+            android:text="@string/sezione_in_fase_di_sviluppo"
             android:textSize="16sp"
             android:textColor="@android:color/black"
             android:layout_marginStart="12dp" />

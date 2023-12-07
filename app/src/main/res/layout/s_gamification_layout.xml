@@ -13,11 +13,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tipo di gamification"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:text="@string/tipo_di_gamification"
             android:paddingBottom="8dp"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            style="@style/TitleText"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -42,7 +41,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="0dp"
-                    android:text="Bonus/Malus" />
+                    android:text="@string/bonus_malus"
+                    style="@style/NormalText"/>
 
 
             </LinearLayout>
@@ -67,19 +67,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="0dp"
-                    android:text="Solo bonus" />
+                    android:text="@string/solo_bonus"
+                    style="@style/NormalText"/>
             </LinearLayout>
         </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Icone bonus/malus"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:text="@string/icone_bonus_malus"
             android:paddingTop="16dp"
             android:paddingBottom="8dp"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            style="@style/TitleText"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,16 +92,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:paddingRight="50dp">
+                android:layout_marginEnd="50dp">
                 <ImageView
                     android:id="@+id/PositiveIcon"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/happy_dog" />
+                    android:src="@drawable/happy_dog"
+                    android:contentDescription="@string/positive_icon"/>
                 <Spinner
                     android:id="@+id/iconSpinner1"
                     android:layout_width="100dp"
-                    android:layout_weight="1"
                     android:padding="13dp"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -111,16 +111,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:paddingLeft="50dp">
+                android:layout_marginStart="50dp">
                 <ImageView
                     android:id="@+id/NegativeIcon"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/sad_dog" />
+                    android:src="@drawable/sad_dog"
+                    android:contentDescription="@string/negativeicon"/>
                 <Spinner
                     android:id="@+id/iconSpinner2"
                     android:layout_width="100dp"
-                    android:layout_weight="1"
                     android:padding="13dp"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -129,12 +129,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Punteggi"
+            android:text="@string/punteggi"
             android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:paddingTop="16dp"
-            android:paddingBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            style="@style/TitleText"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -153,24 +152,26 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:text="Text 1" />
+                    android:text="@string/largo_anticipo"
+                    style="@style/RegularText"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Subtext 1"
-                    android:textSize="12sp"/>
+                    android:text="@string/LA_descrizione"
+                    style="@style/SmallText"/>
                 </LinearLayout>
 
                 <EditText
                     android:id="@+id/timePoints1"
                     android:layout_width="match_parent"
-                    android:hint="100"
+                    android:hint="@string/default_point_value"
+                    android:autofillHints="points"
                     android:padding="12dp"
                     android:textAlignment="center"
                     android:layout_height="wrap_content"
                     android:inputType="numberSigned"
-                    android:autofillHints="" />
+                    android:textColorHint="@color/dark_grey"
+                    android:textColor="@color/primary"/>
 
             </LinearLayout>
             <LinearLayout
@@ -185,23 +186,26 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="Text 1" />
+                        style="@style/RegularText"
+                        android:text="@string/Anticipo" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Subtext 1"
-                        android:textSize="12sp"/>
+                        android:text="@string/A_descrizione"
+                        style="@style/SmallText"/>
                 </LinearLayout>
 
                 <EditText
                     android:id="@+id/timePoints2"
                     android:layout_width="match_parent"
-                    android:hint="100"
+                    android:hint="@string/default_point_value"
+                    android:autofillHints="points"
                     android:padding="12dp"
                     android:textAlignment="center"
                     android:layout_height="wrap_content"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:textColorHint="@color/dark_grey"
+                    android:textColor="@color/primary"/>
 
             </LinearLayout>
             <LinearLayout
@@ -216,23 +220,26 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="Text 1" />
+                        style="@style/RegularText"
+                        android:text="@string/OnTime" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Subtext 1"
-                        android:textSize="12sp"/>
+                        android:text="@string/OT_descrizione"
+                        style="@style/SmallText"/>
                 </LinearLayout>
 
                 <EditText
                     android:id="@+id/timePoints3"
                     android:layout_width="match_parent"
-                    android:hint="100"
+                    android:hint="@string/default_point_value"
+                    android:autofillHints="points"
                     android:padding="12dp"
                     android:textAlignment="center"
                     android:layout_height="wrap_content"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:textColorHint="@color/dark_grey"
+                    android:textColor="@color/primary"/>
 
             </LinearLayout>
             <LinearLayout
@@ -247,23 +254,26 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="Text 1" />
+                        style="@style/RegularText"
+                        android:text="@string/Late" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Subtext 1"
-                        android:textSize="12sp"/>
+                        android:text="@string/L_descrizione"
+                        style="@style/SmallText"/>
                 </LinearLayout>
 
                 <EditText
                     android:id="@+id/timePoints4"
                     android:layout_width="match_parent"
-                    android:hint="100"
+                    android:hint="@string/default_point_value"
+                    android:autofillHints="points"
                     android:padding="12dp"
                     android:textAlignment="center"
                     android:layout_height="wrap_content"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:textColorHint="@color/dark_grey"
+                    android:textColor="@color/primary"/>
 
             </LinearLayout>
             <LinearLayout
@@ -278,23 +288,26 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="Text 1" />
+                        style="@style/RegularText"
+                        android:text="@string/SeverelyLate" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Subtext 1"
-                        android:textSize="12sp"/>
+                        android:text="@string/SL_descrizione"
+                        style="@style/SmallText"/>
                 </LinearLayout>
 
                 <EditText
                     android:id="@+id/timePoints5"
                     android:layout_width="match_parent"
-                    android:hint="100"
+                    android:hint="@string/default_point_value"
+                    android:autofillHints="points"
                     android:padding="12dp"
                     android:textAlignment="center"
                     android:layout_height="wrap_content"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:textColorHint="@color/dark_grey"
+                    android:textColor="@color/primary"/>
 
             </LinearLayout>
             <LinearLayout
@@ -309,34 +322,36 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="Text 1" />
+                        style="@style/RegularText"
+                        android:text="@string/Extremely_Late" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Subtext 1"
-                        android:textSize="12sp"/>
+                        android:text="@string/EL_descrizione"
+                        style=""/>
                 </LinearLayout>
 
                 <EditText
                     android:id="@+id/timePoints6"
                     android:layout_width="match_parent"
-                    android:hint="100"
+                    android:hint="@string/default_point_value"
+                    android:autofillHints="points"
                     android:padding="12dp"
                     android:textAlignment="center"
                     android:layout_height="wrap_content"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:textColorHint="@color/dark_grey"
+                    android:textColor="@color/primary"/>
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Submit Button -->
         <Button
             android:id="@+id/submitButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Applica modifiche"/>
+            android:layout_marginTop="15dp"
+            android:text="@string/save"
+            style="@style/SubmitButton"/>
 
     </LinearLayout>
 </ScrollView>

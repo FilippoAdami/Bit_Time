@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.app.AlarmManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +31,8 @@ import com.application.bit_time.utils.TaskItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Objects;
+
 public class SettingsActivity extends AppCompatActivity {
     private SubtasksViewModel subtasksViewModel;
     private SubtasksViewModel dbTasksViewModel;
@@ -40,11 +44,52 @@ public class SettingsActivity extends AppCompatActivity {
     Fragment middleFrag;
     Fragment lowerFrag;
     DbViewModelData currentDbViewModelData;
+    private SharedPreferences sharedPreferences;
     AlarmScheduler alarmScheduler;
     PlannerViewModel plannerViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        dbManager = new DbManager(getApplicationContext());
+        sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        //check if there is a shared preference for the theme
+        String currentTheme = sharedPreferences.getString("CurrentTheme", null);
+        if (currentTheme == null) {
+            //if there is no shared preference for the theme, set the default theme to PastelTheme
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("CurrentTheme", "PastelTheme");
+            editor.apply();
+        }
+
+        String theme = dbManager.getTheme();
+        if (theme != null && !(theme.equals(currentTheme))) {
+            int newTheme = R.style.PastelTheme;
+            switch (theme) {
+                case "PastelTheme":
+                    newTheme = R.style.PastelTheme;
+                    theme = "PastelTheme";
+                    break;
+                case "BWTheme":
+                    newTheme = R.style.BWTheme;
+                    theme = "BWTheme";
+                    break;
+                case "EarthTheme":
+                    newTheme = R.style.EarthTheme;
+                    theme = "EarthTheme";
+                    break;
+                case "VividTheme":
+                    newTheme = R.style.VividTheme;
+                    theme = "VividTheme";
+                    break;
+                default:
+                    break;
+            }
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("theme", theme);
+            editor.apply();
+            setTheme(newTheme);
+            Log.i("Theme", "Theme changed");
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -63,9 +108,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
 
-        currentDbViewModelData = new DbViewModelData(dbViewModel.getSelectedItem().getValue());
+        currentDbViewModelData = new DbViewModelData(Objects.requireNonNull(dbViewModel.getSelectedItem().getValue()));
 
-        viewModel = new ViewModelProvider(this).get(CustomViewModel.class);
+        CustomViewModel viewModel = new ViewModelProvider(this).get(CustomViewModel.class);
 
         fManager = getSupportFragmentManager();
 
@@ -131,7 +176,12 @@ public class SettingsActivity extends AppCompatActivity {
                 {
                     Log.i("currentData plans check","plans inside are "+ currentData.activityItem.getPlans().size());
                     ActivityItem currentActivity = new ActivityItem(currentData.activityItem);
+                    //Log.i("currentActivity",currentActivity.toString());
 
+                    /*for(TaskItem ti : currentActivity.getSubtasks())
+                    {
+                        Log.i("currAct",ti.getIdStr());
+                    }*/
                     int[] subtasksIds= new int[DbContract.Activities.DIM_MAX];
 
                     int i=0;
@@ -373,8 +423,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
     public void homeSettingsRedirect(){
         fManager.beginTransaction()
-                .replace(R.id.top_fragment_container_view, new SettingsHomeFragment())
-                .replace(R.id.middle_fragment_container_view, new Fragment())
+                .replace(R.id.top_fragment_container_view, new Fragment())
+                .replace(R.id.middle_fragment_container_view, new SettingsHomeFragment())
                 .replace(R.id.bottom_fragment_container_view,new Fragment())
                 .addToBackStack("HomeSettingsRedirect")
                 .commit();

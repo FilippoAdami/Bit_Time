@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class HomeFragment extends Fragment {
     private RunningActivityViewModel runningActivityViewModel;
     private TextView clockTextView;
     private AnalogClockView analogClockView;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private TaskItem currentTask;
 
 

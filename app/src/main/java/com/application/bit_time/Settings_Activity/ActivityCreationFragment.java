@@ -88,6 +88,9 @@ public class ActivityCreationFragment extends Fragment {
             subtasksViewModel.getSelectedItem().getValue().setAllTaskItems(allTasks);
         }
 
+
+
+
         subtasksToAdd = new TaskItem[DbContract.Activities.DIM_MAX];
 
         for(int i =0 ;i <DbContract.Activities.DIM_MAX ; i++)
@@ -284,6 +287,7 @@ public class ActivityCreationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
+
 
                 DbViewModelData newData = new DbViewModelData();
                 newData.selector=DbViewModelData.ITEM_TYPE.ACTIVITY;

@@ -28,20 +28,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/time_textview"
-        android:text="time: "
         android:textSize="32sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.711" />
+        app:layout_constraintVertical_bias="0.711"
+        style="@style/RegularText"/>
 
     <Button
         android:id="@+id/caregiver_button"
         style="@style/CaregiverButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:text=" ."
         app:layout_constraintBottom_toBottomOf="parent"
 
         app:layout_constraintDimensionRatio="1:1"

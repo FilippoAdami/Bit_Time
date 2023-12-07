@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -13,19 +12,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Login"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:text="@string/login"
+        style="@style/TitleText" />
 
     <!-- Email input field -->
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:padding="12dp"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:hint="@string/e_mail"
+        android:inputType="textEmailAddress"
+        style="@style/TextInputStyle"
+        android:autofillHints="emailAddress" />
 
     <!-- Password input field -->
     <RelativeLayout
@@ -39,31 +36,29 @@
 
         <EditText
             android:id="@+id/password_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="password"
-            android:padding="12dp"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/showHidePassword"/>
+            android:layout_toStartOf="@+id/showHidePassword"
+            style="@style/TextInputStyle"
+            android:autofillHints="password" />
 
-        <TextView
+        <ImageView
             android:id="@+id/showHidePassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="O"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/closed_eye"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/togglevisibility" />
 
     </RelativeLayout>
 
-    <!-- Submit button -->
     <Button
         android:id="@+id/submit_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Submit" />
+        android:text="@string/login"
+        style="@style/SubmitButton"/>
 
     <!-- Text view for "Forgot Password?" -->
     <TextView
@@ -72,8 +67,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="Forgot Password?"
-        android:textColor="#007aff" />
+        android:text="@string/forgot_password"
+        style="@style/SmallText" />
 
     <!-- Alternative login button (e.g., for social login)
     <Button
@@ -90,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="Don't have an account? Sign up"
-        android:textColor="#007aff" />
+        android:text="@string/switch_mode"
+        style="@style/SmallText" />
 
 </LinearLayout>

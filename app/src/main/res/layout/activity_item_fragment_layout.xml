@@ -6,36 +6,39 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/labelName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Name" />
+            android:text="@string/name"
+            style="@style/RegularText"/>
 
         <TextView
             android:id="@+id/labelTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Time" />
+            android:text="@string/timeB"
+            style="@style/RegularText"/>
 
         <Button
             android:id="@+id/modifyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Modify" />
+            android:text="@string/modify"
+            style="@style/ActionButton"/>
 
         <Button
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Delete" />
+            android:text="@string/delete"
+            style="@style/RedActionButton"/>
     </LinearLayout>
 
     <LinearLayout
@@ -48,30 +51,30 @@
             android:id="@+id/subtaskLabel1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/TaskName" />
 
         <TextView
             android:id="@+id/subtaskLabel2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/TaskName" />
 
         <TextView
             android:id="@+id/subtaskLabel3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/TaskName" />
 
         <TextView
             android:id="@+id/subtaskLabel4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/TaskName" />
 
         <TextView
             android:id="@+id/subtaskLabel5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/TaskName" />
     </LinearLayout>
 </LinearLayout>
