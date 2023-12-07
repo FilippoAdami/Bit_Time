@@ -123,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle intentBundle = getIntent().getExtras();
 
-        if(intentBundle != null)
+        //TODO : UNCOMMENT AND FIX
+        /*if(intentBundle != null)
         {
 
             int actId = (int) intentBundle.get("actId");
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             Log.i("sourceAct", "intentBundle was null");
-        }
+        }*/
 
 
 

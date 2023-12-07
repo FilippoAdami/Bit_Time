@@ -43,6 +43,7 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
         Log.i("viewholder log",reportData.subtaskName);
         holder.subtaskName.setText(reportData.subtaskName);
         holder.subtaskTime.setText(reportData.endStatus.toString());
+        holder.subtaskTime.setText(Integer.toString(reportData.lastedTime));
     }
 
     @Override

@@ -70,22 +70,29 @@ public class HomeFragment extends Fragment {
             }else if(currentStatus.toString().equals("OnWait"))
             {
                 int duration = currentTask.getDurationInt();
+
+                RunningActivityData currentRAD = new RunningActivityData();
+                currentRAD.setChoice(RunningActivityData.Choice.Yes);
+                currentRAD.setCurrentTask(currentTask);
+                currentRAD.setCurrentLastedTime(lastedTime);
+
                 if(lastedTime <= duration/2)
                 {
+                    currentRAD.setStatus(RunningActivityData.Status.OnTime);
                     //Log.i("From OnWait ","to OnTime");
-                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.OnTime, RunningActivityData.Choice.Yes,currentTask));
+                    //runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.OnTime, RunningActivityData.Choice.Yes,currentTask));
                 }
                 else if(lastedTime <= 3*duration/4)
                 {
                     //Log.i("From OnWait","to LittleDelay");
-                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.LittleDelay,RunningActivityData.Choice.Yes,currentTask));
-
+                    //runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.LittleDelay,RunningActivityData.Choice.Yes,currentTask));
+                    currentRAD.setStatus(RunningActivityData.Status.LittleDelay);
                 }
                 else
                 {
                     //Log.i("From OnWait","to BigDelay");
-                    runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.BigDelay,RunningActivityData.Choice.Yes,currentTask));
-
+                    //runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.BigDelay,RunningActivityData.Choice.Yes,currentTask));
+                    currentRAD.setStatus(RunningActivityData.Status.BigDelay);
                 }
 
                 lastedTime = 0;
@@ -148,7 +155,9 @@ public class HomeFragment extends Fragment {
                 if(currentTask != null) {
                     if (lastedTime == currentTask.getDurationInt()) {
                         //Log.i("duration", "reached");
-                        runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice,currentTask));
+                        RunningActivityData currentRAD =new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice,currentTask);
+                        currentRAD.setCurrentLastedTime(lastedTime);
+                        runningActivityViewModel.selectItem(currentRAD);
                         lastedTime = 0;
                     }
                 }
