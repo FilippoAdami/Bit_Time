@@ -149,6 +149,9 @@
     <string name="gamification">Gamification</string>
     <string name="customize_app">Impostazioni App</string>
     <string name="start_activity">Programma Attività</string>
-
+    <string name="planSwitchText">PLAN</string>
+    <string name="pickDateButton">pick date</string>
+    <string name="pickTimeButton">pick time</string>
+    <string name="addPlanButton">add plan</string>
 
 </resources>
