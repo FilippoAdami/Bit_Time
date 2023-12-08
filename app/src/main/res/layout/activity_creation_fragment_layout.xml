@@ -71,6 +71,17 @@
         android:textAlignment="center"
         style="@style/NormalText"/>
 
+    <Switch
+        android:id="@+id/planSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/planSwitchText" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/planningFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/fineButton"
         android:layout_width="match_parent"

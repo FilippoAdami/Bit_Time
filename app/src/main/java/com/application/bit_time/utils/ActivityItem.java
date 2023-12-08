@@ -7,14 +7,17 @@ import androidx.annotation.Nullable;
 
 import com.application.bit_time.utils.Db.DbContract;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class ActivityItem {
 
     ActivityInfo activityInfo;
     TaskItem[] subtasks;
+    List<PlanningInfo> plans;
 
     boolean expanded;
 
@@ -25,19 +28,28 @@ public class ActivityItem {
 
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
         expanded = false;
+
+        this.plans = null;
+
     }
 
     public ActivityItem(ActivityItem original)
     {
+
         this.activityInfo = new ActivityInfo(original.activityInfo);
 
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
 
         if(original.subtasks[0]!=null)
         {
-            Iterator<TaskItem> tiIterator = Arrays.stream(original.getSubtasks()).iterator();
+            //Iterator<TaskItem> tiIterator = Arrays.stream(original.getSubtasks()).iterator();
+
+            this.subtasks = new TaskItem[original.getSubtasks().length];
+
+            this.subtasks= original.getSubtasks();
+
             for(int i = 0;i<DbContract.Activities.DIM_MAX;i++) {
-                this.subtasks[i]= new TaskItem(tiIterator.next());
+                //this.subtasks[i]= new TaskItem(tiIterator.next());
             }
 
         }else
@@ -47,10 +59,19 @@ public class ActivityItem {
             }
         }
         expanded = false;
+
+        if(original.getPlans() != null)
+            this.plans = new ArrayList<>(original.getPlans());
+        else
+            this.plans = null;
+
+
+
     }
 
     public ActivityItem(String id,String name,String duration)
     {
+        this.plans = null;
         this.activityInfo = new ActivityInfo(id,name,duration);
         expanded = false;
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
@@ -73,6 +94,7 @@ public class ActivityItem {
 
     public ActivityItem(String name, int duration, TaskItem[] subtasks)
     {
+        this.plans = null;
 
         Log.i("SUB2ADD",subtasks[0].toString());
 
@@ -94,6 +116,7 @@ public class ActivityItem {
 
     public ActivityItem(ActivityInfo info, TaskItem[] subtasks)
     {
+        this.plans = null;
         this.activityInfo = info ;
 
         this.subtasks = new TaskItem[subtasks.length];
@@ -175,4 +198,32 @@ public void setId(int id)
 
         return false;
     }
+
+    public List<PlanningInfo> getPlans()
+    {
+        return this.plans;
+    }
+    public boolean isPlanned()
+    {
+        if(this.plans.size()>0)
+            return true;
+
+        return false;
+    }
+
+    public void setPlans(List<PlanningInfo> plans)
+    {
+        if(this.plans == null) {
+            this.plans = new ArrayList<>();
+        }
+
+        for(PlanningInfo pi : plans)
+        {
+            this.plans.add(pi);
+        }
+    }
+
+
+
+
 }

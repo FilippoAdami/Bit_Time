@@ -46,6 +46,19 @@ public final class DbContract {
         public static final String COLUMN_NAME_SALT = "salt";
     }
 
+
+    public static class ActivitySchedule implements BaseColumns
+    {
+        public static final String TABLE_NAME = "activitySchedule";
+        public static final String COLUMN_NAME_ACTIVITY_ID = "activityId";
+        public static final String COLUMN_NAME_YEAR = "year";
+        public static final String COLUMN_NAME_MONTH = "month";
+        public static final String COLUMN_NAME_DAY = "day";
+        public static final String COLUMN_NAME_HOUR ="hour";
+        public static final String COLUMN_NAME_MINUTES = "minutes";
+
+    }
+
     public static class appSettings implements BaseColumns{
         public static final String TABLE_NAME = "appSettings";
         public static final String COLUMN_NAME_THEME = "theme";

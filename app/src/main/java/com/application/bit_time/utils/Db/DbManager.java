@@ -10,9 +10,14 @@ import android.util.Log;
 
 import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
+import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class DbManager {
@@ -74,6 +79,17 @@ public class DbManager {
                 DbContract.appSettings.COLUMN_NAME_FOCUS + " integer," +
                 DbContract.appSettings.COLUMN_NAME_HOME_TYPE + " integer)";
 
+
+        public static final String SQL_CREATE_ACTIVITY_SCHEDULE_TABLE =
+                "create table "+DbContract.ActivitySchedule.TABLE_NAME +"(" +
+                        DbContract.ActivitySchedule._ID +" integer primary key autoincrement," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_YEAR + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_MONTH + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_DAY + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_HOUR +" integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_MINUTES + " integer)";
+
         public DbHelper(Context context)
         {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -86,6 +102,7 @@ public class DbManager {
             db.execSQL(SQL_CREATE_USERDATA_TABLE);
             db.execSQL(SQL_CREATE_APP_SETTINGS_TABLE);
             db.execSQL(SQL_CREATE_GAMIFICATION_SETTINGS_TABLE);
+            db.execSQL(SQL_CREATE_ACTIVITY_SCHEDULE_TABLE);
         }
 
         @Override
@@ -118,7 +135,7 @@ public class DbManager {
 
     }
 
-    public void insertActivityRecord(ActivityItem activity)
+    public int insertActivityRecord(ActivityItem activity)
     {
         TaskItem[] tasks = activity.getSubtasks();
 
@@ -158,6 +175,77 @@ public class DbManager {
 
         Log.i("insert act str",insertQuery);
         db.execSQL(insertQuery);
+
+
+        Cursor c = selectLatestActivity();
+        int latestActId = -1;
+
+        if (c.getCount() > 0) {
+            c.moveToFirst();
+            latestActId = c.getInt(0);
+
+        }
+
+        if(activity.isPlanned()) {
+
+
+
+                for(PlanningInfo pi : activity.getPlans())
+                {
+                    Log.i("pi to be added",pi.toString());
+                    insertActivitySchedule(latestActId,pi.getInfo().getInfoGC());
+
+                }
+
+
+
+        }
+
+
+        return latestActId;
+
+
+    }
+
+    public Cursor selectLatestActivity()
+    {
+
+
+        String queryMaxStr = "select max(" +DbContract.Activities._ID +") from "+ DbContract.Activities.TABLE_NAME;
+
+        Cursor  c = db.rawQuery(queryMaxStr,null);
+
+
+        int latestActivityId=-1;
+
+        if(c.getCount()==1)
+        {
+            c.moveToFirst();
+            latestActivityId = c.getInt(0);
+            //Log.i("count","max actId is "+latestActivityId);
+            String queryStr = "select * from "+ DbContract.Activities.TABLE_NAME +
+                    " where "+ DbContract.Activities._ID +"="+ Integer.toString(latestActivityId);
+
+            c= db.rawQuery(queryStr,null);
+
+            if(c.getCount()>0)
+            {
+                c.moveToFirst();
+                Log.i("latest act inserted has",c.getColumnCount() +" columns");
+            }
+
+
+
+
+        }
+
+        return c;
+
+
+
+
+
+
     }
 
     public void insertTaskRecord(TaskItem task)
@@ -247,16 +335,59 @@ public class DbManager {
 
         db.execSQL(query);
 
+
+
+    }
+
+    public void modifyActivity(ActivityItem item,int[] subtasksId)
+    {
+        modifyActivity(item.getInfo(),subtasksId);
+
+        if(item.isPlanned())
+        {
+            for(PlanningInfo pi : item.getPlans())
+            {
+                insertActivitySchedule(item.getInfo().getIdInt(),pi.getInfo().getInfoGC());
+            }
+        }
+    }
+
+    public void deletePlanById(int planId)
+    {
+        String str = "delete from "+ DbContract.ActivitySchedule.TABLE_NAME +
+                " where "+ DbContract.ActivitySchedule._ID + "="+ planId;
+
+        Log.i("deletePlan str",str);
+
+        db.execSQL(str);
+    }
+
+    public void deleteAllPlansByActivityId(int activityId)
+    {
+        //TODO : here we'll also remove plans from alarm manager
+
+        String str= "delete from "+DbContract.ActivitySchedule.TABLE_NAME +
+                " where " + DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "=" + activityId;
+
+        Log.i("deletePlans str",str);
+
+        db.execSQL(str);
+
     }
 
     public void deleteActivity(ActivityInfo item)
     {
+        deleteAllPlansByActivityId(item.getIdInt());
+
         String deleteQuery = "delete from "+ DbContract.Activities.TABLE_NAME
                              + " where " + DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME + "='" +item.getName() +
                 "' and "+ DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "='"+ item.getTime()+"';";
 
         Log.i("QUERY",deleteQuery);
         db.execSQL(deleteQuery);
+
+
+
     }
 
     public void modifyTask(TaskItem modifiedItem)
@@ -295,7 +426,7 @@ public class DbManager {
                 updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
                         + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration)
                         + " where " + DbContract.Activities._ID + "=" + Integer.toString(currActivity);
-
+                ;
 
                 Log.i("updateQueryAct", updateQuery);
 
@@ -418,6 +549,7 @@ public class DbManager {
         // Use parameterized query to avoid SQL injection
         db.execSQL(insertQuery, new String[]{email, hashedPassword, salt});
     }
+
     public boolean checkUser(Cursor cursor, String password) {
         int columnIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_PASSWORD);
         int saltIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_SALT);
@@ -438,6 +570,7 @@ public class DbManager {
         // Compare the hashed input password with the saved hash
         return hashedPassword.equals(dbPasswordHash);
     }
+
     public String getUserEmail() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Userdata.TABLE_NAME, null);
         boolean userExists = cursor.moveToFirst();
@@ -615,6 +748,7 @@ public class DbManager {
             // No row was updated, so insert a new row
             db.insert(DbContract.appSettings.TABLE_NAME, null, values);
         }
+
         Log.i("SQLMOD", "changeFocus: Rows affected - " + rowsAffected);
     }
     public void changeRingtone(String ringtone) {
@@ -1124,6 +1258,7 @@ public class DbManager {
 
     public void closeDb() {
         db.close();
+
     }
     private String scanQueryBuilder(TaskItem itemToLookFor) {
         String scanQuery =
@@ -1144,4 +1279,84 @@ public class DbManager {
         return scanQuery;
 
     }
+
+
+    public void insertActivitySchedule(int activityId,GregorianCalendar infoCalendarFormat)
+    {
+        String queryStr = "insert into "+DbContract.ActivitySchedule.TABLE_NAME + " ("+
+                DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "," +
+                DbContract.ActivitySchedule.COLUMN_NAME_YEAR +"," +
+                DbContract.ActivitySchedule.COLUMN_NAME_MONTH +","+
+                DbContract.ActivitySchedule.COLUMN_NAME_DAY +","+
+                DbContract.ActivitySchedule.COLUMN_NAME_HOUR +"," +
+                DbContract.ActivitySchedule.COLUMN_NAME_MINUTES +") values ( "+
+                activityId +"," +
+                infoCalendarFormat.get(Calendar.YEAR) + "," +
+                infoCalendarFormat.get(Calendar.MONTH) + "," +
+                infoCalendarFormat.get(Calendar.DAY_OF_MONTH) + "," +
+                infoCalendarFormat.get(Calendar.HOUR) + "," +
+                infoCalendarFormat.get(Calendar.MINUTE) +");";
+
+        Log.i("queryStr",queryStr);
+        db.execSQL(queryStr);
+
+
+    }
+
+    public void deleteActivitySchedule(int scheduleId)
+    {
+        String queryStr =
+                "delete from "+DbContract.ActivitySchedule.TABLE_NAME +
+                " where " +DbContract.ActivitySchedule._ID + "=" +scheduleId;
+
+        db.execSQL(queryStr);
+    }
+
+    public Cursor selectAllActivitySchedule()
+    {
+        String queryStr = "select * from "+ DbContract.ActivitySchedule.TABLE_NAME;
+
+        return db.rawQuery(queryStr,null);
+    }
+
+    public Cursor getActivityScheduleInfo(int activityId)
+    {
+        String queryStr = "select * from "+DbContract.ActivitySchedule.TABLE_NAME +
+                " where " + DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "=" + Integer.toString(activityId);
+
+        Log.i("selectQuery",queryStr);
+        Cursor c = db.rawQuery(queryStr,null);
+
+        return c;
+    }
+
+
+    public GregorianCalendar getActivityScheduleInfoGC(int activityId,int scheduleId) {
+        GregorianCalendar calendar;
+        boolean notfound = true;
+
+        Cursor c = getActivityScheduleInfo(activityId);
+
+        if (c.getCount() > 0) {
+            c.moveToFirst();
+
+            do {
+                if (c.getInt(0) == scheduleId) {
+                    notfound = false;
+                }
+            } while (c.moveToNext() && notfound);
+
+
+            calendar = new GregorianCalendar(c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6));
+
+
+        } else
+            calendar = new GregorianCalendar(); //TODO : what does this return ?
+
+
+        return calendar;
+    }
+
+
+
 }

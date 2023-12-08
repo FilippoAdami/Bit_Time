@@ -28,17 +28,18 @@ import java.util.List;
 public class ReportFragment extends Fragment {
 
     int score;
-    private List<ReportData> reportDataList = new ArrayList<>();
+    private List<ReportData> reportDataList ;
     private RecyclerView recyclerView;
     private ReportDataAdapter dataAdapter;
     private RunningActivityViewModel runningActivityViewModel;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        reportDataList = new ArrayList<>();
         runningActivityViewModel = new ViewModelProvider(getActivity()).get(RunningActivityViewModel.class);
         this.reportDataList = new ArrayList<>();
 
-        this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
+        //this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
         score = 101;
     }
 
@@ -51,7 +52,7 @@ public class ReportFragment extends Fragment {
         {
             if(item.getStatus().toString().equals("ActivityDone"))
             {
-                Log.i("ReportFragment list size",Integer.toString(item.getReportDataList().size()));
+                Log.i("ReportFragmentListSize",Integer.toString(item.getReportDataList().size()));
                 this.reportDataList.addAll(item.getReportDataList());
             }
         });

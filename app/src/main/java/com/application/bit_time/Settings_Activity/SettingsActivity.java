@@ -7,29 +7,46 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.app.AlarmManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.application.bit_time.Main_Activity.GameFragment;
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
+import com.application.bit_time.utils.AlarmUtils.TimePlanDialog;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbContract;
+import com.application.bit_time.utils.PlaceholderFragment;
+import com.application.bit_time.utils.PlannerViewModel;
+import com.application.bit_time.utils.PlannerViewModelData;
+import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.TaskItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
+    private SubtasksViewModel subtasksViewModel;
+    private SubtasksViewModel dbTasksViewModel;
     private DbManager dbManager;
+    private CustomViewModel viewModel;
+    private DbViewModel dbViewModel;
     FragmentManager fManager;
     Fragment upperFrag;
     Fragment middleFrag;
     Fragment lowerFrag;
     DbViewModelData currentDbViewModelData;
     private SharedPreferences sharedPreferences;
+    AlarmScheduler alarmScheduler;
+    PlannerViewModel plannerViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +93,18 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        DbViewModel dbViewModel;
-        SubtasksViewModel subtasksViewModel = new ViewModelProvider(this).get("subTasksVM", SubtasksViewModel.class);
+        alarmScheduler = new AlarmScheduler(this);
+        dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
+        subtasksViewModel = new ViewModelProvider(this).get("subTasksVM",SubtasksViewModel.class);
         //Log.i("SETTACT svm",this.subtasksViewModel.);
-        SubtasksViewModel dbTasksViewModel = new ViewModelProvider(this).get("DbTasksVM", SubtasksViewModel.class);
+        dbTasksViewModel = new ViewModelProvider(this).get("DbTasksVM",SubtasksViewModel.class);
+        plannerViewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
+        subtasksViewModel.getSelectedItem().observe(this,item ->
+        {
+            Log.i("SETT ACT ",item.toString());
+        });
 
-        subtasksViewModel.getSelectedItem().observe(this, item ->
-                Log.i("SETT ACT ",item.toString()));
+        dbManager = new DbManager(getApplicationContext());
 
         dbViewModel = new ViewModelProvider(this).get(DbViewModel.class);
 
@@ -117,16 +139,17 @@ public class SettingsActivity extends AppCompatActivity {
                 if(currentData.selector == DbViewModelData.ITEM_TYPE.TASK)
                 {
                     dbManager.insertTaskRecord(currentData.taskItem);
-                }
+                   }
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
 
-                    //Log.i("FROM SETTINGS ACTIVITY",item.activityItem.toString());
-                    /*for(TaskItem ti : item.activityItem.getSubtasks())
-                    {
-                        Log.i("FROM SETTING ACT",ti.toString());
-                    }*/
-                    dbManager.insertActivityRecord(currentData.activityItem);
+                    int currentActId = dbManager.insertActivityRecord(currentData.activityItem);
+
+                    Log.i("plans list contains ",Integer.toString(currentData.activityItem.getPlans().size()));
+
+
+                    alarmScheduler.scheduleAll(currentData.activityItem.getPlans(),currentData.activityItem.getName(),currentActId);
+
                 }
             }
             else if(currentData.action == DbViewModelData.ACTION_TYPE.DELETE)
@@ -138,6 +161,9 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
                     dbManager.deleteActivity(currentData.activityItem.getInfo());
+                    //TODO : delete also alrms dbinsertion
+                    dbManager.deleteAllPlansByActivityId(currentData.activityItem.getInfo().getIdInt());
+                    alarmScheduler.cancelAll(currentData.activityItem.getPlans());
                 }
             }
             else if(currentData.action == DbViewModelData.ACTION_TYPE.MODIFY)
@@ -148,7 +174,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
-                    //Log.i("FROM SETTINGS ACTIVITY","would modify activity");
+                    Log.i("currentData plans check","plans inside are "+ currentData.activityItem.getPlans().size());
                     ActivityItem currentActivity = new ActivityItem(currentData.activityItem);
                     //Log.i("currentActivity",currentActivity.toString());
 
@@ -164,7 +190,19 @@ public class SettingsActivity extends AppCompatActivity {
                         subtasksIds[i]=ti.getID();
                         i++;
                     }
-                    dbManager.modifyActivity(currentData.activityItem.getInfo(),subtasksIds);
+
+                    dbManager.modifyActivity(currentData.activityItem,subtasksIds);
+
+                    if(currentActivity.getPlans()== null)
+                    {
+                        Log.i("SettAct here plans","gets null");
+                    }
+                    else
+                    {
+                        Log.i("SettAct here plans","is not null");
+                    }
+
+                    alarmScheduler.scheduleAll(currentActivity.getPlans(), currentActivity.getName(),currentActivity.getInfo().getIdInt());
                 }
             }
 

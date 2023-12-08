@@ -150,4 +150,9 @@ public class SubtasksViewModelData {
 
         return str;
     }
+
+    public String toStringId()
+    {
+        return this.activityToModify.getInfo().getIDpk();
+    }
 }

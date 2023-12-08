@@ -13,7 +13,7 @@
         style="@style/RegularText"/>
 
     <TextView
-        android:id="@+id/subtaskImagePlaceholder"
+        android:id="@+id/subtaskTime"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.7"

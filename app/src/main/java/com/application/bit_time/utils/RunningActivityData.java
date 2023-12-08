@@ -1,5 +1,7 @@
 package com.application.bit_time.utils;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import java.util.List;
@@ -30,6 +32,8 @@ public class RunningActivityData {
     private Status status;
     private TaskItem currentTask;
 
+    private int currentLastedTime;
+
     private List<ReportData> reportDataList;
 
     public RunningActivityData()
@@ -38,6 +42,7 @@ public class RunningActivityData {
         this.status = Status.NoStatus;
         this.currentTask = new TaskItem(-1,"testTask",10); // will be null
         reportDataList = null;
+        this.currentLastedTime = 0;
     }
 
     public RunningActivityData(Status currentStatus, Choice currentChoice , TaskItem currentTask)
@@ -113,10 +118,15 @@ public class RunningActivityData {
     }
     public boolean isFilled()
     {
-        if(this.choice.equals(Choice.NoChoice) || this.status.equals(Status.NoStatus))
+        Log.i("inside isfilled","choice "+this.choice.toString() + " status "+this.status.toString());
+        if(this.choice.equals(Choice.NoChoice) || this.choice.equals(Choice.No) || this.status.equals(Status.NoStatus))
         {
+            Log.i("inside isfilled","will return false");
             return false;
         }
+
+
+        Log.i("inside isfilled","will return true");
         return true;
     }
 
@@ -130,6 +140,15 @@ public class RunningActivityData {
         return this.currentTask;
     }
 
+    public void setCurrentLastedTime(int currentLastedTime)
+    {
+        this.currentLastedTime = currentLastedTime;
+    }
+
+    public int getCurrentLastedTime()
+    {
+        return this.currentLastedTime;
+    }
     @NonNull
     @Override
     public String toString() {
@@ -137,7 +156,8 @@ public class RunningActivityData {
         String print=
                 this.currentTask.getName() + " " +
                 this.choice.toString() + " " +
-                this.status.toString();
+                this.status.toString()+ " " +
+                this.getCurrentLastedTime();
 
         return print;
 

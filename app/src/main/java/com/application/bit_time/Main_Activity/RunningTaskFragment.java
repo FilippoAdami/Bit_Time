@@ -85,6 +85,7 @@ public class RunningTaskFragment extends Fragment {
         }
         Log.i("subtasks test ret",Integer.toString(subtasks.size()));
         Log.i("subtask get1",subtasks.get(1).toString());
+        // TODO : sometimes gives problems, fix this
 
 
         this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,subtasks.get(0)));
@@ -121,7 +122,9 @@ public class RunningTaskFragment extends Fragment {
             //Log.i("RTF viewModel",item.getChoice().toString() + " "+item.getStatus().toString());
             if(item.getCurrentTask() != null) {
                 if (item.getStatus().toString().equals("Expired") || item.isFilled()) {
-                    runningActivityData.add(new RunningActivityData(item.getStatus(), item.getChoice(), item.getCurrentTask()));
+                    RunningActivityData currentRAD = new RunningActivityData(item.getStatus(), item.getChoice(), item.getCurrentTask());
+                    currentRAD.setCurrentLastedTime(item.getCurrentLastedTime());
+                    runningActivityData.add(currentRAD);
                     Log.i("RTF item", item.toString());
                     updateCurrentTask();
                 }
@@ -180,7 +183,7 @@ public class RunningTaskFragment extends Fragment {
                 for(RunningActivityData rad : runningActivityData)
                 {
                     Log.i("report",rad.toString());
-                    reportDataList.add(new ReportData(rad.getCurrentTask().getName(),rad.getStatus()));
+                    reportDataList.add(new ReportData(rad.getCurrentTask().getName(),rad.getStatus(),rad.getCurrentLastedTime()));
                 }
                 printFlag = 1;
                 Log.i("RTF list size",Integer.toString(this.reportDataList.size()));

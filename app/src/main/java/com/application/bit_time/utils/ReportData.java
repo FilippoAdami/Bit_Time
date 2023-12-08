@@ -7,10 +7,13 @@ public class ReportData {
     String subtaskName;
     RunningActivityData.Status endStatus;
 
-    public ReportData(String subtaskName, RunningActivityData.Status currentStatus)
+    int lastedTime ;
+
+    public ReportData(String subtaskName, RunningActivityData.Status currentStatus, int lastedTime)
     {
         this.subtaskName = subtaskName;
         this.endStatus = currentStatus;
+        this.lastedTime = lastedTime;
     }
 
 

@@ -221,6 +221,7 @@ public class TaskSelectionDialog extends DialogFragment {
             List<String> stringList = new ArrayList<>();
             List<Boolean> checkedItemsList = new ArrayList<>();
 
+
             allTaskItems= new TaskItem[currentData.getAllTaskItems().length];
             checkedItems= new boolean[allTaskItems.length];
             allTasksNames = new String[allTaskItems.length];

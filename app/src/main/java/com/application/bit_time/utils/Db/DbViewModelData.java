@@ -29,7 +29,6 @@ public class DbViewModelData {
         TASK
     };
 
-
     public enum ACTION_TYPE
     {
         UNDEFINED,
@@ -37,6 +36,7 @@ public class DbViewModelData {
         MODIFY,
         DELETE
     };
+
     public ACTION_TYPE action;
     public ITEM_TYPE selector;
     public ActivityItem activityItem;

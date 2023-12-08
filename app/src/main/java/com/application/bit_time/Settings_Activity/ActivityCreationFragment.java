@@ -7,12 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -20,9 +23,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbViewModelData;
+import com.application.bit_time.utils.PlannerViewModel;
+import com.application.bit_time.utils.PlannerViewModelData;
+import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.SubtaskAdapter;
 import com.application.bit_time.utils.SubtasksViewModel;
@@ -41,7 +48,7 @@ public class ActivityCreationFragment extends Fragment {
     private RecyclerView subtasksRecyclerView;
     private SubtaskAdapter subtaskAdapter;
     private CustomViewModel viewModel;
-
+    private PlannerViewModel plannerViewModel;
     private SubtasksViewModel subtasksViewModel;
     private DbViewModel dbViewModel;
     private TaskItem[] subtasksToAdd;
@@ -61,7 +68,7 @@ public class ActivityCreationFragment extends Fragment {
         subtasksViewModel = new ViewModelProvider(requireActivity()).get("subTasksVM",SubtasksViewModel.class);
         //Log.i("ACTCREFRAG svm",this.subtasksViewModel.toString());
         dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
-
+        plannerViewModel = new ViewModelProvider(requireActivity()).get(PlannerViewModel.class);
         idToBeModified=-1;
 
         Cursor allTasksCursor = dbManager.selectAllTasks();
@@ -103,7 +110,7 @@ public class ActivityCreationFragment extends Fragment {
             SubtasksViewModelData SVMData = subtasksViewModel.getSelectedItem().getValue();
             ActivityItem activityToModify = SVMData.getActivityToModify();
 
-            Log.i("activityToModRetrieve",activityToModify.toString());
+            Log.i("activityToModify retr",activityToModify.toString());
 
             subtasksViewModel.getSelectedItem().observe(this,item -> {
                 if(subtasksViewModel.getSelectedItem().getValue().isAlreadyModified())
@@ -192,6 +199,8 @@ public class ActivityCreationFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        FragmentManager fManager= getChildFragmentManager();
+
         View view = inflater.inflate(R.layout.activity_creation_fragment_layout,container,false);
 
         TextView nameLabel = view.findViewById(R.id.editNameLabel);
@@ -199,10 +208,14 @@ public class ActivityCreationFragment extends Fragment {
         Button addButton = view.findViewById(R.id.addTaskButton);
         Button endButton = view.findViewById(R.id.fineButton);
 
+        Switch planningSwitch = view.findViewById(R.id.planSwitch);
+
+
 
         if(currentState.equals("ModifyActivity"))
         {
             nameLabel.setHint(activityName);
+            //TODO: set stuff if the activity to be modified was previously planned
         }
 
 
@@ -215,7 +228,7 @@ public class ActivityCreationFragment extends Fragment {
 
         subtasksRecyclerView.setAdapter(subtaskAdapter);
 
-        subtasksViewModel.getSelectedItem().observe(getViewLifecycleOwner(),item ->
+        subtasksViewModel.getSelectedItem().observe(this,item ->
                 {
 
                     int totalTime = 0;
@@ -244,7 +257,33 @@ public class ActivityCreationFragment extends Fragment {
             }
         });
 
+
+
+
+        planningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked)
+                {
+                    Log.i("planningSwitch","checked");
+                    fManager.beginTransaction()
+                            .add(R.id.planningFragment,new PlanningFragment(),"currentPlanningFragment")
+                            .commit();
+                }
+                else
+                {
+                    Log.i("planningSwitch","NOT checked");
+
+                    fManager.beginTransaction()
+                            .remove(fManager.findFragmentByTag("currentPlanningFragment"))
+                            .commit();
+                }
+            }
+        });
+
         endButton.setOnClickListener(new View.OnClickListener() {
+
+            //TODO: make this override plannerviewmodel so that next activity will find a new AlarmInfo obj
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
@@ -252,6 +291,12 @@ public class ActivityCreationFragment extends Fragment {
 
                 DbViewModelData newData = new DbViewModelData();
                 newData.selector=DbViewModelData.ITEM_TYPE.ACTIVITY;
+
+
+
+
+
+
 
 
                 //dbViewModel.selectItem();
@@ -306,8 +351,21 @@ public class ActivityCreationFragment extends Fragment {
                     //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                 }
 
-                dbViewModel.selectItem(newData);
 
+                PlannerViewModelData plannerViewModelData = plannerViewModel.getSelectedItem().getValue();
+
+                if(plannerViewModelData != null) {
+                    newData.activityItem.setPlans(plannerViewModelData.getPlans());
+                    Log.i("ActCreFrag","plans set");
+
+                    for(PlanningInfo pi : newData.activityItem.getPlans())
+                    {
+                        Log.i("form setting ACF",pi.toString());
+                    }
+                }
+
+                dbViewModel.selectItem(newData);
+                plannerViewModel.selectItem(new PlannerViewModelData());
 
                 viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
 

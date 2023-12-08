@@ -2,6 +2,7 @@ package com.application.bit_time.utils;
 
 import static android.view.View.GONE;
 
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.SettingsLowerFragmentActivities;
+import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -231,6 +233,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                 public void onClick(View view) {
                     // magari aggiungiamo una richiesta di conferma
 
+
+
+
+
                     ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
                     ActivityItem item = dbManager.searchActivityItem(itemToDelete);
 
@@ -243,6 +249,23 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
 
                     newData.activityItem.activityInfo = itemToDelete;
+
+                    Cursor c = dbManager.getActivityScheduleInfo(id);
+
+                    if(c.getCount()>0)
+                    {
+                        List<PlanningInfo> plans = new ArrayList<>();
+                        c.moveToFirst();
+
+                        do{
+                            plans.add(new PlanningInfo(new AlarmInfo(c.getInt(2),c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6))));
+                        }while(c.moveToNext());
+
+
+                        newData.activityItem.setPlans(plans);
+                    }
+
+
 
                     Log.i("TEST","immediatly after again "+ newData.activityItem.getName());
 
