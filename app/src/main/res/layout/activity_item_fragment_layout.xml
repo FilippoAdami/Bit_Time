@@ -10,15 +10,15 @@
 
         <TextView
             android:id="@+id/labelName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/name"
             style="@style/RegularText"/>
 
         <TextView
             android:id="@+id/labelTime"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/timeB"
@@ -26,17 +26,17 @@
 
         <Button
             android:id="@+id/modifyButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/modify"
             style="@style/ActionButton"/>
 
         <Button
             android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/delete"
             style="@style/RedActionButton"/>
     </LinearLayout>

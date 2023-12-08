@@ -7,16 +7,16 @@
 
     <TextView
         android:id="@+id/labelTask"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:text="@string/TaskName"
         android:textAlignment="viewStart"
         style="@style/NormalText"/>
 
     <TextView
         android:id="@+id/labelDuration"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/time"
@@ -25,17 +25,17 @@
 
     <Button
         android:id="@+id/modifyTaskButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:text="@string/modify"
         style="@style/ActionButton"/>
 
     <Button
         android:id="@+id/deleteTaskButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:text="@string/delete"
         style="@style/RedActionButton"/>
 

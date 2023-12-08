@@ -43,17 +43,17 @@ public class SettingsMiddleFragment extends Fragment {
         Button addButton = view.findViewById(R.id.addButton);
         TextView text = view.findViewById(R.id.label);
         text.setText("Nuova attività");
-
+        addButton.setText("+Activity");
 
         Log.i("TEST","res da middle "+dbViewModel.getSelectedItem().getValue());
 
-        viewModel.getSelectedItem().observe(this,item -> {
+        viewModel.getSelectedItem().observe(getViewLifecycleOwner(),item -> {
 
 
             if(item.equals("Tasks"))
             {
                 text.setText("Nuovo task");
-
+                addButton.setText("+Task");
 
                 addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -68,7 +68,7 @@ public class SettingsMiddleFragment extends Fragment {
             }
             else if(item.equals("Activities")) {
                 text.setText("Nuova attività");
-
+                addButton.setText("+Activity");
                 addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
