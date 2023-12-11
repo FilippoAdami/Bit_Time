@@ -449,9 +449,10 @@ public class DbManager {
 
         Cursor scanCursor = db.rawQuery(scanQuery,null);
 
-        scanCursor.moveToFirst();
+        Log.i("scanCursor info","dim : "+ scanCursor.getCount());
 
         if(scanCursor.getCount()>0) {
+            scanCursor.moveToFirst();
             do {
                 int[] currSubtasks = new int[DbContract.Activities.DIM_MAX];
                 int pos = 0;
@@ -477,7 +478,10 @@ public class DbManager {
                         + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration) + ",";
 
                 for (int i = 1; i <= DbContract.Activities.DIM_MAX; i++) {
-                    String partial = " " + DbContract.Activities.TABLE_NAME + ".task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
+                    //String partial = " " + DbContract.Activities.TABLE_NAME + ".task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
+                    String partial = " " + "task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
+
+
                     if (i < DbContract.Activities.DIM_MAX)
                         partial = partial.concat(",");
                     //Log.i("partial",partial);
@@ -488,7 +492,7 @@ public class DbManager {
                 updateQuery = updateQuery.concat(" where " + DbContract.Activities._ID + "=" + Integer.toString(scanCursor.getInt(0)));
 
                 Log.i("updateQuery2", updateQuery);
-                //db.execSQL(updateQuery);
+                db.execSQL(updateQuery);
             } while (scanCursor.moveToNext());
         }
 
