@@ -148,7 +148,7 @@ public class SettingsLowerFragmentActivities extends Fragment
 
     @Override
     public void onDestroy() {
-        dbManager.closeDb();
+        //dbManager.closeDb();
         super.onDestroy();
 
     }

@@ -110,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         currentDbViewModelData = new DbViewModelData(Objects.requireNonNull(dbViewModel.getSelectedItem().getValue()));
 
-        CustomViewModel viewModel = new ViewModelProvider(this).get(CustomViewModel.class);
+        viewModel = new ViewModelProvider(this).get(CustomViewModel.class);
 
         fManager = getSupportFragmentManager();
 
@@ -242,7 +242,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
 
-        homeSettingsRedirect();
+        //homeSettingsRedirect();
 
         viewModel.getSelectedItem().observe(this, item ->
             {
@@ -444,5 +444,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .addToBackStack("EntryPoint")
                 .commit();
+
+
     }
 }

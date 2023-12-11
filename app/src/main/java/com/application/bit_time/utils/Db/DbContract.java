@@ -22,6 +22,7 @@ public final class DbContract {
         public static final String COLUMN_NAME_TASK3  = "task3";
         public static final String COLUMN_NAME_TASK4  = "task4";
         public static final String COLUMN_NAME_TASK5  = "task5";
+        public static final String COLUMN_NAME_IS_PLANNED = "isPlanned";
 
 
 

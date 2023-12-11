@@ -31,6 +31,7 @@ public class SettingsUpperFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
 
+
         TextView leftLabel = view.findViewById(R.id.leftLabel);
         TextView rightLabel = view.findViewById(R.id.rightLabel);
 

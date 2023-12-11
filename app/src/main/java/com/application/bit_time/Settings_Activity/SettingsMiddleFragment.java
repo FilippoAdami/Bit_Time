@@ -66,7 +66,7 @@ public class SettingsMiddleFragment extends Fragment {
                     }
                 });
             }
-            else if(item.equals("Activities")) {
+            else if(item.equals("Activities") || item.equals("EntryPoint")) {
                 text.setText("Nuova attività");
                 addButton.setText("+Activity");
                 addButton.setOnClickListener(new View.OnClickListener() {
