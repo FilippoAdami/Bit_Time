@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbContract;
+import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.ReportData;
 import com.application.bit_time.utils.ReportDataAdapter;
 import com.application.bit_time.utils.RunningActivityData;
@@ -32,12 +34,32 @@ public class ReportFragment extends Fragment {
     private RecyclerView recyclerView;
     private ReportDataAdapter dataAdapter;
     private RunningActivityViewModel runningActivityViewModel;
+    private int[] timescores;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        reportDataList = new ArrayList<>();
+        timescores = new int[DbContract.timescores];
+
+
+        DbManager dbManager = new DbManager(this.getContext());
+        timescores = dbManager.getGamificationPoints();
+
+        Log.i("TIMESCORES from RepFrag",Integer.toString(timescores.length));
+
+        for(int i : timescores)
+        {
+            Log.i("TIMESCORE ",Integer.toString(i));
+        }
+
+
         runningActivityViewModel = new ViewModelProvider(getActivity()).get(RunningActivityViewModel.class);
         this.reportDataList = new ArrayList<>();
+        this.reportDataList = runningActivityViewModel.getSelectedItem().getValue().getReportDataList();
+
+        for(ReportData RD : reportDataList)
+        {
+            Log.i("RD",RD.toString());
+        }
 
         //this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
         score = 101;

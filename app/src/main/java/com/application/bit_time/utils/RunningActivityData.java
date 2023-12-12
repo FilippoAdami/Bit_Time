@@ -4,6 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.application.bit_time.utils.Db.DbContract;
+
 import java.util.List;
 
 public class RunningActivityData {
@@ -28,10 +30,12 @@ public class RunningActivityData {
         Expired,
         ActivityDone
     }
+
+
+    private int[] points;
     private Choice choice;
     private Status status;
     private TaskItem currentTask;
-
     private int currentLastedTime;
 
     private List<ReportData> reportDataList;
@@ -43,6 +47,8 @@ public class RunningActivityData {
         this.currentTask = new TaskItem(-1,"testTask",10); // will be null
         reportDataList = null;
         this.currentLastedTime = 0;
+        this.points = new int[DbContract.timescores];
+
     }
 
     public RunningActivityData(Status currentStatus, Choice currentChoice , TaskItem currentTask)
@@ -53,6 +59,7 @@ public class RunningActivityData {
     }
     public RunningActivityData(Status currentStatus, Choice currentChoice)
     {
+        this.points = new int[DbContract.timescores];
         this.choice = currentChoice;
         this.status = currentStatus;
         this.currentTask = null;
@@ -69,6 +76,7 @@ public class RunningActivityData {
 
     public RunningActivityData(Status currentStatus, TaskItem currentTask)
     {
+        this.points = new int[DbContract.timescores];
         this.status = currentStatus;
         this.choice = Choice.NoChoice;
         this.currentTask = currentTask;
@@ -78,6 +86,7 @@ public class RunningActivityData {
 
     public RunningActivityData(Status currentStatus, List<ReportData> dataList)
     {
+        this.points = new int[DbContract.timescores];
         this.status = currentStatus;
         this.reportDataList = dataList;
     }
@@ -93,6 +102,15 @@ public class RunningActivityData {
         this.status = currentStatus;
         this.choice = Choice.Yes;
         this.currentTask = null;
+    }
+
+    public void setPoints(int[] points)
+    {
+        for(int i =0; i<DbContract.timescores ; i++)
+        {
+            this.points[i]=points[i];
+            Log.i("point to save",Integer.toString(this.points[i]));
+        }
     }
 
 

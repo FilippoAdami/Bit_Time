@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.application.bit_time.R;
 
-public class CustomizationSettings extends Fragment {
+public class CustomizationSettingsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

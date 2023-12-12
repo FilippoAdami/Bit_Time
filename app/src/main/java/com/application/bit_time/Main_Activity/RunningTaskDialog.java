@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,7 +44,7 @@ public class RunningTaskDialog extends DialogFragment {
                         Toast.makeText(getContext(),"POSITIVE PRESSED",Toast.LENGTH_SHORT).show();
 
                         currentData.setChoice(RunningActivityData.Choice.Yes);
-
+                        //Log.i("choice set",currentData.toString());
                         runningActivityViewModel.selectItem(currentData);
                     }
                 })

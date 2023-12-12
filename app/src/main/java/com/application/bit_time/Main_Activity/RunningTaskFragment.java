@@ -121,6 +121,7 @@ public class RunningTaskFragment extends Fragment {
 
             //Log.i("RTF viewModel",item.getChoice().toString() + " "+item.getStatus().toString());
             if(item.getCurrentTask() != null) {
+                Log.i("item RTF",item.toString());
                 if (item.getStatus().toString().equals("Expired") || item.isFilled()) {
                     RunningActivityData currentRAD = new RunningActivityData(item.getStatus(), item.getChoice(), item.getCurrentTask());
                     currentRAD.setCurrentLastedTime(item.getCurrentLastedTime());

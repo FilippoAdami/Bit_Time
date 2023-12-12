@@ -67,7 +67,7 @@ public class SettingsHomeFragment extends Fragment {
             // Replace the current fragment with a new fragment
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.middle_fragment_container_view, new CustomizationSettings());
+            fragmentTransaction.replace(R.id.middle_fragment_container_view, new CustomizationSettingsFragment());
             fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
             fragmentTransaction.commit();
         });

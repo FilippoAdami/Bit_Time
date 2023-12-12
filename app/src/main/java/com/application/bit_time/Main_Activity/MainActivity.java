@@ -129,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
                 fragmentManager
                         .beginTransaction()
-                        .replace(R.id.fragment_container,new HomeFragment())
+                        //TODO : uncomment the line under this one
+                        //.replace(R.id.fragment_container,new HomeFragment())
                         .replace(R.id.bottomFragmentContainer,new RunningTaskFragment())
                         .commit();
             }
@@ -237,7 +238,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("CURRENT STATUS MAINACT","IDLE");
                 fragmentManager
                         .beginTransaction()
-                        .add(R.id.fragment_container,new HomeFragment())
+                        .add(R.id.bottomFragmentContainer,new HomeFragment())
+                        //.replace(R.id.fragment_container,new Fragment())
                         //.add(R.id.bottomFragmentContainer,new GameFragment())
                         .commit();
             }
@@ -261,8 +263,9 @@ public class MainActivity extends AppCompatActivity {
 
                 fragmentManager
                         .beginTransaction()
-                        .replace(R.id.fragment_container,new HomeFragment())
-                        .replace(R.id.bottomFragmentContainer,new RunningTaskFragment())
+                        .replace(R.id.bottomFragmentContainer,new HomeFragment())
+                        //.replace(R.id.fragment_container,new Fragment())
+                        .replace(R.id.fragment_container,new RunningTaskFragment())
                         .commit();
             }
             else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))

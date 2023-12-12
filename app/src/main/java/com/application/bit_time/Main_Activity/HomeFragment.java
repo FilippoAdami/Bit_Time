@@ -70,6 +70,7 @@ public class HomeFragment extends Fragment {
                 runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Running, RunningActivityData.Choice.NoChoice,currentTask));
             }else if(currentStatus.toString().equals("OnWait"))
             {
+                Log.i("OnWait","inside from "+item.toString());
                 int duration = currentTask.getDurationInt();
 
                 RunningActivityData currentRAD = new RunningActivityData();
@@ -160,6 +161,10 @@ public class HomeFragment extends Fragment {
                         currentRAD.setCurrentLastedTime(lastedTime);
                         runningActivityViewModel.selectItem(currentRAD);
                         lastedTime = 0;
+                    }
+                    else
+                    {
+                        Log.i("HomeFrag","maxTime not reached yet");
                     }
                 }
                 // qui credo vada anche il codice per regolare la colorazione dell'orologio

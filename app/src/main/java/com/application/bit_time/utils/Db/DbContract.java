@@ -10,6 +10,7 @@ public final class DbContract {
         Log.i("DB_INFO","activityContract is on");
     }
 
+    public static int timescores = 6;
     public static class Activities implements BaseColumns
     {
         public static final String TABLE_NAME = "activities";

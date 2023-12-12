@@ -276,7 +276,7 @@ public class SettingsActivity extends AppCompatActivity {
                     newActivityRender();
                 }else if(item.equals("ModifyActivity"))
                 {
-                    Log.i("access","access is here");
+                    //Log.i("access","access is here");
                     //Toast.makeText(getApplicationContext(),"i should modify data",Toast.LENGTH_SHORT);
                     modifyActivity();
                 }else if(item.equals("ModifyTask"))
@@ -363,7 +363,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
-                .addToBackStack("newTask")
+                .addToBackStack("newTaskBackStackLabel")
                 .commit();
     }
     private void newActivityRender()
@@ -374,7 +374,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
-                .addToBackStack("newAct")
+                .addToBackStack("newActBackStackLabel")
                 .commit();
     }
     private void modifyTask()
@@ -421,12 +421,13 @@ public class SettingsActivity extends AppCompatActivity {
                 .addToBackStack("MainEntry")
                 .commit();
     }
+
     public void homeSettingsRedirect(){
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view, new Fragment())
                 .replace(R.id.middle_fragment_container_view, new SettingsHomeFragment())
                 .replace(R.id.bottom_fragment_container_view,new Fragment())
-                .addToBackStack("HomeSettingsRedirect")
+                .addToBackStack("SettingsMenuBackStackLabel")
                 .commit();
     }
 
