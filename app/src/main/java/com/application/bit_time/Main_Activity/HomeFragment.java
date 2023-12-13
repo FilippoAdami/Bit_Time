@@ -61,13 +61,15 @@ public class HomeFragment extends Fragment {
         runningActivityViewModel.getSelectedItem().observe(this,item->
         {
             Log.i("Home fragment","notified by observer");
-            RunningActivityData.Status currentStatus = item.getStatus();
+            //RunningActivityData.Status currentStatus = item.getStatus();
 
-            if(currentStatus.toString().equals("Uploaded"))
+           /* if(currentStatus.toString().equals("Uploaded"))
             {
                 Log.i("HomeFrag in Uploaded",item.getCurrentTask().toString());
                 currentTask= runningActivityViewModel.getSelectedItem().getValue().getCurrentTask();
-                runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Running, RunningActivityData.Choice.NoChoice,currentTask));
+                RunningActivityData currentRAD = new RunningActivityData(RunningActivityData.Status.Running, RunningActivityData.Choice.NoChoice,currentTask);
+                Log.i("currentRADZ",currentRAD.toString());
+                runningActivityViewModel.selectItem(currentRAD);
             }else if(currentStatus.toString().equals("OnWait"))
             {
                 Log.i("OnWait","inside from "+item.toString());
@@ -80,7 +82,7 @@ public class HomeFragment extends Fragment {
 
                 if(lastedTime <= duration/2)
                 {
-                    currentRAD.setStatus(RunningActivityData.Status.OnTime);
+                    currentRAD.setEndStatus(RunningActivityData.EndStatus.OnTime);
                     //Log.i("From OnWait ","to OnTime");
                     //runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.OnTime, RunningActivityData.Choice.Yes,currentTask));
                 }
@@ -88,17 +90,18 @@ public class HomeFragment extends Fragment {
                 {
                     //Log.i("From OnWait","to LittleDelay");
                     //runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.LittleDelay,RunningActivityData.Choice.Yes,currentTask));
-                    currentRAD.setStatus(RunningActivityData.Status.LittleDelay);
+                    currentRAD.setEndStatus(RunningActivityData.EndStatus.LittleDelay);
                 }
                 else
                 {
                     //Log.i("From OnWait","to BigDelay");
                     //runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.BigDelay,RunningActivityData.Choice.Yes,currentTask));
-                    currentRAD.setStatus(RunningActivityData.Status.BigDelay);
+                    currentRAD.setEndStatus(RunningActivityData.EndStatus.BigDelay);
                 }
 
+                Log.i("from HF",currentRAD.toString());
                 lastedTime = 0;
-            }
+            }*/
 
 
         });
@@ -154,19 +157,21 @@ public class HomeFragment extends Fragment {
 
                 Log.i("lastedTime",Integer.toString(lastedTime));
 
-                if(currentTask != null) {
+                /*if(currentTask != null) {
                     if (lastedTime == currentTask.getDurationInt()) {
                         //Log.i("duration", "reached");
-                        RunningActivityData currentRAD =new RunningActivityData(RunningActivityData.Status.Expired, RunningActivityData.Choice.NoChoice,currentTask);
+                        RunningActivityData currentRAD =new RunningActivityData(RunningActivityData.Status.End, RunningActivityData.Choice.NoChoice,currentTask);
                         currentRAD.setCurrentLastedTime(lastedTime);
+                        currentRAD.setEndStatus(RunningActivityData.EndStatus.Expired);
+                        Log.i("currentRADZ",currentRAD.toString());
                         runningActivityViewModel.selectItem(currentRAD);
                         lastedTime = 0;
                     }
                     else
                     {
-                        Log.i("HomeFrag","maxTime not reached yet");
+                        Log.i("currentRADZ","maxTime not reached yet");
                     }
-                }
+                }*/
                 // qui credo vada anche il codice per regolare la colorazione dell'orologio
 
                 String currentTime = getCurrentTime();

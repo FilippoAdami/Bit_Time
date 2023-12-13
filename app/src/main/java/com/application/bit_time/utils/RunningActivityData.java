@@ -24,17 +24,24 @@ public class RunningActivityData {
         Uploaded,
         Running,
         OnWait,
+        End,
+        ActivityDone
+    }
+
+    public enum EndStatus
+    {
+        notEnd,
         OnTime,
         LittleDelay,
         BigDelay,
-        Expired,
-        ActivityDone
+        Expired
     }
 
 
     private int[] points;
     private Choice choice;
     private Status status;
+    private EndStatus endStatus;
     private TaskItem currentTask;
     private int currentLastedTime;
 
@@ -48,6 +55,7 @@ public class RunningActivityData {
         reportDataList = null;
         this.currentLastedTime = 0;
         this.points = new int[DbContract.timescores];
+        endStatus = EndStatus.notEnd;
 
     }
 
@@ -148,6 +156,11 @@ public class RunningActivityData {
         return true;
     }
 
+    public void setEndStatus(EndStatus endStatus)
+    {
+        this.endStatus = endStatus;
+        this.status = Status.End;
+    }
     public void setCurrentTask(TaskItem currentTask)
     {
         this.currentTask = currentTask;

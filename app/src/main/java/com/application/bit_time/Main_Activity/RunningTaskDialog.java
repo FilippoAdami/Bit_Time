@@ -2,7 +2,9 @@ package com.application.bit_time.Main_Activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,8 +35,10 @@ public class RunningTaskDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
 
-        RunningActivityData currentData = this.runningActivityViewModel.getSelectedItem().getValue();
 
+        newRunningActivityData currentData = this.runningActivityViewModel.getSelectedItem().getValue();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        int lastedTime = sharedPreferences.getInt("lastedTime",-1);
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle("title test")
@@ -43,8 +47,7 @@ public class RunningTaskDialog extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(getContext(),"POSITIVE PRESSED",Toast.LENGTH_SHORT).show();
 
-                        currentData.setChoice(RunningActivityData.Choice.Yes);
-                        //Log.i("choice set",currentData.toString());
+                        currentData.setAsTerminated(lastedTime);
                         runningActivityViewModel.selectItem(currentData);
                     }
                 })
@@ -52,10 +55,6 @@ public class RunningTaskDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(getContext(),"NEGATIVE PRESSED",Toast.LENGTH_SHORT).show();
-
-                        currentData.setChoice(RunningActivityData.Choice.No);
-
-                        runningActivityViewModel.selectItem(currentData);
                     }
                 })
                 .create();

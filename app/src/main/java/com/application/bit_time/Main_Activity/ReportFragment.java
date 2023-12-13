@@ -25,11 +25,14 @@ import com.application.bit_time.utils.RunningActivityData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class ReportFragment extends Fragment {
 
-    int score;
+
+    int[] scoreList;
     private List<ReportData> reportDataList ;
     private RecyclerView recyclerView;
     private ReportDataAdapter dataAdapter;
@@ -54,15 +57,20 @@ public class ReportFragment extends Fragment {
 
         runningActivityViewModel = new ViewModelProvider(getActivity()).get(RunningActivityViewModel.class);
         this.reportDataList = new ArrayList<>();
-        this.reportDataList = runningActivityViewModel.getSelectedItem().getValue().getReportDataList();
+        this.reportDataList = runningActivityViewModel.getSelectedItem().getValue().getFullReport();
+        ListIterator<ReportData> iterator = this.reportDataList.listIterator();
+        this.scoreList = new int[this.reportDataList.size()];
 
-        for(ReportData RD : reportDataList)
-        {
-            Log.i("RD",RD.toString());
+        while(iterator.hasNext()) {
+            int pos =iterator.nextIndex();
+            ReportData RD = iterator.next();
+            Log.i("RD", RD.toString());
+            assignPoints(RD,pos);
+
         }
 
         //this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
-        score = 101;
+
     }
 
     @Nullable
@@ -70,14 +78,14 @@ public class ReportFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
 
-        runningActivityViewModel.getSelectedItem().observe(this, item->
+        /*runningActivityViewModel.getSelectedItem().observe(this, item->
         {
             if(item.getStatus().toString().equals("ActivityDone"))
             {
                 Log.i("ReportFragmentListSize",Integer.toString(item.getReportDataList().size()));
                 this.reportDataList.addAll(item.getReportDataList());
             }
-        });
+        });*/
 
         View view = inflater.inflate(R.layout.report_fragment_layout,container,false);
 
@@ -96,17 +104,44 @@ public class ReportFragment extends Fragment {
         recyclerView.setAdapter(dataAdapter);
 
 
-        if(score > 100)
+        /*if(score > 100)
         {
             reportTextView.setText("BRAVO");
         }
         else if(score <100)
         {
             reportTextView.setText("MEH");
-        }
+        }*/
 
 
         return view;
 
     }
+
+
+    public void assignPoints(ReportData RD,int currentPos)
+    {
+        int rightScore = -100;
+        if(RD.endStatus.toString().equals("BigAnticipation"))
+        {
+            rightScore=timescores[0];
+        }
+        else if(RD.endStatus.toString().equals("Anticipation"))
+        {
+            rightScore=timescores[1];
+        }
+        else if(RD.endStatus.toString().equals("OnTime"))
+        {
+            rightScore=timescores[2];
+        }
+        else if(RD.endStatus.toString().equals("Delay"))
+        {
+            rightScore=timescores[3];
+        }
+
+
+        scoreList[currentPos]= rightScore;
+        Log.i("scoreList"+currentPos,Integer.toString(scoreList[currentPos]));
+    }
+
 }

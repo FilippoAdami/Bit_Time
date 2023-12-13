@@ -65,11 +65,13 @@ public class RunningTaskFragment extends Fragment {
 
         runningActivityViewModel = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);
 
+
         runningActivityCursor = dbManager.searchActivityById(activityId) ;
 
-        if(runningActivityCursor.getCount()>0) {
+        if(runningActivityCursor.getCount()>0)
+        {
             runningActivityCursor.moveToFirst();
-            Log.i("talkin' bout",runningActivityCursor.getString(1));
+            //Log.i("talkin' bout",runningActivityCursor.getString(1));
 
         /*for(int j =0 ; j<DbContract.Activities.DIM_MAX;j++)
         {
@@ -88,7 +90,7 @@ public class RunningTaskFragment extends Fragment {
         // TODO : sometimes gives problems, fix this
 
 
-        this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,subtasks.get(0)));
+        //this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,subtasks.get(0)));
         Log.i("Running task fragment","selecting get0");
 
     }
@@ -116,13 +118,13 @@ public class RunningTaskFragment extends Fragment {
             > in caso di fine dei subtasks di gestire questa situazione
             > segnarsi cosa è avvenuto nel task precedente (STATUS/choices/tempi, boh) prima del cambio */
 
-        runningActivityViewModel.getSelectedItem().observe(this.getActivity(),item ->
+        /*runningActivityViewModel.getSelectedItem().observe(this.getActivity(),item ->
         {
 
-            //Log.i("RTF viewModel",item.getChoice().toString() + " "+item.getStatus().toString());
+            Log.i("RTF viewModel",item.getChoice().toString() + " "+item.getStatus().toString());
             if(item.getCurrentTask() != null) {
-                Log.i("item RTF",item.toString());
-                if (item.getStatus().toString().equals("Expired") || item.isFilled()) {
+                Log.i("current RADZ",item.toString());
+                if (item.getStatus().toString().equals("Expired") || item.getStatus().toString().equals("End")) {
                     RunningActivityData currentRAD = new RunningActivityData(item.getStatus(), item.getChoice(), item.getCurrentTask());
                     currentRAD.setCurrentLastedTime(item.getCurrentLastedTime());
                     runningActivityData.add(currentRAD);
@@ -133,7 +135,7 @@ public class RunningTaskFragment extends Fragment {
             }
 
 
-        });
+        });*/
 
 
 
@@ -163,7 +165,7 @@ public class RunningTaskFragment extends Fragment {
             nextTask.setText(subtasks.get(currentSubtask+1).getName());
             TaskItem taskToUpload = subtasks.get(currentSubtask);
             //Log.i("incrementing currPos",taskToUpload.toString());
-            this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,taskToUpload));
+            //this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,taskToUpload));
 
         }
         else if(currentSubtask < subtasks.size()-1)
@@ -173,7 +175,7 @@ public class RunningTaskFragment extends Fragment {
             lowerLinearLayout.setVisibility(View.GONE);
             TaskItem taskToUpload = subtasks.get(currentSubtask);
             //Log.i("incrementing currPos",taskToUpload.toString());
-            this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,taskToUpload));
+            //this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.Uploaded,taskToUpload));
 
         }
         else
@@ -184,11 +186,11 @@ public class RunningTaskFragment extends Fragment {
                 for(RunningActivityData rad : runningActivityData)
                 {
                     Log.i("report",rad.toString());
-                    reportDataList.add(new ReportData(rad.getCurrentTask().getName(),rad.getStatus(),rad.getCurrentLastedTime()));
+                    //reportDataList.add(new ReportData(rad.getCurrentTask().getName(),rad.getStatus(),rad.getCurrentLastedTime()));
                 }
                 printFlag = 1;
                 Log.i("RTF list size",Integer.toString(this.reportDataList.size()));
-                this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.ActivityDone,this.reportDataList));
+                //this.runningActivityViewModel.selectItem(new RunningActivityData(RunningActivityData.Status.ActivityDone,this.reportDataList));
             }
         }
 

@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         runningActivityViewModel.getSelectedItem().observe(this, item->
         {
-            if(item.getStatus().toString().equals("ActivityDone"))
+            /*if(item.getStatus().toString().equals("ActivityDone"))
             {
                 Log.i("Main Activity detection","ActivityDone detected");
                 Log.i("Main act detection",Integer.toString(item.getReportDataList().size()));
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.fragment_container,new ReportFragment())
                         .detach(bottomFragment)
                         .commit();
-            }
+            }*/
         });
 
 

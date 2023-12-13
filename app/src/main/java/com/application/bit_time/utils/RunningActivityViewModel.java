@@ -4,16 +4,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.application.bit_time.Main_Activity.newRunningActivityData;
+
 public class RunningActivityViewModel extends ViewModel {
 
-    private final MutableLiveData<RunningActivityData> selectedItem = new MutableLiveData(new RunningActivityData());
+    private final MutableLiveData<newRunningActivityData> selectedItem = new MutableLiveData(new newRunningActivityData());
 
-    public void selectItem(RunningActivityData item)
+    public void selectItem(newRunningActivityData item)
     {
         selectedItem.setValue(item);
     }
 
-    public LiveData<RunningActivityData> getSelectedItem()
+    public LiveData<newRunningActivityData> getSelectedItem()
     {
         return selectedItem;
     }
