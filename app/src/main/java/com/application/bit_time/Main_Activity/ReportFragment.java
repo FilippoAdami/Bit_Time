@@ -1,5 +1,7 @@
 package com.application.bit_time.Main_Activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -94,6 +96,13 @@ public class ReportFragment extends Fragment {
         Log.i("REPFRAG",Integer.toString(this.reportDataList.size()));
         dataAdapter = new ReportDataAdapter(this,this.reportDataList);
 
+
+
+        SharedPreferences sharedPreferences =  getActivity().getPreferences(Context.MODE_PRIVATE);
+        String name =sharedPreferences.getString("activityName","empty error");
+        //int id = sharedPreferences.getInt("activityToRun",-100);
+        //Log.i("retrieved actId",Integer.toString(id));
+        reportTextView.setText(name + "REPORT");
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 

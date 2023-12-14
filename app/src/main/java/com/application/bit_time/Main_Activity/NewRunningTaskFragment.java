@@ -91,32 +91,42 @@ public class NewRunningTaskFragment extends Fragment {
         {
             if(item.currentTask!=null) {
                 Log.i("NRTF item", item.toString());
-
+                //currentTask = item.currentTask;
                 if (item.status.toString().equals("Running")) {
-                    TextView currentTask = view.findViewById(R.id.currentTaskTextView);
-                    currentTask.setText(item.currentTask.getName());
+                    Log.i("item at running",item.toString());
+                    TextView currentTaskTW = view.findViewById(R.id.currentTaskTextView);
+                    currentTaskTW.setText(item.currentTask.getName());
                     TextView durationTextView = view.findViewById(R.id.clockPlaceholder);
                     durationTextView.setText(item.currentTask.getDuration());
 
-                    TextView nextTask = view.findViewById(R.id.nextTaskTextView);
+                    TextView nextTaskTW = view.findViewById(R.id.nextTaskTextView);
+                    TextView nextDurationTW = view.findViewById(R.id.nextClockPlaceholder);
+                    TextView nextImageTW = view.findViewById(R.id.nextImagePlaceholder);
+
                     if (SLIterator.hasNext()) {
 
-                        nextTask.setText(SLIterator.next().getName());
+                        TaskItem nextTask = SLIterator.next();
+                        nextTaskTW.setText(nextTask.getName());
+                        nextDurationTW.setText(nextTask.getDuration());
                         SLIterator.previous();
                     } else {
-                        nextTask.setVisibility(View.INVISIBLE);
+                        nextTaskTW.setVisibility(View.INVISIBLE);
+                        nextDurationTW.setVisibility(View.INVISIBLE);
+                        nextImageTW.setVisibility(View.INVISIBLE);
                     }
 
 
                 }
-                if (item.status.toString().equals("End")) {
+                else if (item.status.toString().equals("End")) {
+                    Log.i("item at end",item.toString());
 
                     ReportData currentReportData = item.getReportData();
                     Log.i("currRepoData", currentReportData.toString());
                     this.reportDataList.add(currentReportData);
 
                     if (SLIterator.hasNext()) {
-                        RAVM.selectItem(new newRunningActivityData(SLIterator.next()));
+                        currentTask = SLIterator.next();
+                        RAVM.selectItem(new newRunningActivityData(currentTask));
                     } else {
                         for (ReportData RD : this.reportDataList) {
                             Log.i("reportData", RD.toString());

@@ -37,6 +37,7 @@ public class RunningTaskDialog extends DialogFragment {
 
 
         newRunningActivityData currentData = this.runningActivityViewModel.getSelectedItem().getValue();
+
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         int lastedTime = sharedPreferences.getInt("lastedTime",-1);
 
@@ -48,6 +49,7 @@ public class RunningTaskDialog extends DialogFragment {
                         Toast.makeText(getContext(),"POSITIVE PRESSED",Toast.LENGTH_SHORT).show();
 
                         currentData.setAsTerminated(lastedTime);
+                        Log.i("datafromdialog",currentData.toString());
                         runningActivityViewModel.selectItem(currentData);
                     }
                 })

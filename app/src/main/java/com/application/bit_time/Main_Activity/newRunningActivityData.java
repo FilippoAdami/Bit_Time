@@ -46,6 +46,7 @@ public class newRunningActivityData {
     Status status;
     EndStatus endStatus;
     int lastedTime;
+    private String activityName;
     private List<ReportData> fullReport;
 
     public newRunningActivityData()
@@ -55,6 +56,7 @@ public class newRunningActivityData {
         this.endStatus = EndStatus.notSet;
         this.status= Status.notSet;
         this.fullReport = null;
+        this.activityName = null;
     }
 
     public newRunningActivityData(TaskItem currentTask)

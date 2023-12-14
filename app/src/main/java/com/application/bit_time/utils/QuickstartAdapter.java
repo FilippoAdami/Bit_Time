@@ -49,9 +49,11 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
     public void onBindViewHolder(@NonNull QuickstartAdapter.ListItemHolder holder, int position) {
 
         ActivityInfo currentAI = this.activitiesList.get(position);
-        holder.title.setText(currentAI.getName());
-        holder.duration.setText(currentAI.getTime());
         holder.id = currentAI.getIdInt();
+        holder.titleString = currentAI.getName();
+        holder.title.setText(holder.titleString);
+        holder.duration.setText(currentAI.getTime());
+
 
     }
 
@@ -69,6 +71,7 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
         private MainActivityViewModel mainActivityViewModel;
 
         int id;
+        String titleString;
 
 
 
@@ -88,7 +91,9 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
 
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
+                    Log.i("titlename",titleString);
                     editor.putInt("activityToRun",id);
+                    editor.putString("activityName",titleString);
                     editor.apply();
                     mainActivityViewModel.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
 

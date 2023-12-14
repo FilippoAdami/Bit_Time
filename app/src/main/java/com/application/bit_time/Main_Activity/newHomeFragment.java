@@ -72,12 +72,16 @@ public class newHomeFragment extends Fragment {
             if(item.currentTask!= null) {
                 Log.i("item from NHF", item.toString());
                 if (item.status.toString().equals("Uploaded")) {
+                    Log.i("item at uploaded",item.toString());
                     lastedTime = 0;
                     RAVM.selectItem(new newRunningActivityData(item.currentTask, newRunningActivityData.Status.Running));
                 } else if (item.status.toString().equals("Running")) {
+
+                    Log.i("item running NHF",item.toString());
                     currentTask = item.currentTask;
                     lastedTime = 0;
                 } else if (item.status.toString().equals("OnWait")) {
+                    Log.i("item at onwait",item.toString());
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                     sharedPreferences.edit().putInt("lastedTime", lastedTime).commit();
                 }
