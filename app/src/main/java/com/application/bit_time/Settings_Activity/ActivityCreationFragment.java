@@ -269,6 +269,7 @@ public class ActivityCreationFragment extends Fragment {
                     fManager.beginTransaction()
                             .add(R.id.planningFragment,new PlanningFragment(),"currentPlanningFragment")
                             .commit();
+
                 }
                 else
                 {

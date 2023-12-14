@@ -33,7 +33,8 @@ import java.util.ListIterator;
 
 public class ReportFragment extends Fragment {
 
-
+    static final int THRESHOLD = 100;
+    int currentScore;
     int[] scoreList;
     private List<ReportData> reportDataList ;
     private RecyclerView recyclerView;
@@ -63,12 +64,23 @@ public class ReportFragment extends Fragment {
         ListIterator<ReportData> iterator = this.reportDataList.listIterator();
         this.scoreList = new int[this.reportDataList.size()];
 
+        currentScore = 0;
         while(iterator.hasNext()) {
             int pos =iterator.nextIndex();
             ReportData RD = iterator.next();
             Log.i("RD", RD.toString());
-            assignPoints(RD,pos);
+            int currentPoints = assignPoints(RD,pos);
+            currentScore = currentScore + currentPoints;
 
+        }
+
+        if(currentScore>THRESHOLD)
+        {
+            Log.i("result","BRAVO");
+        }
+        else
+        {
+            Log.i("result","MEH");
         }
 
         //this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
@@ -112,23 +124,12 @@ public class ReportFragment extends Fragment {
 
         recyclerView.setAdapter(dataAdapter);
 
-
-        /*if(score > 100)
-        {
-            reportTextView.setText("BRAVO");
-        }
-        else if(score <100)
-        {
-            reportTextView.setText("MEH");
-        }*/
-
-
         return view;
 
     }
 
 
-    public void assignPoints(ReportData RD,int currentPos)
+    public int assignPoints(ReportData RD,int currentPos)
     {
         int rightScore = -100;
         if(RD.endStatus.toString().equals("BigAnticipation"))
@@ -151,6 +152,7 @@ public class ReportFragment extends Fragment {
 
         scoreList[currentPos]= rightScore;
         Log.i("scoreList"+currentPos,Integer.toString(scoreList[currentPos]));
+        return rightScore;
     }
 
 }

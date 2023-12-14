@@ -43,7 +43,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String channelId = "17";
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.happy_dog) // TODO : happy_dog is just a placeholder, change it before the delivery
+                        .setSmallIcon(R.mipmap.logo) // TODO : happy_dog is just a placeholder, change it before the delivery
                         .setContentTitle("test notification")
                         .setContentText(actName + " is ready to start")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
