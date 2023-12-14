@@ -60,7 +60,8 @@ public class ActivityCreationFragment extends Fragment {
 
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
@@ -139,7 +140,6 @@ public class ActivityCreationFragment extends Fragment {
                 sharedSubtasks[pos]=new TaskItem(ti);
                 pos++;
             }
-
 
             //Log.i("contentz",dbViewModel.getSelectedItem().getValue().toString());
 
@@ -269,7 +269,6 @@ public class ActivityCreationFragment extends Fragment {
                     fManager.beginTransaction()
                             .add(R.id.planningFragment,new PlanningFragment(),"currentPlanningFragment")
                             .commit();
-
                 }
                 else
                 {
