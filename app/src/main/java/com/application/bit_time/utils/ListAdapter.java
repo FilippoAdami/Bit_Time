@@ -303,7 +303,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             subitem.setVisibility(expanded ? View.VISIBLE : GONE);
 
             labelName.setText(activityItem.getName());
-            labelTime.setText(activityItem.getTime());
+            labelTime.setText(activityItem.getTimeHelper().toStringShrt());
 
             //Log.i("subtasks from bind",subtaskItems[0].toString());
 
@@ -316,7 +316,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     this.subtaskItems[i]= new TaskItem(ti);
 
 
-                    subtasks[i].setText(ti.getName() + "    " + ti.getDurationInt());
+                    subtasks[i].setText(ti.getName() + "    " + ti.getFormattedDuration());
                     subtasks[i].setVisibility(View.VISIBLE);
                 }
                 else

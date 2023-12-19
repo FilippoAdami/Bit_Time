@@ -38,6 +38,7 @@ import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
+import com.application.bit_time.utils.TimeHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -238,8 +239,9 @@ public class ActivityCreationFragment extends Fragment {
                             totalTime = totalTime + subtasksToAdd[i].getDurationInt();
                         }
                     }
-
-                    totalTimelabel.setText(Integer.toString(totalTime));
+                    TimeHelper th = new TimeHelper(totalTime);
+                    //totalTimelabel.setText(Integer.toString(totalTime));
+                    totalTimelabel.setText(th.toStringShrt());
                 });
 
 

@@ -38,9 +38,8 @@ public class SubtaskAdapter extends RecyclerView.Adapter<SubtaskAdapter.ListItem
     public void onBindViewHolder(@NonNull SubtaskAdapter.ListItemHolder holder, int position) {
 
         TaskItem ti = subtasks.get(position);
-
         holder.subtaskNameLabel.setText(ti.getName());
-        holder.subtaskTimeLabel.setText(ti.getDuration());
+        holder.subtaskTimeLabel.setText(ti.getFormattedDuration());
 
     }
 

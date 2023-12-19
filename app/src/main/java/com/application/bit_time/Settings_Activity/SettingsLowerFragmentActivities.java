@@ -98,12 +98,12 @@ public class SettingsLowerFragmentActivities extends Fragment
         activityList = getActivityData(dbManager.selectAllActivities());
         //Log.i("ACTIVITYLIST",Integer.toString(activityList.size()));
 
-        /*for(ActivityItem ai : activityList)
+        for(ActivityItem ai : activityList)
         {
             for(TaskItem ti : ai.getSubtasks()) {
                 Log.i(ai.toString(),ti.toString());
             }
-        }*/
+        }
 
         listAdapter = new ListAdapter(this,activityList);
         //Log.i("LOWFRAGACT adaptState",listAdapter.toString());
@@ -135,7 +135,7 @@ public class SettingsLowerFragmentActivities extends Fragment
 
 
                 ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), subtasksA);
-                //Log.i("activity item",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
+                Log.i("activity item SLA",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
                 list.add(activityItem);
             } while (c.moveToNext());
         }

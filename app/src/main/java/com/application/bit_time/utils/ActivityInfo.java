@@ -137,4 +137,11 @@ public class ActivityInfo {
     public String toString() {
         return getIDpk()+ "" + getName() + " " + getTime();
     }
+
+    public String getFormattedDuration()
+    {
+        TimeHelper th = new TimeHelper(this.getTimeInt());
+        return th.toStringShrt();
+    }
+
 }

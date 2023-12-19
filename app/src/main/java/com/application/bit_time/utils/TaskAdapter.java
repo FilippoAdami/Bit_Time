@@ -57,8 +57,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
         TaskItem task = taskList.get(position);
         holder.labelName.setText(task.getName());
-        holder.labelDuration.setText(task.getDuration());
+        holder.labelDuration.setText(task.getFormattedDuration());
         holder.id = task.getID();
+        holder.duration = task.getDurationInt();
         Log.i("TaskAdapter idact",Integer.toString(holder.id));
         //immagine boh
 
@@ -88,6 +89,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         int id;
+        int duration;
         TextView labelName;
         TextView labelDuration;
         Button modifyButton;
@@ -122,7 +124,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                     //DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
                     //newData.taskToModify = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
-                    TaskItem thisTaskItem = new TaskItem(id,labelName.getText().toString(), labelDuration.getText().toString());
+                    TaskItem thisTaskItem = new TaskItem(id,labelName.getText().toString(), duration);
 
                     DbViewModelData newData = new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.UNDEFINED,

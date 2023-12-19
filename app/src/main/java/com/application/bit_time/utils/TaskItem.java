@@ -136,25 +136,20 @@ public class TaskItem {
     }
 
 
-    public TimeHelper getFormattedDuration()
+    public String getFormattedDuration()
     {
-        int min = this.Duration%60;
-        int hrs = this.Duration - min;
 
-        return new TimeHelper(hrs,min,0);
+         String res =getTimeHelper().toStringShrt();
+         Log.i("reslog",res);
+         return res;
+
     }
 
-    /*public int getDurationAsSecs()
+    public TimeHelper getTimeHelper()
     {
+        return new TimeHelper(this.Duration);
+    }
 
-        BigDecimal BDDuration = new BigDecimal((double)this.Duration);
-        int scale = BDDuration.scale();
-        Log.i("toSecs",Integer.toString(scale));
-        int toSecs = BDDuration.intValue()*60;
-        Log.i("toSecs",Float.toString(toSecs));
-        return toSecs;
-
-    }*/
 
     public String toStringShrt()
     {

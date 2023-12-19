@@ -98,7 +98,8 @@ public class NewRunningTaskFragment extends Fragment {
                     TextView currentTaskTW = view.findViewById(R.id.currentTaskTextView);
                     currentTaskTW.setText(item.currentTask.getName());
                     TextView durationTextView = view.findViewById(R.id.clockPlaceholder);
-                    durationTextView.setText(item.currentTask.getDuration());
+                    //durationTextView.setText(item.currentTask.getDuration());
+                    durationTextView.setText(item.currentTask.getFormattedDuration());
 
                     TextView nextTaskTW = view.findViewById(R.id.nextTaskTextView);
                     TextView nextDurationTW = view.findViewById(R.id.nextClockPlaceholder);
@@ -108,7 +109,8 @@ public class NewRunningTaskFragment extends Fragment {
 
                         TaskItem nextTask = SLIterator.next();
                         nextTaskTW.setText(nextTask.getName());
-                        nextDurationTW.setText(nextTask.getDuration());
+                        //nextDurationTW.setText(nextTask.getDuration());
+                        nextDurationTW.setText(nextTask.getFormattedDuration());
                         SLIterator.previous();
                     } else {
                         nextTaskTW.setVisibility(View.INVISIBLE);

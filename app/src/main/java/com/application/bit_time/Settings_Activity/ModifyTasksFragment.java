@@ -19,6 +19,7 @@ import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbViewModel;
+import com.application.bit_time.utils.TimeHelper;
 
 public class ModifyTasksFragment extends Fragment {
 
@@ -52,26 +53,31 @@ public class ModifyTasksFragment extends Fragment {
 
 
 
-        int totalTime = taskToModify.getDurationInt();
+        //int totalTime = taskToModify.getDurationInt();
+        TimeHelper th = taskToModify.getTimeHelper();
 
-        int h = (totalTime - totalTime % 60) / 60;
+        /*int h = (totalTime - totalTime % 60) / 60;
         int min = totalTime -h*60;
-        int sec = 0;
+        int sec = 0;*/
 
         editName.setText(taskToModify.getName());
-        edith.setText(Integer.toString(h));
+        /*edith.setText(Integer.toString(h));
         editmin.setText(Integer.toString(min));
-        editsec.setText(Integer.toString(sec));
+        editsec.setText(Integer.toString(sec));*/
+
+        edith.setText(Integer.toString(th.getHrs()));
+        editmin.setText(Integer.toString(th.getMin()));
+        editsec.setText(Integer.toString(th.getSec()));
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                int h = Integer.parseInt(edith.getText().toString());
-                int min = Integer.parseInt(editmin.getText().toString());
-                //int sec = Integer.parseInt(editsec.getText().toString());
+                int h = parseContent(edith.getText().toString());
+                int min = parseContent(editmin.getText().toString());
+                int sec = parseContent(editsec.getText().toString());
 
-                int totalTime = h*60 + min;
+                int totalTime = h*3600 + min*60 + sec;
 
                 TaskItem newItem = new TaskItem(taskToModify.getID(),editName.getText().toString(),totalTime);
 
@@ -96,5 +102,19 @@ public class ModifyTasksFragment extends Fragment {
 
 
         return view;
+    }
+
+
+
+    public int parseContent(String stringToParse)
+    {
+        if(stringToParse.equals(""))
+        {
+            return 0;
+        }
+        else
+        {
+            return Integer.parseInt(stringToParse);
+        }
     }
 }

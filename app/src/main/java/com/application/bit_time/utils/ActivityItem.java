@@ -223,6 +223,18 @@ public void setId(int id)
         }
     }
 
+    public TimeHelper getTimeHelper()
+    {
+        /*int totalTime = 0;
+        for(TaskItem ti : this.subtasks)
+        {
+            totalTime += ti.getDurationInt();
+            Log.i("partialTime",ti.getDuration());
+
+        }*/
+
+        return new TimeHelper(this.activityInfo.getTimeInt());
+    }
 
 
 

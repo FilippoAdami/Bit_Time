@@ -52,7 +52,7 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
         holder.id = currentAI.getIdInt();
         holder.titleString = currentAI.getName();
         holder.title.setText(holder.titleString);
-        holder.duration.setText(currentAI.getTime());
+        holder.duration.setText(currentAI.getFormattedDuration());
 
 
     }
