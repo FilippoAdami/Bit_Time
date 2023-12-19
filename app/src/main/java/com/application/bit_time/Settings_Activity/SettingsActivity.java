@@ -163,7 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
                     dbManager.deleteActivity(currentData.activityItem.getInfo());
                     //TODO : delete also alrms dbinsertion
                     dbManager.deleteAllPlansByActivityId(currentData.activityItem.getInfo().getIdInt());
-                    //alarmScheduler.cancelAll(currentData.activityItem.getPlans());
+                    alarmScheduler.cancelAll(currentData.activityItem.getPlans());
                 }
             }
             else if(currentData.action == DbViewModelData.ACTION_TYPE.MODIFY)
