@@ -71,12 +71,12 @@ public class CreationUpperFragment extends Fragment {
             public void onClick(View view) {
 
                 if(compulsoryFieldsAreFilled()) {
-                    int hours = Integer.parseInt(edtTxtHrs.getText().toString()) * 60;
-                    int minutes = Integer.parseInt(edtTxtMin.getText().toString()) ;
-                    float seconds = Float.parseFloat(edtTxtSec.getText().toString()) / 60 ;
-                    float totalTime = hours + minutes + seconds;
-                    Log.i("totalTime",Float.toString(totalTime));
 
+                    int hours = parseContent(edtTxtHrs.getText().toString()) * 3600;
+                    int minutes = parseContent(edtTxtMin.getText().toString()) * 60;
+                    int seconds = parseContent(edtTxtSec.getText().toString()) ;
+                    int totalTime = hours + minutes + seconds;
+                    Log.i("totalTime",Integer.toString(totalTime));
 
                     TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime);
 
@@ -122,6 +122,13 @@ public class CreationUpperFragment extends Fragment {
         errorDialog.show(getActivity().getSupportFragmentManager(),null);
     }
 
+    private int parseContent(String stringToParse)
+    {
+        if(stringToParse.equals(""))
+            return 0;
+        else
+            return Integer.parseInt(stringToParse);
+    }
 
 
 }

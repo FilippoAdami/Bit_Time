@@ -65,7 +65,7 @@ public class NewRunningTaskFragment extends Fragment {
             {
                 subtasksList.add(ti);
                 Log.i("ti added",ti.toString());
-                ti.getDurationAsSecs();
+
             }
         }
 

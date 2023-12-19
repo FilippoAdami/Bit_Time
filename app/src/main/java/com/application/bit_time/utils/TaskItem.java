@@ -12,7 +12,7 @@ public class TaskItem {
 
     private int IDpk;
     private String Name;
-    private float Duration;
+    private int Duration;
     //immagine boh
 
 
@@ -25,7 +25,8 @@ public class TaskItem {
         //Log.i("TASKITEMCONST",this.toString());
     }
 
-    public TaskItem(int id,String name, float duration)
+
+    public TaskItem(int id,String name, int duration)
     {
         this.IDpk = id;
         this.Name = name;
@@ -38,7 +39,7 @@ public class TaskItem {
         this.Name = name;
 
         try {
-            this.Duration = Float.parseFloat(duration);
+            this.Duration = Integer.parseInt(duration);
         }catch(NumberFormatException ex)
         {
             this.Duration = -1 ;
@@ -52,7 +53,7 @@ public class TaskItem {
     {
         this.IDpk = original.IDpk;
         this.Name = new String(original.getName());
-        this.Duration = original.getDurationFloat();
+        this.Duration = original.getDurationInt();
     }
 
     public String getName()
@@ -62,10 +63,10 @@ public class TaskItem {
 
     public String getDuration()
     {
-        return Float.toString(Duration);
+        return Integer.toString(Duration);
     }
 
-    public float getDurationFloat()
+    public int getDurationInt()
     {
         return Duration;
     }
@@ -77,7 +78,7 @@ public class TaskItem {
 
     public void setDuration(String duration)
     {
-        this.Duration= Float.parseFloat(duration);
+        this.Duration= Integer.parseInt(duration);
     }
 
     public int getID()
@@ -143,7 +144,7 @@ public class TaskItem {
         return new TimeHelper(hrs,min,0);
     }
 
-    public int getDurationAsSecs()
+    /*public int getDurationAsSecs()
     {
 
         BigDecimal BDDuration = new BigDecimal((double)this.Duration);
@@ -153,7 +154,7 @@ public class TaskItem {
         Log.i("toSecs",Float.toString(toSecs));
         return toSecs;
 
-    }
+    }*/
 
     public String toStringShrt()
     {
