@@ -58,6 +58,7 @@ public final class DbContract {
         public static final String COLUMN_NAME_DAY = "day";
         public static final String COLUMN_NAME_HOUR ="hour";
         public static final String COLUMN_NAME_MINUTES = "minutes";
+        public static final String COLUMN_NAME_FREQUENCY = "frequency";
 
     }
 

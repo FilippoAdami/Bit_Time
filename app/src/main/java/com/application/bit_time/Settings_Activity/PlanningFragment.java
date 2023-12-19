@@ -57,8 +57,8 @@ public class PlanningFragment extends Fragment {
             c.moveToFirst();
 
             do {
-                Log.i("PLAN FRAG",""+c.getInt(0) +" "+ c.getInt(1)+" "+c.getInt(2)+" "+c.getInt(3)+" "+c.getInt(4)+" "+c.getInt(5)+" "+c.getInt(6));
-                plansList.add(new PlanningInfo(c.getInt(0),new AlarmInfo(c.getInt(2),c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6))));
+                Log.i("PLAN FRAG",""+c.getInt(0) +" "+ c.getInt(1)+" "+c.getInt(2)+" "+c.getInt(3)+" "+c.getInt(4)+" "+c.getInt(5)+" "+c.getInt(6)+" "+c.getString(7));
+                plansList.add(new PlanningInfo(c.getInt(0),new AlarmInfo(c.getInt(2),c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6), AlarmInfo.Frequency.valueOf(c.getString(7)))));
             }while(c.moveToNext());
         }else
         {

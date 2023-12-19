@@ -60,6 +60,23 @@ public class PlanFragment extends Fragment {
         TextView dateText = view.findViewById(R.id.dateTextView);
         TextView timeText = view.findViewById(R.id.timeTextView);
 
+        Button dailyFreqButton = view.findViewById(R.id.dailyFreqButton);
+        dailyFreqButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dailyFreqButton.isSelected()) {
+                    dailyFreqButton.setSelected(false);
+                    Log.i("dailyFreqBtnState","false");
+                }
+                else
+                {
+                    dailyFreqButton.setSelected(true);
+                    Log.i("dailyFreqBtnState","true");
+
+                }
+            }
+        });
+
 
 
 
@@ -117,12 +134,18 @@ public class PlanFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                if(dailyFreqButton.isSelected())
+                {
+                    alarmToPlan.setFreq(AlarmInfo.Frequency.Daily);
+                    Log.i("freq set","would schedule daily freq");
+                }
 
                 if(alarmToPlan.isDateSet() && alarmToPlan.isTimeSet())
                 {
 
                     plannerViewModel.addPlanToSchedule(new PlanningInfo(alarmToPlan));
                     Log.i("after.addPlanToSchedule",Integer.toString(plannerViewModel.getSelectedItem().getValue().countPlans()));
+                    dailyFreqButton.setSelected(false);
                     /*DbManager dbManager = new DbManager(getContext());
 
                     //alarmToPlan = plannerViewModel.getSelectedItem().getValue();

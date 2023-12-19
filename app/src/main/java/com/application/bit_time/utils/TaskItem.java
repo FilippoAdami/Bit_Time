@@ -5,12 +5,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.math.BigDecimal;
+
 public class TaskItem {
 
 
     private int IDpk;
     private String Name;
-    private int Duration;
+    private float Duration;
     //immagine boh
 
 
@@ -23,18 +25,11 @@ public class TaskItem {
         //Log.i("TASKITEMCONST",this.toString());
     }
 
-    public TaskItem(int id,String name, int duration)
+    public TaskItem(int id,String name, float duration)
     {
         this.IDpk = id;
         this.Name = name;
         this.Duration = duration;
-    }
-
-    public TaskItem(TaskItem original)
-    {
-        this.IDpk = original.IDpk;
-        this.Name = new String(original.getName());
-        this.Duration = original.getDurationInt();
     }
 
     public TaskItem(int id,String name,String duration)
@@ -43,13 +38,21 @@ public class TaskItem {
         this.Name = name;
 
         try {
-            this.Duration = Integer.parseInt(duration);
+            this.Duration = Float.parseFloat(duration);
         }catch(NumberFormatException ex)
         {
             this.Duration = -1 ;
             Log.e("ERROR","exception thrown when converting time for TaskItem obj");
         }
 
+    }
+
+
+    public TaskItem(TaskItem original)
+    {
+        this.IDpk = original.IDpk;
+        this.Name = new String(original.getName());
+        this.Duration = original.getDurationFloat();
     }
 
     public String getName()
@@ -59,10 +62,10 @@ public class TaskItem {
 
     public String getDuration()
     {
-        return Integer.toString(Duration);
+        return Float.toString(Duration);
     }
 
-    public int getDurationInt()
+    public float getDurationFloat()
     {
         return Duration;
     }
@@ -74,7 +77,7 @@ public class TaskItem {
 
     public void setDuration(String duration)
     {
-        this.Duration= Integer.parseInt(duration);
+        this.Duration= Float.parseFloat(duration);
     }
 
     public int getID()
@@ -138,12 +141,19 @@ public class TaskItem {
         int hrs = this.Duration - min;
 
         return new TimeHelper(hrs,min,0);
-
-
-
-
     }
 
+    public int getDurationAsSecs()
+    {
+
+        BigDecimal BDDuration = new BigDecimal((double)this.Duration);
+        int scale = BDDuration.scale();
+        Log.i("toSecs",Integer.toString(scale));
+        int toSecs = BDDuration.intValue()*60;
+        Log.i("toSecs",Float.toString(toSecs));
+        return toSecs;
+
+    }
 
     public String toStringShrt()
     {

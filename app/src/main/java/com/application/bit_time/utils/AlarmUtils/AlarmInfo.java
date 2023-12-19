@@ -17,6 +17,11 @@ public class AlarmInfo {
         SET,
         NOT_SET
     };
+    public enum Frequency
+    {
+        NotSet,
+        Daily
+    }
 
     Field DateField;
     Field TimeField;
@@ -26,6 +31,9 @@ public class AlarmInfo {
   int day;
   int hour;
   int min;
+
+  Frequency freq;
+
 
 
 
@@ -38,7 +46,16 @@ public class AlarmInfo {
        this.day = dayOfMonth;
        this.hour = hourOfDay;
        this.min = minute;
+
    }
+
+
+    public AlarmInfo(int year,int month, int dayOfMonth, int hourOfDay, int minute,Frequency freq)
+    {
+        this(year,month,dayOfMonth,hourOfDay,minute);
+        this.freq = freq;
+
+    }
 
    public AlarmInfo()
    {
@@ -54,6 +71,7 @@ public class AlarmInfo {
        this.day = calendar.get(Calendar.DAY_OF_MONTH);
        this.hour = calendar.get(Calendar.HOUR);
        this.min = calendar.get(Calendar.MINUTE);
+       this.freq = Frequency.NotSet;
 
        Log.i("default constr",toString());
    }
@@ -67,6 +85,7 @@ public class AlarmInfo {
        this.day = info.day;
        this.hour = info.hour;
        this.min = info.min;
+       this.freq = info.freq;
    }
 
     public long getAlarmTimeLong()
@@ -141,7 +160,7 @@ public class AlarmInfo {
 
         String baseStr = "";
 
-        String total = baseStr + printDate()+" "+printTime();
+        String total = baseStr + printDate()+" "+printTime() + " "+ printFreq();
 
         return total;
     }
@@ -160,6 +179,21 @@ public class AlarmInfo {
             return true;
 
         return false;
+    }
+    public void setFreq(Frequency freqToSet)
+    {
+        this.freq = freqToSet;
+    }
+
+    public Frequency getFreq()
+    {
+        return this.freq;
+    }
+
+
+    public String printFreq()
+    {
+        return this.freq.toString();
     }
 
 

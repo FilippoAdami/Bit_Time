@@ -45,7 +45,7 @@ public class newRunningActivityData {
     TaskItem currentTask;
     Status status;
     EndStatus endStatus;
-    int lastedTime;
+    float lastedTime;
     private String activityName;
     private List<ReportData> fullReport;
 
@@ -85,7 +85,7 @@ public class newRunningActivityData {
         return this.fullReport;
     }
 
-    public newRunningActivityData(TaskItem currentTask, int lastedTime)
+    public newRunningActivityData(TaskItem currentTask, float lastedTime)
     {
         this(currentTask);
         this.lastedTime = lastedTime;
@@ -93,9 +93,9 @@ public class newRunningActivityData {
     }
 
 
-    public void setLastedTime(int lastedTime)
+    public void setLastedTime(float lastedTime)
     {
-        int MAXTIME = currentTask.getDurationInt();
+        float MAXTIME = currentTask.getDurationFloat();
 
         this.lastedTime=lastedTime;
 
@@ -127,7 +127,7 @@ public class newRunningActivityData {
     {
         this.status= Status.End;
         this.endStatus = EndStatus.Expired;
-        this.lastedTime= this.currentTask.getDurationInt();
+        this.lastedTime= this.currentTask.getDurationFloat();
     }
     public ReportData getReportData()
     {

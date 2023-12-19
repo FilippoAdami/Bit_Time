@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
+import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.TaskItem;
@@ -89,7 +90,8 @@ public class DbManager {
                         DbContract.ActivitySchedule.COLUMN_NAME_MONTH + " integer," +
                         DbContract.ActivitySchedule.COLUMN_NAME_DAY + " integer," +
                         DbContract.ActivitySchedule.COLUMN_NAME_HOUR +" integer," +
-                        DbContract.ActivitySchedule.COLUMN_NAME_MINUTES + " integer)";
+                        DbContract.ActivitySchedule.COLUMN_NAME_MINUTES + " integer," +
+                        DbContract.ActivitySchedule.COLUMN_NAME_FREQUENCY + " text);";
 
         public DbHelper(Context context)
         {
@@ -194,7 +196,7 @@ public class DbManager {
                 for(PlanningInfo pi : activity.getPlans())
                 {
                     Log.i("pi to be added",pi.toString());
-                    insertActivitySchedule(latestActId,pi.getInfo().getInfoGC());
+                    insertActivitySchedule(latestActId,pi.getInfo().getInfoGC(),pi.getInfo().getFreq());
 
                 }
 
@@ -348,7 +350,7 @@ public class DbManager {
         {
             for(PlanningInfo pi : item.getPlans())
             {
-                insertActivitySchedule(item.getInfo().getIdInt(),pi.getInfo().getInfoGC());
+                insertActivitySchedule(item.getInfo().getIdInt(),pi.getInfo().getInfoGC(),pi.getInfo().getFreq());
             }
         }
     }
@@ -1286,7 +1288,7 @@ public class DbManager {
     }
 
 
-    public void insertActivitySchedule(int activityId,GregorianCalendar infoCalendarFormat)
+    public int insertActivitySchedule(int activityId, GregorianCalendar infoCalendarFormat, AlarmInfo.Frequency frequency)
     {
         String queryStr = "insert into "+DbContract.ActivitySchedule.TABLE_NAME + " ("+
                 DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "," +
@@ -1294,17 +1296,36 @@ public class DbManager {
                 DbContract.ActivitySchedule.COLUMN_NAME_MONTH +","+
                 DbContract.ActivitySchedule.COLUMN_NAME_DAY +","+
                 DbContract.ActivitySchedule.COLUMN_NAME_HOUR +"," +
-                DbContract.ActivitySchedule.COLUMN_NAME_MINUTES +") values ( "+
+                DbContract.ActivitySchedule.COLUMN_NAME_MINUTES + "," +
+                DbContract.ActivitySchedule.COLUMN_NAME_FREQUENCY+") values ( "+
                 activityId +"," +
                 infoCalendarFormat.get(Calendar.YEAR) + "," +
                 infoCalendarFormat.get(Calendar.MONTH) + "," +
                 infoCalendarFormat.get(Calendar.DAY_OF_MONTH) + "," +
                 infoCalendarFormat.get(Calendar.HOUR) + "," +
-                infoCalendarFormat.get(Calendar.MINUTE) +");";
+                infoCalendarFormat.get(Calendar.MINUTE) + ",'" +
+                frequency.toString() +"');";
 
         Log.i("queryStr",queryStr);
         db.execSQL(queryStr);
 
+        queryStr = "select MAX(" + DbContract.ActivitySchedule._ID +") from "+ DbContract.ActivitySchedule.TABLE_NAME ;
+
+        Log.i("queryStr",queryStr);
+        Cursor c = db.rawQuery(queryStr,null);
+        int max = -1;
+        if(c.getCount()>0)
+        {
+            c.moveToFirst();
+            Log.i("match found","max is "+c.getInt(0));
+            max = c.getInt(0);
+        }
+        else
+        {
+            Log.i("match NOT found","i don't know the max yet");
+        }
+
+        return max;
 
     }
 

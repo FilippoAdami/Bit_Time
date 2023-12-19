@@ -37,6 +37,7 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         Intent intent = new Intent(context.getApplicationContext(),AlarmReceiver.class);
         intent.putExtra("actName",actName);
         intent.putExtra("actId",actId);
+        //intent.putExtra("alarmId",info.)
 
         long alarmTime = info.getAlarmTimeLong();
         Log.i("alarmtimeLOG",Long.toString(alarmTime)+" is alarmTimeLNG");
@@ -58,11 +59,26 @@ public class AlarmScheduler implements AlarmSchedulerInterface
 
     @Override
     public void cancel(AlarmInfo info) {
+
         Log.i("AlarmScheduler canc","chose to delete "+info.toString());
         alarmManager.cancel(PendingIntent.getBroadcast(context,info.hashCode(),new Intent(context, AlarmReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
-
+    public void manage(AlarmInfo info)
+    {
+        if(info.freq.toString().equals("NotSet"))
+        {
+            Log.i("freq check","freq is not set so i will call cancel");
+            cancel(info);
+        }
+        else if(info.freq.toString().equals("Daily"))
+        {
+            Log.i("freq check","freq is set to daily so i will reset the alarm");
+            cancel(info);
+            info.min +=10;
+            schedule(info);
+        }
+    }
 
     public AlarmScheduler(Context context)
     {

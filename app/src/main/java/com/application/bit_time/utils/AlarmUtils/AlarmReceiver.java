@@ -33,9 +33,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 
-
-
-
         String actName = intent.getExtras().getString("actName","unnamed activity");
 
         Log.i("ALARMRECEIVER","log from me");
@@ -58,5 +55,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
         notificationManager.notify(17, builder.build());
+        AlarmScheduler alarmScheduler = new AlarmScheduler(context.getApplicationContext());
+        //alarmScheduler.manage();
     }
 }

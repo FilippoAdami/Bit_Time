@@ -72,9 +72,10 @@ public class CreationUpperFragment extends Fragment {
 
                 if(compulsoryFieldsAreFilled()) {
                     int hours = Integer.parseInt(edtTxtHrs.getText().toString()) * 60;
-                    int minutes = Integer.parseInt(edtTxtMin.getText().toString());
-
-                    int totalTime = hours + minutes;
+                    int minutes = Integer.parseInt(edtTxtMin.getText().toString()) ;
+                    float seconds = Float.parseFloat(edtTxtSec.getText().toString()) / 60 ;
+                    float totalTime = hours + minutes + seconds;
+                    Log.i("totalTime",Float.toString(totalTime));
 
 
                     TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime);
