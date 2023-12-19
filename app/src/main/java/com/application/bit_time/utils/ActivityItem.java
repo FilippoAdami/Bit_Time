@@ -180,9 +180,10 @@ public void setId(int id)
     //@Override
     public boolean equals(@Nullable Object obj)
     {
-
+        Log.i("AIEquals","called");
         if(obj instanceof ActivityItem)
         {
+            Log.i("AIEquals","enters");
             ActivityItem objAI = (ActivityItem) obj;
 
             if
@@ -192,10 +193,12 @@ public void setId(int id)
                     this.activityInfo.getTimeInt() == objAI.activityInfo.getTimeInt()
             )
             {
+                Log.i("AIEquals","returns true");
                 return true;
             }
         }
 
+        Log.i("AIEquals","returns false");
         return false;
     }
 

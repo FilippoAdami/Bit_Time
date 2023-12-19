@@ -71,6 +71,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         Log.i("ADAPTonbind",activityItem.toString());
         holder.bind(activityItem);
         holder.id = activityItem.activityInfo.getIdInt();
+        holder.duration=activityItem.getInfo().getTimeInt();
 
 
         holder.itemView.setOnClickListener(v -> {
@@ -121,6 +122,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         int id;
+        int duration;
         TextView labelName;
         TextView labelTime;
         Button modifyButton;
@@ -233,11 +235,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                 public void onClick(View view) {
                     // magari aggiungiamo una richiesta di conferma
 
-
-
-
-
-                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),labelTime.getText().toString());
+                    Log.i("justtest",labelTime.getText().toString());
+                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),duration);
                     ActivityItem item = dbManager.searchActivityItem(itemToDelete);
 
 
@@ -272,7 +271,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     dbViewModel.selectItem(newData);
 
                     List<ActivityItem> newList = new ArrayList<>(list);
-                    newList.remove(item);
+                    Log.i("itemToRemove",item.toString());
+                    boolean res = newList.remove(item);
+                    Log.i("remove res",Boolean.toString(res));
                     if(newList.size()>0)
                         Log.i("newlist",newList.get(0).toString());
                     updateActivityListItems(newList);
