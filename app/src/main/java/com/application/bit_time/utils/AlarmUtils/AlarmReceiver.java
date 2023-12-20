@@ -30,7 +30,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         stackBuilder.addNextIntent(resultIntent);
 
         PendingIntent resultPendingIntent = stackBuilder
-                .getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT |PendingIntent.FLAG_IMMUTABLE);
 
 
         String actName = intent.getExtras().getString("actName","unnamed activity");
@@ -40,7 +40,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String channelId = "17";
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.mipmap.logo) // TODO : happy_dog is just a placeholder, change it before the delivery
+                        .setSmallIcon(R.mipmap.logo)
                         .setContentTitle("test notification")
                         .setContentText(actName + " is ready to start")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -55,6 +55,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
         notificationManager.notify(17, builder.build());
+        //TODO:manage how the alarm behaves aftere the notification is fired
         AlarmScheduler alarmScheduler = new AlarmScheduler(context.getApplicationContext());
         //alarmScheduler.manage();
     }

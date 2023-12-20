@@ -143,6 +143,11 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
 
+                    for(PlanningInfo pi : currentData.activityItem.getPlans())
+                    {
+                        Log.i("pi in SA",pi.toString());
+                    }
+
                     int currentActId = dbManager.insertActivityRecord(currentData.activityItem);
 
                     Log.i("plans list contains ",Integer.toString(currentData.activityItem.getPlans().size()));
@@ -158,13 +163,14 @@ public class SettingsActivity extends AppCompatActivity {
                 {
                     dbManager.deleteTask(currentData.taskItem);
                 }
-                else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
-                {
+                else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY) {
                     dbManager.deleteActivity(currentData.activityItem.getInfo());
                     //TODO : delete also alrms dbinsertion
                     dbManager.deleteAllPlansByActivityId(currentData.activityItem.getInfo().getIdInt());
-                    alarmScheduler.cancelAll(currentData.activityItem.getPlans());
+                    if (currentData.activityItem.getPlans() != null)
+                        alarmScheduler.cancelAll(currentData.activityItem.getPlans());
                 }
+
             }
             else if(currentData.action == DbViewModelData.ACTION_TYPE.MODIFY)
             {

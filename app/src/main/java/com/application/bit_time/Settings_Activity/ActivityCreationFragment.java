@@ -295,12 +295,6 @@ public class ActivityCreationFragment extends Fragment {
                 newData.selector=DbViewModelData.ITEM_TYPE.ACTIVITY;
 
 
-
-
-
-
-
-
                 //dbViewModel.selectItem();
                 if(viewModel.getSelectedItem().getValue().equals("NewActivity")) {
                     ActivityItem activity = new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd);
@@ -362,7 +356,7 @@ public class ActivityCreationFragment extends Fragment {
 
                     for(PlanningInfo pi : newData.activityItem.getPlans())
                     {
-                        Log.i("form setting ACF",pi.toString());
+                        Log.i("from setting ACF",pi.toString());
                     }
                 }
 

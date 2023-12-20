@@ -32,36 +32,44 @@ public class AlarmScheduler implements AlarmSchedulerInterface
     @Override
     public void schedule(AlarmInfo info) {
 
-        Log.i("alarmScheduler","actId "+actId + " actName "+actName);
+        Log.i("alarmInfo sched",info.toString());
+        //Log.i("alarmScheduler","actId "+actId + " actName "+actName);
 
         Intent intent = new Intent(context.getApplicationContext(),AlarmReceiver.class);
+        Log.i("intent cre",intent.toString());
         intent.putExtra("actName",actName);
         intent.putExtra("actId",actId);
         //intent.putExtra("alarmId",info.)
 
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, info.hashCode(), intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        Log.i("pendingIntent cre",pendingIntent.toString());
         long alarmTime = info.getAlarmTimeLong();
         Log.i("alarmtimeLOG",Long.toString(alarmTime)+" is alarmTimeLNG");
 
         //TODO : must put conditions on the API version
         if(ContextCompat.checkSelfPermission(context,SCHEDULE_EXACT_ALARM) == PackageManager.PERMISSION_GRANTED) {
             Log.i("ALARMPERMS","can be set");
-            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, PendingIntent.getBroadcast(context, info.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT));
+            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime,pendingIntent );
 
         }
         else
         {
-            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, PendingIntent.getBroadcast(context, info.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT));
+            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
             Log.i("ALARMPERMS","cannot be set");
         }
-
-
     }
 
     @Override
     public void cancel(AlarmInfo info) {
 
-        Log.i("AlarmScheduler canc","chose to delete "+info.toString());
-        alarmManager.cancel(PendingIntent.getBroadcast(context,info.hashCode(),new Intent(context, AlarmReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT));
+        Log.i("alarmInfo canc",info.toString());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, info.hashCode(),  new Intent(context.getApplicationContext(),AlarmReceiver.class),PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_UPDATE_CURRENT);
+        if(pendingIntent!= null)
+            Log.i("pendingIntent",pendingIntent.toString());
+        else
+            Log.i("pendingIntent","is null");
+        alarmManager.cancel(pendingIntent);
     }
 
     public void manage(AlarmInfo info)

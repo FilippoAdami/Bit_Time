@@ -47,6 +47,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
         holder.id = currentPlan.getPlanId();
         holder.fullDate.setText(currentPlan.getInfo().toString());
         holder.planningInfo = new PlanningInfo(currentPlan);
+        holder.planningInfo.info.setAsSet();
+        Log.i("inspection","picp "+currentPlan);
 
 
     }

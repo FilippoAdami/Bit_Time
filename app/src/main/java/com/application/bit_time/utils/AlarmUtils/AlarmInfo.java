@@ -87,6 +87,11 @@ public class AlarmInfo {
        this.min = info.min;
        this.freq = info.freq;
    }
+   public void setAsSet()
+   {
+       this.DateField = Field.SET;
+       this.TimeField = Field.SET;
+   }
 
     public long getAlarmTimeLong()
    {
@@ -96,7 +101,10 @@ public class AlarmInfo {
 
     public GregorianCalendar getInfoGC()
     {
-        return new GregorianCalendar(this.year,this.month,this.day,this.hour,this.min);
+        GregorianCalendar GC =  new GregorianCalendar(this.year,this.month,this.day,this.hour,this.min);
+        Log.i("GC",GC.toString());
+        return GC;
+
     }
 
     public void setTime(int hours,int minutes)
@@ -156,11 +164,9 @@ public class AlarmInfo {
 
     public String toString()
     {
-
-
         String baseStr = "";
 
-        String total = baseStr + printDate()+" "+printTime() + " "+ printFreq();
+        String total = baseStr + " "+printFlags()+" "+printDate()+" "+printTime() + " "+ printFreq();
 
         return total;
     }

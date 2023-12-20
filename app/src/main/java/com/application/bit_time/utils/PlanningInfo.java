@@ -67,7 +67,7 @@ public class PlanningInfo {
     @Override
     public String toString() {
 
-        return this.info.toString();
+        return this.planned + " "+this.info.toString();
     }
 
     public int getPlanId()

@@ -1302,7 +1302,7 @@ public class DbManager {
                 infoCalendarFormat.get(Calendar.YEAR) + "," +
                 infoCalendarFormat.get(Calendar.MONTH) + "," +
                 infoCalendarFormat.get(Calendar.DAY_OF_MONTH) + "," +
-                infoCalendarFormat.get(Calendar.HOUR) + "," +
+                infoCalendarFormat.get(Calendar.HOUR_OF_DAY) + "," +
                 infoCalendarFormat.get(Calendar.MINUTE) + ",'" +
                 frequency.toString() +"');";
 
