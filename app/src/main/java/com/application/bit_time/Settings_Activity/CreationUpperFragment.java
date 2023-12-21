@@ -119,6 +119,9 @@ public class CreationUpperFragment extends Fragment {
     private void showError()
     {
         ErrorDialog errorDialog = new ErrorDialog();
+        Bundle b = new Bundle();
+        b.putString("ErrorCode","emptyNameTask");
+        errorDialog.setArguments(b);
         errorDialog.show(getActivity().getSupportFragmentManager(),null);
     }
 

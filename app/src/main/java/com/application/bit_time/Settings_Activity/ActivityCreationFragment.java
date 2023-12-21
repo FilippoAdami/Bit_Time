@@ -27,6 +27,7 @@ import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbViewModelData;
+import com.application.bit_time.utils.ErrorDialog;
 import com.application.bit_time.utils.PlannerViewModel;
 import com.application.bit_time.utils.PlannerViewModelData;
 import com.application.bit_time.utils.PlanningInfo;
@@ -288,84 +289,88 @@ public class ActivityCreationFragment extends Fragment {
             //TODO: make this override plannerviewmodel so that next activity will find a new AlarmInfo obj
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),nameLabel.getText().toString(),Toast.LENGTH_SHORT).show();
+                if (nameLabel.length() > 0) {
+                    Toast.makeText(getContext(), nameLabel.getText().toString(), Toast.LENGTH_SHORT).show();
 
 
-                DbViewModelData newData = new DbViewModelData();
-                newData.selector=DbViewModelData.ITEM_TYPE.ACTIVITY;
+                    DbViewModelData newData = new DbViewModelData();
+                    newData.selector = DbViewModelData.ITEM_TYPE.ACTIVITY;
 
 
-                //dbViewModel.selectItem();
-                if(viewModel.getSelectedItem().getValue().equals("NewActivity")) {
-                    ActivityItem activity = new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd);
-                   // dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
-                    newData.action= DbViewModelData.ACTION_TYPE.INSERT;
-                    newData.activityItem= new ActivityItem(activity);
+                    //dbViewModel.selectItem();
+                    if (viewModel.getSelectedItem().getValue().equals("NewActivity")) {
+                        ActivityItem activity = new ActivityItem(nameLabel.getText().toString(), -1, subtasksToAdd);
+                        // dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
+                        newData.action = DbViewModelData.ACTION_TYPE.INSERT;
+                        newData.activityItem = new ActivityItem(activity);
 
 
-                    Log.i("activity is",activity.toString());
-                    for(TaskItem ti : activity.getSubtasks())
-                    {
-                        Log.i("actsubtaksks are",ti.toString());
-                    }
-                }
-                else if(viewModel.getSelectedItem().getValue().equals("ModifyActivity"))
-                {
+                        Log.i("activity is", activity.toString());
+                        for (TaskItem ti : activity.getSubtasks()) {
+                            Log.i("actsubtaksks are", ti.toString());
+                        }
+                    } else if (viewModel.getSelectedItem().getValue().equals("ModifyActivity")) {
 
-                    int[] subtasksId = new int[DbContract.Activities.DIM_MAX];
+                        int[] subtasksId = new int[DbContract.Activities.DIM_MAX];
 
-                    int duration = 0;
-                    for(int i = 0;i< DbContract.Activities.DIM_MAX; i++)
-                    {
-                        subtasksId[i] = subtasksToAdd[i].getID();
-                        duration += subtasksToAdd[i].getDurationInt();
-                        Log.i("changessub",Integer.toString(subtasksId[i]));
-                    }
+                        int duration = 0;
+                        for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
+                            subtasksId[i] = subtasksToAdd[i].getID();
+                            duration += subtasksToAdd[i].getDurationInt();
+                            Log.i("changessub", Integer.toString(subtasksId[i]));
+                        }
 
-                    String currentName;
+                        String currentName;
 
-                    if(nameLabel.length()>0) {
-                        currentName = nameLabel.getText().toString();
-                    }
-                    else
-                    {
-                        currentName = activityName;
-                    }
+                        if (nameLabel.length() > 0) {
+                            currentName = nameLabel.getText().toString();
+                        } else {
+                            currentName = activityName;
+                        }
 
-                    Log.i("ACT_CRE_FRA",Integer.toString(idToBeModified));
-                    Log.i("ACT_CRE_FRA",activityName);
-                    Log.i("ACT_CRE_FRA",Integer.toString(duration));
+                        Log.i("ACT_CRE_FRA", Integer.toString(idToBeModified));
+                        Log.i("ACT_CRE_FRA", activityName);
+                        Log.i("ACT_CRE_FRA", Integer.toString(duration));
 
-                    newData.action= DbViewModelData.ACTION_TYPE.MODIFY;
-                    newData.activityItem=new ActivityItem(Integer.toString(idToBeModified),currentName,Integer.toString(duration),subtasksId);
+                        newData.action = DbViewModelData.ACTION_TYPE.MODIFY;
+                        newData.activityItem = new ActivityItem(Integer.toString(idToBeModified), currentName, Integer.toString(duration), subtasksId);
 
                     /*dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.MODIFY,
                             DbViewModelData.ITEM_TYPE.ACTIVITY,
                             new ActivityItem(Integer.toString(idToBeModified),activityName,Integer.toString(duration),subtasksId)));*/
-                    //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
-                    //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
-                }
-
-
-                PlannerViewModelData plannerViewModelData = plannerViewModel.getSelectedItem().getValue();
-
-                if(plannerViewModelData != null) {
-                    newData.activityItem.setPlans(plannerViewModelData.getPlans());
-                    Log.i("ActCreFrag","plans set");
-
-                    for(PlanningInfo pi : newData.activityItem.getPlans())
-                    {
-                        Log.i("from setting ACF",pi.toString());
+                        //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
+                        //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                     }
+
+
+                    PlannerViewModelData plannerViewModelData = plannerViewModel.getSelectedItem().getValue();
+
+                    if (plannerViewModelData != null) {
+                        newData.activityItem.setPlans(plannerViewModelData.getPlans());
+                        Log.i("ActCreFrag", "plans set");
+
+                        for (PlanningInfo pi : newData.activityItem.getPlans()) {
+                            Log.i("from setting ACF", pi.toString());
+                        }
+                    }
+
+                    dbViewModel.selectItem(newData);
+                    plannerViewModel.selectItem(new PlannerViewModelData());
+
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
+
+                }  else
+                {
+                    Bundle b = new Bundle();
+                    b.putString("ErrorCode","emptyNameAct");
+                    ErrorDialog errorDialog = new ErrorDialog();
+                    errorDialog.setArguments(b);
+                    errorDialog.show(getChildFragmentManager(),null);
+
                 }
-
-                dbViewModel.selectItem(newData);
-                plannerViewModel.selectItem(new PlannerViewModelData());
-
-                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
-
             }
+
         });
 
 

@@ -42,7 +42,13 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         //intent.putExtra("alarmId",info.)
 
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, info.hashCode(), intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 1, intent,PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Log.i("pendint info",context.getApplicationContext().toString());
+        Log.i("pendint info",Integer.toString(info.hashCode()));
+        Log.i("pendint info",intent.toString());
+
+
         Log.i("pendingIntent cre",pendingIntent.toString());
         long alarmTime = info.getAlarmTimeLong();
         Log.i("alarmtimeLOG",Long.toString(alarmTime)+" is alarmTimeLNG");
@@ -63,13 +69,27 @@ public class AlarmScheduler implements AlarmSchedulerInterface
     @Override
     public void cancel(AlarmInfo info) {
 
+
+        Intent intent = new Intent(context.getApplicationContext(),AlarmReceiver.class);
+
+
         Log.i("alarmInfo canc",info.toString());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, info.hashCode(),  new Intent(context.getApplicationContext(),AlarmReceiver.class),PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_UPDATE_CURRENT);
-        if(pendingIntent!= null)
-            Log.i("pendingIntent",pendingIntent.toString());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 1,  intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE );
+        if(pendingIntent!= null) {
+            Log.i("pendingIntent", pendingIntent.toString());
+            alarmManager.cancel(pendingIntent);
+        }
         else
             Log.i("pendingIntent","is null");
-        alarmManager.cancel(pendingIntent);
+
+        Log.i("pendint info",context.getApplicationContext().toString());
+        Log.i("pendint info",Integer.toString(info.hashCode()));
+        Log.i("pendint info",intent.toString());
+
+
+
+
+
     }
 
     public void manage(AlarmInfo info)

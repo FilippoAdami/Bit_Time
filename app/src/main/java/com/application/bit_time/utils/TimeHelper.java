@@ -50,7 +50,24 @@ public class TimeHelper {
 
     public String toStringShrt()
     {
-        return this.hrs+" h "+this.min+" m "+this.sec+" s";
+        String base = "";
+
+        if(this.hrs>0)
+        {
+            base = base.concat(this.hrs+" h ");
+        }
+
+        if(this.min>0)
+        {
+            base = base.concat(this.min + " m ");
+        }
+
+        if(this.sec>0)
+        {
+            base = base.concat(this.sec +" s");
+        }
+        //return this.hrs+" h "+this.min+" m "+this.sec+" s";
+        return base;
     }
 
     public int getHrs()
