@@ -7,20 +7,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.app.AlarmManager;
+
 import android.os.Bundle;
 import android.util.Log;
 
-import com.application.bit_time.Main_Activity.GameFragment;
 import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
-import com.application.bit_time.utils.AlarmUtils.TimePlanDialog;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbContract;
-import com.application.bit_time.utils.PlaceholderFragment;
 import com.application.bit_time.utils.PlannerViewModel;
-import com.application.bit_time.utils.PlannerViewModelData;
 import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
@@ -28,8 +24,6 @@ import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.TaskItem;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import java.util.Objects;
 

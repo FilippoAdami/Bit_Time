@@ -1,6 +1,6 @@
 package com.application.bit_time.Settings_Activity;
 
-import android.database.Cursor;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,29 +8,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.TimePicker;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.R;
 import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
-import com.application.bit_time.utils.AlarmUtils.AlarmScheduler;
 import com.application.bit_time.utils.AlarmUtils.DatePlanDialog;
 import com.application.bit_time.utils.AlarmUtils.TimePlanDialog;
 import com.application.bit_time.utils.CustomViewModel;
-import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.ErrorDialog;
 import com.application.bit_time.utils.PlannerViewModel;
 import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.SubtasksViewModel;
-import com.application.bit_time.utils.SubtasksViewModelData;
-
-import java.util.Date;
 
 public class PlanFragment extends Fragment {
 
