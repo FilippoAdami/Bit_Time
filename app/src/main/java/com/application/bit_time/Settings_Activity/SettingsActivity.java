@@ -165,7 +165,6 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY) {
                     dbManager.deleteActivity(currentData.activityItem.getInfo());
-                    //TODO : delete also alrms dbinsertion
                     dbManager.deleteAllPlansByActivityId(currentData.activityItem.getInfo().getIdInt());
                     if (currentData.activityItem.getPlans() != null)
                         alarmScheduler.cancelAll(currentData.activityItem.getPlans());

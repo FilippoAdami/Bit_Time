@@ -24,6 +24,7 @@ import com.application.bit_time.utils.AlarmUtils.DatePlanDialog;
 import com.application.bit_time.utils.AlarmUtils.TimePlanDialog;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.Db.DbManager;
+import com.application.bit_time.utils.ErrorDialog;
 import com.application.bit_time.utils.PlannerViewModel;
 import com.application.bit_time.utils.PlanningInfo;
 import com.application.bit_time.utils.SubtasksViewModel;
@@ -164,7 +165,12 @@ public class PlanFragment extends Fragment {
                 else
                 {
                     Log.i("PLANFRAGMENT alert","Some alarmInfo fields are still empty");
-                    // TODO : dialog to the user that shows to fill all the fields -- subclass di error dialog ?
+
+                    Bundle b = new Bundle();
+                    b.putString("ErrorCode","PlanningNotFilled");
+                    ErrorDialog errorDialog = new ErrorDialog();
+                    errorDialog.setArguments(b);
+                    errorDialog.show(getChildFragmentManager(),null);
                 }
 
 

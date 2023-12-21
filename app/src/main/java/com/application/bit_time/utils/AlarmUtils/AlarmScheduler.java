@@ -42,7 +42,7 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         //intent.putExtra("alarmId",info.)
 
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 1, intent,PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), info.hashCode(), intent,PendingIntent.FLAG_IMMUTABLE );
 
         Log.i("pendint info",context.getApplicationContext().toString());
         Log.i("pendint info",Integer.toString(info.hashCode()));
@@ -74,7 +74,7 @@ public class AlarmScheduler implements AlarmSchedulerInterface
 
 
         Log.i("alarmInfo canc",info.toString());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 1,  intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE );
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), info.hashCode(),  intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE );
         if(pendingIntent!= null) {
             Log.i("pendingIntent", pendingIntent.toString());
             alarmManager.cancel(pendingIntent);

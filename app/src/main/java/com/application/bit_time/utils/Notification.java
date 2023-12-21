@@ -22,7 +22,7 @@ public class Notification {
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.happy_dog) // TODO : happy_dog is just a placeholder, change it before the delivery
+                        .setSmallIcon(R.mipmap.logo)
                         .setContentTitle("Attività imminente programmata")
                         .setContentText("Activity "+"nome"+" sta per partire")
                         .setPriority(NotificationCompat.PRIORITY_HIGH);

@@ -41,6 +41,11 @@ public class ErrorDialog extends DialogFragment {
             title="No name for task";
             message = "The task needs a name to be saved";
         }
+        else if(error.equals("PlanningNotFilled"))
+        {
+            title = "Planning not filled";
+            message = "when planning you need to set both a date and a time";
+        }
 
 
         builder.setTitle(title);

@@ -367,7 +367,7 @@ public class DbManager {
 
     public void deleteAllPlansByActivityId(int activityId)
     {
-        //TODO : here we'll also remove plans from alarm manager
+
 
         String str= "delete from "+DbContract.ActivitySchedule.TABLE_NAME +
                 " where " + DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "=" + activityId;
