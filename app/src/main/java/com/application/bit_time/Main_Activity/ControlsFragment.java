@@ -1,6 +1,5 @@
 package com.application.bit_time.Main_Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.R;
-import com.application.bit_time.Settings_Activity.SettingsActivity;
 import com.application.bit_time.utils.MainActivityStatusData;
 import com.application.bit_time.utils.MainActivityViewModel;
 

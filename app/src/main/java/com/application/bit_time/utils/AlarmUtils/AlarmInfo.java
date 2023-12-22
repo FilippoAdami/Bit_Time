@@ -202,5 +202,9 @@ public class AlarmInfo {
         return this.freq.toString();
     }
 
+    public int getCode()
+    {
+        return this.year+this.month+this.day+this.hour+this.min;
+    }
 
 }

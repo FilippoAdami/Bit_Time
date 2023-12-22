@@ -136,8 +136,10 @@ public class DbManager {
 
     }
 
-    public int insertActivityRecord(ActivityItem activity)
+    public List<Integer> insertActivityRecord(ActivityItem activity)
     {
+        List<Integer> ids = new ArrayList<>();
+
         TaskItem[] tasks = activity.getSubtasks();
 
         int totalTime = 0;
@@ -184,7 +186,7 @@ public class DbManager {
         if (c.getCount() > 0) {
             c.moveToFirst();
             latestActId = c.getInt(0);
-
+            ids.add(latestActId);
         }
 
         if(activity.isPlanned()) {
@@ -194,7 +196,7 @@ public class DbManager {
                 for(PlanningInfo pi : activity.getPlans())
                 {
                     Log.i("pi to be added",pi.toString());
-                    insertActivitySchedule(latestActId,pi.getInfo().getInfoGC(),pi.getInfo().getFreq());
+                    ids.add(insertActivitySchedule(latestActId,pi.getInfo().getInfoGC(),pi.getInfo().getFreq()));
 
                 }
 
@@ -202,8 +204,11 @@ public class DbManager {
 
         }
 
+        //return latestActId;
+        return ids;
 
-        return latestActId;
+
+
 
 
     }
@@ -1354,6 +1359,18 @@ public class DbManager {
         return c;
     }
 
+    public AlarmInfo selectScheduleById(int scheduleId)
+    {
+        String queryStr = "select * from "+DbContract.ActivitySchedule.TABLE_NAME +
+            " where " + DbContract.ActivitySchedule._ID +"="+scheduleId;
+
+        Cursor c = db.rawQuery(queryStr,null);
+
+        c.moveToFirst();
+        AlarmInfo res = new AlarmInfo(c.getInt(2),c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6), AlarmInfo.Frequency.valueOf(c.getString(7)));
+        Log.i("res",res.toString());
+        return res;
+    }
 
     public GregorianCalendar getActivityScheduleInfoGC(int activityId,int scheduleId) {
         GregorianCalendar calendar;
@@ -1380,6 +1397,7 @@ public class DbManager {
 
         return calendar;
     }
+
 
 
 

@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -12,6 +13,7 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.application.bit_time.Main_Activity.MainActivity;
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbManager;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -21,7 +23,14 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        int actId = intent.getExtras().getInt("actId");
+        DbManager dbManager = new DbManager(context.getApplicationContext());
+
+        Bundle extrasBundle= intent.getExtras();
+        int actId = extrasBundle.getInt("actId");
+        int alarmId = extrasBundle.getInt("alarmId");
+
+
+        Log.i("alarmId received",Integer.toString(alarmId));
 
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.putExtra("actId",actId);
@@ -57,6 +66,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         notificationManager.notify(17, builder.build());
         //TODO:manage how the alarm behaves aftere the notification is fired
         AlarmScheduler alarmScheduler = new AlarmScheduler(context.getApplicationContext());
-        //alarmScheduler.manage();
+        alarmScheduler.manage(dbManager.selectScheduleById(alarmId),alarmId);
     }
 }

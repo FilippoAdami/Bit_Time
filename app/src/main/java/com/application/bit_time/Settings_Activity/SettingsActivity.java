@@ -25,6 +25,8 @@ import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.TaskItem;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -137,17 +139,30 @@ public class SettingsActivity extends AppCompatActivity {
                 else if(currentData.selector == DbViewModelData.ITEM_TYPE.ACTIVITY)
                 {
 
+                    // we need to save both currentActId and the ids of the plannings saved so we
+                    // will return a list where :
+                    // THE FIRST ELEMENT contains th e"currentActId"
+                    // while the following elements are the db's ids of the plans inserted, in the order of insertion
+
+
                     for(PlanningInfo pi : currentData.activityItem.getPlans())
                     {
                         Log.i("pi in SA",pi.toString());
                     }
 
-                    int currentActId = dbManager.insertActivityRecord(currentData.activityItem);
+                    //int currentActId = dbManager.insertActivityRecord(currentData.activityItem);
+
+                    List<Integer> ids  = new ArrayList<>(dbManager.insertActivityRecord(currentData.activityItem));
+
+                    for(Integer id : ids)
+                    {
+                        Log.i("ids",id.toString());
+                    }
 
                     Log.i("plans list contains ",Integer.toString(currentData.activityItem.getPlans().size()));
 
 
-                    alarmScheduler.scheduleAll(currentData.activityItem.getPlans(),currentData.activityItem.getName(),currentActId);
+                    alarmScheduler.scheduleAll(currentData.activityItem.getPlans(),currentData.activityItem.getName(),ids);
 
                 }
             }
@@ -201,7 +216,10 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.i("SettAct here plans","is not null");
                     }
 
-                    alarmScheduler.scheduleAll(currentActivity.getPlans(), currentActivity.getName(),currentActivity.getInfo().getIdInt());
+                    List<Integer> ids = new ArrayList<>();
+                    ids.add(currentActivity.getInfo().getIdInt());
+
+                    alarmScheduler.scheduleAll(currentActivity.getPlans(), currentActivity.getName(),ids);
                 }
             }
 
