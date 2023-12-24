@@ -33,7 +33,7 @@ public class AlarmScheduler implements AlarmSchedulerInterface
     public void schedule(AlarmInfo info) {
 
         Log.i("alarmInfo sched",info.toString());
-        //Log.i("alarmScheduler","actId "+actId + " actName "+actName);
+        Log.i("alarmScheduler","actId "+actId + " actName "+actName + " alarmId "+alarmId);
 
         Intent intent = new Intent(context.getApplicationContext(),AlarmReceiver.class);
         Log.i("intent cre",intent.toString());
@@ -57,7 +57,7 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         //TODO : must put conditions on the API version
         if(ContextCompat.checkSelfPermission(context,SCHEDULE_EXACT_ALARM) == PackageManager.PERMISSION_GRANTED) {
             Log.i("ALARMPERMS","can be set");
-            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime,pendingIntent );
+            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime,pendingIntent);
 
         }
         else
@@ -127,9 +127,11 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         int i=0;
         this.actName = actName;
         this.actId = ids.get(i);
+        Log.i("id here as",Integer.toString(this.actId));
 
         for(PlanningInfo pi : plans)
         {
+            Log.i("pi here",pi.toString());
             i++;
             alarmId = ids.get(i);
             schedule(pi.getInfo());

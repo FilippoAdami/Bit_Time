@@ -202,6 +202,17 @@ public void setId(int id)
         return false;
     }
 
+    public List<Integer> getPlansIds()
+    {
+        List<Integer> ids = new ArrayList<>();
+
+        for(PlanningInfo pi : this.plans)
+        {
+            ids.add(pi.getPlanId());
+        }
+
+        return ids;
+    }
     public List<PlanningInfo> getPlans()
     {
         return this.plans;

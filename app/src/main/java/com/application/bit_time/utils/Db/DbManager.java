@@ -136,10 +136,8 @@ public class DbManager {
 
     }
 
-    public List<Integer> insertActivityRecord(ActivityItem activity)
+    public int insertActivityRecord(ActivityItem activity)
     {
-        List<Integer> ids = new ArrayList<>();
-
         TaskItem[] tasks = activity.getSubtasks();
 
         int totalTime = 0;
@@ -186,31 +184,40 @@ public class DbManager {
         if (c.getCount() > 0) {
             c.moveToFirst();
             latestActId = c.getInt(0);
-            ids.add(latestActId);
         }
 
+
+
+        //return latestActId;
+        return latestActId;
+
+
+
+
+
+    }
+
+
+    public List<Integer> insertMultipleActivitySchedule(ActivityItem activity)
+    {
+        List<Integer> ids = new ArrayList<>();
+        int latestActId = activity.getInfo().getIdInt();
         if(activity.isPlanned()) {
 
 
 
-                for(PlanningInfo pi : activity.getPlans())
-                {
-                    Log.i("pi to be added",pi.toString());
-                    ids.add(insertActivitySchedule(latestActId,pi.getInfo().getInfoGC(),pi.getInfo().getFreq()));
+            for(PlanningInfo pi : activity.getPlans())
+            {
+                Log.i("pi to be added",pi.toString());
+                ids.add(insertActivitySchedule(latestActId,pi.getInfo().getInfoGC(),pi.getInfo().getFreq()));
 
-                }
+            }
 
 
 
         }
 
-        //return latestActId;
         return ids;
-
-
-
-
-
     }
 
     public Cursor selectLatestActivity()
@@ -345,17 +352,25 @@ public class DbManager {
 
     }
 
-    public void modifyActivity(ActivityItem item,int[] subtasksId)
+    public List<Integer> modifyActivity(ActivityItem item,int[] subtasksId)
     {
         modifyActivity(item.getInfo(),subtasksId);
+        List<Integer> ids = new ArrayList<>();
+        ids.add(item.getInfo().getIdInt());
+        ids.addAll(insertMultipleActivitySchedule(item));
 
-        if(item.isPlanned())
+        /*if(item.isPlanned())
         {
             for(PlanningInfo pi : item.getPlans())
             {
+                Log.i("modActLog",pi.toString());
                 insertActivitySchedule(item.getInfo().getIdInt(),pi.getInfo().getInfoGC(),pi.getInfo().getFreq());
             }
-        }
+        }*/
+
+
+        return ids;
+
     }
 
     public void deletePlanById(int planId)
@@ -1366,9 +1381,10 @@ public class DbManager {
 
         Cursor c = db.rawQuery(queryStr,null);
 
-        c.moveToFirst();
-        AlarmInfo res = new AlarmInfo(c.getInt(2),c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6), AlarmInfo.Frequency.valueOf(c.getString(7)));
-        Log.i("res",res.toString());
+            c.moveToFirst();
+            AlarmInfo res = new AlarmInfo(c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), AlarmInfo.Frequency.valueOf(c.getString(7)));
+            Log.i("res", res.toString());
+
         return res;
     }
 

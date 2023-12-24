@@ -317,7 +317,7 @@ public class ActivityCreationFragment extends Fragment {
                         for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
                             subtasksId[i] = subtasksToAdd[i].getID();
                             duration += subtasksToAdd[i].getDurationInt();
-                            Log.i("changessub", Integer.toString(subtasksId[i]));
+                            //Log.i("changessub", Integer.toString(subtasksId[i]));
                         }
 
                         String currentName;
@@ -351,7 +351,7 @@ public class ActivityCreationFragment extends Fragment {
                         Log.i("ActCreFrag", "plans set");
 
                         for (PlanningInfo pi : newData.activityItem.getPlans()) {
-                            Log.i("from setting ACF", pi.toString());
+                            Log.i("ActCreFrag", pi.toString());
                         }
                     }
 

@@ -143,7 +143,8 @@ public class SettingsActivity extends AppCompatActivity {
                     // will return a list where :
                     // THE FIRST ELEMENT contains th e"currentActId"
                     // while the following elements are the db's ids of the plans inserted, in the order of insertion
-
+                    List<Integer> ids = new ArrayList<>();
+                    ids.add(dbManager.insertActivityRecord(currentData.activityItem));
 
                     for(PlanningInfo pi : currentData.activityItem.getPlans())
                     {
@@ -152,7 +153,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     //int currentActId = dbManager.insertActivityRecord(currentData.activityItem);
 
-                    List<Integer> ids  = new ArrayList<>(dbManager.insertActivityRecord(currentData.activityItem));
+                    ids.addAll(dbManager.insertMultipleActivitySchedule(currentData.activityItem));
 
                     for(Integer id : ids)
                     {
@@ -160,7 +161,6 @@ public class SettingsActivity extends AppCompatActivity {
                     }
 
                     Log.i("plans list contains ",Integer.toString(currentData.activityItem.getPlans().size()));
-
 
                     alarmScheduler.scheduleAll(currentData.activityItem.getPlans(),currentData.activityItem.getName(),ids);
 
@@ -190,12 +190,14 @@ public class SettingsActivity extends AppCompatActivity {
                 {
                     Log.i("currentData plans check","plans inside are "+ currentData.activityItem.getPlans().size());
                     ActivityItem currentActivity = new ActivityItem(currentData.activityItem);
-                    //Log.i("currentActivity",currentActivity.toString());
+                    Log.i("currentActivity",currentActivity.toString());
 
-                    /*for(TaskItem ti : currentActivity.getSubtasks())
+
+                    for(TaskItem ti : currentActivity.getSubtasks())
                     {
                         Log.i("currAct",ti.getIdStr());
-                    }*/
+                    }
+
                     int[] subtasksIds= new int[DbContract.Activities.DIM_MAX];
 
                     int i=0;
@@ -205,7 +207,7 @@ public class SettingsActivity extends AppCompatActivity {
                         i++;
                     }
 
-                    dbManager.modifyActivity(currentData.activityItem,subtasksIds);
+                    List<Integer> ids = new ArrayList<>(dbManager.modifyActivity(currentData.activityItem,subtasksIds));
 
                     if(currentActivity.getPlans()== null)
                     {
@@ -213,14 +215,25 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        Log.i("id here",Integer.toString(currentActivity.getInfo().getIdInt()));
                         Log.i("SettAct here plans","is not null");
+                        //List<Integer> ids = new ArrayList<>();
+                        //ids.add(currentActivity.getInfo().getIdInt());
+                        //ids.addAll(dbManager.insertMultipleActivitySchedule(currentActivity));
+                        Log.i("ids","size "+ids.size());
+
+                        for(Integer id : ids)
+                        {
+                            Log.i("idprint",Integer.toString(id));
+                        }
+
+
+
+                        alarmScheduler.scheduleAll(currentActivity.getPlans(), currentActivity.getName(),ids);
+
                     }
 
-                    List<Integer> ids = new ArrayList<>();
-                    ids.add(currentActivity.getInfo().getIdInt());
-
-                    alarmScheduler.scheduleAll(currentActivity.getPlans(), currentActivity.getName(),ids);
-                }
+                    }
             }
 
 
