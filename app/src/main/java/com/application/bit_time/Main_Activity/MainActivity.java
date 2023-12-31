@@ -26,8 +26,13 @@ import com.application.bit_time.utils.RunningActivityViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    // TODO done : at modifyact time insert the previous name and then if pressed delete it in order to insert a new one
+    // TODO: at modactivity time if modified the subtasks doesn0t refresh into the recview
     //TODO: link score inside report fragment with those selected inside settings
+    //TODO : if all the subtasks of an activity are deleted then ask if the user wants to delete also the activity or select at least one from the existing ones
+    //TODO : show clearly if daily has been pressed and is set or not
+    //TODO: decide clearly about how to display the plan and planning section
+    // TODO : consider isPlanned field of activities schema
     private MainActivityViewModel statusVM;
     private RunningActivityViewModel runningActivityViewModel;
     private DbManager dbManager;

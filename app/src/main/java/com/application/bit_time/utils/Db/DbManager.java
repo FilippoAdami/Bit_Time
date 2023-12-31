@@ -491,29 +491,35 @@ public class DbManager {
                     }
                 }
 
-                currSubtasks[DbContract.Activities.DIM_MAX - 1] = -1;
+                if(pos>0) {
+                    currSubtasks[DbContract.Activities.DIM_MAX - 1] = -1;
 
 
-                String updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
-                        + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration) + ",";
+                    String updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
+                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration) + ",";
 
-                for (int i = 1; i <= DbContract.Activities.DIM_MAX; i++) {
-                    //String partial = " " + DbContract.Activities.TABLE_NAME + ".task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
-                    String partial = " " + "task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
+                    for (int i = 1; i <= DbContract.Activities.DIM_MAX; i++) {
+                        //String partial = " " + DbContract.Activities.TABLE_NAME + ".task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
+                        String partial = " " + "task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
 
 
-                    if (i < DbContract.Activities.DIM_MAX)
-                        partial = partial.concat(",");
-                    //Log.i("partial",partial);
-                    updateQuery = updateQuery.concat(partial);
+                        if (i < DbContract.Activities.DIM_MAX)
+                            partial = partial.concat(",");
+                        //Log.i("partial",partial);
+                        updateQuery = updateQuery.concat(partial);
 
+                    }
+
+                    updateQuery = updateQuery.concat(" where " + DbContract.Activities._ID + "=" + Integer.toString(scanCursor.getInt(0)));
+
+                    Log.i("updateQuery2", updateQuery);
+                    db.execSQL(updateQuery);
                 }
-
-                updateQuery = updateQuery.concat(" where " + DbContract.Activities._ID + "=" + Integer.toString(scanCursor.getInt(0)));
-
-                Log.i("updateQuery2", updateQuery);
-                db.execSQL(updateQuery);
-            } while (scanCursor.moveToNext());
+                else
+                {
+                    Log.i("dimtestlog","left subtasks are zero");
+                }
+            }while (scanCursor.moveToNext());
         }
 
 

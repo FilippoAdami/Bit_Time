@@ -54,6 +54,7 @@ public class ActivityCreationFragment extends Fragment {
     private SubtasksViewModel subtasksViewModel;
     private DbViewModel dbViewModel;
     private TaskItem[] subtasksToAdd;
+    private String currentName;
 
     private int idToBeModified;
     private String activityName;
@@ -217,6 +218,30 @@ public class ActivityCreationFragment extends Fragment {
         if(currentState.equals("ModifyActivity"))
         {
             nameLabel.setHint(activityName);
+            nameLabel.setText(activityName);
+            nameLabel.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if(hasFocus)
+                    {
+                        nameLabel.setText("");
+                        Log.i("focus log","b is true");
+                    }
+                    else
+                    {
+                        currentName = nameLabel.getText().toString();
+                        if(currentName.equals(""))
+                        {
+                            nameLabel.setText(activityName);
+                        }
+                        else
+                        {
+                            nameLabel.setText(currentName);
+                        }
+                        Log.i("focus log","b is false");
+                    }
+                }
+            });
             //TODO: set stuff if the activity to be modified was previously planned
         }
 
