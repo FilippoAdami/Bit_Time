@@ -145,7 +145,8 @@ public class SettingsActivity extends AppCompatActivity {
                     // while the following elements are the db's ids of the plans inserted, in the order of insertion
                     List<Integer> ids = new ArrayList<>();
                     ids.add(dbManager.insertActivityRecord(currentData.activityItem));
-
+                    currentData.activityItem.setId(ids.get(0));
+                    Log.i("currentData test",currentData.activityItem.toString());
                     for(PlanningInfo pi : currentData.activityItem.getPlans())
                     {
                         Log.i("pi in SA",pi.toString());
