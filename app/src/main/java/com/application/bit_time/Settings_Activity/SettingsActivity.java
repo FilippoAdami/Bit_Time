@@ -1,6 +1,11 @@
 package com.application.bit_time.Settings_Activity;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -43,9 +48,16 @@ public class SettingsActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     AlarmScheduler alarmScheduler;
     PlannerViewModel plannerViewModel;
+    //ActivityResultLauncher arl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
+
+
         dbManager = new DbManager(getApplicationContext());
         sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         //check if there is a shared preference for the theme

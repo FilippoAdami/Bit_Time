@@ -1387,6 +1387,7 @@ public class DbManager {
 
         Cursor c = db.rawQuery(queryStr,null);
 
+
             c.moveToFirst();
             AlarmInfo res = new AlarmInfo(c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), AlarmInfo.Frequency.valueOf(c.getString(7)));
             Log.i("res", res.toString());

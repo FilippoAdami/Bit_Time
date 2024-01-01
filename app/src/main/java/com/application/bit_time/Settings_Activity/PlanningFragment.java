@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -81,7 +83,9 @@ public class PlanningFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.s_planning_fragment_layout,container,false);
 
-        Button addPlanBtn = view.findViewById(R.id.addPlanButton);
+
+        Switch planningSwitch = view.findViewById(R.id.planSwitch);
+        //Button addPlanBtn = view.findViewById(R.id.addPlanButton);
         TextView statusTextView = view.findViewById(R.id.statusTextView);
         recyclerView = view.findViewById(R.id.plansRecyclerView);
         planAdapter = new PlanAdapter(this,plansList);
@@ -100,7 +104,28 @@ public class PlanningFragment extends Fragment {
             statusTextView.setVisibility(View.INVISIBLE);
         }
 
-        addPlanBtn.setOnClickListener(new View.OnClickListener() {
+        planningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked)
+                {
+                    getChildFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.planFragmentContainer,new PlanFragment(),"currentPlanFragment")
+                            .commit();
+                }
+                else
+                {
+                    Log.i("PLANNINGFRAG ALERT","here i should remove the planfragment");
+                    getChildFragmentManager()
+                            .beginTransaction()
+                            .remove(getChildFragmentManager().findFragmentByTag("currentPlanFragment"))
+                            .commit();
+                }
+            }
+        });
+
+        /*addPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager childFManager = getChildFragmentManager();
@@ -109,7 +134,7 @@ public class PlanningFragment extends Fragment {
                         .commit();
 
                }
-        });
+        });*/
 
 
         return view;

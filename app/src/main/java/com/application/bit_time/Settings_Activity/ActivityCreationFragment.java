@@ -204,14 +204,19 @@ public class ActivityCreationFragment extends Fragment {
 
         FragmentManager fManager= getChildFragmentManager();
 
-        View view = inflater.inflate(R.layout.activity_creation_fragment_layout,container,false);
+        //View view = inflater.inflate(R.layout.activity_creation_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.new_activity_creation_fragment_layout,container,false);
 
         TextView nameLabel = view.findViewById(R.id.editNameLabel);
         TextView totalTimelabel = view.findViewById(R.id.totalTimeLabel);
         Button addButton = view.findViewById(R.id.addTaskButton);
         Button endButton = view.findViewById(R.id.fineButton);
 
-        Switch planningSwitch = view.findViewById(R.id.planSwitch);
+        fManager.beginTransaction()
+                .add(R.id.planningFragment,new PlanningFragment(),"currentPlanningFragment")
+                .commit();
+
+        //Switch planningSwitch = view.findViewById(R.id.planSwitch);
 
 
 
@@ -288,7 +293,7 @@ public class ActivityCreationFragment extends Fragment {
 
 
 
-        planningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*planningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked)
@@ -307,7 +312,7 @@ public class ActivityCreationFragment extends Fragment {
                             .commit();
                 }
             }
-        });
+        });*/
 
         endButton.setOnClickListener(new View.OnClickListener() {
 
