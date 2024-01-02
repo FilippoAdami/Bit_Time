@@ -1,10 +1,18 @@
 package com.application.bit_time.utils;
 
+import static java.security.AccessController.getContext;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,12 +37,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     private List<TaskItem> taskList;
     private SettingsLowerFragmentTasks settingsLowerFragmentTasks;
 
+    private Context context;
 
 
-    public TaskAdapter(SettingsLowerFragmentTasks settingsLowerFragmentTasks, List<TaskItem> taskList)
+    public TaskAdapter(SettingsLowerFragmentTasks settingsLowerFragmentTasks, List<TaskItem> taskList, Context context)
     {
         this.settingsLowerFragmentTasks = settingsLowerFragmentTasks;
         this.taskList = taskList;
+        this.context = context;
         dbViewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(DbViewModel.class);
         viewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(CustomViewModel.class);
         //this.subtasksViewModel = new ViewModelProvider(settingsLowerFragmentTasks.requireActivity()).get(SubtasksViewModel.class);
@@ -46,7 +56,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     public TaskAdapter.ListItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_item_fragment_layout,parent,false);
+                .inflate(R.layout.new_task_item_fragment_layout,parent,false);
 
         return new ListItemHolder(itemView);
 
@@ -61,6 +71,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         holder.id = task.getID();
         holder.duration = task.getDurationInt();
         Log.i("TaskAdapter idact",Integer.toString(holder.id));
+
+        Bitmap originalDeleteBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.delete);
+        Bitmap bitmapDeleteIcon = Bitmap.createScaledBitmap(originalDeleteBitmap,100,100,true);
+        holder.deleteButton.setImageBitmap(bitmapDeleteIcon);
+
+        Bitmap originalEditBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.edit);
+        Bitmap bitmapEditIcon = Bitmap.createScaledBitmap(originalEditBitmap,100,100,true);
+        holder.modifyButton.setImageBitmap(bitmapEditIcon);
         //immagine boh
 
 
@@ -92,11 +110,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         int duration;
         TextView labelName;
         TextView labelDuration;
-        Button modifyButton;
-        Button deleteButton;
+        ImageButton modifyButton;
+        //Button modifyButton;
+        ImageButton deleteButton;
+        //Button deleteButton;
         //immagine boh;
 
-
+        LinearLayout holderLayout;
 
 
 
@@ -107,9 +127,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
             super(view);
             labelName = view.findViewById(R.id.labelTask);
             labelDuration = view.findViewById(R.id.labelDuration);
-            modifyButton = view.findViewById(R.id.modifyTaskButton);
-            deleteButton = view.findViewById(R.id.deleteTaskButton);
-
+            modifyButton = view.findViewById(R.id.modifyTaskIButton);
+            deleteButton = view.findViewById(R.id.deleteTaskIButton);
+            holderLayout = view.findViewById(R.id.itemHolderLayout);
 
 
             //immagine boh

@@ -51,7 +51,7 @@ public class SettingsLowerFragmentTasks extends Fragment
 
         recyclerView = view.findViewById(R.id.recyclerView);
 
-        taskAdapter= new TaskAdapter(this,taskList);
+        taskAdapter= new TaskAdapter(this,taskList,this.getContext());
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
