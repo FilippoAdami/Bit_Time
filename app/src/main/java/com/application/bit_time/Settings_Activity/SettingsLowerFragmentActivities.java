@@ -64,7 +64,7 @@ public class SettingsLowerFragmentActivities extends Fragment
         dbViewModel.getSelectedItem().observe(this, item ->
         {
 
-            Log.i("FROM SETTINGS LOWER FRAGMENT","first step of observer");
+            Log.i("from SETTLOWERFRAG","first step of observer");
 
             //dbManager.deleteActivity(item.activityItem.getInfo());
 
@@ -105,7 +105,7 @@ public class SettingsLowerFragmentActivities extends Fragment
             }
         }
 
-        listAdapter = new ListAdapter(this,activityList);
+        listAdapter = new ListAdapter(this,activityList,this.getContext());
         //Log.i("LOWFRAGACT adaptState",listAdapter.toString());
 
         recyclerView.setAdapter(listAdapter);

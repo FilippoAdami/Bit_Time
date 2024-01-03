@@ -2,12 +2,15 @@ package com.application.bit_time.utils;
 
 import static android.view.View.GONE;
 
+import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,13 +40,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     private SettingsLowerFragmentActivities settingsLowerFragmentActivities;
     private CustomViewModel viewModel;
 
+    private Context context;
 
 
-    public ListAdapter(SettingsLowerFragmentActivities settingsLowerFragmentActivities, List<ActivityItem> list)
+    public ListAdapter(SettingsLowerFragmentActivities settingsLowerFragmentActivities, List<ActivityItem> list, Context context)
     {
 
         this.settingsLowerFragmentActivities = settingsLowerFragmentActivities;
         this.list = list;
+        this.context = context;
         //Log.i("SUBTASKS[0] content",list.get(0).subtasks[0].toString());
         dbViewModel = new ViewModelProvider(settingsLowerFragmentActivities.requireActivity()).get(DbViewModel.class);
         viewModel = new ViewModelProvider(settingsLowerFragmentActivities.requireActivity()).get(CustomViewModel.class);
@@ -73,6 +78,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         holder.id = activityItem.activityInfo.getIdInt();
         holder.duration=activityItem.getInfo().getTimeInt();
 
+        Bitmap originalEditBitmap = BitmapFactory.decodeResource(this.context.getResources(),R.drawable.edit);
+        Bitmap editBitmap = Bitmap.createScaledBitmap(originalEditBitmap,100,100,true);
+        holder.modifyButton.setImageBitmap(editBitmap);
+
+        Bitmap originalDeleteBitmap = BitmapFactory.decodeResource(this.context.getResources(), R.drawable.delete);
+        Bitmap deleteBitmap = Bitmap.createScaledBitmap(originalDeleteBitmap,100,100,true);
+        holder.deleteButton.setImageBitmap(deleteBitmap);
 
         holder.itemView.setOnClickListener(v -> {
             boolean expanded = activityItem.isExpanded();
@@ -125,8 +137,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         int duration;
         TextView labelName;
         TextView labelTime;
-        Button modifyButton;
-        Button deleteButton;
+        ImageButton modifyButton;
+        ImageButton deleteButton;
         LinearLayout subitem;
         TextView[] subtasks;
 

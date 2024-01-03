@@ -10,35 +10,38 @@
 
         <TextView
             android:id="@+id/labelName"
+            style="@style/RegularText"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="2"
-            android:text="@string/name"
-            style="@style/RegularText"/>
+            android:gravity="center"
+            android:text="@string/name" />
 
         <TextView
             android:id="@+id/labelTime"
+            style="@style/RegularText"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/timeB" />
+
+        <ImageButton
+            android:id="@+id/modifyButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/timeB"
-            style="@style/RegularText"/>
+            android:background="@drawable/action_button"
+            android:src="@android:drawable/btn_star" />
 
-        <Button
-            android:id="@+id/modifyButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="@string/modify"
-            style="@style/ActionButton"/>
-
-        <Button
+        <ImageButton
             android:id="@+id/deleteButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="@string/delete"
-            style="@style/RedActionButton"/>
+            android:layout_weight="1"
+            android:background="@drawable/red_action_button"
+            android:src="@android:drawable/btn_star" />
+
     </LinearLayout>
 
     <LinearLayout
