@@ -131,7 +131,7 @@ public class newRunningActivityData {
     }
     public ReportData getReportData()
     {
-        ReportData reportData = new ReportData(currentTask.getName(),this.endStatus,this.lastedTime);
+        ReportData reportData = new ReportData(currentTask.getID(),currentTask.getName(),this.endStatus,this.lastedTime);
 
         return reportData;
     }

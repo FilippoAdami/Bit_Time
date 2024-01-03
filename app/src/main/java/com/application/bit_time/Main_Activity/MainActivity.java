@@ -119,20 +119,37 @@ public class MainActivity extends AppCompatActivity {
             else if( currentStatus.equals(MainActivityStatusData.Status.QuickstartMenu))
             {
                 Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
+
                 fragmentManager
                         .beginTransaction()
-                        .add(R.id.fragment_container,new QuickstartMenuFragment())
-                        .add(R.id.bottomFragmentContainer,new Fragment())
+                        .replace(R.id.fragment_container,new QuickstartMenuFragment())
+                        .replace(R.id.bottomFragmentContainer,new Fragment())
                         .commit();
+
+                if(item.isBack())
+                {
+                    if(item.getBackField().equals(MainActivityStatusData.BackField.Save))
+                    {
+                        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                        int actID = sharedPreferences.getInt("activityToRun",-100);
+                        Log.i("Backfield choice","Save actId "+actID);
+                        dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());
+                    }
+                    else
+                    {
+                        Log.i("Backfield choice","Ignore");
+                    }
+                }
+
+
             }
             else if( currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
             {
                 Log.i("CURRENT STATUS MAINACT","RUNNING ACTIVITY");
 
-                SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
-                int value = sharedPrefs.getInt("activityToRun",-1);
-
-                Log.i("activityToRun",Integer.toString(value));
+                //SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+                //int value = sharedPrefs.getInt("activityToRun",-1);
+                //Log.i("activityToRun",Integer.toString(value));
 
                 fragmentManager
                         .beginTransaction()

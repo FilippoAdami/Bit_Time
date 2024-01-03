@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,13 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
+import com.application.bit_time.utils.MainActivityStatusData;
+import com.application.bit_time.utils.MainActivityViewModel;
 import com.application.bit_time.utils.ReportData;
 import com.application.bit_time.utils.ReportDataAdapter;
-import com.application.bit_time.utils.RunningActivityData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -41,11 +42,25 @@ public class ReportFragment extends Fragment {
     private ReportDataAdapter dataAdapter;
     private RunningActivityViewModel runningActivityViewModel;
     private int[] timescores;
+
+    private static evaluation evaluation;
+
+    private MainActivityViewModel mainActivityViewModel;
+    private MainActivityStatusData statusData;
+
+
+    enum evaluation {
+        StillToImprove,
+        GoodJob,
+        WellDone,
+        Great
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        timescores = new int[DbContract.timescores];
 
+        timescores = new int[DbContract.timescores];
 
         DbManager dbManager = new DbManager(this.getContext());
         timescores = dbManager.getGamificationPoints();
@@ -64,7 +79,7 @@ public class ReportFragment extends Fragment {
         ListIterator<ReportData> iterator = this.reportDataList.listIterator();
         this.scoreList = new int[this.reportDataList.size()];
 
-        currentScore = 0;
+        currentScore = 0;   // in the end will hold the total score of the activity
         while(iterator.hasNext()) {
             int pos =iterator.nextIndex();
             ReportData RD = iterator.next();
@@ -74,13 +89,19 @@ public class ReportFragment extends Fragment {
 
         }
 
+
+
+
         if(currentScore>THRESHOLD)
         {
             Log.i("result","BRAVO");
+            evaluation = ReportFragment.evaluation.GoodJob;
+
         }
         else
         {
             Log.i("result","MEH");
+            evaluation = ReportFragment.evaluation.StillToImprove;
         }
 
         //this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
@@ -103,7 +124,10 @@ public class ReportFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.report_fragment_layout,container,false);
 
-        TextView reportTextView = view.findViewById(R.id.reportTextView);
+        TextView reportTitle = view.findViewById(R.id.reportTitle);
+        TextView evaluationField = view.findViewById(R.id.evaluationField);
+
+        evaluationField.setText(evaluation.toString());
         recyclerView = view.findViewById(R.id.recyclerView);
         Log.i("REPFRAG",Integer.toString(this.reportDataList.size()));
         dataAdapter = new ReportDataAdapter(this,this.reportDataList);
@@ -114,7 +138,7 @@ public class ReportFragment extends Fragment {
         String name =sharedPreferences.getString("activityName","empty error");
         //int id = sharedPreferences.getInt("activityToRun",-100);
         //Log.i("retrieved actId",Integer.toString(id));
-        reportTextView.setText(name + "REPORT");
+        reportTitle.setText(name + " REPORT");
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
@@ -124,6 +148,38 @@ public class ReportFragment extends Fragment {
 
         recyclerView.setAdapter(dataAdapter);
 
+
+
+        Button saveButton = view.findViewById(R.id.collectButton);
+        Button discardButton = view.findViewById(R.id.discardButton);
+
+        mainActivityViewModel= new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);
+        statusData=mainActivityViewModel.getSelectedItem().getValue();
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("PRESSED","Save");
+                statusData.setBackField(MainActivityStatusData.BackField.Save);
+
+                commonButtonRoutine();
+
+
+            }
+        });
+
+        discardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("PRESSED","ignore");
+                statusData.setBackField(MainActivityStatusData.BackField.Ignore);
+
+                commonButtonRoutine();
+
+            }
+        });
+
+
+
         return view;
 
     }
@@ -131,7 +187,7 @@ public class ReportFragment extends Fragment {
 
     public int assignPoints(ReportData RD,int currentPos)
     {
-        int rightScore = -100;
+        int rightScore = -100;      //default value, it means nothing, just initializes the variable
         if(RD.endStatus.toString().equals("BigAnticipation"))
         {
             rightScore=timescores[0];
@@ -153,6 +209,15 @@ public class ReportFragment extends Fragment {
         scoreList[currentPos]= rightScore;
         Log.i("scoreList"+currentPos,Integer.toString(scoreList[currentPos]));
         return rightScore;
+    }
+
+
+
+    private void commonButtonRoutine()
+    {
+        statusData.setCurrentStatus(MainActivityStatusData.Status.QuickstartMenu);
+        mainActivityViewModel.selectItem(statusData);
+        Log.i("toString",statusData.toString());
     }
 
 }

@@ -12,6 +12,7 @@ import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 import com.application.bit_time.utils.PlanningInfo;
+import com.application.bit_time.utils.ReportData;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
@@ -53,6 +54,12 @@ public class DbManager {
                 DbContract.Userdata.COLUMN_NAME_PASSWORD + " text," +
                 DbContract.Userdata.COLUMN_NAME_PIN + " integer," +
                 DbContract.Userdata.COLUMN_NAME_SALT + " text)";
+
+        public static final String SQL_CREATE_REPORT_DATA_TABLE = "create table "+ DbContract.reportData.TABLE_NAME + " (" +
+                DbContract.reportData._ID + " integer primary key autoincrement," +
+                DbContract.reportData.COLUMN_NAME_METADATA + " text,"+
+                DbContract.reportData.COLUMN_NAME_ENDSTATUS + " text,"+
+                DbContract.reportData.COLUMN_NAME_LASTED_TIME + " integer)";
 
         private static final String SQL_CREATE_GAMIFICATION_SETTINGS_TABLE = "create table " + DbContract.gamificationSettings.TABLE_NAME +" (" +
                 DbContract.gamificationSettings._ID + " integer primary key autoincrement," +
@@ -104,6 +111,7 @@ public class DbManager {
             db.execSQL(SQL_CREATE_APP_SETTINGS_TABLE);
             db.execSQL(SQL_CREATE_GAMIFICATION_SETTINGS_TABLE);
             db.execSQL(SQL_CREATE_ACTIVITY_SCHEDULE_TABLE);
+            db.execSQL(SQL_CREATE_REPORT_DATA_TABLE);
         }
 
         @Override
@@ -1421,6 +1429,30 @@ public class DbManager {
         return calendar;
     }
 
+
+    public void insertFullReportData(int actId,List<ReportData> reportDataList)
+    {
+        int pos=0;
+        for(ReportData RD : reportDataList)
+        {
+            insertReportData(RD,pos,actId);
+            pos++;
+        }
+
+
+    }
+    public void insertReportData(ReportData RD,int pos,int actId)
+    {
+        String metadataStr = ""+actId+"-"+pos+RD.getMetadata();
+
+        String queryStr = "insert into "+DbContract.reportData.TABLE_NAME +" (" +
+                DbContract.reportData.COLUMN_NAME_METADATA + ","+
+                DbContract.reportData.COLUMN_NAME_ENDSTATUS + "," +
+                DbContract.reportData.COLUMN_NAME_LASTED_TIME + ") values ( "+
+                metadataStr + ","+RD.endStatus.toString() + "," + RD.lastedTime + ")";
+
+        Log.i("queryStr",queryStr);
+    }
 
 
 
