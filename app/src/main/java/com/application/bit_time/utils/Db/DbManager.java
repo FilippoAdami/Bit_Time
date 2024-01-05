@@ -1430,6 +1430,27 @@ public class DbManager {
     }
 
 
+    public void selectAndPrintAllReportData()
+    {
+        String queryStr = "select * from "+DbContract.reportData.TABLE_NAME;
+
+        Cursor c = db.rawQuery(queryStr,null);
+
+
+        if(c.getCount()>0)
+        {
+            c.moveToFirst();
+
+            do{
+                Log.i("RDretr",c.getString(0) +","+ c.getString(1) +","+c.getString(2)+","+c.getInt(3));
+            }while(c.moveToNext());
+
+        }else
+            Log.i("RDretr","currently emptyRD");
+
+        //return c;
+    }
+
     public void insertFullReportData(int actId,List<ReportData> reportDataList)
     {
         int pos=0;
@@ -1448,10 +1469,12 @@ public class DbManager {
         String queryStr = "insert into "+DbContract.reportData.TABLE_NAME +" (" +
                 DbContract.reportData.COLUMN_NAME_METADATA + ","+
                 DbContract.reportData.COLUMN_NAME_ENDSTATUS + "," +
-                DbContract.reportData.COLUMN_NAME_LASTED_TIME + ") values ( "+
-                metadataStr + ","+RD.endStatus.toString() + "," + RD.lastedTime + ")";
+                DbContract.reportData.COLUMN_NAME_LASTED_TIME + ") values ('"+
+                metadataStr + "','"+RD.endStatus.toString() + "'," + RD.lastedTime + ")";
 
         Log.i("queryStr",queryStr);
+
+        db.execSQL(queryStr);
     }
 
 

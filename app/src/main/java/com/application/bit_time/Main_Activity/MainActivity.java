@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
             }
             else if( currentStatus.equals(MainActivityStatusData.Status.QuickstartMenu))
             {
+                dbManager.selectAndPrintAllReportData();
+
                 Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
 
                 fragmentManager

@@ -93,7 +93,7 @@ public final class DbContract {
     {
         public static final String TABLE_NAME = "reportData";
         public static final String COLUMN_NAME_METADATA = "metadata";
-        public static final String COLUMN_NAME_LASTED_TIME = "lasted time";
+        public static final String COLUMN_NAME_LASTED_TIME = "lastedtime";
         public static final String COLUMN_NAME_ENDSTATUS = "endstatus";
     }
 }
