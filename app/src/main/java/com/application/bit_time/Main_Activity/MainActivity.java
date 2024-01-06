@@ -1,24 +1,28 @@
 package com.application.bit_time.Main_Activity;
 
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.AlarmManager;
-import android.content.BroadcastReceiver;
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.application.bit_time.R;
-import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.MainActivityStatusData;
 import com.application.bit_time.utils.MainActivityViewModel;
@@ -40,7 +44,63 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         dbManager = new DbManager(getApplicationContext());
+
+        Log.i("buildVersion",Integer.toString(Build.VERSION.SDK_INT));
+
+        //CHECKS FOR PERMISSIONS
+        if(Build.VERSION.SDK_INT > 22)
+        {
+            if(ContextCompat.checkSelfPermission(this,"POST_NOTIFICATIONS") == PERMISSION_GRANTED)
+            {
+                Log.i("permission","granted");
+               }
+            else
+            {
+                Log.i("permission","denied");
+                if(ActivityCompat.shouldShowRequestPermissionRationale(this,"POST_NOTIFICATION"))
+                {
+                    Log.i("Should","true");
+                }
+                else
+                {
+                    Log.i("should","false");
+                }
+
+                ActivityResultLauncher<String> requestPermissionLauncher =registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->
+                {
+                    if(isGranted)
+                    {
+                        Log.i("isGranted","yesss");
+                    }
+                    else
+                    {
+                        Log.i("isGranted","false");
+                    }
+                });
+
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+
+            }
+        }
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
+        {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("17","notChannel",importance);
+            this.getApplicationContext().getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        }
+
+
+
+
+
+
+
+
+
+
         sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         //check if there is a shared preference for the theme
         String currentTheme = sharedPreferences.getString("CurrentTheme", null);
@@ -118,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if( currentStatus.equals(MainActivityStatusData.Status.QuickstartMenu))
             {
-                dbManager.selectAndPrintAllReportData();
+                //dbManager.selectAndPrintAllReportData();
 
                 Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
 

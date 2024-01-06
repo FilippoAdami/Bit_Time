@@ -3,6 +3,9 @@ package com.application.bit_time.utils.AlarmUtils;
 
 
 import static android.Manifest.permission.SCHEDULE_EXACT_ALARM;
+import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
+
+import static androidx.core.content.ContextCompat.startActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -10,6 +13,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
@@ -55,7 +59,27 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         Log.i("alarmtimeLOG",Long.toString(alarmTime)+" is alarmTimeLNG");
 
         //TODO : must put conditions on the API version
-        if(ContextCompat.checkSelfPermission(context,SCHEDULE_EXACT_ALARM) == PackageManager.PERMISSION_GRANTED) {
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
+            if(alarmManager.canScheduleExactAlarms())
+            {
+                this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+            }
+            else
+            {
+
+                startActivity(this.context,new Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM),null);
+
+            }
+        }
+        else
+        {
+            this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        }
+
+
+        /*if(ContextCompat.checkSelfPermission(context,SCHEDULE_EXACT_ALARM) == PackageManager.PERMISSION_GRANTED) {
             Log.i("ALARMPERMS","can be set");
             this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime,pendingIntent);
 
@@ -64,7 +88,7 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         {
             this.alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
             Log.i("ALARMPERMS","cannot be set");
-        }
+        }*/
     }
 
     @Override
@@ -146,5 +170,7 @@ public class AlarmScheduler implements AlarmSchedulerInterface
             cancel(pi.getInfo());
         }
     }
+
+
 
 }

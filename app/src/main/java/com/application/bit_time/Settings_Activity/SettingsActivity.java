@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -49,6 +50,17 @@ public class SettingsActivity extends AppCompatActivity {
     AlarmScheduler alarmScheduler;
     PlannerViewModel plannerViewModel;
     //ActivityResultLauncher arl;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.SCHEDULE_EXACT_ALARM) == PERMISSION_GRANTED)
+        {
+            Log.i("onREsumePerms","now we have them");
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,10 +137,6 @@ public class SettingsActivity extends AppCompatActivity {
         //Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
 
         Fragment frag = fManager.findFragmentById(R.id.fragmentsContainer);
-
-
-
-
 
 
         dbViewModel.getSelectedItem().observe(this, item ->
@@ -289,6 +297,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         viewModel.getSelectedItem().observe(this, item ->
             {
+                if(fManager.getBackStackEntryCount()>0)
+                Log.i("BackStackLog","back to "+fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName());
 
                 Log.i("SettingsActivity VM","item : "+item.toString());
                 Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
@@ -331,12 +341,14 @@ public class SettingsActivity extends AppCompatActivity {
                 {
                     homeSettingsRedirect();
                     //mainEntry();
+                    //fManager.popBackStackImmediate("SettActBackStackBase",FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
             });
     }
 
     private void taskRender()
     {
+        Log.i("BackStackLog","taskRender");
         lowerFrag = new SettingsLowerFragmentTasks();
 
         if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
@@ -358,6 +370,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .addToBackStack("taskRender")
                 .commit();
+        Log.i("BackStackLog","to set 'taskRender'");
 
 
 
@@ -369,7 +382,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void activitiesRender()
     {
 
-        if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
+        /*if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
                 || fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("taskRender"))
         {
 
@@ -382,14 +395,18 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.i("popped","false");
             }
 
-        }
+        }*/
 
-        Log.i("SETTINGS ACT log","also here");
+        //Log.i("SETTINGS ACT log","also here");
+
+        Log.i("BackStackLog","activitiesRender");
         lowerFrag = new SettingsLowerFragmentActivities();
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .addToBackStack("ActivitiesRender")
                 .commit();
+
+        Log.i("BackStackLog","to set 'ActivitiesRender'");
 
         //Log.i("SettingsActivity VM","activitiesRender called");
     }
@@ -417,7 +434,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .remove(middleFrag)
                 .remove(lowerFrag)
-                .addToBackStack("newActBackStackLabel")
+                .addToBackStack("newActBackStackEntry")
                 .commit();
     }
     private void modifyTask()
@@ -477,7 +494,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void managementEntryPoint()
     {
-
+        Log.i("BackStackLog","managmententryPoint");
         upperFrag = new SettingsUpperFragment();
         middleFrag = new SettingsMiddleFragment();
         lowerFrag = new SettingsLowerFragmentActivities();
@@ -486,8 +503,9 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .replace(R.id.middle_fragment_container_view,middleFrag)
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
-                .addToBackStack("EntryPoint")
+                .addToBackStack("SettActBackStackBase")
                 .commit();
+        Log.i("BackStackLog"," to set 'SettActBackStackBase'");
 
 
     }

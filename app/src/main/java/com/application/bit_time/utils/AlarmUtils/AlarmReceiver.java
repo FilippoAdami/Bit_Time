@@ -1,12 +1,15 @@
 package com.application.bit_time.utils.AlarmUtils;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
@@ -25,31 +28,31 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         DbManager dbManager = new DbManager(context.getApplicationContext());
 
-        Bundle extrasBundle= intent.getExtras();
+        Bundle extrasBundle = intent.getExtras();
         int actId = extrasBundle.getInt("actId");
         int alarmId = extrasBundle.getInt("alarmId");
 
 
-        Log.i("alarmId received",Integer.toString(alarmId));
+        Log.i("alarmId received", Integer.toString(alarmId));
 
         Intent resultIntent = new Intent(context, MainActivity.class);
-        resultIntent.putExtra("actId",actId);
+        resultIntent.putExtra("actId", actId);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntent(resultIntent);
 
         PendingIntent resultPendingIntent = stackBuilder
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT |PendingIntent.FLAG_IMMUTABLE);
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 
-        String actName = intent.getExtras().getString("actName","unnamed activity");
+        String actName = intent.getExtras().getString("actName", "unnamed activity");
 
-        Log.i("ALARMRECEIVER","log from me");
+        Log.i("ALARMRECEIVER", "log from me");
 
         String channelId = "17";
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.mipmap.logo)
+                        .setSmallIcon(R.drawable.happy_dog)
                         .setContentTitle("test notification")
                         .setContentText(actName + " is ready to start")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -59,8 +62,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                         .setTimeoutAfter(durMax);
 
 
-
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
 
 
         notificationManager.notify(17, builder.build());
