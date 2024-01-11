@@ -32,6 +32,9 @@ import java.util.List;
 
 public class QuickstartMenuFragment extends Fragment {
 
+
+
+
     private SharedPreferences sharedPreferences;
     private DbManager dbManager;
     private List<ActivityInfo> activitiesList;
