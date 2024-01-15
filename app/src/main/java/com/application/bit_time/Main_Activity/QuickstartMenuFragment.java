@@ -41,6 +41,8 @@ public class QuickstartMenuFragment extends Fragment {
     private RecyclerView recyclerView;
     private QuickstartAdapter adapter;
 
+    private int maxLengthActName;
+
 
 
     @Nullable
@@ -50,6 +52,7 @@ public class QuickstartMenuFragment extends Fragment {
         setup();
 
         View view = inflater.inflate(R.layout.a_quickstart_menu_layout,container,false);
+
 
         this.recyclerView = view.findViewById(R.id.quickstartRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());
@@ -84,7 +87,7 @@ public class QuickstartMenuFragment extends Fragment {
 
     private void setup()
     {
-
+        maxLengthActName = 0;
         this.activitiesList = new ArrayList<>();
         this.dbManager = new DbManager(this.getContext());
         Cursor allActivitiesCursor = this.dbManager.selectAllActivities();
@@ -98,9 +101,18 @@ public class QuickstartMenuFragment extends Fragment {
                         allActivitiesCursor.getString(1),
                         allActivitiesCursor.getInt(2));
 
+
+                if(currentAIInfo.getName().length() > this.maxLengthActName )
+                {
+                    this.maxLengthActName = currentAIInfo.getName().length();
+                    Log.i("maxLengthActName changed",Integer.toString(this.maxLengthActName));
+                }
+
                 Log.i("QMF db action",currentAIInfo.toString());
 
                 TaskItem[] currentAISubtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+
 
                 /*List<TaskItem> currentAISubtasksList = new ArrayList<>(this.dbManager.retrieveSubtasks(allActivitiesCursor));
 

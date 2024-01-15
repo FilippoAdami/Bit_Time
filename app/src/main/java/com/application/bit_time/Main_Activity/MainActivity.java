@@ -10,6 +10,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainer;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -20,7 +22,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
@@ -44,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+        //DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        //Log.i("pixelWidth",Integer.toString(metrics.widthPixels));
 
         dbManager = new DbManager(getApplicationContext());
 
@@ -151,6 +161,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
+
+        if(topContainer == null)
+        {
+            Log.i("fragment search","failed, null result");
+        }
+        else {
+            Log.i("fragment search","found");
+        }
+
         //Fragment bottomFragment = new RunningTaskFragment();
         Fragment bottomFragment = new Fragment();
 
@@ -356,6 +377,8 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))
             {
+                //topContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,50));
+
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.fragment_container,new CaregiverLoginFragment())

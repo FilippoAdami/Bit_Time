@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,7 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
     private QuickstartMenuFragment quickstartMenuFragment;
 
 
+
     public QuickstartAdapter(QuickstartMenuFragment quickstartMenuFragment, List<ActivityInfo> activitiesList)
     {
         this.activitiesList = activitiesList;
@@ -41,6 +44,20 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
 
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.quickstart_menu_element,parent,false);
 
+        itemView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+
+                int itemWidth = itemView.getWidth();
+                Log.i("viewWidth",Integer.toString(itemWidth));
+                itemView.findViewById(R.id.startButton).setLayoutParams(new LinearLayout.LayoutParams(itemWidth/3, ViewGroup.LayoutParams.MATCH_PARENT));
+                itemView.getViewTreeObserver().removeOnPreDrawListener(this);
+
+
+
+                return false;
+            }
+        });
         return new ListItemHolder(itemView);
 
     }
@@ -53,6 +70,9 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
         holder.titleString = currentAI.getName();
         holder.title.setText(holder.titleString);
         holder.duration.setText(currentAI.getFormattedDuration());
+
+
+
 
 
     }
@@ -83,6 +103,9 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
             this.startActBtn = view.findViewById(R.id.startButton);
             this.mainActivityViewModel = new ViewModelProvider(quickstartMenuFragment.getActivity()).get(MainActivityViewModel.class);
 
+
+
+
             this.startActBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -106,4 +129,5 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
 
 
     }
+
 }
