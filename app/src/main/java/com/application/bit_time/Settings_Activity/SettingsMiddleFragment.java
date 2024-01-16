@@ -5,7 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,19 @@ public class SettingsMiddleFragment extends Fragment {
 
 
         View view = inflater.inflate(R.layout.settings_middle_fragment_layout,container,false);
+
+        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+
+                Log.i("SMF Width",Integer.toString(view.getWidth()));
+                view.findViewById(R.id.addButton).setLayoutParams(new LinearLayout.LayoutParams(view.getWidth()/2, ViewGroup.LayoutParams.MATCH_PARENT));
+
+                view.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
+            }
+        });
+
 
         Button addButton = view.findViewById(R.id.addButton);
         TextView text = view.findViewById(R.id.label);
