@@ -81,7 +81,7 @@ public class newHomeFragment extends Fragment {
                         {
                             Log.i("TI from NHF",TI.toString());
                         }
-
+                        generateTimeString();
                         updateTime();
 
                     }
