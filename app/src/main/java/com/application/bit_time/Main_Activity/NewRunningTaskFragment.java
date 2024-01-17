@@ -35,10 +35,11 @@ public class NewRunningTaskFragment extends Fragment {
     DbManager dbManager;
 
     private TaskItem currentTask;
-    private List<TaskItem> subtasksList;
+    //private List<TaskItem> subtasksList;
     private RunningActivityViewModel RAVM;
     private List<ReportData> reportDataList;
-    private ListIterator<TaskItem> SLIterator;
+    private ListIterator<ReportData> SLIterator;
+
 
 
     @Override
@@ -48,9 +49,12 @@ public class NewRunningTaskFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         this.dbManager = new DbManager(this.getContext());
-        subtasksList = new ArrayList<>();
+        //subtasksList = new ArrayList<>();
         RAVM = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);
         this.reportDataList = new ArrayList<>();
+
+
+
 
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         int actId= sharedPreferences.getInt("activityToRun",-500);
@@ -63,8 +67,11 @@ public class NewRunningTaskFragment extends Fragment {
         {
             if(ti.getID()!=-1)
             {
-                subtasksList.add(ti);
-                Log.i("ti added",ti.toString());
+                ReportData latestReportDataBase = new ReportData(ti.getID(),ti.getName(),ti.getDurationInt());
+                this.reportDataList.add(latestReportDataBase);
+                Log.i("latestRDBase",latestReportDataBase.toString());
+                //subtasksList.add(ti);
+                //Log.i("ti added",ti.toString());
 
             }
         }
@@ -92,7 +99,7 @@ public class NewRunningTaskFragment extends Fragment {
         {
             if(item.currentTask!=null) {
                 Log.i("NRTF item", item.toString());
-                //currentTask = item.currentTask;
+                currentTask = item.currentTask;
                 if (item.status.toString().equals("Running")) {
                     Log.i("item at running",item.toString());
                     TextView currentTaskTW = view.findViewById(R.id.currentTaskTextView);
@@ -107,7 +114,7 @@ public class NewRunningTaskFragment extends Fragment {
 
                     if (SLIterator.hasNext()) {
 
-                        TaskItem nextTask = SLIterator.next();
+                        TaskItem nextTask = SLIterator.next().getTaskItem();
                         nextTaskTW.setText(nextTask.getName());
                         //nextDurationTW.setText(nextTask.getDuration());
                         nextDurationTW.setText(nextTask.getFormattedDuration());
@@ -122,13 +129,18 @@ public class NewRunningTaskFragment extends Fragment {
                 }
                 else if (item.status.toString().equals("End")) {
                     Log.i("item at end",item.toString());
-
-                    ReportData currentReportData = item.getReportData();
-                    Log.i("currRepoData", currentReportData.toString());
-                    this.reportDataList.add(currentReportData);
+                    newRunningActivityData.UpdatePackage updatePackage= item.getUpdatePackage();
+                    int index = SLIterator.previousIndex();
+                    //Log.i("indexTest",Integer.toString(index));
+                    //Log.i("before updateReportDataTest",this.reportDataList.get(index).toString());
+                    this.reportDataList.get(index).updateReportData(updatePackage.getEndStatus(),updatePackage.getLastedTime());
+                    Log.i("updateReportDataTest",this.reportDataList.get(index).toString());
+                    //ReportData currentReportData = item.getReportData();
+                    //Log.i("currRepoData", currentReportData.toString());
+                    //this.reportDataList.add(currentReportData);
 
                     if (SLIterator.hasNext()) {
-                        currentTask = SLIterator.next();
+                        currentTask = SLIterator.next().getTaskItem();
                         RAVM.selectItem(new newRunningActivityData(currentTask));
                     } else {
                         for (ReportData RD : this.reportDataList) {
@@ -144,13 +156,15 @@ public class NewRunningTaskFragment extends Fragment {
             }
         });
 
-        SLIterator = subtasksList.listIterator();
+        SLIterator = this.reportDataList.listIterator();
 
         if(SLIterator.hasNext())
         {
-            currentTask = SLIterator.next();
+            currentTask = SLIterator.next().getTaskItem();
             Log.i("currentTask",currentTask.toString());
-            RAVM.selectItem(new newRunningActivityData(currentTask));
+            newRunningActivityData nRAD = new newRunningActivityData(currentTask);
+            nRAD.setFullReport(this.reportDataList);
+            RAVM.selectItem(nRAD);
         }
 
 

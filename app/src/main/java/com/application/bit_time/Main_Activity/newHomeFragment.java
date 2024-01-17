@@ -25,7 +25,9 @@ import com.application.bit_time.utils.RunningActivityViewModel;
 import com.application.bit_time.utils.TaskItem;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class newHomeFragment extends Fragment {
@@ -42,15 +44,15 @@ public class newHomeFragment extends Fragment {
 
     TaskItem currentTask;
 
+    List<TaskItem> subtasksData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-       timeFormat = new SimpleDateFormat("HH : mm ", Locale.getDefault());
-       lastedTime = 0;
-       RAVM = new ViewModelProvider(this.getActivity()).get(RunningActivityViewModel.class);
+        this.subtasksData = null;
+        timeFormat = new SimpleDateFormat("HH : mm ", Locale.getDefault());
+        lastedTime = 0;
+        RAVM = new ViewModelProvider(this.getActivity()).get(RunningActivityViewModel.class);
 
 
 
@@ -72,6 +74,17 @@ public class newHomeFragment extends Fragment {
             if(item.currentTask!= null) {
                 Log.i("item from NHF", item.toString());
                 if (item.status.toString().equals("Uploaded")) {
+
+                    if(this.subtasksData ==null)
+                    {
+                        this.subtasksData = new ArrayList<>(item.getSubtasksData());
+                        for(TaskItem TI : this.subtasksData)
+                        {
+                            Log.i("TI from NHF",TI.toString());
+                        }
+
+                    }
+
                     Log.i("item at uploaded",item.toString());
                     lastedTime = 0;
                     RAVM.selectItem(new newRunningActivityData(item.currentTask, newRunningActivityData.Status.Running));
