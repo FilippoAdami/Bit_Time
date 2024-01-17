@@ -10,16 +10,25 @@ public class ReportData {
     public int subtaskId;
     public String subtaskName;
     public newRunningActivityData.EndStatus endStatus;
+    private int totalTime;
     public int lastedTime ;
 
 
-
-    public ReportData(int subtaskId,String subtaskName, newRunningActivityData.EndStatus currentStatus, int lastedTime)
+    public ReportData(int subtaskId,String subtaskName,int totalTime)
+    {
+        this.subtaskId = subtaskId;
+        this.subtaskName = subtaskName;
+        this.totalTime = totalTime;
+        this.endStatus = newRunningActivityData.EndStatus.notSet;
+        this.lastedTime = -100; // stands for not set yet
+    }
+    public ReportData(int subtaskId,String subtaskName, newRunningActivityData.EndStatus currentStatus, int lastedTime,int totalTime)
     {
         this.subtaskId = subtaskId;
         this.subtaskName = subtaskName;
         this.endStatus = currentStatus;
         this.lastedTime = lastedTime;
+        this.totalTime = totalTime;
     }
 
     @NonNull
@@ -28,10 +37,27 @@ public class ReportData {
         return this.subtaskName + " " + this.endStatus.toString() + " "+ lastedTime;
     }
 
+    public ReportData updateReportData(newRunningActivityData.UpdatePackage updatePackage)
+    {
+        this.endStatus =updatePackage.getEndStatus();
+        this.lastedTime = updatePackage.getLastedTime();
+
+        return this;
+    }
+    public int getTotalTime()
+    {
+        return this.totalTime;
+    }
 
     public String getMetadata()
     {
 
         return "-"+subtaskId+"-"+subtaskName ;
+    }
+
+
+    public TaskItem getTaskItem()
+    {
+        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime());
     }
 }

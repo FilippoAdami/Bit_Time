@@ -42,6 +42,30 @@ public class newRunningActivityData {
         Expired
     }
 
+    public class UpdatePackage
+    {
+        private int lastedTime;
+        private EndStatus endStatus;
+
+        UpdatePackage(int lastedTime,EndStatus endStatus)
+        {
+            this.lastedTime = lastedTime;
+            this.endStatus = endStatus;
+        }
+
+       public int getLastedTime()
+       {
+           return this.lastedTime;
+       }
+
+       public EndStatus getEndStatus()
+       {
+           return this.endStatus;
+       }
+
+
+    }
+
     TaskItem currentTask;
     Status status;
     EndStatus endStatus;
@@ -118,9 +142,10 @@ public class newRunningActivityData {
     }
 
 
-    public void setFullReport(List<ReportData> reportData)
+    public void setFullReport(List<ReportData> reportList)
     {
-        this.fullReport=new ArrayList<>(reportData);
+        this.fullReport=new ArrayList<>(reportList);
+
     }
 
     public void setAsExpired()
@@ -129,9 +154,16 @@ public class newRunningActivityData {
         this.endStatus = EndStatus.Expired;
         this.lastedTime= this.currentTask.getDurationInt();
     }
+
+    public UpdatePackage getUpdatePackage()
+    {
+        return new UpdatePackage(this.lastedTime,this.endStatus);
+    }
+
+
     public ReportData getReportData()
     {
-        ReportData reportData = new ReportData(currentTask.getID(),currentTask.getName(),this.endStatus,this.lastedTime);
+        ReportData reportData = new ReportData(currentTask.getID(),currentTask.getName(),this.endStatus,this.lastedTime,currentTask.getDurationInt());
 
         return reportData;
     }
@@ -142,6 +174,19 @@ public class newRunningActivityData {
         this.lastedTime=lastedTime;
         setLastedTime(lastedTime);
     }
+
+    public List<TaskItem> getSubtasksData()
+    {
+        List<TaskItem> subtasksList = new ArrayList<>();
+
+        for(ReportData RD : this.fullReport)
+        {
+            subtasksList.add(new TaskItem(RD.subtaskId,RD.subtaskName,RD.getTotalTime()));
+        }
+
+        return subtasksList;
+    }
+
 
     @NonNull
     @Override

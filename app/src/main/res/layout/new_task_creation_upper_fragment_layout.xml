@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nameLabel"
+    android:id="@+id/newNameLabel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -9,21 +9,21 @@
 
     <TextView
         android:id="@+id/textView5"
+        style="@style/TitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/nome_del_task"
-        android:textAlignment="center"
-        style="@style/TitleText"/>
+        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/editTaskNameLabel"
+        style="@style/TextInputStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autofillHints="name"
         android:ems="10"
         android:hint="@string/inserire_il_nome_del_task"
-        android:inputType="text"
-        android:autofillHints="name"
-        style="@style/TextInputStyle"/>
+        android:inputType="text" />
 
     <TextView
         android:id="@+id/TaskCreWarning"
@@ -34,13 +34,13 @@
         android:textColor="@android:color/holo_red_dark" />
 
     <TextView
-        android:layout_marginTop="20dp"
         android:id="@+id/timeLabel"
+        style="@style/TitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:textAlignment="center"
-        tools:text="@string/durata"
-        style="@style/TitleText"/>
+        tools:text="@string/durata" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,50 +48,37 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/editTextHours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="5"
-            android:autofillHints="time"
-            android:hint="@string/ore"
-            android:inputType="number"
-            style="@style/TextInputStyle"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"/>
-
-        <EditText
             android:id="@+id/editTextMinutes"
+            style="@style/TextInputStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:autofillHints="time"
             android:ems="10"
             android:hint="@string/minuti"
-            android:inputType="number"
-            style="@style/TextInputStyle"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"/>
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/editTextSeconds"
+            style="@style/TextInputStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:autofillHints="time"
             android:ems="10"
             android:hint="@string/sec"
-            android:inputType="number"
-            style="@style/TextInputStyle"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"/>
+            android:inputType="number" />
     </LinearLayout>
 
     <Button
         android:id="@+id/confirmButton"
-        android:layout_marginTop="15dp"
+        style="@style/SubmitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save"
-        style="@style/SubmitButton"/>
-
+        android:layout_marginTop="15dp"
+        android:text="@string/save" />
 </LinearLayout>

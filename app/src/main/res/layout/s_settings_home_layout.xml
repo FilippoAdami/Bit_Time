@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical">
+    android:gravity="center"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/buttonAS"
-        android:layout_marginTop="30dp"
-        android:text="@string/account_e_statistiche"
         style="@style/SectionButton"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/account_e_statistiche" />
 
     <Button
         android:id="@+id/buttonIP"
+        style="@style/SectionButton"
         android:layout_marginTop="35dp"
-        android:text="@string/impostazioni_personalizzazione"
-        style="@style/SectionButton"/>
+        android:text="@string/impostazioni_personalizzazione" />
 
     <Button
         android:id="@+id/buttonNA"
+        style="@style/SectionButton"
         android:layout_marginTop="35dp"
-        android:text="@string/nuova_attivit"
-        style="@style/SectionButton"/>
+        android:text="@string/nuova_attivit" />
 
 </LinearLayout>
 
