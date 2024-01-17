@@ -2,6 +2,7 @@ package com.application.bit_time.Settings_Activity;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.media.RingtoneManager;
@@ -22,6 +23,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -279,9 +282,6 @@ public class CustomizeSettingsFragment extends Fragment {
         //set new theme
         dbManager.changeTheme(currentTheme);
         requireActivity().setTheme(newTheme);
-        FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.middle_fragment_container_view, new CustomizeSettingsFragment());
-        fragmentTransaction.commit();
     }
     private String saveToInternalStorage(Uri uri) {
         //check API version
@@ -485,6 +485,9 @@ public class CustomizeSettingsFragment extends Fragment {
         dbManager.changeHomeType(switch1.isChecked());
         preferencesChanged = false;
         Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(CustomizeSettingsFragment.this).commit();
+        fragmentManager.popBackStack();
     }
     private void showConfirmationDialog() {
         Log.i("back", "showConfirmationDialog: ");
@@ -495,12 +498,13 @@ public class CustomizeSettingsFragment extends Fragment {
             // Save the changes
             updateUserData();
             preferencesChanged = false;
-            requireActivity().onBackPressed();
         });
         builder.setNegativeButton("Discard", (dialogInterface, i) -> {
             // Discard the changes
             preferencesChanged = false;
-            requireActivity().onBackPressed();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().remove(CustomizeSettingsFragment.this).commit();
+            fragmentManager.popBackStack();
         });
         builder.setNeutralButton("Cancel", (dialogInterface, i) -> {
             // Cancel the dialog, do nothing
