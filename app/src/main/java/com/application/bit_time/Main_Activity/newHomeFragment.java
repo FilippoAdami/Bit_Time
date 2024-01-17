@@ -82,6 +82,8 @@ public class newHomeFragment extends Fragment {
                             Log.i("TI from NHF",TI.toString());
                         }
 
+                        updateTime();
+
                     }
 
                     Log.i("item at uploaded",item.toString());
@@ -104,7 +106,7 @@ public class newHomeFragment extends Fragment {
 
 
 
-        updateTime();
+
 
         return view;
     }
