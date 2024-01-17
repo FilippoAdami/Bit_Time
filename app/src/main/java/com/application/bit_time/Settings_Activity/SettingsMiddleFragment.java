@@ -73,7 +73,7 @@ public class SettingsMiddleFragment extends Fragment {
                 addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getActivity(),"pressed", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(),"pressed", Toast.LENGTH_SHORT).show();
 
                         viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.NewTask));
 

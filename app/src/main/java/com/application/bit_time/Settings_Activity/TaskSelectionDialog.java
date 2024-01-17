@@ -297,13 +297,13 @@ public class TaskSelectionDialog extends DialogFragment {
 
                                 if (selectedTasks.size() <= DbContract.Activities.DIM_MAX) {
                                     selectedTasks.add(new TaskItem(allTaskItems[i]));
-                                    Toast.makeText(getContext(), "added " + allTasksNames[i], Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getContext(), "added " + allTasksNames[i], Toast.LENGTH_SHORT).show();
                                 } else
                                     Toast.makeText(getContext(), "DIM MAX reached", Toast.LENGTH_SHORT).show();
 
 
                             } else {
-                                Toast.makeText(getContext(), "UNselected" + i, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getContext(), "UNselected" + i, Toast.LENGTH_SHORT).show();
                                 selectedTasks.remove(new TaskItem(allTaskItems[i]));
 
 
