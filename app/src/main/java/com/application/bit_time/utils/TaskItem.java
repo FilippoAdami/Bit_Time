@@ -24,15 +24,12 @@ public class TaskItem {
 
         //Log.i("TASKITEMCONST",this.toString());
     }
-
-
     public TaskItem(int id,String name, int duration)
     {
         this.IDpk = id;
         this.Name = name;
         this.Duration = duration;
     }
-
     public TaskItem(int id,String name,String duration)
     {
         this.IDpk = id;
@@ -47,51 +44,40 @@ public class TaskItem {
         }
 
     }
-
-
     public TaskItem(TaskItem original)
     {
         this.IDpk = original.IDpk;
         this.Name = new String(original.getName());
         this.Duration = original.getDurationInt();
     }
-
     public String getName()
     {
         return Name;
     }
-
     public String getDuration()
     {
         return Integer.toString(Duration);
     }
-
     public int getDurationInt()
     {
         return Duration;
     }
-
     public void setName(String name)
     {
         this.Name = name;
     }
-
     public void setDuration(String duration)
     {
         this.Duration= Integer.parseInt(duration);
     }
-
     public int getID()
     {
         return this.IDpk;
     }
-
     public String getIdStr()
     {
         return Integer.toString(this.IDpk);
     }
-
-
     @Override
     public boolean equals(@Nullable Object obj) {
 
@@ -108,8 +94,6 @@ public class TaskItem {
 
 
     }
-
-
     @NonNull
     @Override
     public String toString() {
@@ -118,10 +102,6 @@ public class TaskItem {
 
 
     }
-
-
-
-
     public boolean isEqualToEmpty()
     {
         TaskItem emptyTask = new TaskItem();
@@ -134,8 +114,6 @@ public class TaskItem {
             return true;
         else return false;
     }
-
-
     public String getFormattedDuration()
     {
 
@@ -144,13 +122,10 @@ public class TaskItem {
          return res;
 
     }
-
     public TimeHelper getTimeHelper()
     {
         return new TimeHelper(this.Duration);
     }
-
-
     public String toStringShrt()
     {
         return getIdStr();

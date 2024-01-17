@@ -103,16 +103,8 @@ public class newHomeFragment extends Fragment {
 
         });
 
-
-
-
-
-
         return view;
     }
-
-
-
 
     private void updateTime()
     {
@@ -151,6 +143,33 @@ public class newHomeFragment extends Fragment {
     private String getCurrentTime() {
 
         return timeFormat.format(new Date());
+    }
+
+    public String generateTimeString(){
+        //Get an array with the times of each task
+        int[] times = new int[subtasksData.size()];
+        for(int i = 0; i < subtasksData.size(); i++){
+            times[i] = subtasksData.get(i).getDurationInt();
+        }
+        //Get an array with the names of each task
+        String[] names = new String[subtasksData.size()];
+        for(int i = 0; i < subtasksData.size(); i++){
+            names[i] = subtasksData.get(i).getName();
+        }
+        //Get the total time
+        int totalTime = 0;
+        for(int i = 0; i < times.length; i++){
+            totalTime += times[i];
+        }
+        //Get the number of tasks
+        int numberOfTasks = times.length;
+        //Log the string with the names and times of each task
+        String string = "";
+        for(int i = 0; i < numberOfTasks; i++){
+            string += names[i] + ": " + times[i] + " minutes\n";
+        }
+        Log.i("string", string);
+        return "";
     }
 
 
