@@ -37,10 +37,10 @@ public class ReportData {
         return this.subtaskName + " " + this.endStatus.toString() + " "+ lastedTime;
     }
 
-    public ReportData updateReportData(newRunningActivityData.EndStatus endStatus,int lastedTime)
+    public ReportData updateReportData(newRunningActivityData.UpdatePackage updatePackage)
     {
-        this.endStatus =endStatus;
-        this.lastedTime = lastedTime;
+        this.endStatus =updatePackage.getEndStatus();
+        this.lastedTime = updatePackage.getLastedTime();
 
         return this;
     }

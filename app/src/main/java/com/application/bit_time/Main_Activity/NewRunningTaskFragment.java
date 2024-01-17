@@ -133,7 +133,7 @@ public class NewRunningTaskFragment extends Fragment {
                     int index = SLIterator.previousIndex();
                     //Log.i("indexTest",Integer.toString(index));
                     //Log.i("before updateReportDataTest",this.reportDataList.get(index).toString());
-                    this.reportDataList.get(index).updateReportData(updatePackage.getEndStatus(),updatePackage.getLastedTime());
+                    this.reportDataList.get(index).updateReportData(updatePackage);
                     Log.i("updateReportDataTest",this.reportDataList.get(index).toString());
                     //ReportData currentReportData = item.getReportData();
                     //Log.i("currRepoData", currentReportData.toString());
