@@ -65,14 +65,14 @@
     <string name="nuova_attivit">Nuova Attività</string>
     <string name="minigiochi">MINIGIOCHI</string>
     <string name="quickstart_menu">QuickStart Menù</string>
-    <string name="add_task">+ TASK</string>
+    <string name="add_task">+</string>
     <string name="nome_attivit">nome attività</string>
     <string name="save">Salva</string>
     <string name="time">00:00</string>
     <string name="tempo_totale">Tempo Totale</string>
     <string name="aggiungi_task">Aggiungi Task</string>
     <string name="activity_name">Nome dell\'attività</string>
-    <string name="add_activity">+ ACTIVITY</string>
+    <string name="add_activity">+</string>
     <string name="insert">Insert</string>
     <string name="read">Read</string>
     <string name="timeB">Time</string>

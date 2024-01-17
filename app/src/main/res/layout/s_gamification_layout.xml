@@ -97,7 +97,6 @@
                     android:id="@+id/PositiveIcon"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/happy_dog"
                     android:contentDescription="@string/positive_icon"/>
                 <Spinner
                     android:id="@+id/iconSpinner1"
@@ -116,7 +115,6 @@
                     android:id="@+id/NegativeIcon"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/sad_dog"
                     android:contentDescription="@string/negativeicon"/>
                 <Spinner
                     android:id="@+id/iconSpinner2"

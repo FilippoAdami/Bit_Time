@@ -29,13 +29,30 @@ public class GamificationSettings extends Fragment {
     private EditText editText1, editText2, editText3, editText4, editText5, editText6;
     private DbManager dbManager;
 
+    boolean gamificationType;
+    String positiveIcon;
+    String negativeIcon;
+    int[] timePoints;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Set user configurations before the fragment is created
+        dbManager = new DbManager(getActivity());
+        gamificationType = dbManager.getGamificationType();
+        positiveIcon = dbManager.getPositiveIcon();
+        negativeIcon = dbManager.getNegativeIcon();
+        timePoints = dbManager.getGamificationPoints();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_gamification_layout, container, false);
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if(checkChanges()) {
+                if (checkChanges()) {
                     showConfirmationDialog();
                 } else {
                     FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
@@ -45,9 +62,7 @@ public class GamificationSettings extends Fragment {
             }
         });
 
-        dbManager = new DbManager(getActivity());
-
-    // Initialize UI elements
+        // Initialize UI elements
         radio1 = view.findViewById(R.id.radio1);
         radio2 = view.findViewById(R.id.radio2);
         happyIcon = view.findViewById(R.id.PositiveIcon);
@@ -62,34 +77,33 @@ public class GamificationSettings extends Fragment {
         editText6 = view.findViewById(R.id.timePoints6);
         Button applyButton = view.findViewById(R.id.submitButton);
 
-    // When the fragment is created, load the user's settings
-        boolean gamificationType = dbManager.getGamificationType();
-        Log.println(Log.DEBUG, "gamificationType", String.valueOf(gamificationType) );
+        // Set UI elements based on user configurations
         if (!gamificationType) {
             radio1.setChecked(true);
-        } else {radio2.setChecked(true);}
-        String positiveIcon = dbManager.getPositiveIcon();
+        } else {
+            radio2.setChecked(true);
+        }
+
         ArrayAdapter<CharSequence> adapterx = ArrayAdapter.createFromResource(
                 requireContext(),
-                R.array.happy_icon_array,  // Create a string array resource containing the icon names
+                R.array.happy_icon_array,
                 android.R.layout.simple_spinner_item
         );
         adapterx.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner1.setAdapter(adapterx);
         int spinner1Position = adapterx.getPosition(positiveIcon);
         spinner1.setSelection(spinner1Position);
+
         ArrayAdapter<CharSequence> adaptery = ArrayAdapter.createFromResource(
                 requireContext(),
-                R.array.sad_icon_array,  // Create a string array resource containing the icon names
+                R.array.sad_icon_array,
                 android.R.layout.simple_spinner_item
         );
         adaptery.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner2.setAdapter(adaptery);
-        String negativeIcon = dbManager.getNegativeIcon();
         int spinner2Position = adaptery.getPosition(negativeIcon);
         spinner2.setSelection(spinner2Position);
-        int[] timePoints = dbManager.getGamificationPoints();
-        Log.println(Log.DEBUG, "timePoints", String.valueOf(timePoints[0]) );
+
         editText1.setText(String.valueOf(timePoints[0]));
         editText2.setText(String.valueOf(timePoints[1]));
         editText3.setText(String.valueOf(timePoints[2]));
@@ -97,7 +111,7 @@ public class GamificationSettings extends Fragment {
         editText5.setText(String.valueOf(timePoints[4]));
         editText6.setText(String.valueOf(timePoints[5]));
 
-    // when the user selects one of the radio buttons, the other one is deselected
+        // when the user selects one of the radio buttons, the other one is deselected
         radio1.setOnClickListener(v -> radio2.setChecked(false));
         radio2.setOnClickListener(v -> radio1.setChecked(false));
 

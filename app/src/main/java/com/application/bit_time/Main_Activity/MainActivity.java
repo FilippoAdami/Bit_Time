@@ -394,6 +394,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // Method to retrieve the array from SharedPreferences
+    public static int[] getTimes(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
+        // Retrieve the string representation of the array
+        String arrayString = sharedPreferences.getString("TIME", "0,0,0,0,0,0");
+
+        // Convert the string back to an array of integers
+        String[] stringArray = arrayString.split(",");
+        int[] array = new int[stringArray.length];
+        for (int i = 0; i < stringArray.length; i++) {
+            array[i] = Integer.parseInt(stringArray[i]);
+        }
+
+        return array;
+    }
+    // Method to save a string to SharedPreferences under the key "TIMES"
+    private void saveStringToPreferences(Context context, String value) {
+        // Get the default SharedPreferences instance
+        SharedPreferences preferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
+        // Use an editor to modify SharedPreferences
+        SharedPreferences.Editor editor = preferences.edit();
+
+        // Put the string value under the key "TIMES"
+        value = "000500,000300,000200,000000,000000,000000";
+        editor.putString("TIMES", value);
+
+        // Apply the changes
+        editor.apply();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

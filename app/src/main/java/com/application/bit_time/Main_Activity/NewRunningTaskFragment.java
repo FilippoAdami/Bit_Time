@@ -20,12 +20,10 @@ import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.ReportData;
-import com.application.bit_time.utils.RunningActivityData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -85,17 +83,14 @@ public class NewRunningTaskFragment extends Fragment {
 
 
         Button endTaskButton = view.findViewById(R.id.endTaskButton);
-        endTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RAVM.selectItem(new newRunningActivityData(currentTask, newRunningActivityData.Status.OnWait));
-                RunningTaskDialog runningTaskDialog = new RunningTaskDialog();
-                runningTaskDialog.show(requireActivity().getSupportFragmentManager(),null);
+        endTaskButton.setOnClickListener(view1 -> {
+            RAVM.selectItem(new newRunningActivityData(currentTask, newRunningActivityData.Status.OnWait));
+            RunningTaskDialog runningTaskDialog = new RunningTaskDialog();
+            runningTaskDialog.show(requireActivity().getSupportFragmentManager(),null);
 
-            }
         });
 
-        RAVM.getSelectedItem().observe(this,item->
+        RAVM.getSelectedItem().observe(getViewLifecycleOwner(),item->
         {
             if(item.currentTask!=null) {
                 Log.i("NRTF item", item.toString());

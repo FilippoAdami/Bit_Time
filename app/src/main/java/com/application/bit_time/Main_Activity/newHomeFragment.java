@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Handler;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.AnalogClockView;
-import com.application.bit_time.utils.RunningActivityData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 import com.application.bit_time.utils.TaskItem;
 
@@ -68,7 +67,7 @@ public class newHomeFragment extends Fragment {
         analogClockView = view.findViewById(R.id.analogClockView2);
 
 
-        RAVM.getSelectedItem().observe(this,item->
+        RAVM.getSelectedItem().observe(getViewLifecycleOwner(),item->
         {
 
             if(item.currentTask!= null) {
@@ -115,38 +114,35 @@ public class newHomeFragment extends Fragment {
 
     private void updateTime()
     {
-        handler.postDelayed(new Runnable(){
-            public void run()
+        handler.postDelayed(() -> {
+
+            lastedTime++;
+            Log.i("lastedTime",Integer.toString(lastedTime));
+
+            if(lastedTime== currentTask.getDurationInt())
             {
-
-                lastedTime++;
-                Log.i("lastedTime",Integer.toString(lastedTime));
-
-                if(lastedTime== currentTask.getDurationInt())
-                {
-                    Log.i("currTask should exp",Integer.toString(lastedTime));
-                    newRunningActivityData currentRAD = new newRunningActivityData(currentTask);
-                    currentRAD.setAsExpired();
-                    Log.i("currTask nFH",currentRAD.fullToString());
-                    RAVM.selectItem(currentRAD);
-                }
-
-
-                String currentTime = getCurrentTime();
-
-                String[] parts = currentTime.split(":");
-                String hours = parts[0];
-                String minutes = parts[1];
-
-                SpannableString spannableTime = new SpannableString(currentTime);
-                spannableTime.setSpan(new ForegroundColorSpan(Color.BLUE), 0, hours.length(), 0);
-                spannableTime.setSpan(new ForegroundColorSpan(Color.RED), hours.length() + 1, currentTime.length(), 0);
-                clockTextView.setText(spannableTime);
-
-                analogClockView.invalidate();
-
-                updateTime();
+                Log.i("currTask should exp",Integer.toString(lastedTime));
+                newRunningActivityData currentRAD = new newRunningActivityData(currentTask);
+                currentRAD.setAsExpired();
+                Log.i("currTask nFH",currentRAD.fullToString());
+                RAVM.selectItem(currentRAD);
             }
+
+
+            String currentTime = getCurrentTime();
+
+            String[] parts = currentTime.split(":");
+            String hours = parts[0];
+            String minutes = parts[1];
+
+            SpannableString spannableTime = new SpannableString(currentTime);
+            spannableTime.setSpan(new ForegroundColorSpan(Color.BLUE), 0, hours.length(), 0);
+            spannableTime.setSpan(new ForegroundColorSpan(Color.RED), hours.length() + 1, currentTime.length(), 0);
+            clockTextView.setText(spannableTime);
+
+            analogClockView.invalidate();
+
+            updateTime();
         },1000);
     }
 
