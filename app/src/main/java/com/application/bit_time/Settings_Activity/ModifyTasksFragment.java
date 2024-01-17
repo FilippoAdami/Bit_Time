@@ -41,10 +41,11 @@ public class ModifyTasksFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
 
 
-        View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
+        //View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.new_task_creation_upper_fragment_layout,container,false);
 
         editName = view.findViewById(R.id.editTaskNameLabel);
-        TextView edith = view.findViewById(R.id.editTextHours);
+        //TextView edith = view.findViewById(R.id.editTextHours);
         TextView editmin = view.findViewById(R.id.editTextMinutes);
         TextView editsec = view.findViewById(R.id.editTextSeconds);
         Button confirmButton = view.findViewById(R.id.confirmButton);
@@ -98,7 +99,7 @@ public class ModifyTasksFragment extends Fragment {
         editmin.setText(Integer.toString(min));
         editsec.setText(Integer.toString(sec));*/
 
-        edith.setText(Integer.toString(th.getHrs()));
+        //edith.setText(Integer.toString(th.getHrs()));
         editmin.setText(Integer.toString(th.getMin()));
         editsec.setText(Integer.toString(th.getSec()));
 
@@ -108,7 +109,7 @@ public class ModifyTasksFragment extends Fragment {
 
                 if(checks())
                 {
-                    int h = parseContent(edith.getText().toString());
+                    int h = 0;//parseContent(edith.getText().toString());
                     int min = parseContent(editmin.getText().toString());
                     int sec = parseContent(editsec.getText().toString());
 

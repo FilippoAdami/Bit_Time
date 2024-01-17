@@ -35,7 +35,7 @@ public class CreationUpperFragment extends Fragment {
     TaskAdapter taskAdapter;
 
     EditText editName;
-    EditText edtTxtHrs;
+    //EditText edtTxtHrs;
     EditText edtTxtMin;
     EditText edtTxtSec;
     TextView WarningTW;
@@ -56,14 +56,15 @@ public class CreationUpperFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
+        //View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.new_task_creation_upper_fragment_layout,container,false);
 
         /*EditText editName = view.findViewById(R.id.editTaskNameLabel);
         EditText edtTxtHrs = view.findViewById(R.id.editTextHours);
         EditText edtTxtMin = view.findViewById(R.id.editTextMinutes);
         EditText edtTxtSec = view.findViewById(R.id.editTextSeconds);*/
         editName = view.findViewById(R.id.editTaskNameLabel);
-        edtTxtHrs = view.findViewById(R.id.editTextHours);
+        //edtTxtHrs = view.findViewById(R.id.editTextHours);
         edtTxtMin = view.findViewById(R.id.editTextMinutes);
         edtTxtSec = view.findViewById(R.id.editTextSeconds);
         WarningTW = view.findViewById(R.id.TaskCreWarning);
@@ -105,7 +106,7 @@ public class CreationUpperFragment extends Fragment {
 
                 if(compulsoryFieldsAreFilled()) {
 
-                    int hours = parseContent(edtTxtHrs.getText().toString()) * 3600;
+                    int hours = 0;//parseContent(edtTxtHrs.getText().toString()) * 3600;
                     int minutes = parseContent(edtTxtMin.getText().toString()) * 60;
                     int seconds = parseContent(edtTxtSec.getText().toString()) ;
                     int totalTime = hours + minutes + seconds;
