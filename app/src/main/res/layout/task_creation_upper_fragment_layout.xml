@@ -26,6 +26,14 @@
         style="@style/TextInputStyle"/>
 
     <TextView
+        android:id="@+id/TaskCreWarning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark" />
+
+    <TextView
         android:layout_marginTop="20dp"
         android:id="@+id/timeLabel"
         android:layout_width="match_parent"

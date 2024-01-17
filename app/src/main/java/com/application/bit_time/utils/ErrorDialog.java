@@ -46,6 +46,11 @@ public class ErrorDialog extends DialogFragment {
             title = "Planning not filled";
             message = "when planning you need to set both a date and a time";
         }
+        else if(error.equals("TaskErrLen"))
+        {
+            title= "Name too long";
+            message = "the name of a task MUST be 12 characters or less";
+        }
 
 
         builder.setTitle(title);

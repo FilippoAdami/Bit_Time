@@ -1,12 +1,15 @@
 package com.application.bit_time.Settings_Activity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +28,7 @@ import com.application.bit_time.utils.Db.DbViewModelData;
 
 public class CreationUpperFragment extends Fragment {
 
+    private int MAX_LENGTH = 12;
     DbViewModel dbViewModel;
     SubtasksViewModel subtasksViewModel;
     CustomViewModel viewModel;
@@ -34,6 +38,7 @@ public class CreationUpperFragment extends Fragment {
     EditText edtTxtHrs;
     EditText edtTxtMin;
     EditText edtTxtSec;
+    TextView WarningTW;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,10 +66,38 @@ public class CreationUpperFragment extends Fragment {
         edtTxtHrs = view.findViewById(R.id.editTextHours);
         edtTxtMin = view.findViewById(R.id.editTextMinutes);
         edtTxtSec = view.findViewById(R.id.editTextSeconds);
+        WarningTW = view.findViewById(R.id.TaskCreWarning);
+        WarningTW.setText("The name of the task cannot be longer than "+MAX_LENGTH+" chars");
+        WarningTW.setVisibility(View.INVISIBLE);
 
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
+        editName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>MAX_LENGTH) {
+                    //Log.i("TCListener", Integer.toString(charSequence.length()));
+                    WarningTW.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    WarningTW.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                Log.i("AFTER TEXT CHANGED","here");
+
+            }
+        });
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,10 +128,10 @@ public class CreationUpperFragment extends Fragment {
 
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
                 }
-                else
+                /*else
                 {
                     showError();
-                }
+                }*/
 
 
 
@@ -110,17 +143,36 @@ public class CreationUpperFragment extends Fragment {
 
     private boolean compulsoryFieldsAreFilled()
     {
-        if(editName.length()>0)
+        int length = editName.length();
+        if(length>0 && length<=MAX_LENGTH) {
             return true;
+        }
+        else if(length>MAX_LENGTH)
+        {
+            showError(1);
+        }
+        else
+        {
+            showError(2);
+        }
         return false;
     }
 
 
-    private void showError()
+    private void showError(int code)
     {
         ErrorDialog errorDialog = new ErrorDialog();
         Bundle b = new Bundle();
-        b.putString("ErrorCode","emptyNameTask");
+        String strCode = "";
+        if(code==1)
+        {
+            strCode="TaskErrLen";
+        }
+        else if(code==2)
+        {
+            strCode="emptyNameTask";
+        }
+        b.putString("ErrorCode",strCode);
         errorDialog.setArguments(b);
         errorDialog.show(getActivity().getSupportFragmentManager(),null);
     }

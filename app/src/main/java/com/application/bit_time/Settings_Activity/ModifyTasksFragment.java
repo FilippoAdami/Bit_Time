@@ -1,11 +1,14 @@
 package com.application.bit_time.Settings_Activity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
+import com.application.bit_time.utils.ErrorDialog;
 import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -24,8 +28,10 @@ import com.application.bit_time.utils.TimeHelper;
 public class ModifyTasksFragment extends Fragment {
 
 
+    int MAX_LENGTH = 12;
     private DbViewModel dbViewModel;
 
+    private EditText editName;
 
     private CustomViewModel viewModel;
     @Nullable
@@ -37,15 +43,42 @@ public class ModifyTasksFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
 
-        TextView editName = view.findViewById(R.id.editTaskNameLabel);
+        editName = view.findViewById(R.id.editTaskNameLabel);
         TextView edith = view.findViewById(R.id.editTextHours);
         TextView editmin = view.findViewById(R.id.editTextMinutes);
         TextView editsec = view.findViewById(R.id.editTextSeconds);
-
         Button confirmButton = view.findViewById(R.id.confirmButton);
+        TextView warningTV = view.findViewById(R.id.TaskCreWarning);
+        warningTV.setText("The name of the task cannot be longer than "+MAX_LENGTH+" chars");
+        warningTV.setVisibility(View.INVISIBLE);
 
         dbViewModel = new ViewModelProvider(getActivity()).get(DbViewModel.class);
 
+
+        editName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                if(charSequence.length()>MAX_LENGTH)
+                {
+                    warningTV.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    warningTV.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         Log.i("TASKTOMOD",dbViewModel.getSelectedItem().getValue().taskItem.toString());
 
@@ -73,28 +106,27 @@ public class ModifyTasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                int h = parseContent(edith.getText().toString());
-                int min = parseContent(editmin.getText().toString());
-                int sec = parseContent(editsec.getText().toString());
+                if(checks())
+                {
+                    int h = parseContent(edith.getText().toString());
+                    int min = parseContent(editmin.getText().toString());
+                    int sec = parseContent(editsec.getText().toString());
 
-                int totalTime = h*3600 + min*60 + sec;
+                    int totalTime = h * 3600 + min * 60 + sec;
 
-                TaskItem newItem = new TaskItem(taskToModify.getID(),editName.getText().toString(),totalTime);
+                    TaskItem newItem = new TaskItem(taskToModify.getID(), editName.getText().toString(), totalTime);
 
-                Log.i("UPDATE",newItem.toString());
+                    Log.i("UPDATE", newItem.toString());
 
-                DbViewModelData dbViewModelData = new DbViewModelData(
-                        DbViewModelData.ACTION_TYPE.MODIFY,
-                        DbViewModelData.ITEM_TYPE.TASK,
-                        newItem);
+                    DbViewModelData dbViewModelData = new DbViewModelData(
+                            DbViewModelData.ACTION_TYPE.MODIFY,
+                            DbViewModelData.ITEM_TYPE.TASK,
+                            newItem);
 
-                dbViewModel.selectItem(dbViewModelData);
+                    dbViewModel.selectItem(dbViewModelData);
 
-                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
-
-
-
-
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
+                }
             }
         });
 
@@ -104,7 +136,23 @@ public class ModifyTasksFragment extends Fragment {
         return view;
     }
 
+    private boolean checks()
+    {
+        int length = editName.getText().length();
 
+        if(length>MAX_LENGTH)
+        {
+            showError(1);
+            return false;
+        }
+        else if(length==0)
+        {
+            showError(2);
+            return false;
+        }
+
+        return true;
+    }
 
     public int parseContent(String stringToParse)
     {
@@ -116,5 +164,24 @@ public class ModifyTasksFragment extends Fragment {
         {
             return Integer.parseInt(stringToParse);
         }
+    }
+
+
+    private void showError(int code)
+    {
+        ErrorDialog errorDialog = new ErrorDialog();
+        Bundle b = new Bundle();
+        String strCode = "";
+        if(code == 1)
+        {
+            strCode = "TaskErrLen";
+        }else if(code == 2)
+        {
+            strCode = "emptyNameTask";
+        }
+
+        b.putString("ErrorCode",strCode);
+        errorDialog.setArguments(b);
+        errorDialog.show(getActivity().getSupportFragmentManager(),null);
     }
 }
