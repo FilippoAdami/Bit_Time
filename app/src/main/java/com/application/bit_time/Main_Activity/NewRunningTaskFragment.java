@@ -24,6 +24,7 @@ import com.application.bit_time.utils.RunningActivityViewModel;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -138,6 +139,17 @@ public class NewRunningTaskFragment extends Fragment {
 
                     if (SLIterator.hasNext()) {
                         currentTask = SLIterator.next().getTaskItem();
+                        // Load the current subTask index to SharedPreferences
+                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                        int currentTaskID = Integer.parseInt(currentTask.getIdStr());
+                        sharedPreferences.edit().putInt("currentTask", currentTaskID).commit();
+                        // Load the current time to SharedPreferences
+                        Calendar calendar = Calendar.getInstance();
+                        int currentMinute = calendar.get(Calendar.MINUTE);
+                        int currentSecond = calendar.get(Calendar.SECOND);
+                        float taskStartingTime = currentMinute + currentSecond/60;
+                        sharedPreferences.edit().putFloat("taskStartingTime", taskStartingTime).commit();
+
                         RAVM.selectItem(new newRunningActivityData(currentTask));
                     } else {
                         for (ReportData RD : this.reportDataList) {

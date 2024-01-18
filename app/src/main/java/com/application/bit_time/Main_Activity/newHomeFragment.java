@@ -67,35 +67,57 @@ public class newHomeFragment extends Fragment {
         analogClockView = view.findViewById(R.id.analogClockView2);
 
 
-        RAVM.getSelectedItem().observe(getViewLifecycleOwner(),item->
-        {
+        // Observe changes in the selected item using LiveData
+        RAVM.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
 
-            if(item.currentTask!= null) {
+            // Check if the currentTask in the observed item is not null
+            if (item.currentTask != null) {
+                // Log information about the observed item
                 Log.i("item from NHF", item.toString());
+
+                // Check the status of the observed item
                 if (item.status.toString().equals("Uploaded")) {
 
-                    if(this.subtasksData ==null)
-                    {
+                    // Check if subtasksData is null (first time processing Uploaded status)
+                    if (this.subtasksData == null) {
+                        // Initialize subtasksData with a copy of subtasksData from the observed item
                         this.subtasksData = new ArrayList<>(item.getSubtasksData());
-                        for(TaskItem TI : this.subtasksData)
-                        {
-                            Log.i("TI from NHF",TI.toString());
-                        }
-                        generateTimeString();
-                        updateTime();
 
+                        // Log information about each TaskItem in subtasksData
+                        for (TaskItem TI : this.subtasksData) {
+                            Log.i("TI from NHF", TI.toString());
+                        }
+
+                        // Generate and log the time string based on subtasksData
+                        generateTimeString();
+                        generateIDString();
+
+                        // Update the time (e.g., start a timer)
+                        updateTime();
                     }
 
-                    Log.i("item at uploaded",item.toString());
+                    // Log information about the item when the status is Uploaded
+                    Log.i("item at uploaded", item.toString());
+
+                    // Reset the lastedTime and set the status to Running
                     lastedTime = 0;
                     RAVM.selectItem(new newRunningActivityData(item.currentTask, newRunningActivityData.Status.Running));
                 } else if (item.status.toString().equals("Running")) {
 
-                    Log.i("item running NHF",item.toString());
+                    // Log information about the item when the status is Running
+                    Log.i("item running NHF", item.toString());
+
+                    // Set the currentTask and reset the lastedTime
+
                     currentTask = item.currentTask;
+
                     lastedTime = 0;
                 } else if (item.status.toString().equals("OnWait")) {
-                    Log.i("item at onwait",item.toString());
+
+                    // Log information about the item when the status is OnWait
+                    Log.i("item at onwait", item.toString());
+
+                    // Store the lastedTime in SharedPreferences
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                     sharedPreferences
                             .edit()
@@ -104,8 +126,8 @@ public class newHomeFragment extends Fragment {
                             .commit();
                 }
             }
-
         });
+
 
         return view;
     }
@@ -149,7 +171,7 @@ public class newHomeFragment extends Fragment {
         return timeFormat.format(new Date());
     }
 
-    public String generateTimeString(){
+    public void generateTimeString(){
         //Get an array with the times of each task
         int[] times = new int[subtasksData.size()];
         for(int i = 0; i < subtasksData.size(); i++){
@@ -167,13 +189,80 @@ public class newHomeFragment extends Fragment {
         }
         //Get the number of tasks
         int numberOfTasks = times.length;
-        //Log the string with the names and times of each task
+
         String string = "";
-        for(int i = 0; i < numberOfTasks; i++){
-            string += names[i] + ": " + times[i] + " minutes\n";
+        for(int i = 0; i < 5; i++){
+            //if the task exists, add it to the string, else add "0000"
+            String x = "";
+            if(i < numberOfTasks){
+                x = Integer.toString(times[i]);
+                //Convert from secondts to mmss, if one of the numbers is one digits, att a 0 before it
+                String mm = Integer.toString(Integer.parseInt(x) / 60);
+                if (mm.length() == 1) {
+                    mm = "0" + mm;
+                }
+                String ss= Integer.toString(Integer.parseInt(x) % 60);
+                if (ss.length() == 1) {
+                    ss = "0" + ss;
+                }
+                x = mm + ss;
+            }
+            else{
+                x = "0000";
+            }
+            //add "0" es before the number to make it reach 6 digits
+            while(x.length() < 6){
+                x = "0" + x;
+            }
+            string += x+",";
         }
-        Log.i("string", string);
-        return "";
+        //add the current time in format hhmmss
+        SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
+        String currentTime = sdf.format(new Date());
+        string += currentTime;
+        //add the total time at the beginning of the string, check if it is 6 digits first, else correct it adding 0s
+        if(Integer.toString(totalTime).length() < 6){
+            String x = Integer.toString(totalTime);
+            while(x.length() < 6){
+                x = "0" + x;
+            }
+            totalTime = Integer.parseInt(x);
+        }
+        string = Integer.toString(totalTime) + "," + string;
+
+        //publish the string to SharedPreferences, if there is already a string, it will be overwritten
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("TimesString", string).commit();
+    }
+    public void generateIDString(){
+        // Load the first ID as the current task
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        int currentTaskID = Integer.parseInt(subtasksData.get(0).getIdStr());
+        sharedPreferences.edit().putInt("currentTask", currentTaskID).commit();
+        //Get an array with the IDs of each task
+        int[] IDs = new int[subtasksData.size()];
+        for(int i = 0; i < subtasksData.size(); i++){
+            IDs[i] = Integer.parseInt(subtasksData.get(i).getIdStr());
+        }
+        //Get the number of tasks
+        int numberOfTasks = IDs.length;
+
+        String string = "";
+        for(int i = 0; i < 5; i++){
+            //if the task exists, add it to the string, else add "0000"
+            String x = "";
+            if(i < numberOfTasks){
+                x = Integer.toString(IDs[i]);
+            }
+            else{
+                x = "0000";
+            }
+            string += x+",";
+        }
+        //remove the last comma
+
+        //publish the string to SharedPreferences, if there is already a string, it will be overwritten
+        sharedPreferences.edit().putString("IDsString", string).commit();
     }
 
 

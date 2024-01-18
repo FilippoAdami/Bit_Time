@@ -50,7 +50,7 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
 
                 int itemWidth = itemView.getWidth();
                 Log.i("viewWidth",Integer.toString(itemWidth));
-                itemView.findViewById(R.id.startButton).setLayoutParams(new LinearLayout.LayoutParams(itemWidth/3, ViewGroup.LayoutParams.MATCH_PARENT));
+                itemView.findViewById(R.id.startButton).setLayoutParams(new LinearLayout.LayoutParams(itemWidth/3, ViewGroup.LayoutParams.WRAP_CONTENT));
                 itemView.getViewTreeObserver().removeOnPreDrawListener(this);
 
 

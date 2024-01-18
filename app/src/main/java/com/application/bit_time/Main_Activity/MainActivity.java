@@ -370,9 +370,9 @@ public class MainActivity extends AppCompatActivity {
 
                 fragmentManager
                         .beginTransaction()
-                        .replace(R.id.bottomFragmentContainer,new newHomeFragment())
+                        .replace(R.id.fragment_container,new newHomeFragment())
                         //.replace(R.id.fragment_container,new Fragment())
-                        .replace(R.id.fragment_container,new NewRunningTaskFragment())
+                        .replace(R.id.bottomFragmentContainer,new NewRunningTaskFragment())
                         .commit();
             }
             else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))

@@ -83,17 +83,46 @@ public class AnalogClockView extends View {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR);
         int minute = calendar.get(Calendar.MINUTE);
+        int second = calendar.get(Calendar.SECOND);
 
         // Calculate angles for hour and minute hands
         float hourAngle = (hour % 12 + minute / 60.0f - 3) * 360 / 12 + 90;
-        float minuteAngle = (minute) * 360 / 60;
+        float minuteAngle = (minute + second / 60.0f)*6;
         // Draw outer clock circle
         canvas.drawCircle(centerX, centerY, radius, clockPaint);
 
-        // Get the parsed arrays from the input string
-        String inputString = "002220,000300,000200,001520,000100,000100,002400";
-        int[][][] parsedArrays = parseTimeString(inputString);
+        //Get TimesString from SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String TimesString = sharedPreferences.getString("TimesString", "000000,000000,000000,000000,000000,000000,00000");
 
+        //Get current task from SharedPreferences
+        int currentTaskID = sharedPreferences.getInt("currentTask", 000000);
+        // Get currentTaskStartingTime from SharedPreferences
+        float taskStartingTime = sharedPreferences.getFloat("taskStartingTime", 0.0f);
+        // Calculate the starting angle for the current task
+        float taskStartingAngle = taskStartingTime*6;
+        //Get IDsString from SharedPreferences
+        String IDsString = sharedPreferences.getString("IDsString", "000000,000000,000000,000000,000000");
+
+        //Parse the IDsString into an array of ints
+        String[] IDsArray = IDsString.split(",");
+        int[] IDsIntArray = new int[5];
+        for (int i = 0; i < 5; i++) {
+            IDsIntArray[i] = Integer.parseInt(IDsArray[i]);
+        }
+
+        //Get the index of the current task in the IDsIntArray
+        int currentTaskIndex = 0;
+        for (int i = 0; i < 5; i++) {
+            if(IDsIntArray[i] == currentTaskID){
+                currentTaskIndex = i;
+            }
+        }
+
+        // Get the parsed arrays from the input string
+        int[][][] parsedArrays = parseTimeString(TimesString);
+
+        // Calculate the total times for each task
         float[] total_times = new float[7];
         for (int i = 0; i < 7; i++) {
             float hours = parsedArrays[i][0][0] * 10 + parsedArrays[i][0][1];
@@ -103,7 +132,7 @@ public class AnalogClockView extends View {
             float time = hours*60 + minutes + seconds/60;
             total_times[i] = time;
         }
-
+        // Calculate the starting angles for each task
         float[] taskSliceStart = new float[6];
 
         taskSliceStart[0] = (total_times[6] + total_times[1])*6;
@@ -113,11 +142,17 @@ public class AnalogClockView extends View {
         taskSliceStart[4] = (taskSliceStart[3] + total_times[5]*6);
         taskSliceStart[5] = total_times[6]*6;
 
+        if(currentTaskIndex == 0){
+            taskStartingAngle = taskSliceStart[5];
+        }
+
         boolean[] isTaskDone = new boolean[5];
         for (int i = 0; i < 5; i++) {
             isTaskDone[i] = false;
         }
-//        isTaskDone[3] = true;
+        if (currentTaskIndex > 0){
+            isTaskDone[currentTaskIndex-1] = true;
+        }
 
         Paint[] taskSlicePaint = new Paint[5];
 
@@ -129,24 +164,26 @@ public class AnalogClockView extends View {
             }
         }
         RectF rectF = new RectF(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+        float endCurrentAngle = 0f;
         for (int i = 0; i < 5; i++) {
+            taskSlicePaint[i].setStyle(Paint.Style.FILL);
             // Set the done tasks to white (do not show them)
             if(i <= j){
-                taskSlicePaint[i].setColor(Color.argb(128, 255, 255, 255));
+                taskSlicePaint[i].setColor(Color.argb(0, 255, 255, 255));
             }
             // Set the current task to green-yellow-red
             else if (i == j+1){
                 taskSlicePaint[i].setColor(Color.argb(0, 255, 255, 255));
-                float startAngle = taskSliceStart[5];
+                /*float startAngle = taskSliceStart[5];
                 if(i>0){
                     for(int z=0; z<i; z++){
                         startAngle = startAngle + total_times[z+1]*6;
                     }
-                }
-                float endAngle = startAngle + total_times[i+1]*6;
+                }*/
+                endCurrentAngle = taskStartingAngle + total_times[i+1]*6;
 
-                float yellowSliceStart = (float) (startAngle + (0.65*total_times[i+1])*6);
-                float redSliceStart = (float) (startAngle + (0.85*total_times[i+1])*6);
+                float yellowSliceStart = (float) (taskStartingAngle + (0.65*total_times[i+1])*6);
+                float redSliceStart = (float) (taskStartingAngle + (0.85*total_times[i+1])*6);
 
                 Paint greenSlicePaint = new Paint();
                 Paint yellowSlicePaint = new Paint();
@@ -161,24 +198,25 @@ public class AnalogClockView extends View {
                 redSlicePaint.setStyle(Paint.Style.FILL);
 
                 // Draw the green slice starting at minuteAngle
-                canvas.drawArc(rectF, startAngle - 90, yellowSliceStart - startAngle, true, greenSlicePaint);
+                canvas.drawArc(rectF, taskStartingAngle - 90, yellowSliceStart - taskStartingAngle, true, greenSlicePaint);
                 canvas.drawArc(rectF, yellowSliceStart - 90, redSliceStart - yellowSliceStart, true, yellowSlicePaint);
-                canvas.drawArc(rectF, redSliceStart - 90, endAngle - redSliceStart, true, redSlicePaint);
+                canvas.drawArc(rectF, redSliceStart - 90, endCurrentAngle - redSliceStart, true, redSlicePaint);
             }
             // Set the future tasks to shades of gray
             else{
                 int k = j+2;
                 int x = 150-((i-k)*50);
                 taskSlicePaint[i].setColor(Color.argb(128, x, x, x));
+                canvas.drawArc(rectF, endCurrentAngle -90, total_times[i+1]*6, true, taskSlicePaint[i]);
+                endCurrentAngle = endCurrentAngle + total_times[i+1]*6;
             }
-            taskSlicePaint[i].setStyle(Paint.Style.FILL);
         }
 
-        canvas.drawArc(rectF, taskSliceStart[5] - 90, total_times[1]*6, true, taskSlicePaint[0]);
-        canvas.drawArc(rectF, taskSliceStart[0] - 90, total_times[2]*6, true, taskSlicePaint[1]);
-        canvas.drawArc(rectF, taskSliceStart[1] - 90, total_times[3]*6, true, taskSlicePaint[2]);
-        canvas.drawArc(rectF, taskSliceStart[2] - 90, total_times[4]*6, true, taskSlicePaint[3]);
-        canvas.drawArc(rectF, taskSliceStart[3] - 90, total_times[5]*6, true, taskSlicePaint[4]);
+        //canvas.drawArc(rectF, taskSliceStart[5] - 90, total_times[1]*6, true, taskSlicePaint[0]);
+        //canvas.drawArc(rectF, taskSliceStart[0] - 90, total_times[2]*6, true, taskSlicePaint[1]);
+        //canvas.drawArc(rectF, taskSliceStart[1] - 90, total_times[3]*6, true, taskSlicePaint[2]);
+        //canvas.drawArc(rectF, taskSliceStart[2] - 90, total_times[4]*6, true, taskSlicePaint[3]);
+        //canvas.drawArc(rectF, taskSliceStart[3] - 90, total_times[5]*6, true, taskSlicePaint[4]);
 
         // Draw an inner white circle
         Paint whiteCirclePaint = new Paint();
@@ -251,7 +289,7 @@ public class AnalogClockView extends View {
         canvas.drawCircle(centerX, centerY, radius - 120, clockPaint);
         canvas.drawCircle(centerX, centerY, radius - 220, clockPaint);
         //String h = String.valueOf(calendar.get(Calendar.HOUR));
-        //canvas.drawText(h, centerX, centerY, textPaint);
+        //canvas.drawText( String.valueOf(taskSliceStart[5]) + "   " + String.valueOf(currentTaskIndex) +"  "+currentTaskID+"  "+ IDsString, centerX, centerY, textPaint);
 
         // Draw clock hands
         drawClockHand(canvas, centerX, centerY, hourAngle, radius -170, hourHandPaint, hour);

@@ -7,6 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal">
 
         <TextView
@@ -18,19 +20,19 @@
             style="@style/NormalText"/>
 
         <TextView
-            android:id="@+id/imagePlaceholder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="IMAGE"/>
-
-        <TextView
             android:id="@+id/clockPlaceholder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/time"
             style="@style/NormalText"/>
+
+        <TextView
+            android:id="@+id/imagePlaceholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="IMAGE"/>
     </LinearLayout>
 
     <Button
@@ -45,6 +47,8 @@
         android:id="@+id/lowerLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal">
 
         <TextView
@@ -56,18 +60,18 @@
             style="@style/NormalText" />
 
         <TextView
-            android:id="@+id/nextImagePlaceholder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="IMAGE" />
-
-        <TextView
             android:id="@+id/nextClockPlaceholder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/time"
             style="@style/NormalText" />
+
+        <TextView
+            android:id="@+id/nextImagePlaceholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="IMAGE" />
     </LinearLayout>
 </LinearLayout>
