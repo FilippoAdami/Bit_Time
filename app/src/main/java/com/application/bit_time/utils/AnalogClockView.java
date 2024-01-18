@@ -11,6 +11,11 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
+import androidx.core.content.ContextCompat;
+
+import com.application.bit_time.R;
+
 import java.util.Calendar;
 
 public class AnalogClockView extends View {
@@ -22,6 +27,12 @@ public class AnalogClockView extends View {
     private Paint textPaint;           // Paint for drawing text (numbers)
     private Paint minuteMarkPaint;     // Paint for drawing minute marks
 
+    private Paint RedPaint;      // Paint for the pastel red color
+    private Paint YellowPaint;   // Paint for the pastel yellow color
+    private Paint GreenPaint;    // Paint for the pastel green color
+    private Paint BluePaint;     // Paint for the pastel blue color
+    private Paint primaryPaint;        // Paint for the primary color
+    private Paint whitePaint;          // Paint for the white color
     private int centerX;               // X coordinate of the clock center
     private int centerY;               // Y coordinate of the clock center
     private int radius;                // Radius of the clock
@@ -40,28 +51,87 @@ public class AnalogClockView extends View {
 
     // Initialize paint objects and other properties
     private void init() {
+        Context context = getContext();
+        int earthRedColor = ContextCompat.getColor(context, R.color.earth_red);
+        int earthYellowColor = ContextCompat.getColor(context, R.color.earth_yellow);
+        int earthGreenColor = ContextCompat.getColor(context, R.color.earth_green);
+        int earthBlueColor = ContextCompat.getColor(context, R.color.earth_purple);
+
+        int pastelRedColor = ContextCompat.getColor(context, R.color.pastel_red);
+        int pastelYellowColor = ContextCompat.getColor(context, R.color.pastel_yellow);
+        int pastelGreenColor = ContextCompat.getColor(context, R.color.pastel_green);
+        int pastelBlueColor = ContextCompat.getColor(context, R.color.pastel_purple);
+
+        int vividRedColor = ContextCompat.getColor(context, R.color.red);
+        int vividYellowColor = ContextCompat.getColor(context, R.color.yellow);
+        int vividGreenColor = ContextCompat.getColor(context, R.color.green);
+        int vividBlueColor = ContextCompat.getColor(context, R.color.purple);
+
+        int primaryColor = ContextCompat.getColor(context, R.color.primary);
+        int whiteColor = ContextCompat.getColor(context, R.color.white);
+        primaryPaint = new Paint();
+        primaryPaint.setColor(primaryColor);
+        primaryPaint.setStyle(Paint.Style.STROKE);
+        whitePaint = new Paint();
+        whitePaint.setColor(whiteColor);
+        whitePaint.setStyle(Paint.Style.FILL);
         clockPaint = new Paint();
-        clockPaint.setColor(Color.BLACK);
+        clockPaint.setColor(primaryColor);
+        clockPaint.setAlpha(128);
         clockPaint.setStyle(Paint.Style.STROKE);
-        clockPaint.setStrokeWidth(5);
+        clockPaint.setStrokeWidth(3);
+
+        //get the theme of the activity
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String theme = sharedPreferences.getString("theme", "pastel");
 
         hourHandPaint = new Paint();
-        hourHandPaint.setColor(Color.BLUE);
         hourHandPaint.setStyle(Paint.Style.STROKE);
         hourHandPaint.setStrokeWidth(20);
 
         minuteHandPaint = new Paint();
-        minuteHandPaint.setColor(Color.RED);
         minuteHandPaint.setStyle(Paint.Style.STROKE);
         minuteHandPaint.setStrokeWidth(12);
 
+        BluePaint = new Paint();
+        BluePaint.setStyle(Paint.Style.STROKE);
+        RedPaint = new Paint();
+        RedPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        YellowPaint = new Paint();
+        YellowPaint.setStyle(Paint.Style.FILL);
+        GreenPaint = new Paint();
+        GreenPaint.setStyle(Paint.Style.FILL);
+
+        if(theme.equals("PastelTheme") || theme.equals("BWTheme")){
+            BluePaint.setColor(pastelBlueColor);
+            RedPaint.setColor(pastelRedColor);
+            YellowPaint.setColor(pastelYellowColor);
+            GreenPaint.setColor(pastelGreenColor);
+        }
+        else if(theme.equals("EarthTheme")){
+            BluePaint.setColor(earthBlueColor);
+            RedPaint.setColor(earthRedColor);
+            YellowPaint.setColor(earthYellowColor);
+            GreenPaint.setColor(earthGreenColor);
+        }
+        else{
+            BluePaint.setColor(vividBlueColor);
+            RedPaint.setColor(vividRedColor);
+            YellowPaint.setColor(vividYellowColor);
+            GreenPaint.setColor(vividGreenColor);
+        }
+
+        hourHandPaint.setColor(BluePaint.getColor());
+        minuteHandPaint.setColor(RedPaint.getColor());
+
+
         textPaint = new Paint();
-        textPaint.setColor(Color.BLACK);
+        textPaint.setColor(primaryColor);
         textPaint.setTextSize(60);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
         minuteMarkPaint = new Paint();
-        minuteMarkPaint.setColor(Color.BLACK);
+        minuteMarkPaint.setColor(primaryColor);
         minuteMarkPaint.setStrokeWidth(5);
     }
 
@@ -90,6 +160,7 @@ public class AnalogClockView extends View {
         float minuteAngle = (minute + second / 60.0f)*6;
         // Draw outer clock circle
         canvas.drawCircle(centerX, centerY, radius, clockPaint);
+        Paint whitePait = new Paint();
 
         //Get TimesString from SharedPreferences
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
@@ -185,27 +256,15 @@ public class AnalogClockView extends View {
                 float yellowSliceStart = (float) (taskStartingAngle + (0.65*total_times[i+1])*6);
                 float redSliceStart = (float) (taskStartingAngle + (0.85*total_times[i+1])*6);
 
-                Paint greenSlicePaint = new Paint();
-                Paint yellowSlicePaint = new Paint();
-                Paint redSlicePaint = new Paint();
-
-                greenSlicePaint.setColor(Color.argb(128, 0, 255, 0)); // Set color to semi-transparent green
-                yellowSlicePaint.setColor(Color.argb(128, 255, 255, 0)); // Set color to semi-transparent yellow
-                redSlicePaint.setColor(Color.argb(128, 255, 0, 0)); // Set color to semi-transparent red
-
-                greenSlicePaint.setStyle(Paint.Style.FILL);
-                yellowSlicePaint.setStyle(Paint.Style.FILL);
-                redSlicePaint.setStyle(Paint.Style.FILL);
-
                 // Draw the green slice starting at minuteAngle
-                canvas.drawArc(rectF, taskStartingAngle - 90, yellowSliceStart - taskStartingAngle, true, greenSlicePaint);
-                canvas.drawArc(rectF, yellowSliceStart - 90, redSliceStart - yellowSliceStart, true, yellowSlicePaint);
-                canvas.drawArc(rectF, redSliceStart - 90, endCurrentAngle - redSliceStart, true, redSlicePaint);
+                canvas.drawArc(rectF, taskStartingAngle - 90, yellowSliceStart - taskStartingAngle, true, GreenPaint);
+                canvas.drawArc(rectF, yellowSliceStart - 90, redSliceStart - yellowSliceStart, true, YellowPaint);
+                canvas.drawArc(rectF, redSliceStart - 90, endCurrentAngle - redSliceStart, true, RedPaint);
             }
             // Set the future tasks to shades of gray
             else{
                 int k = j+2;
-                int x = 150-((i-k)*50);
+                int x = 210-((i-k)*70);
                 taskSlicePaint[i].setColor(Color.argb(128, x, x, x));
                 canvas.drawArc(rectF, endCurrentAngle -90, total_times[i+1]*6, true, taskSlicePaint[i]);
                 endCurrentAngle = endCurrentAngle + total_times[i+1]*6;
@@ -219,10 +278,7 @@ public class AnalogClockView extends View {
         //canvas.drawArc(rectF, taskSliceStart[3] - 90, total_times[5]*6, true, taskSlicePaint[4]);
 
         // Draw an inner white circle
-        Paint whiteCirclePaint = new Paint();
-        whiteCirclePaint.setColor(Color.WHITE);
-        whiteCirclePaint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(centerX, centerY, radius - 120, whiteCirclePaint);
+        canvas.drawCircle(centerX, centerY, radius - 120, whitePaint);
 
 
         int startX = 0;
@@ -240,11 +296,11 @@ public class AnalogClockView extends View {
                 String number = String.valueOf(min / 5 == 0 ? 12 : min / 5);
                 int Hour = min / 5;
                     if(Hour == calendar.get(Calendar.HOUR)){
-                        textPaint.setColor(Color.BLUE);
-                        textPaint.setAlpha(80);
+                        textPaint.setColor(hourHandPaint.getColor());
+                        textPaint.setAlpha(200);
                         //draw a little empty circle to circle the number
                         canvas.drawCircle(endX, endY, 50, textPaint);
-                        textPaint.setColor(Color.BLACK);
+                        textPaint.setColor(primaryPaint.getColor());
                         textPaint.setAlpha(255);
                         minuteMarkPaint.setStrokeWidth(15);
                     }
@@ -264,14 +320,14 @@ public class AnalogClockView extends View {
             }
             if (min == calendar.get(Calendar.MINUTE)) {
                 // Highlight the actual minute's tick
-                minuteMarkPaint.setColor(Color.RED);
-                textPaint.setColor(Color.RED);
+                minuteMarkPaint.setColor(minuteHandPaint.getColor());
+                textPaint.setColor(minuteMarkPaint.getColor());
                 minuteMarkPaint.setStrokeWidth(15);
             }
             else{
-                minuteMarkPaint.setColor(Color.BLACK);
+                minuteMarkPaint.setColor(primaryPaint.getColor());
                 minuteMarkPaint.setStrokeWidth(3);
-                textPaint.setColor(Color.BLACK);
+                textPaint.setColor(primaryPaint.getColor());
             }
             if (min % 15 == 0) {
                 // Draw minute numbers at every 15-minute interval
@@ -289,7 +345,7 @@ public class AnalogClockView extends View {
         canvas.drawCircle(centerX, centerY, radius - 120, clockPaint);
         canvas.drawCircle(centerX, centerY, radius - 220, clockPaint);
         //String h = String.valueOf(calendar.get(Calendar.HOUR));
-        //canvas.drawText( String.valueOf(taskSliceStart[5]) + "   " + String.valueOf(currentTaskIndex) +"  "+currentTaskID+"  "+ IDsString, centerX, centerY, textPaint);
+        //canvas.drawText( String.valueOf(taskStartingTime), centerX, centerY, textPaint);
 
         // Draw clock hands
         drawClockHand(canvas, centerX, centerY, hourAngle, radius -170, hourHandPaint, hour);

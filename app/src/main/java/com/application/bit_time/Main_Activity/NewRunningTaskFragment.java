@@ -147,7 +147,7 @@ public class NewRunningTaskFragment extends Fragment {
                         Calendar calendar = Calendar.getInstance();
                         int currentMinute = calendar.get(Calendar.MINUTE);
                         int currentSecond = calendar.get(Calendar.SECOND);
-                        float taskStartingTime = currentMinute + currentSecond/60;
+                        float taskStartingTime = currentMinute + currentSecond/60f;
                         sharedPreferences.edit().putFloat("taskStartingTime", taskStartingTime).commit();
 
                         RAVM.selectItem(new newRunningActivityData(currentTask));

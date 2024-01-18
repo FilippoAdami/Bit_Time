@@ -3,6 +3,7 @@ package com.application.bit_time.Main_Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -45,6 +47,10 @@ public class newHomeFragment extends Fragment {
 
     List<TaskItem> subtasksData;
 
+    Paint primaryPaint;
+    Paint BluePaint;
+    Paint RedPaint;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +68,7 @@ public class newHomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.a_new_home_fragment_layout,container,false);
-
+        init();
         clockTextView = view.findViewById(R.id.clockTextView2);
         analogClockView = view.findViewById(R.id.analogClockView2);
 
@@ -156,8 +162,8 @@ public class newHomeFragment extends Fragment {
             String minutes = parts[1];
 
             SpannableString spannableTime = new SpannableString(currentTime);
-            spannableTime.setSpan(new ForegroundColorSpan(Color.BLUE), 0, hours.length(), 0);
-            spannableTime.setSpan(new ForegroundColorSpan(Color.RED), hours.length() + 1, currentTime.length(), 0);
+            spannableTime.setSpan(new ForegroundColorSpan(BluePaint.getColor()), 0, hours.length(), 0);
+            spannableTime.setSpan(new ForegroundColorSpan(RedPaint.getColor()), hours.length() + 1, currentTime.length(), 0);
             clockTextView.setText(spannableTime);
 
             analogClockView.invalidate();
@@ -169,6 +175,44 @@ public class newHomeFragment extends Fragment {
     private String getCurrentTime() {
 
         return timeFormat.format(new Date());
+    }
+
+    private void init() {
+        Context context = getContext();
+        int earthRedColor = ContextCompat.getColor(context, R.color.earth_red);
+        int earthBlueColor = ContextCompat.getColor(context, R.color.earth_purple);
+
+        int pastelRedColor = ContextCompat.getColor(context, R.color.pastel_red);
+        int pastelBlueColor = ContextCompat.getColor(context, R.color.pastel_purple);
+
+        int vividRedColor = ContextCompat.getColor(context, R.color.red);
+        int vividBlueColor = ContextCompat.getColor(context, R.color.purple);
+
+        int primaryColor = ContextCompat.getColor(context, R.color.primary);
+        primaryPaint = new Paint();
+        primaryPaint.setColor(primaryColor);
+
+        //get the theme of the activity
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String theme = sharedPreferences.getString("theme", "pastel");
+
+        BluePaint = new Paint();
+        BluePaint.setStyle(Paint.Style.STROKE);
+        RedPaint = new Paint();
+        RedPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        if(theme.equals("PastelTheme") || theme.equals("BWTheme")){
+            BluePaint.setColor(pastelBlueColor);
+            RedPaint.setColor(pastelRedColor);
+        }
+        else if(theme.equals("EarthTheme")){
+            BluePaint.setColor(earthBlueColor);
+            RedPaint.setColor(earthRedColor);
+        }
+        else{
+            BluePaint.setColor(vividBlueColor);
+            RedPaint.setColor(vividRedColor);
+        }
     }
 
     public void generateTimeString(){
