@@ -2,15 +2,21 @@ package com.application.bit_time.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.core.content.ContextCompat;
 
@@ -37,7 +43,6 @@ public class AnalogClockView extends View {
     private int centerY;               // Y coordinate of the clock center
     private int radius;                // Radius of the clock
 
-    // Constructor for creating the view programmatically
     public AnalogClockView(Context context) {
         super(context);
         init();
@@ -213,6 +218,14 @@ public class AnalogClockView extends View {
         taskSliceStart[4] = (taskSliceStart[3] + total_times[5]*6);
         taskSliceStart[5] = total_times[6]*6;
 
+        //get a string of the total times
+        String totalTimesStringa = "";
+        for (int i = 0; i < 7; i++) {
+            totalTimesStringa = totalTimesStringa + String.valueOf(total_times[i]) + ",";
+        }
+        // Calculate the final ending angle
+        float endAngle = (total_times[6]%60f + total_times[1] + total_times[2] + total_times[3] + total_times[4] + total_times[5])*6f -90f;
+
         if(currentTaskIndex == 0){
             taskStartingAngle = taskSliceStart[5];
         }
@@ -271,15 +284,8 @@ public class AnalogClockView extends View {
             }
         }
 
-        //canvas.drawArc(rectF, taskSliceStart[5] - 90, total_times[1]*6, true, taskSlicePaint[0]);
-        //canvas.drawArc(rectF, taskSliceStart[0] - 90, total_times[2]*6, true, taskSlicePaint[1]);
-        //canvas.drawArc(rectF, taskSliceStart[1] - 90, total_times[3]*6, true, taskSlicePaint[2]);
-        //canvas.drawArc(rectF, taskSliceStart[2] - 90, total_times[4]*6, true, taskSlicePaint[3]);
-        //canvas.drawArc(rectF, taskSliceStart[3] - 90, total_times[5]*6, true, taskSlicePaint[4]);
-
         // Draw an inner white circle
         canvas.drawCircle(centerX, centerY, radius - 120, whitePaint);
-
 
         int startX = 0;
         int startY = 0;
@@ -345,7 +351,16 @@ public class AnalogClockView extends View {
         canvas.drawCircle(centerX, centerY, radius - 120, clockPaint);
         canvas.drawCircle(centerX, centerY, radius - 220, clockPaint);
         //String h = String.valueOf(calendar.get(Calendar.HOUR));
-        //canvas.drawText( String.valueOf(taskStartingTime), centerX, centerY, textPaint);
+
+        ImageView flagImageView = getRootView().findViewById(R.id.flagImageView);
+        // Get the default position
+        float defaultX = flagImageView.getX();
+        float defaultY = flagImageView.getY();
+        //canvas.drawText( String.valueOf(centerX) + " " +String.valueOf(centerY), centerX, centerY, textPaint);
+
+        // move the image to the border of the clock
+        flagImageView.setX(centerX +50+ ((radius) * (float) Math.cos(Math.toRadians(endAngle))));
+        flagImageView.setY(centerY+100+ ((radius) * (float) Math.sin(Math.toRadians(endAngle))));
 
         // Draw clock hands
         drawClockHand(canvas, centerX, centerY, hourAngle, radius -170, hourHandPaint, hour);
