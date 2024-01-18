@@ -153,5 +153,7 @@
     <string name="pickDateButton">pick date</string>
     <string name="pickTimeButton">pick time</string>
     <string name="addPlanButton">add plan</string>
+    <string name="terminateTaskAlertMsg">Are you done with thistask ?</string>
+    <string name="terminateTaskAlertTitle">Warning</string>
 
 </resources>

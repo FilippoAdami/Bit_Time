@@ -84,7 +84,9 @@ public class NewRunningTaskFragment extends Fragment {
 
         Button endTaskButton = view.findViewById(R.id.endTaskButton);
         endTaskButton.setOnClickListener(view1 -> {
+
             RAVM.selectItem(new newRunningActivityData(currentTask, newRunningActivityData.Status.OnWait));
+
             RunningTaskDialog runningTaskDialog = new RunningTaskDialog();
             runningTaskDialog.show(requireActivity().getSupportFragmentManager(),null);
 

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.application.bit_time.R;
 import com.application.bit_time.utils.RunningActivityData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 
@@ -40,25 +41,28 @@ public class RunningTaskDialog extends DialogFragment {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         int lastedTime = sharedPreferences.getInt("lastedTime",-1);
+        String currentTaskName = sharedPreferences.getString("currentTaskName","");
+        String message = getString(R.string.terminateTaskAlertMsg).replace("thistask",currentTaskName);
 
         return new AlertDialog.Builder(getActivity())
-                .setTitle("title test")
+                .setTitle(R.string.terminateTaskAlertTitle)
+                .setMessage(message)
                 .setPositiveButton("SI", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getContext(),"POSITIVE PRESSED",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(),"POSITIVE PRESSED",Toast.LENGTH_SHORT).show();
 
                         currentData.setAsTerminated(lastedTime);
                         Log.i("datafromdialog",currentData.toString());
                         runningActivityViewModel.selectItem(currentData);
                     }
                 })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                /*.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getContext(),"NEGATIVE PRESSED",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(),"NEGATIVE PRESSED",Toast.LENGTH_SHORT).show();
                     }
-                })
+                })*/
                 .create();
     }
 }

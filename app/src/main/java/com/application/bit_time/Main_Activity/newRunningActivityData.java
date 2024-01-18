@@ -148,12 +148,22 @@ public class newRunningActivityData {
 
     }
 
+    public boolean isExpired()
+    {
+        if(this.endStatus.equals(EndStatus.Expired))
+            return true;
+
+        return false;
+    }
+
     public void setAsExpired()
     {
         this.status= Status.End;
         this.endStatus = EndStatus.Expired;
         this.lastedTime= this.currentTask.getDurationInt();
     }
+
+
 
     public UpdatePackage getUpdatePackage()
     {

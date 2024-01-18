@@ -97,7 +97,11 @@ public class newHomeFragment extends Fragment {
                 } else if (item.status.toString().equals("OnWait")) {
                     Log.i("item at onwait",item.toString());
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                    sharedPreferences.edit().putInt("lastedTime", lastedTime).commit();
+                    sharedPreferences
+                            .edit()
+                            .putInt("lastedTime", lastedTime)
+                            .putString("currentTaskName",currentTask.getName())
+                            .commit();
                 }
             }
 
@@ -113,14 +117,14 @@ public class newHomeFragment extends Fragment {
             lastedTime++;
             Log.i("lastedTime",Integer.toString(lastedTime));
 
-            if(lastedTime== currentTask.getDurationInt())
+            /*if(lastedTime== currentTask.getDurationInt())
             {
                 Log.i("currTask should exp",Integer.toString(lastedTime));
                 newRunningActivityData currentRAD = new newRunningActivityData(currentTask);
                 currentRAD.setAsExpired();
                 Log.i("currTask nFH",currentRAD.fullToString());
                 RAVM.selectItem(currentRAD);
-            }
+            }*/
 
 
             String currentTime = getCurrentTime();
