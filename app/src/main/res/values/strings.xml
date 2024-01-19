@@ -62,9 +62,10 @@
     <string name="switch_mode">Prima volta qui? Registrati</string>
     <string name="account_e_statistiche"><![CDATA[Account & Statistiche]]></string>
     <string name="impostazioni_personalizzazione">Impostazioni Personalizzazione</string>
-    <string name="nuova_attivit">Nuova Attività</string>
+    <string name="nuova_attivit">Gestione Tasks e Attivita</string>
     <string name="minigiochi">MINIGIOCHI</string>
-    <string name="quickstart_menu">QuickStart Menù</string>
+    <!--string name="quickstart_menu">QuickStart Menù</string-->
+    <string name="quickstart_menu">Menù Accesso Rapido</string>
     <string name="add_task">+</string>
     <string name="nome_attivit">nome attività</string>
     <string name="save">Salva</string>
@@ -78,6 +79,7 @@
     <string name="timeB">Time</string>
     <string name="name">Nome</string>
     <string name="modify">Modifica</string>
+    <string name="placehoder"></string>
     <string name="delete">Elimina</string>
     <string name="TaskName">Nome del task</string>
     <string name="end_task">Terminato!</string>
@@ -109,9 +111,12 @@
     <string name="enable_gamification">gamification</string>
     <string name="notifiche">Notifiche</string>
     <string name="volume_e_suoni">Volume e Suoni</string>
-    <string name="connect_your_app_with_google_to_sync_preferences_across_devices">Connect your app with Google to sync preferences across devices.</string>
-    <string name="connect_with_google">Connect with Google</string>
-    <string name="dismiss">Dismiss</string>
+    <!--string name="connect_your_app_with_google_to_sync_preferences_across_devices">Connect your app with Google to sync preferences across devices.</string-->
+    <string name="connect_your_app_with_google_to_sync_preferences_across_devices">Connetti la tua app a Google per sincronizzare le tue preferenze tra i tuoi dispositivi</string>
+    <!--string name="connect_with_google">Connect with Google</string-->
+    <string name="connect_with_google">Connettiti a Google</string>
+    <!--string name="dismiss">Dismiss</string-->
+    <string name="dismiss">Annulla</string>
     <string name="tipo_di_gamification">Tipo di gamification</string>
     <string name="bonus_malus">Bonus/Malus</string>
     <string name="solo_bonus">Solo bonus</string>
@@ -150,9 +155,16 @@
     <string name="customize_app">Impostazioni App</string>
     <string name="start_activity">Programma Attività</string>
     <string name="planSwitchText">PLAN</string>
-    <string name="pickDateButton">pick date</string>
-    <string name="pickTimeButton">pick time</string>
+    <!--string name="pickDateButton">pick date</string-->
+    <string name="pickDateButton">Scegli una data</string>
+    <!--string name="pickTimeButton">pick time</string-->
+    <string name="pickTimeButton">Scegli l\' orario</string>
+    <!--string name="scheduleBtn">SCHEDULE</string-->
+    <!--string name="dailyFrequencyOption">Daily</string-->
+    <string name="dailyFrequencyOption">Quotidiana</string>
+    <string name="scheduleBtn">PROGRAMMA</string>
     <string name="addPlanButton">add plan</string>
+    <string name="statusTW"></string>
     <string name="terminateTaskAlertMsg">Are you done with thistask ?</string>
     <string name="terminateTaskAlertTitle">Warning</string>
 
