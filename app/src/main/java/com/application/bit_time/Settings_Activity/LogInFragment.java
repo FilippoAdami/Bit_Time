@@ -119,7 +119,7 @@ public class LogInFragment extends Fragment {
                     fragmentTransaction.commit();
                 } else {
                     // Credentials are not valid, show an error message
-                    Toast.makeText(getActivity(), "Invalid credentials. Please try again.", Toast.LENGTH_SHORT).show();                    }
+                    Toast.makeText(getActivity(), "Credenziali non valide. Riprova.", Toast.LENGTH_SHORT).show();                    }
 
             } else {
                 // Insert the email and password into the database
@@ -186,12 +186,12 @@ public class LogInFragment extends Fragment {
         if (isLoginMode) {
             // Update UI elements for login mode
             submitButton.setText(R.string.login);
-            switchMode.setText("Don't have an account yet? \n click here to Sign Up");
+            switchMode.setText("Prima volta qui? \n Registrati");
             forgotPassword.setVisibility(View.VISIBLE);
         } else {
             // Update UI elements for sign-up mode
             submitButton.setText(R.string.sign_up);
-            switchMode.setText("Already have an account? \n click here to Login");
+            switchMode.setText("Hai già un account? \n Accedi");
             forgotPassword.setVisibility(View.GONE);
         }
     }
@@ -244,18 +244,18 @@ public class LogInFragment extends Fragment {
                             // Show a success message, clear the fields and switch to login mode
                             isLoginMode = true;
                             updateUIForMode();
-                            Toast.makeText(getActivity(), "Registration successful. Please login.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "La registrazione è andata a buon fine. Ora puoi accedere al tuo profilo", Toast.LENGTH_SHORT).show();
                             emailEditText.setText("");
                             password_edit_text.setText("");
                         }else {
-                            Toast.makeText(getActivity(), "Invalid email domain", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "email non valida", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }else {
-                    Toast.makeText(getActivity(), "Invalid email format", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "email non valida", Toast.LENGTH_SHORT).show();
                 }
             }else{
-                Toast.makeText(getActivity(), "Invalid email", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "email non valida", Toast.LENGTH_SHORT).show();
             }
             cursor.close();
         }

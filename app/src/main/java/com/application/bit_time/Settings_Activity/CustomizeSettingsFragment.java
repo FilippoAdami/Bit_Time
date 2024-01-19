@@ -320,10 +320,10 @@ public class CustomizeSettingsFragment extends Fragment {
             extension = ".png";
         } else {
             // Toast unsupported file types
-            Toast.makeText(getActivity(), "Unsupported file type", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "File non supportato", Toast.LENGTH_SHORT).show();
             return null;
         }
-        Toast.makeText(getActivity(), "Background changed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "sfondo aggiornato correttamente", Toast.LENGTH_SHORT).show();
         return "background_image" + extension;
     }
     private void retrieveAndShowRingtones() throws IOException {
@@ -411,10 +411,10 @@ public class CustomizeSettingsFragment extends Fragment {
 
         String fileName = "ringtone" + extension;
         if (type.equals("notification")) {
-            Toast.makeText(getActivity(), "Notification sound changed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Suono di notifica ggiornato correttamente", Toast.LENGTH_SHORT).show();
             fileName = "notification" + extension;
         }else if (type.equals("ringtone")){
-            Toast.makeText(getActivity(), "Ringtone changed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Suoneria aggiornata correttamente", Toast.LENGTH_SHORT).show();
         }
         return fileName;
     }
@@ -455,7 +455,7 @@ public class CustomizeSettingsFragment extends Fragment {
                     }
                 }
             } else {
-                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Azione non consentita", Toast.LENGTH_SHORT).show();
                 tempUri = null;
             }
         }
@@ -484,7 +484,7 @@ public class CustomizeSettingsFragment extends Fragment {
         }
         dbManager.changeHomeType(switch1.isChecked());
         preferencesChanged = false;
-        Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Salvataggio completato!", Toast.LENGTH_SHORT).show();
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(CustomizeSettingsFragment.this).commit();
         fragmentManager.popBackStack();

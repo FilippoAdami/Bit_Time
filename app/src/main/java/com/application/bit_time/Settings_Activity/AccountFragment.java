@@ -98,7 +98,7 @@ public class AccountFragment extends Fragment {
         saveButton.setOnClickListener(v -> {
             // Save the data to the database
             updateUserData();
-            Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Salvataggio completato!", Toast.LENGTH_SHORT).show();
         });
 
         // Set click listener for logout button
@@ -108,9 +108,9 @@ public class AccountFragment extends Fragment {
             editor.putBoolean("loggedIn", false);
             editor.apply();
 
-            // Go to the home fragment
+            // Get back to the login fragment
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.middle_fragment_container_view, new HomeFragment());
+            fragmentTransaction.replace(R.id.middle_fragment_container_view, new LogInFragment());
             fragmentTransaction.commit();
         });
 
@@ -162,6 +162,6 @@ public class AccountFragment extends Fragment {
             dbManager.updatePassword(email, password);
         }
 
-        Toast.makeText(getActivity(), "Successfully updated!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Salvataggio completato!", Toast.LENGTH_SHORT).show();
     }
 }

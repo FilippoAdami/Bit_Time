@@ -2,19 +2,13 @@ package com.application.bit_time.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -165,14 +159,13 @@ public class AnalogClockView extends View {
         float minuteAngle = (minute + second / 60.0f)*6;
         // Draw outer clock circle
         canvas.drawCircle(centerX, centerY, radius, clockPaint);
-        Paint whitePait = new Paint();
 
         //Get TimesString from SharedPreferences
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String TimesString = sharedPreferences.getString("TimesString", "000000,000000,000000,000000,000000,000000,00000");
 
         //Get current task from SharedPreferences
-        int currentTaskID = sharedPreferences.getInt("currentTask", 000000);
+        int currentTaskID = sharedPreferences.getInt("currentTask", 0);
         // Get currentTaskStartingTime from SharedPreferences
         float taskStartingTime = sharedPreferences.getFloat("taskStartingTime", 0.0f);
         // Calculate the starting angle for the current task
@@ -221,7 +214,7 @@ public class AnalogClockView extends View {
         //get a string of the total times
         String totalTimesStringa = "";
         for (int i = 0; i < 7; i++) {
-            totalTimesStringa = totalTimesStringa + String.valueOf(total_times[i]) + ",";
+            totalTimesStringa = totalTimesStringa + total_times[i] + ",";
         }
         // Calculate the final ending angle
         float endAngle = (total_times[6]%60f + total_times[1] + total_times[2] + total_times[3] + total_times[4] + total_times[5])*6f -90f;
@@ -337,7 +330,7 @@ public class AnalogClockView extends View {
             }
             if (min % 15 == 0) {
                 // Draw minute numbers at every 15-minute interval
-                String number = String.valueOf(min == 0 ? 0 : min);
+                String number = String.valueOf(min);
                 canvas.drawText(number, endX, endY + 20, textPaint);
                 textPaint.setColor(Color.BLACK);
             }
@@ -353,14 +346,11 @@ public class AnalogClockView extends View {
         //String h = String.valueOf(calendar.get(Calendar.HOUR));
 
         ImageView flagImageView = getRootView().findViewById(R.id.flagImageView);
-        // Get the default position
-        float defaultX = flagImageView.getX();
-        float defaultY = flagImageView.getY();
         //canvas.drawText( String.valueOf(centerX) + " " +String.valueOf(centerY), centerX, centerY, textPaint);
 
         // move the image to the border of the clock
-        flagImageView.setX(centerX +50+ ((radius) * (float) Math.cos(Math.toRadians(endAngle))));
-        flagImageView.setY(centerY+100+ ((radius) * (float) Math.sin(Math.toRadians(endAngle))));
+        flagImageView.setX((float) (centerX+35 + (radius-50) * Math.cos(Math.toRadians(endAngle))));
+        flagImageView.setY((float) (centerY+130+ (radius-50) * Math.sin(Math.toRadians(endAngle))));
 
         // Draw clock hands
         drawClockHand(canvas, centerX, centerY, hourAngle, radius -170, hourHandPaint, hour);

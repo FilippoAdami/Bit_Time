@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -44,13 +45,20 @@ public class CustomizationSettingsFragment extends Fragment {
             fragmentTransaction.commit();
         });
 
+        //TODO: implementare la sezione di start activity
+        //set the text of the buttonNA to "sezione in fase di sviluppo"
+        buttonNA.setText("Sezione in fase di sviluppo");
+
         buttonNA.setOnClickListener(v -> {
+            //toast "sezione in fase di sviluppo"
+            Toast.makeText(getActivity(), "Sezione in fase di sviluppo", Toast.LENGTH_SHORT).show();
+
             // Replace the current fragment with a new fragment
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            /*FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.middle_fragment_container_view, new ModifyTasksFragment());
             fragmentTransaction.addToBackStack(null); // Optional: Add to back stack
-            fragmentTransaction.commit();
+            fragmentTransaction.commit();*/
         });
 
 

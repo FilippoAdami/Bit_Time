@@ -27,7 +27,11 @@ public class CaregiverLoginFragment extends Fragment {
         Button logInButton = rootView.findViewById(R.id.loginButton);
         dbManager = new DbManager(getActivity());
         backButton.setOnClickListener(v -> {
-            // Navigate back to the previous fragment or perform another action
+            // Remove the fragment from the activity and close the fragment
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().remove(CaregiverLoginFragment.this).commit();
+            fragmentManager.popBackStack();
+            //get back
             requireActivity().onBackPressed();
         });
 
@@ -45,7 +49,7 @@ public class CaregiverLoginFragment extends Fragment {
                 startActivity(intent);
             } else {
                 // Show error message
-                Toast.makeText(getActivity(), "Incorrect PIN. Please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Il PIN inserito non è corretto.", Toast.LENGTH_SHORT).show();
             }
 
 

@@ -171,8 +171,7 @@ public class GamificationSettings extends Fragment {
         dbManager.changeGamificationPoints(editText1Value, editText2Value, editText3Value, editText4Value, editText5Value, editText6Value);
 
         // toast message
-        Toast.makeText(getActivity(), "Gamification settings updated" , Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(getActivity(), "Impostazioni aggiornate correttamente" , Toast.LENGTH_SHORT).show();
     }
 
     private void showConfirmationDialog() {
