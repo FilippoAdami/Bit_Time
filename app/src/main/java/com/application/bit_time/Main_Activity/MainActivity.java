@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.MainActivityStatusData;
 import com.application.bit_time.utils.MainActivityViewModel;

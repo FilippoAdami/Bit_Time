@@ -57,8 +57,8 @@ public class SettingsMiddleFragment extends Fragment {
 
         Button addButton = view.findViewById(R.id.addButton);
         TextView text = view.findViewById(R.id.label);
-        text.setText("Nuova attività");
-        addButton.setText("+Activity");
+        text.setText(R.string.newActivityLabel);
+        addButton.setText(R.string.addActivityBtn);
 
         Log.i("TEST","res da middle "+dbViewModel.getSelectedItem().getValue());
 
@@ -67,7 +67,7 @@ public class SettingsMiddleFragment extends Fragment {
 
             if(item.equals("Tasks"))
             {
-                text.setText("Nuovo task");
+                text.setText(R.string.newTaskLabel);
                 addButton.setText("+Task");
 
                 addButton.setOnClickListener(new View.OnClickListener() {
@@ -82,8 +82,8 @@ public class SettingsMiddleFragment extends Fragment {
                 });
             }
             else if(item.equals("Activities") || item.equals("EntryPoint")) {
-                text.setText("Nuova attività");
-                addButton.setText("+Activity");
+                text.setText(R.string.newActivityLabel);
+                addButton.setText(R.string.addActivityBtn);
                 addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

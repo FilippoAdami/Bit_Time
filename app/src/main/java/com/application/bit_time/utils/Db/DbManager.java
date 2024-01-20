@@ -98,10 +98,13 @@ public class DbManager {
                         DbContract.ActivitySchedule.COLUMN_NAME_MINUTES + " integer," +
                         DbContract.ActivitySchedule.COLUMN_NAME_FREQUENCY + " text);";
 
+
         public DbHelper(Context context)
         {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
+
+
 
         @Override
         public void onCreate(SQLiteDatabase db) {
@@ -114,6 +117,11 @@ public class DbManager {
             db.execSQL(SQL_CREATE_REPORT_DATA_TABLE);
         }
 
+        public String getDbName()
+        {
+            return db.getPath();
+        }
+
         @Override
         public void onUpgrade(SQLiteDatabase db, int i, int i1) {
             // This database is only a cache for online data, so its upgrade policy is
@@ -123,10 +131,7 @@ public class DbManager {
         }
     }
 
-    public String getDbName()
-    {
-        return db.getPath();
-    }
+
     public DbManager(Context context)
     {
         DbHelper dbHelper = new DbHelper(context);
