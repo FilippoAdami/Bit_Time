@@ -2,20 +2,28 @@ package com.application.bit_time.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
 import com.application.bit_time.R;
+import com.application.bit_time.utils.Db.DbManager;
 
+import java.io.File;
 import java.util.Calendar;
 
 public class AnalogClockView extends View {
@@ -36,6 +44,8 @@ public class AnalogClockView extends View {
     private int centerX;               // X coordinate of the clock center
     private int centerY;               // Y coordinate of the clock center
     private int radius;                // Radius of the clock
+
+    DbManager dbManager;
 
     public AnalogClockView(Context context) {
         super(context);
@@ -86,11 +96,11 @@ public class AnalogClockView extends View {
 
         hourHandPaint = new Paint();
         hourHandPaint.setStyle(Paint.Style.STROKE);
-        hourHandPaint.setStrokeWidth(20);
+        hourHandPaint.setStrokeWidth(25);
 
         minuteHandPaint = new Paint();
         minuteHandPaint.setStyle(Paint.Style.STROKE);
-        minuteHandPaint.setStrokeWidth(12);
+        minuteHandPaint.setStrokeWidth(16);
 
         BluePaint = new Paint();
         BluePaint.setStyle(Paint.Style.STROKE);
@@ -160,6 +170,8 @@ public class AnalogClockView extends View {
         // Draw outer clock circle
         canvas.drawCircle(centerX, centerY, radius, clockPaint);
 
+        //Get the database manager
+        dbManager = new DbManager(getContext());
         //Get TimesString from SharedPreferences
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String TimesString = sharedPreferences.getString("TimesString", "000000,000000,000000,000000,000000,000000,00000");
@@ -345,8 +357,51 @@ public class AnalogClockView extends View {
         canvas.drawCircle(centerX, centerY, radius - 220, clockPaint);
         //String h = String.valueOf(calendar.get(Calendar.HOUR));
 
+        // Draw an image inside the circle
+        String currentBackground = dbManager.getBackground();
+        // Get the file object from the file path
+        File file = new File(currentBackground);
+        String imagePath = file.getAbsolutePath();
+        Log.i("saveFileAbPath", imagePath);
+        Bitmap originalBitmap = BitmapFactory.decodeFile(imagePath);
+        int maxSize = 2*radius-440;  // Change this to your desired value
+
+        // Calculate the scaling factors for width and height
+        float scaleFactor = Math.min((float) maxSize / originalBitmap.getWidth(), (float) maxSize / originalBitmap.getHeight());
+
+        // Calculate the new dimensions
+        int newWidth = Math.round(originalBitmap.getWidth() * scaleFactor);
+        int newHeight = Math.round(originalBitmap.getHeight() * scaleFactor);
+
+        // Resize the original bitmap to the new dimensions
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+        // Create a circular mask
+        Bitmap mask = Bitmap.createBitmap(resizedBitmap.getWidth(), resizedBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas maskCanvas = new Canvas(mask);
+        Paint maskPaint = new Paint();
+        maskPaint.setAntiAlias(true);
+        maskPaint.setColor(Color.WHITE);
+        maskPaint.setStyle(Paint.Style.FILL);
+        maskCanvas.drawCircle(resizedBitmap.getWidth() / 2f, resizedBitmap.getHeight() / 2f, Math.max(resizedBitmap.getWidth(), resizedBitmap.getHeight()) / 2f, maskPaint);
+
+        // Apply the circular mask
+        Bitmap croppedBitmap = Bitmap.createBitmap(resizedBitmap.getWidth(), resizedBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas croppedCanvas = new Canvas(croppedBitmap);
+        Paint paint = new Paint();
+        paint.setAlpha(190);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        croppedCanvas.drawBitmap(resizedBitmap, 0, 0, null);
+        croppedCanvas.drawBitmap(mask, 0, 0, paint);
+
+        // Calculate the position for drawing on the main canvas
+        float imageX = centerX - croppedBitmap.getWidth() / 2f;
+        float imageY = centerY - croppedBitmap.getHeight() / 2f;
+
+        // Draw the cropped bitmap onto the main canvas
+        canvas.drawBitmap(croppedBitmap, imageX, imageY, null);
+
         ImageView flagImageView = getRootView().findViewById(R.id.flagImageView);
-        //canvas.drawText( String.valueOf(centerX) + " " +String.valueOf(centerY), centerX, centerY, textPaint);
+        //canvas.drawText( currentBackground, centerX, centerY, textPaint);
 
         // move the image to the border of the clock
         flagImageView.setX((float) (centerX+35 + (radius-50) * Math.cos(Math.toRadians(endAngle))));

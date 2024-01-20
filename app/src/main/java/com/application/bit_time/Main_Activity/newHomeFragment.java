@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -71,6 +72,13 @@ public class newHomeFragment extends Fragment {
         init();
         clockTextView = view.findViewById(R.id.clockTextView2);
         analogClockView = view.findViewById(R.id.analogClockView2);
+
+        //place a listener onBackPressed
+        getActivity().getOnBackPressedDispatcher().addCallback(this.getActivity(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+            }
+        });
 
 
         // Observe changes in the selected item using LiveData

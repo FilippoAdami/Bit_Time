@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
@@ -23,16 +26,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.application.bit_time.R;
@@ -129,6 +130,18 @@ public class CustomizeSettingsFragment extends Fragment {
         checkbox4.setChecked(check4);
         volumeSeekBar.setProgress(dbManager.getVolume());
         switch1.setChecked(dbManager.getHomeType());
+
+        //do not show subtextCheckbox3 and switch1 and subtextSwitch1 and switch1off and switch1on
+        TextView subtextCheckbox3 = view.findViewById(R.id.subtextCheckbox3);
+        subtextCheckbox3.setVisibility(View.GONE);
+        switch1.setVisibility(View.GONE);
+        TextView subtextSwitch1 = view.findViewById(R.id.subtextSwitch1);
+        subtextSwitch1.setVisibility(View.GONE);
+        TextView switch1off = view.findViewById(R.id.switch1off);
+        switch1off.setVisibility(View.GONE);
+        TextView switch1on = view.findViewById(R.id.switch1on);
+        switch1on.setVisibility(View.GONE);
+
 
         // Set the click listeners
         themeDefault.setOnClickListener(v -> {
@@ -310,7 +323,7 @@ public class CustomizeSettingsFragment extends Fragment {
         }
         return null;
     }
-    public String saveImageOperations(Uri uri){
+    public String saveImageOperations(Uri uri) {
         // Determine the file extension from the MIME type
         String extension;
         String mimeType = requireActivity().getContentResolver().getType(uri);
@@ -323,8 +336,27 @@ public class CustomizeSettingsFragment extends Fragment {
             Toast.makeText(getActivity(), "File non supportato", Toast.LENGTH_SHORT).show();
             return null;
         }
-        Toast.makeText(getActivity(), "sfondo aggiornato correttamente", Toast.LENGTH_SHORT).show();
-        return "background_image" + extension;
+
+        // Construct the file name with extension
+        String fileName = "background_image" + extension;
+
+        // Save the image to internal storage and get the Bitmap
+        Bitmap savedBitmap = saveImageFile(uri, fileName);
+
+        if (savedBitmap != null) {
+            // Display the saved image in your ImageView
+            ImageView imageView = getView().findViewById(R.id.internalImage);
+            imageView.setImageBitmap(savedBitmap);
+
+            Toast.makeText(getActivity(), "sfondo aggiornato correttamente", Toast.LENGTH_SHORT).show();
+            //Toast and return the full path of the image
+            Toast.makeText(getActivity(), fileName, Toast.LENGTH_SHORT).show();
+            return fileName;
+        } else {
+            // Toast something went wrong
+            Toast.makeText(getActivity(), "Errore nel salvataggio", Toast.LENGTH_SHORT).show();
+            return null;
+        }
     }
     private void retrieveAndShowRingtones() throws IOException {
         RingtoneManager ringtoneManager = new RingtoneManager(getActivity());
@@ -466,6 +498,7 @@ public class CustomizeSettingsFragment extends Fragment {
         }
         switchTheme(newTheme);
         if(currentBackground != null && backgroundExtension != null){
+            Log.i("currentBackground", "updateUserData: "+currentBackground+" "+backgroundExtension);
             String backgroundPath = saveFile(Uri.parse(currentBackground), backgroundExtension);
             dbManager.changeBackground(backgroundPath);
         }
@@ -516,4 +549,32 @@ public class CustomizeSettingsFragment extends Fragment {
         super.onResume();
         preferencesChanged = false;
     }
+
+    public Bitmap saveImageFile(Uri uri, String fileName) {
+
+        Bitmap bitmap = null;
+        try {
+            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+            // Load the saved image into a Bitmap
+            File file = new File(requireActivity().getFilesDir(), fileName);
+            String imagePath = file.getAbsolutePath();
+            Log.i("saveFileAbPath", imagePath);
+            bitmap = BitmapFactory.decodeFile(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
 }
