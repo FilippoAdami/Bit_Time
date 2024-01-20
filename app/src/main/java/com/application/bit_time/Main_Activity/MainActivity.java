@@ -7,10 +7,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainer;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,13 +20,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.application.bit_time.R;
-import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.MainActivityStatusData;
 import com.application.bit_time.utils.MainActivityViewModel;
@@ -43,10 +37,10 @@ public class MainActivity extends AppCompatActivity {
     //TODO : show clearly if daily has been pressed and is set or not
     //TODO: decide clearly about how to display the plan and planning section
     // TODO : consider isPlanned field of activities schema
-    private MainActivityViewModel statusVM;
+
     private RunningActivityViewModel runningActivityViewModel;
     private DbManager dbManager;
-    private SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         //check if there is a shared preference for the theme
         String currentTheme = sharedPreferences.getString("CurrentTheme", null);
         if (currentTheme == null) {
@@ -178,11 +172,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         Fragment controlbarFragment = new ControlsFragment();
+        MainActivityViewModel statusVM;
+        statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
-        this.statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
-
-        this.statusVM.getSelectedItem().observe(this, item->
+        statusVM.getSelectedItem().observe(this, item->
         {
             Log.i("STATUSVM DETECTION","MainActivity detected something");
 
@@ -214,8 +208,8 @@ public class MainActivity extends AppCompatActivity {
                 {
                     if(item.getBackField().equals(MainActivityStatusData.BackField.Save))
                     {
-                        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-                        int actID = sharedPreferences.getInt("activityToRun",-100);
+                        SharedPreferences tempsharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                        int actID = tempsharedPreferences.getInt("activityToRun",-100);
                         Log.i("Backfield choice","Save actId "+actID);
                         dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());
                     }
@@ -290,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
 
 
-            this.statusVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
+            statusVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
 
 
         }
@@ -334,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
         */
 
 
-        this.statusVM.getSelectedItem().observe(this, item->
+        statusVM.getSelectedItem().observe(this, item->
         {
             Log.i("STATUSVM DETECTION","MainActivity detected something");
 

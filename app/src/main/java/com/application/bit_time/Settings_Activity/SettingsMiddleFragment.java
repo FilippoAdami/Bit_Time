@@ -9,7 +9,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,7 +68,7 @@ public class SettingsMiddleFragment extends Fragment {
             if(item.equals("Tasks"))
             {
                 text.setText(R.string.newTaskLabel);
-                addButton.setText("+Task");
+                addButton.setText(R.string.addTaskBtn);
 
                 addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
