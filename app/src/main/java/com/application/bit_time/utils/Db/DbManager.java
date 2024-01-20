@@ -117,10 +117,10 @@ public class DbManager {
             db.execSQL(SQL_CREATE_REPORT_DATA_TABLE);
         }
 
-        public String getDbName()
+        /*public String getDbName()
         {
             return db.getPath();
-        }
+        }*/
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int i, int i1) {
@@ -136,13 +136,13 @@ public class DbManager {
     {
         DbHelper dbHelper = new DbHelper(context);
 
-        this.db = dbHelper.getWritableDatabase();
+        db = dbHelper.getWritableDatabase();
     }
 
 
     public Cursor searchActivityById(int idInt) {
 
-        String query = "SELECT * FROM "+ DbContract.Activities.TABLE_NAME + " WHERE " +DbContract.Activities._ID + "=" + Integer.toString(idInt);
+        String query = "SELECT * FROM "+ DbContract.Activities.TABLE_NAME + " WHERE " +DbContract.Activities._ID + "=" + idInt;
 
         //Log.i("searchQuery",query);
         return db.rawQuery(query,null);
@@ -250,7 +250,7 @@ public class DbManager {
             latestActivityId = c.getInt(0);
             //Log.i("count","max actId is "+latestActivityId);
             String queryStr = "select * from "+ DbContract.Activities.TABLE_NAME +
-                    " where "+ DbContract.Activities._ID +"="+ Integer.toString(latestActivityId);
+                    " where "+ DbContract.Activities._ID +"="+ latestActivityId;
 
             c= db.rawQuery(queryStr,null);
 
@@ -293,18 +293,23 @@ public class DbManager {
 
         if(c.getCount()>0) {
             c.moveToFirst();
-            return new TaskItem(c.getInt(0), c.getString(1), c.getInt(2));
+            TaskItem item = new TaskItem(c.getInt(0), c.getString(1), c.getInt(2));
+            c.close();
+            return item;
         }
-        else return new TaskItem();
+
+        c.close();
+        return new TaskItem();
+
 
     }
 
-    public Cursor searchRecord(String name)
+    /*public Cursor searchRecord(String name)
     {
         String searchQuery = "select "+ name +" from " + DbContract.Activities.TABLE_NAME;
 
         return db.rawQuery(searchQuery,null);
-    }
+    }*/
 
     public ActivityItem searchActivityItem(ActivityInfo activityInfo)
     {
@@ -324,9 +329,11 @@ public class DbManager {
                 taskItemArr[i] = new TaskItem(taskItemList.get(i));
         }
 
-        ActivityItem item = new ActivityItem(activityInfo,taskItemArr);
+        //ActivityItem item = new ActivityItem(activityInfo,taskItemArr);
 
-        return item;
+        //return item;
+
+        return new ActivityItem(activityInfo,taskItemArr);
     }
     public Cursor selectAllActivities()
     {
@@ -348,13 +355,13 @@ public class DbManager {
                 "UPDATE "+ DbContract.Activities.TABLE_NAME
                 + " SET "
                 + DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME + "='"+ info.getName() + "',"
-                + DbContract.Activities.COLUMN_NAME_TASK1 + "=" + Integer.toString(subtasksId[0]) +","
-                + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(info.getTimeInt()) +","
-                + DbContract.Activities.COLUMN_NAME_TASK2 + "=" + Integer.toString(subtasksId[1]) +","
-                + DbContract.Activities.COLUMN_NAME_TASK3 + "=" + Integer.toString(subtasksId[2]) +","
-                + DbContract.Activities.COLUMN_NAME_TASK4 + "=" + Integer.toString(subtasksId[3]) +","
-                + DbContract.Activities.COLUMN_NAME_TASK5 + "=" + Integer.toString(subtasksId[4])
-                + " WHERE "+ DbContract.Activities._ID + "=" +Integer.toString(info.getIdInt());
+                + DbContract.Activities.COLUMN_NAME_TASK1 + "=" +subtasksId[0] +","
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + info.getTimeInt() +","
+                + DbContract.Activities.COLUMN_NAME_TASK2 + "=" + subtasksId[1] +","
+                + DbContract.Activities.COLUMN_NAME_TASK3 + "=" + subtasksId[2] +","
+                + DbContract.Activities.COLUMN_NAME_TASK4 + "=" + subtasksId[3] +","
+                + DbContract.Activities.COLUMN_NAME_TASK5 + "=" + subtasksId[4]
+                + " WHERE "+ DbContract.Activities._ID + "=" + info.getIdInt();
 
         Log.i("updatequery",query);
 
@@ -458,15 +465,17 @@ public class DbManager {
                 Log.i("new duration", Integer.toString(newDuration));
 
                 updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
-                        + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration)
-                        + " where " + DbContract.Activities._ID + "=" + Integer.toString(currActivity);
-                ;
+                        + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration
+                        + " where " + DbContract.Activities._ID + "=" + currActivity;
+
 
                 Log.i("updateQueryAct", updateQuery);
 
                 db.execSQL(updateQuery);
             } while (scanCursor.moveToNext());
         }
+
+        scanCursor.close();
     }
 
     public void deleteTask(TaskItem task)
@@ -507,13 +516,13 @@ public class DbManager {
                 if(pos>0) {
                     currSubtasks[DbContract.Activities.DIM_MAX - 1] = -1;
 
-
+                    //TODO: CHECK OUT THIS
                     String updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
-                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + Integer.toString(newDuration) + ",";
+                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration ;//+ ",";
 
                     for (int i = 1; i <= DbContract.Activities.DIM_MAX; i++) {
                         //String partial = " " + DbContract.Activities.TABLE_NAME + ".task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
-                        String partial = " " + "task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
+                        String partial = " " + "task" + i + "=" + currSubtasks[i - 1];
 
 
                         if (i < DbContract.Activities.DIM_MAX)
@@ -523,7 +532,7 @@ public class DbManager {
 
                     }
 
-                    updateQuery = updateQuery.concat(" where " + DbContract.Activities._ID + "=" + Integer.toString(scanCursor.getInt(0)));
+                    updateQuery = updateQuery.concat(" where " + DbContract.Activities._ID + "=" + scanCursor.getInt(0));
 
                     Log.i("updateQuery2", updateQuery);
                     db.execSQL(updateQuery);
@@ -536,7 +545,7 @@ public class DbManager {
         }
 
 
-
+        scanCursor.close();
     }
 
     public List<TaskItem> retrieveSubtasks(Cursor activityCursor)
@@ -705,14 +714,14 @@ public class DbManager {
         Log.i("SQLMOD", updateQuery);
         db.execSQL(updateQuery);
     }
-    public void deleteUser(String email) {
+    /*public void deleteUser(String email) {
         String deleteQuery =
                 "delete from "+ DbContract.Userdata.TABLE_NAME + " where "
                         + DbContract.Userdata.COLUMN_NAME_EMAIL + "='" + email + "'";
 
         //Log.i("DB delTask",deleteQuery.toString());
         db.execSQL(deleteQuery);
-    }
+    }*/
 
 
     public void changeTheme(String theme) {
@@ -980,7 +989,7 @@ public class DbManager {
             cursor.close();  // Close the cursor to avoid potential memory leaks
         }
     }
-    public String getRingtone() {
+    /*public String getRingtone() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
@@ -1000,8 +1009,8 @@ public class DbManager {
             cursor.close();
             return "default ringtone";
         }
-    }
-    public String getNotification() {
+    }*/
+    /*public String getNotification() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
@@ -1021,7 +1030,7 @@ public class DbManager {
             cursor.close();
             return "default notification";
         }
-    }
+    }*/
     public boolean getNotifications() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
@@ -1362,6 +1371,7 @@ public class DbManager {
             Log.i("match NOT found","i don't know the max yet");
         }
 
+        c.close();
         return max;
 
     }
@@ -1375,22 +1385,24 @@ public class DbManager {
         db.execSQL(queryStr);
     }
 
-    public Cursor selectAllActivitySchedule()
+    /*public Cursor selectAllActivitySchedule()
     {
         String queryStr = "select * from "+ DbContract.ActivitySchedule.TABLE_NAME;
 
         return db.rawQuery(queryStr,null);
-    }
+    }*/
 
     public Cursor getActivityScheduleInfo(int activityId)
     {
         String queryStr = "select * from "+DbContract.ActivitySchedule.TABLE_NAME +
-                " where " + DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "=" + Integer.toString(activityId);
+                " where " + DbContract.ActivitySchedule.COLUMN_NAME_ACTIVITY_ID + "=" + activityId;
 
         Log.i("selectQuery",queryStr);
-        Cursor c = db.rawQuery(queryStr,null);
+        //Cursor c = db.rawQuery(queryStr,null);
 
-        return c;
+        //return c;
+
+        return db.rawQuery(queryStr,null);
     }
 
     public AlarmInfo selectScheduleById(int scheduleId)
@@ -1404,11 +1416,11 @@ public class DbManager {
             c.moveToFirst();
             AlarmInfo res = new AlarmInfo(c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), AlarmInfo.Frequency.valueOf(c.getString(7)));
             Log.i("res", res.toString());
-
+        c.close();
         return res;
     }
 
-    public GregorianCalendar getActivityScheduleInfoGC(int activityId,int scheduleId) {
+    /*public GregorianCalendar getActivityScheduleInfoGC(int activityId,int scheduleId) {
         GregorianCalendar calendar;
         boolean notfound = true;
 
@@ -1432,10 +1444,10 @@ public class DbManager {
 
 
         return calendar;
-    }
+    }*/
 
 
-    public void selectAndPrintAllReportData()
+    /*public void selectAndPrintAllReportData()
     {
         String queryStr = "select * from "+DbContract.reportData.TABLE_NAME;
 
@@ -1454,7 +1466,7 @@ public class DbManager {
             Log.i("RDretr","currently emptyRD");
 
         //return c;
-    }
+    }*/
 
     public void insertFullReportData(int actId,List<ReportData> reportDataList)
     {
@@ -1469,7 +1481,7 @@ public class DbManager {
     }
     public void insertReportData(ReportData RD,int pos,int actId)
     {
-        String metadataStr = ""+actId+"-"+pos+RD.getMetadata();
+        String metadataStr = actId+"-"+pos+RD.getMetadata();
 
         String queryStr = "insert into "+DbContract.reportData.TABLE_NAME +" (" +
                 DbContract.reportData.COLUMN_NAME_METADATA + ","+
