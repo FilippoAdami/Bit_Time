@@ -31,7 +31,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         Bundle extrasBundle = intent.getExtras();
         int actId = extrasBundle.getInt("actId");
         int alarmId = extrasBundle.getInt("alarmId");
+        String title = extrasBundle.getString("title");   //String.valueOf(R.string.AlarmNotificationTitle)
+        String msg = extrasBundle.getString("msg");   //String.valueOf(R.string.readyToStartMsg)
 
+        Log.i("title recevied",title);
+        Log.i("msg received",msg);
 
         Log.i("alarmId received", Integer.toString(alarmId));
 
@@ -49,12 +53,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Log.i("ALARMRECEIVER", "log from me");
 
+
+
         String channelId = "17";
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(R.drawable.happy_dog)
-                        .setContentTitle("test notification")
-                        .setContentText(actName + " is ready to start")
+                        .setContentTitle(title)
+                        .setContentText(actName + msg)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(resultPendingIntent)
                         .setAutoCancel(true)

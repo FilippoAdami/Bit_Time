@@ -18,6 +18,7 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
+import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.PlanningInfo;
 
@@ -44,6 +45,9 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         intent.putExtra("actName",actName);
         intent.putExtra("actId",actId);
         intent.putExtra("alarmId",alarmId);
+        intent.putExtra("title",context.getApplicationContext().getString(R.string.AlarmNotificationTitle));
+        intent.putExtra("msg", context.getApplicationContext().getString(R.string.readyToStartMsg));
+
         //intent.putExtra("alarmId",info.)
 
 

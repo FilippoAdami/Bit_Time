@@ -165,7 +165,11 @@
     <string name="scheduleBtn">PROGRAMMA</string>
     <string name="addPlanButton">add plan</string>
     <string name="statusTW"></string>
-    <string name="terminateTaskAlertMsg">Are you done with thistask ?</string>
-    <string name="terminateTaskAlertTitle">Warning</string>
+    <!--string name="terminateTaskAlertMsg">Are you done with thistask ?</string>
+    <string name="terminateTaskAlertTitle">Warning</string-->
+    <string name="terminateTaskAlertMsg">Hai completato thistask ?</string>
+    <string name="terminateTaskAlertTitle">ATTENZIONE</string>
+    <string name="AlarmNotificationTitle">BITTIME HA QUALCOSA DA DIRTI</string>
+    <string name="readyToStartMsg">" sta per partire, preparati!</string>
 
 </resources>
