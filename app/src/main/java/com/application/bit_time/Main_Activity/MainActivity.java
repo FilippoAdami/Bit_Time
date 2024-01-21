@@ -3,20 +3,29 @@ package com.application.bit_time.Main_Activity;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,10 +49,56 @@ public class MainActivity extends AppCompatActivity {
 
     private RunningActivityViewModel runningActivityViewModel;
     private DbManager dbManager;
+    private MainActivityViewModel statusVM;
+    private  OnBackPressedCallback ActRunningOBPCallback;
+    private  FragmentManager fragmentManager;
+
+
+    public static class QuitDialog extends DialogFragment
+    {
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
+            Log.i("OBP callback","quit dialog in OnCreateDial");
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+            builder.setTitle("sure about quitting ?")
+                    .setMessage("ehi")
+                    .setPositiveButton("yeah buddy", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            MainActivityViewModel MAV = new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);
+                            MainActivityStatusData MASData = new MainActivityStatusData(MainActivityStatusData.Status.QuickstartMenu);
+                            MASData.setBackField(MainActivityStatusData.BackField.Ignore);
+                            MAV.selectItem(MASData);
+                        }
+                    })
+                    .setNegativeButton("ehm def not", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+
+
+            return builder.create();
+        }
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        fragmentManager = getSupportFragmentManager();
+        OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
+
+
+
+
+
+
 
 
 
@@ -51,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         //Log.i("pixelWidth",Integer.toString(metrics.widthPixels));
 
         dbManager = new DbManager(getApplicationContext());
+
 
         Log.i("buildVersion",Integer.toString(Build.VERSION.SDK_INT));
 
@@ -96,11 +152,6 @@ public class MainActivity extends AppCompatActivity {
             NotificationChannel channel = new NotificationChannel("17","notChannel",importance);
             this.getApplicationContext().getSystemService(NotificationManager.class).createNotificationChannel(channel);
         }
-
-
-
-
-
 
 
 
@@ -155,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+
 
         FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
 
@@ -172,12 +223,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         Fragment controlbarFragment = new ControlsFragment();
-        MainActivityViewModel statusVM;
+
         statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
 
         statusVM.getSelectedItem().observe(this, item->
         {
+            ActRunningOBPCallback.setEnabled(false);
+            Log.i("OBP callback","ActRunning set to false");
             Log.i("STATUSVM DETECTION","MainActivity detected something");
 
 
@@ -223,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if( currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
             {
+                //ActRunningOBPCallback.setEnabled(true); // TODO: uncomment this !!!
                 Log.i("CURRENT STATUS MAINACT","RUNNING ACTIVITY");
 
                 //SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
@@ -238,6 +292,8 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))
             {
+                ActRunningOBPCallback.setEnabled(true);
+                Log.i("OBP callback","ActRunning set to true");
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.fragment_container,new CaregiverLoginFragment())
@@ -303,6 +359,29 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, new QuickstartMenuFragment())
                 .replace(R.id.bottomFragmentContainer,bottomFragment)
                 .commit();
+
+
+        OnBackPressedCallback mainOBPCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.i("OBP callback", "main");
+            }
+        };
+
+        ActRunningOBPCallback = new OnBackPressedCallback(false) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.i("OBP callback","ACT RUNNING VERSION");
+
+                QuitDialog quitDialog = new QuitDialog();
+                quitDialog.show(fragmentManager,null);
+
+            }
+        };
+
+        OBPDispatcher.addCallback(this, mainOBPCallback);
+        OBPDispatcher.addCallback(this,ActRunningOBPCallback);
+
         /*fragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container, new HomeFragment())
@@ -426,4 +505,9 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         //unregisterReceiver(android.content.BroadcastReceiver);
     }
+
+
+
+
+
 }
