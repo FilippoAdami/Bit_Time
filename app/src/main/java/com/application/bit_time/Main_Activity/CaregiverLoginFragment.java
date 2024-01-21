@@ -2,6 +2,8 @@ package com.application.bit_time.Main_Activity;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +16,8 @@ import android.widget.Toast;
 import com.application.bit_time.R;
 import com.application.bit_time.Settings_Activity.SettingsActivity;
 import com.application.bit_time.utils.Db.DbManager;
+import com.application.bit_time.utils.MainActivityStatusData;
+import com.application.bit_time.utils.MainActivityViewModel;
 
 public class CaregiverLoginFragment extends Fragment {
 
@@ -26,14 +30,19 @@ public class CaregiverLoginFragment extends Fragment {
         Button backButton = rootView.findViewById(R.id.backButton);
         Button logInButton = rootView.findViewById(R.id.loginButton);
         dbManager = new DbManager(getActivity());
+
+
+
         backButton.setOnClickListener(v -> {
+            MainActivityViewModel MAVM = new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);
+            MAVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.QuickstartMenu));
             // Remove the fragment from the activity and close the fragment
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            /*FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction().remove(this).commit();
             fragmentManager.popBackStack();
             fragmentManager.beginTransaction().remove(this).commit();
             fragmentManager.popBackStack();
-            //get back
+            //get back*/
         });
 
         logInButton.setOnClickListener(v -> {
