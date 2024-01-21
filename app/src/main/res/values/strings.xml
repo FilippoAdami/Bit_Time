@@ -169,6 +169,7 @@
     <string name="addPlanButton">add plan</string>
     <string name="statusTW"></string>
     <string name="addTaskBtn">+Task</string>
+    <string name="weeklyFrequencyOption">Settimanale</string>
     <!--string name="terminateTaskAlertMsg">Are you done with thistask ?</string>
     <string name="terminateTaskAlertTitle">Warning</string-->
     <string name="terminateTaskAlertMsg">Hai completato thistask ?</string>

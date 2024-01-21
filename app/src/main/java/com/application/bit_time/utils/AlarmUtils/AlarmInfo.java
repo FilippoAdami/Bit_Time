@@ -20,7 +20,8 @@ public class AlarmInfo {
     public enum Frequency
     {
         NotSet,
-        Daily
+        Daily,
+        Weekly
     }
 
     Field DateField;
