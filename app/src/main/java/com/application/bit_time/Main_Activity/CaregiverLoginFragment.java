@@ -29,10 +29,11 @@ public class CaregiverLoginFragment extends Fragment {
         backButton.setOnClickListener(v -> {
             // Remove the fragment from the activity and close the fragment
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().remove(CaregiverLoginFragment.this).commit();
+            fragmentManager.beginTransaction().remove(this).commit();
+            fragmentManager.popBackStack();
+            fragmentManager.beginTransaction().remove(this).commit();
             fragmentManager.popBackStack();
             //get back
-            requireActivity().onBackPressed();
         });
 
         logInButton.setOnClickListener(v -> {

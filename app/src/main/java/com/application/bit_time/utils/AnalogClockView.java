@@ -24,6 +24,7 @@ import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 public class AnalogClockView extends View {
@@ -359,46 +360,74 @@ public class AnalogClockView extends View {
 
         // Draw an image inside the circle
         String currentBackground = dbManager.getBackground();
-        // Get the file object from the file path
-        File file = new File(currentBackground);
-        String imagePath = file.getAbsolutePath();
-        Log.i("saveFileAbPath", imagePath);
-        Bitmap originalBitmap = BitmapFactory.decodeFile(imagePath);
-        int maxSize = 2*radius-440;  // Change this to your desired value
 
-        // Calculate the scaling factors for width and height
-        float scaleFactor = Math.min((float) maxSize / originalBitmap.getWidth(), (float) maxSize / originalBitmap.getHeight());
+        try {
+            // Check if the file path is valid
+            if (currentBackground == null || currentBackground.isEmpty()) {
+                // Handle invalid file path
+                throw new IllegalArgumentException("Invalid file path");
+            }
 
-        // Calculate the new dimensions
-        int newWidth = Math.round(originalBitmap.getWidth() * scaleFactor);
-        int newHeight = Math.round(originalBitmap.getHeight() * scaleFactor);
+            // Get the file object from the file path
+            File file = new File(currentBackground);
 
-        // Resize the original bitmap to the new dimensions
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
-        // Create a circular mask
-        Bitmap mask = Bitmap.createBitmap(resizedBitmap.getWidth(), resizedBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas maskCanvas = new Canvas(mask);
-        Paint maskPaint = new Paint();
-        maskPaint.setAntiAlias(true);
-        maskPaint.setColor(Color.WHITE);
-        maskPaint.setStyle(Paint.Style.FILL);
-        maskCanvas.drawCircle(resizedBitmap.getWidth() / 2f, resizedBitmap.getHeight() / 2f, Math.max(resizedBitmap.getWidth(), resizedBitmap.getHeight()) / 2f, maskPaint);
+            // Check if the file exists
+            if (!file.exists()) {
+                // Handle file not found
+                throw new FileNotFoundException("File not found");
+            }
 
-        // Apply the circular mask
-        Bitmap croppedBitmap = Bitmap.createBitmap(resizedBitmap.getWidth(), resizedBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas croppedCanvas = new Canvas(croppedBitmap);
-        Paint paint = new Paint();
-        paint.setAlpha(190);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-        croppedCanvas.drawBitmap(resizedBitmap, 0, 0, null);
-        croppedCanvas.drawBitmap(mask, 0, 0, paint);
+            String imagePath = file.getAbsolutePath();
+            Log.i("saveFileAbPath", imagePath);
 
-        // Calculate the position for drawing on the main canvas
-        float imageX = centerX - croppedBitmap.getWidth() / 2f;
-        float imageY = centerY - croppedBitmap.getHeight() / 2f;
+            // Check if the file is a valid image
+            if (!isValidImageFile(file)) {
+                // Handle invalid image file
+                throw new IllegalArgumentException("Invalid image file");
+            }
 
-        // Draw the cropped bitmap onto the main canvas
-        canvas.drawBitmap(croppedBitmap, imageX, imageY, null);
+            Bitmap originalBitmap = BitmapFactory.decodeFile(imagePath);
+            int maxSize = 2 * radius - 440;  // Change this to your desired value
+
+            // Calculate the scaling factors for width and height
+            float scaleFactor = Math.min((float) maxSize / originalBitmap.getWidth(), (float) maxSize / originalBitmap.getHeight());
+
+            // Calculate the new dimensions
+            int newWidth = Math.round(originalBitmap.getWidth() * scaleFactor);
+            int newHeight = Math.round(originalBitmap.getHeight() * scaleFactor);
+
+            // Resize the original bitmap to the new dimensions
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+
+            // Create a circular mask
+            Bitmap mask = Bitmap.createBitmap(resizedBitmap.getWidth(), resizedBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas maskCanvas = new Canvas(mask);
+            Paint maskPaint = new Paint();
+            maskPaint.setAntiAlias(true);
+            maskPaint.setColor(Color.WHITE);
+            maskPaint.setStyle(Paint.Style.FILL);
+            maskCanvas.drawCircle(resizedBitmap.getWidth() / 2f, resizedBitmap.getHeight() / 2f, Math.max(resizedBitmap.getWidth(), resizedBitmap.getHeight()) / 2f, maskPaint);
+
+            // Apply the circular mask
+            Bitmap croppedBitmap = Bitmap.createBitmap(resizedBitmap.getWidth(), resizedBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas croppedCanvas = new Canvas(croppedBitmap);
+            Paint paint = new Paint();
+            paint.setAlpha(190);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+            croppedCanvas.drawBitmap(resizedBitmap, 0, 0, null);
+            croppedCanvas.drawBitmap(mask, 0, 0, paint);
+
+            // Calculate the position for drawing on the main canvas
+            float imageX = centerX - croppedBitmap.getWidth() / 2f;
+            float imageY = centerY - croppedBitmap.getHeight() / 2f;
+
+            // Draw the cropped bitmap onto the main canvas
+            canvas.drawBitmap(croppedBitmap, imageX, imageY, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle any exceptions here
+        }
+
 
         ImageView flagImageView = getRootView().findViewById(R.id.flagImageView);
         //canvas.drawText( currentBackground, centerX, centerY, textPaint);
@@ -413,6 +442,11 @@ public class AnalogClockView extends View {
 
         // Request a redraw after a delay
         postInvalidateDelayed(1000);
+    }
+
+    private boolean isValidImageFile(File file) {
+        // Check if the file is a valid image
+        return file.exists() && file.isFile() && file.canRead() && file.length() > 0;
     }
 
     // Helper function to draw clock hands with numbers
