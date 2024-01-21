@@ -276,24 +276,23 @@ public class MainActivity extends AppCompatActivity {
             }
             else if( currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
             {
-                //ActRunningOBPCallback.setEnabled(true); // TODO: uncomment this !!!
+                ActRunningOBPCallback.setEnabled(true);
+                Log.i("OBP callback","ActRunning set to true");
+
                 Log.i("CURRENT STATUS MAINACT","RUNNING ACTIVITY");
 
-                //SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
-                //int value = sharedPrefs.getInt("activityToRun",-1);
-                //Log.i("activityToRun",Integer.toString(value));
+                SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+                int value = sharedPrefs.getInt("activityToRun",-1);
+                Log.i("activityToRun",Integer.toString(value));
 
                 fragmentManager
                         .beginTransaction()
-                        //TODO : uncomment the line under this one
-                        //.replace(R.id.fragment_container,new HomeFragment())
+                        .replace(R.id.fragment_container,new newHomeFragment())
                         .replace(R.id.bottomFragmentContainer,new NewRunningTaskFragment(),"currentRunningTaskFrag")
                         .commit();
             }
             else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))
             {
-                ActRunningOBPCallback.setEnabled(true);
-                Log.i("OBP callback","ActRunning set to true");
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.fragment_container,new CaregiverLoginFragment())
@@ -365,6 +364,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 Log.i("OBP callback", "main");
+                Log.i("popBack preview",fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount()-1).getName());
+                fragmentManager.popBackStackImmediate();
             }
         };
 
@@ -375,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
 
                 QuitDialog quitDialog = new QuitDialog();
                 quitDialog.show(fragmentManager,null);
+                this.setEnabled(false);
 
             }
         };
@@ -405,64 +407,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.commit();
         }
         */
-
-
-        statusVM.getSelectedItem().observe(this, item->
-        {
-            Log.i("STATUSVM DETECTION","MainActivity detected something");
-
-
-            MainActivityStatusData.Status currentStatus = item.getCurrentStatus();
-
-            if(currentStatus.equals(MainActivityStatusData.Status.Idle))
-            {
-                Log.i("CURRENT STATUS MAINACT","IDLE");
-                fragmentManager
-                        .beginTransaction()
-                        .add(R.id.bottomFragmentContainer,new newHomeFragment())
-                        //.replace(R.id.fragment_container,new Fragment())
-                        //.add(R.id.bottomFragmentContainer,new GameFragment())
-                        .commit();
-            }
-            else if( currentStatus.equals(MainActivityStatusData.Status.QuickstartMenu))
-            {
-                Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
-                fragmentManager
-                        .beginTransaction()
-                        .add(R.id.fragment_container,new QuickstartMenuFragment())
-                        .add(R.id.bottomFragmentContainer,new Fragment())
-                        .commit();
-            }
-            else if( currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
-            {
-                Log.i("CURRENT STATUS MAINACT","RUNNING ACTIVITY");
-
-                SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
-                int value = sharedPrefs.getInt("activityToRun",-1);
-
-                Log.i("activityToRun",Integer.toString(value));
-
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new newHomeFragment())
-                        //.replace(R.id.fragment_container,new Fragment())
-                        .replace(R.id.bottomFragmentContainer,new NewRunningTaskFragment())
-                        .commit();
-            }
-            else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))
-            {
-                //topContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,50));
-
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new CaregiverLoginFragment())
-                        .replace(R.id.bottomFragmentContainer,new Fragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
-
-
-        });
 
 
 
