@@ -18,7 +18,8 @@ public class MainActivityStatusData {
     {
         NotBack,
         Save,
-        Ignore
+        Ignore,
+        Quit
     }
 
     private Status currentStatus;

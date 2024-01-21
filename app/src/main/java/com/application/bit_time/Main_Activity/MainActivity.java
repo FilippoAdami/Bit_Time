@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
                             MainActivityViewModel MAV = new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);
                             MainActivityStatusData MASData = new MainActivityStatusData(MainActivityStatusData.Status.QuickstartMenu);
-                            MASData.setBackField(MainActivityStatusData.BackField.Ignore);
+                            MASData.setBackField(MainActivityStatusData.BackField.Quit);
                             MAV.selectItem(MASData);
                         }
                     })
@@ -229,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
         statusVM.getSelectedItem().observe(this, item->
         {
+            Log.i("backstack entries",Integer.toString(fragmentManager.getBackStackEntryCount()));
             ActRunningOBPCallback.setEnabled(false);
             Log.i("OBP callback","ActRunning set to false");
             Log.i("STATUSVM DETECTION","MainActivity detected something");
@@ -251,11 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
 
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new QuickstartMenuFragment())
-                        .replace(R.id.bottomFragmentContainer,new Fragment())
-                        .commit();
+
 
                 if(item.isBack())
                 {
@@ -266,10 +263,33 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("Backfield choice","Save actId "+actID);
                         dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());
                     }
+                    else if(item.getBackField().equals(MainActivityStatusData.BackField.Quit))
+                    {
+                        newHomeFragment currentHF = (newHomeFragment)fragmentManager.findFragmentByTag("currentNewHomeFragment");
+                        currentHF.quitTimer();
+                    }
                     else
                     {
                         Log.i("Backfield choice","Ignore");
                     }
+                }
+
+                String entryName= getResources().getString(R.string.quickstartMenuEntry);
+
+                if(fragmentManager.popBackStackImmediate(entryName,0)) {
+                    Log.i("back to",entryName);
+                }
+                else
+                {
+
+                    Log.i("first time",entryName);
+                    fragmentManager
+                            .beginTransaction()
+                            .replace(R.id.controlbarFragment,new ControlsFragment())
+                            .replace(R.id.fragment_container, new QuickstartMenuFragment())
+                            .replace(R.id.bottomFragmentContainer, new Fragment())
+                            .addToBackStack(entryName)
+                            .commit();
                 }
 
 
@@ -287,19 +307,41 @@ public class MainActivity extends AppCompatActivity {
 
                 fragmentManager
                         .beginTransaction()
-                        .replace(R.id.fragment_container,new newHomeFragment())
+                        .replace(R.id.fragment_container,new newHomeFragment(),"currentNewHomeFragment")
                         .replace(R.id.bottomFragmentContainer,new NewRunningTaskFragment(),"currentRunningTaskFrag")
+                        .addToBackStack(getResources().getString(R.string.runningActivityEntry))
                         .commit();
             }
             else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))
             {
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new CaregiverLoginFragment())
-                        .replace(R.id.bottomFragmentContainer,new Fragment())
-                        .addToBackStack(null)
-                        .commit();
+                String entryName = getResources().getString(R.string.caregiverLoginEntry);
+
+                if(item.getBackField() != null && item.getBackField().equals(MainActivityStatusData.BackField.Quit))
+                {
+                    newHomeFragment currentHF = (newHomeFragment)fragmentManager.findFragmentByTag("currentNewHomeFragment");
+                    currentHF.quitTimer();
+                    fragmentManager.popBackStackImmediate(getResources().getString(R.string.runningActivityEntry),FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+
+
+                if(fragmentManager.popBackStackImmediate(entryName,0))
+                {
+                    Log.i("back to",entryName);
+                }
+                else
+                {
+
+                    Log.i("first time",entryName);
+                    fragmentManager
+                            .beginTransaction()
+                            .replace(R.id.fragment_container,new CaregiverLoginFragment())
+                            .replace(R.id.bottomFragmentContainer,new Fragment())
+                            .addToBackStack(entryName)
+                            .commit();
+                }
+
             }
+
 
 
         });
@@ -352,19 +394,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        fragmentManager
+        /*fragmentManager
                 .beginTransaction()
                 .replace(R.id.controlbarFragment,controlbarFragment)
                 .replace(R.id.fragment_container, new QuickstartMenuFragment())
                 .replace(R.id.bottomFragmentContainer,bottomFragment)
-                .commit();
+                .commit();*/
 
 
         OnBackPressedCallback mainOBPCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 Log.i("OBP callback", "main");
-                Log.i("popBack preview",fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount()-1).getName());
+                //Log.i("popBack preview",fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount()-1).getName());
                 fragmentManager.popBackStackImmediate();
             }
         };

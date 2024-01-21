@@ -177,4 +177,8 @@
     <string name="AlarmNotificationTitle">BITTIME HA QUALCOSA DA DIRTI</string>
     <string name="readyToStartMsg">" sta per partire, preparati!</string>
 
+    <string name="quickstartMenuEntry">quickStartMenuEntry</string>
+    <string name="caregiverLoginEntry">caregiverLoginEntry</string>
+    <string name="runningActivityEntry">runningActivityEntry</string>
+
 </resources>
