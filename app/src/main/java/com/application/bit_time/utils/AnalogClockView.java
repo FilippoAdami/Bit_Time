@@ -353,12 +353,11 @@ public class AnalogClockView extends View {
             }
         }
 
-        // Draw inner clock circle
+        // Draw inner clock circles
         canvas.drawCircle(centerX, centerY, radius - 120, clockPaint);
         canvas.drawCircle(centerX, centerY, radius - 220, clockPaint);
-        //String h = String.valueOf(calendar.get(Calendar.HOUR));
 
-        // Draw an image inside the circle
+        // Draw background image inside the clock
         String currentBackground = dbManager.getBackground();
 
         try {
@@ -378,7 +377,6 @@ public class AnalogClockView extends View {
             }
 
             String imagePath = file.getAbsolutePath();
-            Log.i("saveFileAbPath", imagePath);
 
             // Check if the file is a valid image
             if (!isValidImageFile(file)) {
@@ -428,13 +426,12 @@ public class AnalogClockView extends View {
             // Handle any exceptions here
         }
 
-
+        // Place the star at the end of the activity's time
         ImageView flagImageView = getRootView().findViewById(R.id.flagImageView);
-        //canvas.drawText( currentBackground, centerX, centerY, textPaint);
-
-        // move the image to the border of the clock
         flagImageView.setX((float) (centerX+35 + (radius-50) * Math.cos(Math.toRadians(endAngle))));
         flagImageView.setY((float) (centerY+130+ (radius-50) * Math.sin(Math.toRadians(endAngle))));
+
+        //canvas.drawText( currentBackground, centerX, centerY, textPaint);
 
         // Draw clock hands
         drawClockHand(canvas, centerX, centerY, hourAngle, radius -170, hourHandPaint, hour);

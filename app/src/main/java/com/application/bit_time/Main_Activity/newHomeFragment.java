@@ -72,6 +72,13 @@ public class newHomeFragment extends Fragment {
         init();
         clockTextView = view.findViewById(R.id.clockTextView2);
         analogClockView = view.findViewById(R.id.analogClockView2);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String theme = sharedPreferences.getString("theme", "pastel");
+        if(theme.equals("EarthTheme") || theme.equals("VividTheme")){
+            clockTextView.setBackground(getActivity().getDrawable(R.drawable.light_text_view));
+            clockTextView.setTextColor(Color.BLACK);
+        }
+
 
         //place a listener onBackPressed
         getActivity().getOnBackPressedDispatcher().addCallback(this.getActivity(), new OnBackPressedCallback(true) {
@@ -132,7 +139,6 @@ public class newHomeFragment extends Fragment {
                     Log.i("item at onwait", item.toString());
 
                     // Store the lastedTime in SharedPreferences
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                     sharedPreferences
                             .edit()
                             .putInt("lastedTime", lastedTime)
@@ -204,10 +210,13 @@ public class newHomeFragment extends Fragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String theme = sharedPreferences.getString("theme", "pastel");
 
+        //set the paint to be extra bold
         BluePaint = new Paint();
         BluePaint.setStyle(Paint.Style.STROKE);
+        BluePaint.setStrokeWidth(20);
         RedPaint = new Paint();
         RedPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        RedPaint.setStrokeWidth(20);
 
         if(theme.equals("PastelTheme") || theme.equals("BWTheme")){
             BluePaint.setColor(pastelBlueColor);
