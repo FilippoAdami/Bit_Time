@@ -11,10 +11,14 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.MediaPlayer;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -44,9 +48,12 @@ public class AnalogClockView extends View {
     private Paint whitePaint;          // Paint for the white color
     private int centerX;               // X coordinate of the clock center
     private int centerY;               // Y coordinate of the clock center
-    private int radius;                // Radius of the clock
+    private int radius;
 
+    private int screenWidth;           // Width of the screen
+    private int screenHeight;          // Height of the screen
     DbManager dbManager;
+    MediaPlayer mediaPlayer;
 
     public AnalogClockView(Context context) {
         super(context);
@@ -62,6 +69,17 @@ public class AnalogClockView extends View {
     // Initialize paint objects and other properties
     private void init() {
         Context context = getContext();
+        // Get the dimensions of the screen
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        display.getMetrics(displayMetrics);
+
+        screenWidth = displayMetrics.widthPixels;
+        screenHeight = displayMetrics.heightPixels;
+
+        radius = Math.min(screenWidth, screenHeight) / 2 - 10;
+
         int earthRedColor = ContextCompat.getColor(context, R.color.earth_red);
         int earthYellowColor = ContextCompat.getColor(context, R.color.earth_yellow);
         int earthGreenColor = ContextCompat.getColor(context, R.color.earth_green);
@@ -97,11 +115,11 @@ public class AnalogClockView extends View {
 
         hourHandPaint = new Paint();
         hourHandPaint.setStyle(Paint.Style.STROKE);
-        hourHandPaint.setStrokeWidth(25);
+        hourHandPaint.setStrokeWidth(radius*0.04f);
 
         minuteHandPaint = new Paint();
         minuteHandPaint.setStyle(Paint.Style.STROKE);
-        minuteHandPaint.setStrokeWidth(16);
+        minuteHandPaint.setStrokeWidth(radius*0.025f);
 
         BluePaint = new Paint();
         BluePaint.setStyle(Paint.Style.STROKE);
@@ -134,15 +152,16 @@ public class AnalogClockView extends View {
         hourHandPaint.setColor(BluePaint.getColor());
         minuteHandPaint.setColor(RedPaint.getColor());
 
-
         textPaint = new Paint();
         textPaint.setColor(primaryColor);
-        textPaint.setTextSize(60);
+        textPaint.setTextSize(radius*0.12f);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
         minuteMarkPaint = new Paint();
         minuteMarkPaint.setColor(primaryColor);
-        minuteMarkPaint.setStrokeWidth(5);
+        minuteMarkPaint.setStrokeWidth(4);
+
+        mediaPlayer = new MediaPlayer();
     }
 
     // Called when the view's size changes (such as during layout changes)
@@ -151,7 +170,7 @@ public class AnalogClockView extends View {
         // Calculate the center and radius of the clock based on the view's size
         centerX = w / 2;
         centerY = h / 2;
-        radius = Math.min(centerX, centerY) - 10;
+        radius = (int) (Math.min(screenHeight/2, screenWidth/2)*0.8);
     }
 
     // The main drawing function
@@ -176,7 +195,6 @@ public class AnalogClockView extends View {
         //Get TimesString from SharedPreferences
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String TimesString = sharedPreferences.getString("TimesString", "000000,000000,000000,000000,000000,000000,00000");
-
         //Get current task from SharedPreferences
         int currentTaskID = sharedPreferences.getInt("currentTask", 0);
         // Get currentTaskStartingTime from SharedPreferences
@@ -264,12 +282,6 @@ public class AnalogClockView extends View {
             // Set the current task to green-yellow-red
             else if (i == j+1){
                 taskSlicePaint[i].setColor(Color.argb(0, 255, 255, 255));
-                /*float startAngle = taskSliceStart[5];
-                if(i>0){
-                    for(int z=0; z<i; z++){
-                        startAngle = startAngle + total_times[z+1]*6;
-                    }
-                }*/
                 endCurrentAngle = taskStartingAngle + total_times[i+1]*6;
 
                 float yellowSliceStart = (float) (taskStartingAngle + (0.65*total_times[i+1])*6);
@@ -291,17 +303,15 @@ public class AnalogClockView extends View {
         }
 
         // Draw an inner white circle
-        canvas.drawCircle(centerX, centerY, radius - 120, whitePaint);
+        canvas.drawCircle(centerX, centerY, (int) (radius*0.8), whitePaint);
 
         int startX = 0;
         int startY = 0;
         // Draw minute markers and numbers
         for (int min = 0; min < 60; min++) {
             float angle = ((min * 360) / 60) - 90; // Calculate the angle for the current minute
-            startX = (int) (centerX + (radius - 150) * Math.cos(Math.toRadians(angle)));
-            startY = (int) (centerY + (radius - 150) * Math.sin(Math.toRadians(angle)));
-            int endX = (int) (centerX + (radius - 170) * Math.cos(Math.toRadians(angle)));
-            int endY = (int) (centerY + (radius - 170) * Math.sin(Math.toRadians(angle)));
+            int endX = (int) (centerX + (radius*0.7) * Math.cos(Math.toRadians(angle)));
+            int endY = (int) (centerY + (radius*0.7) * Math.sin(Math.toRadians(angle)));
 
             if (min % 5 == 0) {
                 // Draw hour numbers at every 5-minute interval
@@ -311,7 +321,7 @@ public class AnalogClockView extends View {
                         textPaint.setColor(hourHandPaint.getColor());
                         textPaint.setAlpha(200);
                         //draw a little empty circle to circle the number
-                        canvas.drawCircle(endX, endY, 50, textPaint);
+                        canvas.drawCircle(endX, endY, (int)(radius*0.09), textPaint);
                         textPaint.setColor(primaryPaint.getColor());
                         textPaint.setAlpha(255);
                         minuteMarkPaint.setStrokeWidth(15);
@@ -319,16 +329,16 @@ public class AnalogClockView extends View {
                     else{
                         minuteMarkPaint.setStrokeWidth(5);
                     }
-                canvas.drawText(number, endX, endY + 20, textPaint);
+                canvas.drawText(number, endX, endY + (int) (radius*0.06f), textPaint);
             }
             // Draw minute marks for minutes
-            startX = (int) (centerX + (radius - 20) * Math.cos(Math.toRadians(angle)));
-            startY = (int) (centerY + (radius - 20) * Math.sin(Math.toRadians(angle)));
-            endX = (int) (centerX + (radius - 50) * Math.cos(Math.toRadians(angle)));
-            endY = (int) (centerY + (radius - 50) * Math.sin(Math.toRadians(angle)));
+            startX = (int) (centerX + (radius*0.96) * Math.cos(Math.toRadians(angle)));
+            startY = (int) (centerY + (radius*0.96) * Math.sin(Math.toRadians(angle)));
+            endX = (int) (centerX + (radius*0.87) * Math.cos(Math.toRadians(angle)));
+            endY = (int) (centerY + (radius*0.87) * Math.sin(Math.toRadians(angle)));
             if (min % 15 != 0 && min % 5 == 0) {
-                endX = (int) (centerX + (radius - 80) * Math.cos(Math.toRadians(angle)));
-                endY = (int) (centerY + (radius - 80) * Math.sin(Math.toRadians(angle)));
+                endX = (int) (centerX + (radius*0.84) * Math.cos(Math.toRadians(angle)));
+                endY = (int) (centerY + (radius*0.84) * Math.sin(Math.toRadians(angle)));
             }
             if (min == calendar.get(Calendar.MINUTE)) {
                 // Highlight the actual minute's tick
@@ -344,7 +354,18 @@ public class AnalogClockView extends View {
             if (min % 15 == 0) {
                 // Draw minute numbers at every 15-minute interval
                 String number = String.valueOf(min);
-                canvas.drawText(number, endX, endY + 20, textPaint);
+                if(min == 0){
+                    canvas.drawText(number, endX, endY + (int) (radius*0.02f), textPaint);
+                }
+                else if(min == 15){
+                    canvas.drawText(number, endX + (int) (radius*0.03f), endY + (int) (radius*0.06f), textPaint);
+                }
+                else if(min == 30){
+                    canvas.drawText(number, endX, endY + (int) (radius*0.08f), textPaint);
+                }
+                else if(min == 45){
+                    canvas.drawText(number, endX - (int) (radius*0.03f), endY + (int) (radius*0.06f), textPaint);
+                }
                 textPaint.setColor(Color.BLACK);
             }
             else{
@@ -354,12 +375,11 @@ public class AnalogClockView extends View {
         }
 
         // Draw inner clock circles
-        canvas.drawCircle(centerX, centerY, radius - 120, clockPaint);
-        canvas.drawCircle(centerX, centerY, radius - 220, clockPaint);
+        canvas.drawCircle(centerX, centerY, (int) (radius*0.8), clockPaint);
+        canvas.drawCircle(centerX, centerY, (int) (radius*0.6), clockPaint);
 
         // Draw background image inside the clock
         String currentBackground = dbManager.getBackground();
-
         try {
             // Check if the file path is valid
             if (currentBackground == null || currentBackground.isEmpty()) {
@@ -385,7 +405,7 @@ public class AnalogClockView extends View {
             }
 
             Bitmap originalBitmap = BitmapFactory.decodeFile(imagePath);
-            int maxSize = 2 * radius - 440;  // Change this to your desired value
+            int maxSize = 2 * (int)(radius*0.6);  // Change this to your desired value
 
             // Calculate the scaling factors for width and height
             float scaleFactor = Math.min((float) maxSize / originalBitmap.getWidth(), (float) maxSize / originalBitmap.getHeight());
@@ -426,16 +446,21 @@ public class AnalogClockView extends View {
             // Handle any exceptions here
         }
 
+        //Get the notification sound from database
+        String notificationSound = dbManager.getNotification();
+
         // Place the star at the end of the activity's time
         ImageView flagImageView = getRootView().findViewById(R.id.flagImageView);
-        flagImageView.setX((float) (centerX+35 + (radius-50) * Math.cos(Math.toRadians(endAngle))));
-        flagImageView.setY((float) (centerY+130+ (radius-50) * Math.sin(Math.toRadians(endAngle))));
+        flagImageView.setMaxWidth((int) (radius*0.15));
+        flagImageView.setMaxHeight((int) (radius*0.15));
+        flagImageView.setX((float) (centerX + radius*0.05 + (radius*0.9) * Math.cos(Math.toRadians(endAngle))));
+        flagImageView.setY((float) (centerY + radius*0.25 + (radius*0.9) * Math.sin(Math.toRadians(endAngle))));
 
-        //canvas.drawText( currentBackground, centerX, centerY, textPaint);
+        //canvas.drawText( notificationSound, centerX, centerY, textPaint);
 
         // Draw clock hands
-        drawClockHand(canvas, centerX, centerY, hourAngle, radius -170, hourHandPaint, hour);
-        drawClockHand(canvas, centerX, centerY, minuteAngle, radius -70, minuteHandPaint, minute);
+        drawClockHand(canvas, centerX, centerY, hourAngle, (int)(radius*0.6), hourHandPaint, hour);
+        drawClockHand(canvas, centerX, centerY, minuteAngle, (int)(radius*0.8), minuteHandPaint, minute);
 
         // Request a redraw after a delay
         postInvalidateDelayed(1000);
@@ -448,8 +473,8 @@ public class AnalogClockView extends View {
 
     // Helper function to draw clock hands with numbers
     private void drawClockHand(Canvas canvas, int centerX, int centerY, float angle, float length, Paint paint, int number) {
-        float x = (float) (centerX + (length - 40) * Math.sin(Math.toRadians(angle)));
-        float y = (float) (centerY - (length - 40) * Math.cos(Math.toRadians(angle)));
+        float x = (float) (centerX + (length) * Math.sin(Math.toRadians(angle)));
+        float y = (float) (centerY - (length) * Math.cos(Math.toRadians(angle)));
 
         // Draw clock hand line
         canvas.drawLine(centerX, centerY, x, y, paint);
