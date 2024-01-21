@@ -989,7 +989,7 @@ public class DbManager {
             cursor.close();  // Close the cursor to avoid potential memory leaks
         }
     }
-    /*public String getRingtone() {
+    public String getRingtone() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
@@ -1009,8 +1009,8 @@ public class DbManager {
             cursor.close();
             return "default ringtone";
         }
-    }*/
-    /*public String getNotification() {
+    }
+    public String getNotification() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
@@ -1030,7 +1030,7 @@ public class DbManager {
             cursor.close();
             return "default notification";
         }
-    }*/
+    }
     public boolean getNotifications() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
