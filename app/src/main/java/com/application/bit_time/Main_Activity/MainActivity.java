@@ -96,12 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
         //DisplayMetrics metrics = this.getResources().getDisplayMetrics();
         //Log.i("pixelWidth",Integer.toString(metrics.widthPixels));
 
@@ -208,21 +202,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
+        //FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
 
-        if(topContainer == null)
+        /*if(topContainer == null)
         {
             Log.i("fragment search","failed, null result");
         }
         else {
             Log.i("fragment search","found");
-        }
+        }*/
 
         //Fragment bottomFragment = new RunningTaskFragment();
-        Fragment bottomFragment = new Fragment();
-
-
-        Fragment controlbarFragment = new ControlsFragment();
+        //Fragment bottomFragment = new Fragment();
+        //Fragment controlbarFragment = new ControlsFragment();
 
         statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
@@ -307,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
 
                 fragmentManager
                         .beginTransaction()
+                        .replace(R.id.controlbarFragment,new ControlsFragment())
                         .replace(R.id.fragment_container,new newHomeFragment(),"currentNewHomeFragment")
                         .replace(R.id.bottomFragmentContainer,new NewRunningTaskFragment(),"currentRunningTaskFrag")
                         .addToBackStack(getResources().getString(R.string.runningActivityEntry))
@@ -407,11 +400,13 @@ public class MainActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 Log.i("OBP callback", "main");
                 //Log.i("popBack preview",fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount()-1).getName());
-                fragmentManager.popBackStackImmediate();
+                if(fragmentManager.getBackStackEntryCount()>1) {
+                    fragmentManager.popBackStackImmediate();
+                }
             }
         };
 
-        ActRunningOBPCallback = new OnBackPressedCallback(false) {
+        ActRunningOBPCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 Log.i("OBP callback","ACT RUNNING VERSION");
