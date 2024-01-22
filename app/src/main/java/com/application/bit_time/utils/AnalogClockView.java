@@ -459,12 +459,18 @@ public class AnalogClockView extends View {
         //Get the notification sound from database
         String notificationSound = dbManager.getNotification();
         // Check if the actual time is equal to the ending time
-        if (endingTime == hour*60 + minute + second/60.0f) {
-            // Play the notification sound
-            playSound(notificationSound);
+        if ((float)(endingTime)< (float)(hour*60 + minute + second/60.0f) && (float)(hour*60 + minute + second/60.0f) < (float)(endingTime + 0.0167f)){
+            if(dbManager.getFocus()){
+                int volume = dbManager.getVolume();
+                // Check if a notification is already being played, else play the notification sound
+                if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+                    playSound(notificationSound, volume);
+                }
+            }
+
         }
 
-        //canvas.drawText( notificationSound, centerX, centerY, textPaint);
+        //canvas.drawText(String.valueOf((float)(endingTime)) + " , "+ String.valueOf((float)(hour*60 + minute + second/60f)), centerX, centerY, textPaint);
 
         // Draw clock hands
         drawClockHand(canvas, centerX, centerY, hourAngle, (int)(radius*0.6), hourHandPaint, hour);
@@ -513,7 +519,7 @@ public class AnalogClockView extends View {
         return parsedArrays;
     }
 
-    private void playSound(String soundFilePath) {
+    private void playSound(String soundFilePath, int volume) {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
             mediaPlayer.release();
@@ -525,6 +531,11 @@ public class AnalogClockView extends View {
             VibrationUtil.vibrate(getContext(), 250);
             mediaPlayer.setDataSource(soundFilePath);
             Log.d("playSound", "Sound File Path: " + soundFilePath);
+
+            // Set the volume level
+            float volumeLevel = (float) volume / 100.0f;
+            mediaPlayer.setVolume(volumeLevel, volumeLevel);
+
             mediaPlayer.prepare();
             mediaPlayer.start();
         } catch (IOException e) {
@@ -540,6 +551,7 @@ public class AnalogClockView extends View {
             }
         });
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

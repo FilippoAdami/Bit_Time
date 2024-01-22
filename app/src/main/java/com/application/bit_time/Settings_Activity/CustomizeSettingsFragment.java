@@ -372,12 +372,12 @@ public class CustomizeSettingsFragment extends Fragment {
             Uri uri = ringtoneManager.getRingtoneUri(cursor.getPosition());
             int duration = getRingtoneDuration(getActivity(), uri) / 1000;
             if (type.equals("notification")) {
-                if (duration > 30) {
+                if (duration <= 10) {
                     ringtoneTitles.add(title);
                     ringtoneUris.add(uri);
                 }
             } else {
-                if (duration <= 30) {
+                if (duration > 10) {
                     ringtoneTitles.add(title);
                     ringtoneUris.add(uri);
                 }
