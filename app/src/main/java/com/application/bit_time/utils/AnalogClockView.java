@@ -17,6 +17,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ import com.application.bit_time.utils.Db.DbManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Calendar;
 
 public class AnalogClockView extends View {
@@ -53,7 +55,7 @@ public class AnalogClockView extends View {
     private int screenWidth;           // Width of the screen
     private int screenHeight;          // Height of the screen
     DbManager dbManager;
-    MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
 
     public AnalogClockView(Context context) {
         super(context);
@@ -249,6 +251,7 @@ public class AnalogClockView extends View {
         }
         // Calculate the final ending angle
         float endAngle = (total_times[6]%60f + total_times[1] + total_times[2] + total_times[3] + total_times[4] + total_times[5])*6f -90f;
+        float endingTime = total_times[6] + total_times[1] + total_times[2] + total_times[3] + total_times[4] + total_times[5];
 
         if(currentTaskIndex == 0){
             taskStartingAngle = taskSliceStart[5];
@@ -446,9 +449,6 @@ public class AnalogClockView extends View {
             // Handle any exceptions here
         }
 
-        //Get the notification sound from database
-        String notificationSound = dbManager.getNotification();
-
         // Place the star at the end of the activity's time
         ImageView flagImageView = getRootView().findViewById(R.id.flagImageView);
         flagImageView.setMaxWidth((int) (radius*0.15));
@@ -456,7 +456,21 @@ public class AnalogClockView extends View {
         flagImageView.setX((float) (centerX + radius*0.05 + (radius*0.9) * Math.cos(Math.toRadians(endAngle))));
         flagImageView.setY((float) (centerY + radius*0.25 + (radius*0.9) * Math.sin(Math.toRadians(endAngle))));
 
-        //canvas.drawText( notificationSound, centerX, centerY, textPaint);
+        //Get the notification sound from database
+        String notificationSound = dbManager.getNotification();
+        // Check if the actual time is equal to the ending time
+        if ((float)(endingTime)< (float)(hour*60 + minute + second/60.0f) && (float)(hour*60 + minute + second/60.0f) < (float)(endingTime + 0.0167f)){
+            if(dbManager.getFocus()){
+                int volume = dbManager.getVolume();
+                // Check if a notification is already being played, else play the notification sound
+                if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+                    playSound(notificationSound, volume);
+                }
+            }
+
+        }
+
+        //canvas.drawText(String.valueOf((float)(endingTime)) + " , "+ String.valueOf((float)(hour*60 + minute + second/60f)), centerX, centerY, textPaint);
 
         // Draw clock hands
         drawClockHand(canvas, centerX, centerY, hourAngle, (int)(radius*0.6), hourHandPaint, hour);
@@ -504,4 +518,49 @@ public class AnalogClockView extends View {
 
         return parsedArrays;
     }
+
+    private void playSound(String soundFilePath, int volume) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+
+        mediaPlayer = new MediaPlayer();
+
+        try {
+            VibrationUtil.vibrate(getContext(), 250);
+            mediaPlayer.setDataSource(soundFilePath);
+            Log.d("playSound", "Sound File Path: " + soundFilePath);
+
+            // Set the volume level
+            float volumeLevel = (float) volume / 100.0f;
+            mediaPlayer.setVolume(volumeLevel, volumeLevel);
+
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("playSound", "Error during MediaPlayer setup");
+        }
+
+        // Release the media player resources after playing the sound
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayer.release();
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Stop the sound when the user touches the screen
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+        return super.onTouchEvent(event);
+    }
+
 }

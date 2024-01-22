@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -371,12 +372,12 @@ public class CustomizeSettingsFragment extends Fragment {
             Uri uri = ringtoneManager.getRingtoneUri(cursor.getPosition());
             int duration = getRingtoneDuration(getActivity(), uri) / 1000;
             if (type.equals("notification")) {
-                if (duration > 30) {
+                if (duration <= 10) {
                     ringtoneTitles.add(title);
                     ringtoneUris.add(uri);
                 }
             } else {
-                if (duration <= 30) {
+                if (duration > 10) {
                     ringtoneTitles.add(title);
                     ringtoneUris.add(uri);
                 }
@@ -443,7 +444,7 @@ public class CustomizeSettingsFragment extends Fragment {
 
         String fileName = "ringtone" + extension;
         if (type.equals("notification")) {
-            Toast.makeText(getActivity(), "Suono di notifica ggiornato correttamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Suono di notifica aggiornato correttamente", Toast.LENGTH_SHORT).show();
             fileName = "notification" + extension;
         }else if (type.equals("ringtone")){
             Toast.makeText(getActivity(), "Suoneria aggiornata correttamente", Toast.LENGTH_SHORT).show();
@@ -549,7 +550,6 @@ public class CustomizeSettingsFragment extends Fragment {
         super.onResume();
         preferencesChanged = false;
     }
-
     public Bitmap saveImageFile(Uri uri, String fileName) {
 
         Bitmap bitmap = null;

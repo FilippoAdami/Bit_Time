@@ -92,7 +92,7 @@ public class TemporaryCodeFragment extends Fragment {
 
             } else {
                 // Show an error message
-                //Toast.makeText(getActivity(), "Codice errato", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Codice errato", Toast.LENGTH_SHORT).show();
             }
         });
         // Set click listener for countdownTextView
