@@ -17,6 +17,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -54,7 +55,7 @@ public class AnalogClockView extends View {
     private int screenWidth;           // Width of the screen
     private int screenHeight;          // Height of the screen
     DbManager dbManager;
-    MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
 
     public AnalogClockView(Context context) {
         super(context);
@@ -513,9 +514,15 @@ public class AnalogClockView extends View {
     }
 
     private void playSound(String soundFilePath) {
-        MediaPlayer mediaPlayer = new MediaPlayer();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+
+        mediaPlayer = new MediaPlayer();
 
         try {
+            VibrationUtil.vibrate(getContext(), 300);
             mediaPlayer.setDataSource(soundFilePath);
             Log.d("playSound", "Sound File Path: " + soundFilePath);
             mediaPlayer.prepare();
@@ -532,6 +539,16 @@ public class AnalogClockView extends View {
                 mediaPlayer.release();
             }
         });
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Stop the sound when the user touches the screen
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+        return super.onTouchEvent(event);
     }
 
 }

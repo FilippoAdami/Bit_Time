@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -59,9 +60,6 @@ public class newHomeFragment extends Fragment {
         timeFormat = new SimpleDateFormat("HH : mm ", Locale.getDefault());
         lastedTime = 0;
         RAVM = new ViewModelProvider(this.getActivity()).get(RunningActivityViewModel.class);
-
-
-
     }
 
     @Nullable
@@ -77,15 +75,12 @@ public class newHomeFragment extends Fragment {
             clockTextView.setBackground(getActivity().getDrawable(R.drawable.light_text_view));
             clockTextView.setTextColor(Color.BLACK);
         }
-
-
         //place a listener onBackPressed
         getActivity().getOnBackPressedDispatcher().addCallback(this.getActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
             }
         });
-
 
         // Observe changes in the selected item using LiveData
         RAVM.getSelectedItem().observe(getViewLifecycleOwner(), item -> {

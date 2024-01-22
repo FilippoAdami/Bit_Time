@@ -93,18 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
-
-
-
-
-
-
-
-
-
-        //DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-        //Log.i("pixelWidth",Integer.toString(metrics.widthPixels));
-
         dbManager = new DbManager(getApplicationContext());
 
 
