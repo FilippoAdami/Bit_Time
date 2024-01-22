@@ -127,7 +127,7 @@ public class CreationUpperFragment extends Fragment {
 
                     dbViewModel.selectItem(data);
 
-                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Back));
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.BackToTasks));
                 }
                 /*else
                 {

@@ -388,7 +388,7 @@ public class ActivityCreationFragment extends Fragment {
                     dbViewModel.selectItem(newData);
                     plannerViewModel.selectItem(new PlannerViewModelData());
 
-                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Back));
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.BackToActivities));
 
                 }  else
                 {

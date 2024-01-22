@@ -180,5 +180,8 @@
     <string name="quickstartMenuEntry">quickStartMenuEntry</string>
     <string name="caregiverLoginEntry">caregiverLoginEntry</string>
     <string name="runningActivityEntry">runningActivityEntry</string>
+    <string name="tasksSettEntry">tasksSettEntry</string>
+    <string name="activitiesSettEntry">activitiesSettEntry</string>
+    <string name="settActBackStackBase">settActBackStackBase"</string>
 
 </resources>

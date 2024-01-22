@@ -25,6 +25,8 @@ public class SettingsMiddleFragment extends Fragment {
 
     CustomViewModel viewModel;
     DbViewModel dbViewModel;
+    TextView text;
+    Button addButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,8 +41,34 @@ public class SettingsMiddleFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
         View view = inflater.inflate(R.layout.settings_middle_fragment_layout,container,false);
+
+        addButton = view.findViewById(R.id.addButton);
+        text = view.findViewById(R.id.label);
+
+        Bundle b = getArguments();
+
+
+
+
+        if(b != null)
+        {
+            String modeStr = b.getString("mode","noValue");
+            Log.i("SettMidFrag modeStr",modeStr);
+            if(modeStr.equals("Tasks"))
+            {
+                tasksSelected();
+            }else if(modeStr.equals("Activities"))
+            {
+                activitiesSelected();
+            }
+        }else
+        {
+            activitiesSelected();
+        }
+
+
+
 
         view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -55,40 +83,59 @@ public class SettingsMiddleFragment extends Fragment {
         });
 
 
-        Button addButton = view.findViewById(R.id.addButton);
-        TextView text = view.findViewById(R.id.label);
-        text.setText(R.string.newActivityLabel);
+
+        /*text.setText(R.string.newActivityLabel);
         addButton.setText(R.string.addActivityBtn);
 
-        Log.i("TEST","res da middle "+dbViewModel.getSelectedItem().getValue());
+        Log.i("TEST","res da middle "+dbViewModel.getSelectedItem().getValue());*/
 
         viewModel.getSelectedItem().observe(getViewLifecycleOwner(),item -> {
 
 
             if(item.equals("Tasks"))
             {
-                text.setText(R.string.newTaskLabel);
-                addButton.setText(R.string.addTaskBtn);
-
-                addButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //Toast.makeText(getActivity(),"pressed", Toast.LENGTH_SHORT).show();
-
-                        viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.NewTask));
-
-
-                    }
-                });
+              tasksSelected();
             }
             else if(item.equals("Activities") || item.equals("EntryPoint")) {
-                text.setText(R.string.newActivityLabel);
-                addButton.setText(R.string.addActivityBtn);
-                addButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+             activitiesSelected();
+            }
+        });
 
-                        viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.NewActivity));
+
+
+
+        return view;
+    }
+
+
+
+    private void tasksSelected()
+    {
+        text.setText(R.string.newTaskLabel);
+        addButton.setText(R.string.addTaskBtn);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(getActivity(),"pressed", Toast.LENGTH_SHORT).show();
+
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.NewTask));
+
+
+            }
+        });
+    }
+
+
+    private void activitiesSelected()
+    {
+        text.setText(R.string.newActivityLabel);
+        addButton.setText(R.string.addActivityBtn);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.NewActivity));
 
 
                         /*Fragment upperFrag = new PlaceholderFragment();
@@ -102,14 +149,7 @@ public class SettingsMiddleFragment extends Fragment {
                                 .replace(R.id.middle_fragment_container_view,middleFrag)
                                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
                                 .commit();*/
-                    }
-                });
             }
         });
-
-
-
-
-        return view;
     }
 }

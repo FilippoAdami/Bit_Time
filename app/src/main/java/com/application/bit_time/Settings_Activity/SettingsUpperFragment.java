@@ -22,6 +22,10 @@ public class SettingsUpperFragment extends Fragment {
 
 
     private CustomViewModel viewModel;
+    private String modeStr;
+    private TextView leftLabel;
+    private TextView rightLabel;
+
 
 
     @Nullable
@@ -30,24 +34,43 @@ public class SettingsUpperFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.settings_upper_fragment_layout,container,false);
 
-
-
-
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
 
 
-        TextView leftLabel = view.findViewById(R.id.leftLabel);
-        TextView rightLabel = view.findViewById(R.id.rightLabel);
+        leftLabel = view.findViewById(R.id.leftLabel);
+        rightLabel  = view.findViewById(R.id.rightLabel);
 
-        rightLabel.setTypeface(null, Typeface.BOLD);
-        leftLabel.setTypeface(null,Typeface.NORMAL);
 
+        Bundle b = getArguments();
+        if(b != null)
+        {
+
+            modeStr = b.getString("mode","noValue");
+
+            if(modeStr.equals("Tasks"))
+            {
+                leftSelection();
+            }
+            else if(modeStr.equals("Activities"))
+            {
+                rightSelection();
+            }
+        }else
+        {
+            rightSelection();
+        }
+
+
+
+
+
+
+        //rightSelection();
         leftLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                rightLabel.setTypeface(null, Typeface.NORMAL);
-                leftLabel.setTypeface(null,Typeface.BOLD);
+                leftSelection();
 
                 Log.i("SETTACT topfrag","left pressed");
                 //Toast.makeText(getContext(),"left label pressed",Toast.LENGTH_SHORT).show();
@@ -60,8 +83,7 @@ public class SettingsUpperFragment extends Fragment {
             public void onClick(View view) {
 
 
-                leftLabel.setTypeface(null, Typeface.NORMAL);
-                rightLabel.setTypeface(null,Typeface.BOLD);
+                rightSelection();
 
 
                 Log.i("SETTACT topfrag","right pressed");
@@ -74,4 +96,18 @@ public class SettingsUpperFragment extends Fragment {
 
         return view;
     }
+
+    private void rightSelection()
+    {
+        leftLabel.setTypeface(null, Typeface.NORMAL);
+        rightLabel.setTypeface(null,Typeface.BOLD);
+    }
+
+    private void leftSelection()
+    {
+        rightLabel.setTypeface(null, Typeface.NORMAL);
+        leftLabel.setTypeface(null,Typeface.BOLD);
+    }
+
+
 }
