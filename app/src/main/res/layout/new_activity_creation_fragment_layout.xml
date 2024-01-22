@@ -23,6 +23,14 @@
         android:hint="@string/nome_attivit"
         android:inputType="text" />
 
+    <TextView
+        android:id="@+id/ActCreWarning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/placehoder"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

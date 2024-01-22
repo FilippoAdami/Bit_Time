@@ -2,6 +2,8 @@ package com.application.bit_time.Settings_Activity;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +62,7 @@ public class ActivityCreationFragment extends Fragment {
     private String activityName;
     private SettingsModeData currentState;
 
-
+    private int MAX_LENGTH = 12;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -207,7 +209,44 @@ public class ActivityCreationFragment extends Fragment {
         //View view = inflater.inflate(R.layout.activity_creation_fragment_layout,container,false);
         View view = inflater.inflate(R.layout.new_activity_creation_fragment_layout,container,false);
 
+
+
+        TextView actCreWarning = view.findViewById(R.id.ActCreWarning);
+
+        actCreWarning.setText("The name of the activity cannot be longer than "+MAX_LENGTH+" chars");
+        actCreWarning.setVisibility(View.INVISIBLE);
+
+
         TextView nameLabel = view.findViewById(R.id.editNameLabel);
+
+        nameLabel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>MAX_LENGTH)
+                {
+                    Log.i("ACF","the name is too long");
+                    actCreWarning.setVisibility(View.VISIBLE);
+                }
+                else
+                    actCreWarning.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+
+
+
+
         TextView totalTimelabel = view.findViewById(R.id.totalTimeLabel);
         Button addButton = view.findViewById(R.id.addTaskButton);
         Button endButton = view.findViewById(R.id.fineButton);
