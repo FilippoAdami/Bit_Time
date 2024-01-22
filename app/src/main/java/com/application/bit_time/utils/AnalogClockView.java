@@ -522,7 +522,7 @@ public class AnalogClockView extends View {
         mediaPlayer = new MediaPlayer();
 
         try {
-            VibrationUtil.vibrate(getContext(), 300);
+            VibrationUtil.vibrate(getContext(), 250);
             mediaPlayer.setDataSource(soundFilePath);
             Log.d("playSound", "Sound File Path: " + soundFilePath);
             mediaPlayer.prepare();
