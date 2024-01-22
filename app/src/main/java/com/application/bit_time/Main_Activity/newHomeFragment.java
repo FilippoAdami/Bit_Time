@@ -91,7 +91,12 @@ public class newHomeFragment extends Fragment {
         RAVM.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
 
             // Check if the currentTask in the observed item is not null
-            if (item.currentTask != null) {
+            if(item.status.equals(newRunningActivityData.Status.ActivityDone))
+            {
+                this.quitTimer();
+            }
+            else if (item.currentTask != null)
+            {
                 // Log information about the observed item
                 Log.i("item from NHF", item.toString());
 
@@ -145,6 +150,7 @@ public class newHomeFragment extends Fragment {
                             .commit();
                 }
             }
+
         });
 
 

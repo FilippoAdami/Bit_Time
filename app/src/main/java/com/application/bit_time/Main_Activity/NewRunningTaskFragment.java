@@ -95,7 +95,8 @@ public class NewRunningTaskFragment extends Fragment {
 
         RAVM.getSelectedItem().observe(getViewLifecycleOwner(),item->
         {
-            if(item.currentTask!=null) {
+            if(item.currentTask!=null)
+            {
                 Log.i("NRTF item", item.toString());
                 currentTask = item.currentTask;
                 if (item.status.toString().equals("Running")) {

@@ -161,7 +161,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     // we need to save both currentActId and the ids of the plannings saved so we
                     // will return a list where :
-                    // THE FIRST ELEMENT contains th e"currentActId"
+                    // THE FIRST ELEMENT contains the "currentActId"
                     // while the following elements are the db's ids of the plans inserted, in the order of insertion
                     List<Integer> ids = new ArrayList<>();
                     ids.add(dbManager.insertActivityRecord(currentData.activityItem));
@@ -309,7 +309,14 @@ public class SettingsActivity extends AppCompatActivity {
                 //{
                     //Log.i("INFOZ","entro in if");
 
-                if(item.equals("Tasks"))
+
+                if(item.equals("Back")) {
+                    if(fManager.getBackStackEntryCount()>1)
+                    {
+                        fManager.popBackStackImmediate();
+                    }
+                }
+                else if(item.equals("Tasks"))
                 {
                     taskRender();
                 }
@@ -351,7 +358,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.i("BackStackLog","taskRender");
         lowerFrag = new SettingsLowerFragmentTasks();
 
-        if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
+        /*if(fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("ActivitiesRender")
         || fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName().equals("taskRender"))
         {
 
@@ -364,7 +371,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.i("popped","false");
             }
 
-        }
+        }*/
 
         fManager.beginTransaction()
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)

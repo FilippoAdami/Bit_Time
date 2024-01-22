@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
@@ -250,10 +251,11 @@ public class MainActivity extends AppCompatActivity {
                 {
                     if(item.getBackField().equals(MainActivityStatusData.BackField.Save))
                     {
-                        SharedPreferences tempsharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                        Toast.makeText(this,"REPORT WILL BE SAVED",Toast.LENGTH_SHORT).show();
+                        /*SharedPreferences tempsharedPreferences = getPreferences(Context.MODE_PRIVATE);
                         int actID = tempsharedPreferences.getInt("activityToRun",-100);
                         Log.i("Backfield choice","Save actId "+actID);
-                        dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());
+                        dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());*/
                     }
                     else if(item.getBackField().equals(MainActivityStatusData.BackField.Quit))
                     {
@@ -350,8 +352,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Main act detection",Integer.toString(item.getFullReport().size()));
                 fragmentManager
                         .beginTransaction()
+                        .replace(R.id.controlbarFragment,new ControlsFragment())
                         .replace(R.id.fragment_container,new ReportFragment())
                         .replace(R.id.bottomFragmentContainer,new Fragment())
+                        .addToBackStack("reportEntry")
                         .commit();
             }
         });
