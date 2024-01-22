@@ -10,23 +10,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\elpip\.android\avd\Nexus_6_API_21.avd" />
+                  <value value="C:\Users\matte\.android\avd\Medium_Phone_API_24.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-21T23:51:36.804904100Z" />
-          <targetsSelectedWithDialog>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\elpip\.android\avd\Nexus_6_API_21.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetsSelectedWithDialog>
+          <timeTargetWasSelectedWithDropDown value="2024-01-21T20:15:48.043328800Z" />
         </State>
       </entry>
     </value>

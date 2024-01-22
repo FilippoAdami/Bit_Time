@@ -55,18 +55,40 @@ public class PlanFragment extends Fragment {
         TextView timeText = view.findViewById(R.id.timeTextView);
 
         Button dailyFreqButton = view.findViewById(R.id.dailyFreqButton);
+        Button weeklyFreqButton = view.findViewById(R.id.weeklyFreqButton);
+
+
+
         dailyFreqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(dailyFreqButton.isSelected()) {
-                    dailyFreqButton.setSelected(false);
+                    setButtonOff(dailyFreqButton);
+
                     Log.i("dailyFreqBtnState","false");
                 }
                 else
                 {
-                    dailyFreqButton.setSelected(true);
+                    setButtonOn(dailyFreqButton);
+                    setButtonOff(weeklyFreqButton);
                     Log.i("dailyFreqBtnState","true");
 
+
+                }
+            }
+        });
+
+
+        weeklyFreqButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(weeklyFreqButton.isSelected())
+                {
+                    setButtonOff(weeklyFreqButton);
+                }else
+                {
+                    setButtonOn(weeklyFreqButton);
+                    setButtonOff(dailyFreqButton);
                 }
             }
         });
@@ -133,6 +155,10 @@ public class PlanFragment extends Fragment {
                     alarmToPlan.setFreq(AlarmInfo.Frequency.Daily);
                     Log.i("freq set","would schedule daily freq");
                 }
+                else if(weeklyFreqButton.isSelected())
+                {
+                    alarmToPlan.setFreq(AlarmInfo.Frequency.Weekly);
+                }
 
                 if(alarmToPlan.isDateSet() && alarmToPlan.isTimeSet())
                 {
@@ -178,6 +204,19 @@ public class PlanFragment extends Fragment {
 
 
         return view;
+    }
+
+
+    private void setButtonOff(Button buttonToSetOff)
+    {
+        buttonToSetOff.setSelected(false);
+        buttonToSetOff.setBackgroundColor(getResources().getColor(R.color.pastel_red));
+    }
+
+    private void setButtonOn(Button buttonToSetOn)
+    {
+        buttonToSetOn.setSelected(true);
+        buttonToSetOn.setBackgroundColor(getResources().getColor(R.color.yellow));
     }
 
 

@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
                             MainActivityViewModel MAV = new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);
                             MainActivityStatusData MASData = new MainActivityStatusData(MainActivityStatusData.Status.QuickstartMenu);
-                            MASData.setBackField(MainActivityStatusData.BackField.Ignore);
+                            MASData.setBackField(MainActivityStatusData.BackField.Quit);
                             MAV.selectItem(MASData);
                         }
                     })
@@ -93,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
+
+
+
+        //DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        //Log.i("pixelWidth",Integer.toString(metrics.widthPixels));
+
         dbManager = new DbManager(getApplicationContext());
 
 
@@ -196,27 +202,26 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
+        //FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
 
-        if(topContainer == null)
+        /*if(topContainer == null)
         {
             Log.i("fragment search","failed, null result");
         }
         else {
             Log.i("fragment search","found");
-        }
+        }*/
 
         //Fragment bottomFragment = new RunningTaskFragment();
-        Fragment bottomFragment = new Fragment();
-
-
-        Fragment controlbarFragment = new ControlsFragment();
+        //Fragment bottomFragment = new Fragment();
+        //Fragment controlbarFragment = new ControlsFragment();
 
         statusVM = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
 
         statusVM.getSelectedItem().observe(this, item->
         {
+            Log.i("backstack entries",Integer.toString(fragmentManager.getBackStackEntryCount()));
             ActRunningOBPCallback.setEnabled(false);
             Log.i("OBP callback","ActRunning set to false");
             Log.i("STATUSVM DETECTION","MainActivity detected something");
@@ -239,11 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
 
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new QuickstartMenuFragment())
-                        .replace(R.id.bottomFragmentContainer,new Fragment())
-                        .commit();
+
 
                 if(item.isBack())
                 {
@@ -254,41 +255,86 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("Backfield choice","Save actId "+actID);
                         dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());
                     }
+                    else if(item.getBackField().equals(MainActivityStatusData.BackField.Quit))
+                    {
+                        newHomeFragment currentHF = (newHomeFragment)fragmentManager.findFragmentByTag("currentNewHomeFragment");
+                        currentHF.quitTimer();
+                    }
                     else
                     {
                         Log.i("Backfield choice","Ignore");
                     }
                 }
 
+                String entryName= getResources().getString(R.string.quickstartMenuEntry);
+
+                if(fragmentManager.popBackStackImmediate(entryName,0)) {
+                    Log.i("back to",entryName);
+                }
+                else
+                {
+
+                    Log.i("first time",entryName);
+                    fragmentManager
+                            .beginTransaction()
+                            .replace(R.id.controlbarFragment,new ControlsFragment())
+                            .replace(R.id.fragment_container, new QuickstartMenuFragment())
+                            .replace(R.id.bottomFragmentContainer, new Fragment())
+                            .addToBackStack(entryName)
+                            .commit();
+                }
+
 
             }
             else if( currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
             {
-                //ActRunningOBPCallback.setEnabled(true); // TODO: uncomment this !!!
+                ActRunningOBPCallback.setEnabled(true);
+                Log.i("OBP callback","ActRunning set to true");
+
                 Log.i("CURRENT STATUS MAINACT","RUNNING ACTIVITY");
 
-                //SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
-                //int value = sharedPrefs.getInt("activityToRun",-1);
-                //Log.i("activityToRun",Integer.toString(value));
+                SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+                int value = sharedPrefs.getInt("activityToRun",-1);
+                Log.i("activityToRun",Integer.toString(value));
 
                 fragmentManager
                         .beginTransaction()
-                        //TODO : uncomment the line under this one
-                        //.replace(R.id.fragment_container,new HomeFragment())
+                        .replace(R.id.controlbarFragment,new ControlsFragment())
+                        .replace(R.id.fragment_container,new newHomeFragment(),"currentNewHomeFragment")
                         .replace(R.id.bottomFragmentContainer,new NewRunningTaskFragment(),"currentRunningTaskFrag")
+                        .addToBackStack(getResources().getString(R.string.runningActivityEntry))
                         .commit();
             }
             else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))
             {
-                ActRunningOBPCallback.setEnabled(true);
-                Log.i("OBP callback","ActRunning set to true");
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new CaregiverLoginFragment())
-                        .replace(R.id.bottomFragmentContainer,new Fragment())
-                        .addToBackStack(null)
-                        .commit();
+                String entryName = getResources().getString(R.string.caregiverLoginEntry);
+
+                if(item.getBackField() != null && item.getBackField().equals(MainActivityStatusData.BackField.Quit))
+                {
+                    newHomeFragment currentHF = (newHomeFragment)fragmentManager.findFragmentByTag("currentNewHomeFragment");
+                    currentHF.quitTimer();
+                    fragmentManager.popBackStackImmediate(getResources().getString(R.string.runningActivityEntry),FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+
+
+                if(fragmentManager.popBackStackImmediate(entryName,0))
+                {
+                    Log.i("back to",entryName);
+                }
+                else
+                {
+
+                    Log.i("first time",entryName);
+                    fragmentManager
+                            .beginTransaction()
+                            .replace(R.id.fragment_container,new CaregiverLoginFragment())
+                            .replace(R.id.bottomFragmentContainer,new Fragment())
+                            .addToBackStack(entryName)
+                            .commit();
+                }
+
             }
+
 
 
         });
@@ -341,28 +387,33 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        fragmentManager
+        /*fragmentManager
                 .beginTransaction()
                 .replace(R.id.controlbarFragment,controlbarFragment)
                 .replace(R.id.fragment_container, new QuickstartMenuFragment())
                 .replace(R.id.bottomFragmentContainer,bottomFragment)
-                .commit();
+                .commit();*/
 
 
         OnBackPressedCallback mainOBPCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 Log.i("OBP callback", "main");
+                //Log.i("popBack preview",fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount()-1).getName());
+                if(fragmentManager.getBackStackEntryCount()>1) {
+                    fragmentManager.popBackStackImmediate();
+                }
             }
         };
 
-        ActRunningOBPCallback = new OnBackPressedCallback(false) {
+        ActRunningOBPCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 Log.i("OBP callback","ACT RUNNING VERSION");
 
                 QuitDialog quitDialog = new QuitDialog();
                 quitDialog.show(fragmentManager,null);
+                this.setEnabled(false);
 
             }
         };
@@ -393,64 +444,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.commit();
         }
         */
-
-
-        statusVM.getSelectedItem().observe(this, item->
-        {
-            Log.i("STATUSVM DETECTION","MainActivity detected something");
-
-
-            MainActivityStatusData.Status currentStatus = item.getCurrentStatus();
-
-            if(currentStatus.equals(MainActivityStatusData.Status.Idle))
-            {
-                Log.i("CURRENT STATUS MAINACT","IDLE");
-                fragmentManager
-                        .beginTransaction()
-                        .add(R.id.bottomFragmentContainer,new newHomeFragment())
-                        //.replace(R.id.fragment_container,new Fragment())
-                        //.add(R.id.bottomFragmentContainer,new GameFragment())
-                        .commit();
-            }
-            else if( currentStatus.equals(MainActivityStatusData.Status.QuickstartMenu))
-            {
-                Log.i("CURRENT STATUS MAINACT","QUICKSTART MENU");
-                fragmentManager
-                        .beginTransaction()
-                        .add(R.id.fragment_container,new QuickstartMenuFragment())
-                        .add(R.id.bottomFragmentContainer,new Fragment())
-                        .commit();
-            }
-            else if( currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
-            {
-                Log.i("CURRENT STATUS MAINACT","RUNNING ACTIVITY");
-
-                SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
-                int value = sharedPrefs.getInt("activityToRun",-1);
-
-                Log.i("activityToRun",Integer.toString(value));
-
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new newHomeFragment())
-                        //.replace(R.id.fragment_container,new Fragment())
-                        .replace(R.id.bottomFragmentContainer,new NewRunningTaskFragment())
-                        .commit();
-            }
-            else if(currentStatus.equals(MainActivityStatusData.Status.CaregiverLogin))
-            {
-                //topContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,50));
-
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new CaregiverLoginFragment())
-                        .replace(R.id.bottomFragmentContainer,new Fragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
-
-
-        });
 
 
 

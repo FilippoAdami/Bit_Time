@@ -1,6 +1,7 @@
 package com.application.bit_time.Main_Activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,15 @@ public class ControlsFragment extends Fragment {
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivityViewModel.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.CaregiverLogin));
+                Log.i("current MAV pos",mainActivityViewModel.getSelectedItem().getValue().getCurrentStatus().toString());
+                MainActivityStatusData.Status currentStatus = mainActivityViewModel.getSelectedItem().getValue().getCurrentStatus();
+                MainActivityStatusData MASData = new MainActivityStatusData(MainActivityStatusData.Status.CaregiverLogin);
+                if(currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
+                {
+                    MASData.setBackField(MainActivityStatusData.BackField.Quit);
+                }
+
+                mainActivityViewModel.selectItem(MASData);
             }
         });
 

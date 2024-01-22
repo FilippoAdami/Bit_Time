@@ -40,7 +40,7 @@ public class newHomeFragment extends Fragment {
     private AnalogClockView analogClockView;
     private final Handler handler = new Handler();
 
-
+    private Runnable runnable;
 
     RunningActivityViewModel RAVM;
     int lastedTime;
@@ -76,11 +76,11 @@ public class newHomeFragment extends Fragment {
             clockTextView.setTextColor(Color.BLACK);
         }
         //place a listener onBackPressed
-        getActivity().getOnBackPressedDispatcher().addCallback(this.getActivity(), new OnBackPressedCallback(true) {
+        /*getActivity().getOnBackPressedDispatcher().addCallback(this.getActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
             }
-        });
+        });*/
 
         // Observe changes in the selected item using LiveData
         RAVM.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
@@ -148,10 +148,12 @@ public class newHomeFragment extends Fragment {
 
     private void updateTime()
     {
-        handler.postDelayed(() -> {
+        runnable = new Runnable() {
+            @Override
+            public void run() {
 
-            lastedTime++;
-            Log.i("lastedTime",Integer.toString(lastedTime));
+                lastedTime++;
+                Log.i("lastedTime",Integer.toString(lastedTime));
 
             /*if(lastedTime== currentTask.getDurationInt())
             {
@@ -163,21 +165,24 @@ public class newHomeFragment extends Fragment {
             }*/
 
 
-            String currentTime = getCurrentTime();
+                String currentTime = getCurrentTime();
 
-            String[] parts = currentTime.split(":");
-            String hours = parts[0];
-            String minutes = parts[1];
+                String[] parts = currentTime.split(":");
+                String hours = parts[0];
+                String minutes = parts[1];
 
-            SpannableString spannableTime = new SpannableString(currentTime);
-            spannableTime.setSpan(new ForegroundColorSpan(BluePaint.getColor()), 0, hours.length(), 0);
-            spannableTime.setSpan(new ForegroundColorSpan(RedPaint.getColor()), hours.length() + 1, currentTime.length(), 0);
-            clockTextView.setText(spannableTime);
+                SpannableString spannableTime = new SpannableString(currentTime);
+                spannableTime.setSpan(new ForegroundColorSpan(BluePaint.getColor()), 0, hours.length(), 0);
+                spannableTime.setSpan(new ForegroundColorSpan(RedPaint.getColor()), hours.length() + 1, currentTime.length(), 0);
+                clockTextView.setText(spannableTime);
 
-            analogClockView.invalidate();
+                analogClockView.invalidate();
 
-            updateTime();
-        },1000);
+                updateTime();
+            }
+
+        };
+        handler.postDelayed(runnable,1000);
     }
 
     private String getCurrentTime() {
@@ -320,5 +325,9 @@ public class newHomeFragment extends Fragment {
         sharedPreferences.edit().putString("IDsString", string).commit();
     }
 
-
+    public void quitTimer()
+    {
+        Log.i("runnable","removed");
+        this.handler.removeCallbacks(runnable);
+    }
 }

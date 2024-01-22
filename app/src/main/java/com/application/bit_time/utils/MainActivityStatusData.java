@@ -18,7 +18,8 @@ public class MainActivityStatusData {
     {
         NotBack,
         Save,
-        Ignore
+        Ignore,
+        Quit
     }
 
     private Status currentStatus;
@@ -30,9 +31,10 @@ public class MainActivityStatusData {
        this.backField = BackField.NotBack;
    }
 
-   public MainActivityStatusData(Status newStatus)
+    public MainActivityStatusData(Status newStatus)
    {
        this.currentStatus = newStatus;
+       this.backField = BackField.NotBack;
    }
     public void setCurrentStatus(Status currentStatus) {
         this.currentStatus = currentStatus;
