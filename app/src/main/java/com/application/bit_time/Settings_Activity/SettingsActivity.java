@@ -297,7 +297,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         viewModel.getSelectedItem().observe(this, item ->
             {
-                if(fManager.getBackStackEntryCount()>0)
+            if(fManager.getBackStackEntryCount()>0)
                 Log.i("BackStackLog","back to "+fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName());
 
                 Log.i("SettingsActivity VM","item : "+item.toString());

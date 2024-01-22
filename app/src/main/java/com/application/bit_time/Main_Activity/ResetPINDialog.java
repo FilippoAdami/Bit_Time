@@ -20,12 +20,12 @@ public class ResetPINDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         dbManager = new DbManager(getActivity());
 
-        builder.setMessage("il PIN verrà resettato a 0000, continuare?");
+        builder.setMessage("il PIN verrà reimpostato a 0000, continuare?");
         builder.setPositiveButton("Reset", (dialog, which) -> {
             // Reset the PIN to null
             dbManager.updatePin("0");
             //show a toast message
-            Toast.makeText(getActivity(), "PIN has been reset to 0000", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "PIN reimpostato a 0000", Toast.LENGTH_SHORT).show();
         });
         builder.setNegativeButton("Annulla", null);
 

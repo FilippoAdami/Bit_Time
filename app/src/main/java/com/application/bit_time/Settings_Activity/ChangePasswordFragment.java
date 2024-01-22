@@ -36,9 +36,9 @@ public class ChangePasswordFragment extends Fragment {
             String confirmPassword = editTextConfirmPassword.getText().toString();
 
             if (newPassword.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter both fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Per favore, inserire entrambi i campi", Toast.LENGTH_SHORT).show();
             } else if (!newPassword.equals(confirmPassword)) {
-                Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Le password non corrispondono", Toast.LENGTH_SHORT).show();
             } else {
                 // Passwords match, update the password in the database
                 String email = dbManager.getUserEmail();
@@ -48,7 +48,7 @@ public class ChangePasswordFragment extends Fragment {
                 fragmentTransaction.replace(R.id.fragment_container, new AccountFragment())
                         .replace(R.id.bottomFragmentContainer, new Fragment());
                 fragmentTransaction.commit();
-                Toast.makeText(requireContext(), "Password updated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Password aggiornata", Toast.LENGTH_SHORT).show();
             }
         });
 

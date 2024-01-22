@@ -102,7 +102,7 @@ public class LogInFragment extends Fragment {
             String password = password_edit_text.getText().toString();
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
                 // Show an error message if email or password is empty
-                Toast.makeText(getActivity(), "insert email and password first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "inserire email e password", Toast.LENGTH_SHORT).show();
             return;
             }
 
@@ -146,7 +146,7 @@ public class LogInFragment extends Fragment {
             String email = emailEditText.getText().toString();
             if (TextUtils.isEmpty(email) || email.trim().isEmpty()) {
                 //show an error message if email is empty
-                Toast.makeText(getActivity(), "Please enter your email first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Inserire l'email", Toast.LENGTH_SHORT).show();
                 return;
             }
             //search for the user in the database
@@ -157,7 +157,7 @@ public class LogInFragment extends Fragment {
                 dialog.show(getChildFragmentManager(), "ForgotPasswordDialog");
             } else {
                 //user not found, show an error message
-                Toast.makeText(getActivity(), "User not found. Please sign up.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Utenete non trovato.", Toast.LENGTH_SHORT).show();
             }
             cursor.close();
         });
@@ -216,13 +216,13 @@ public class LogInFragment extends Fragment {
             // User found, say that the user is already registered and switch to login mode
             isLoginMode = true;
             updateUIForMode();
-            Toast.makeText(getActivity(), "User already registered. Please login.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Utenete già registrato.", Toast.LENGTH_SHORT).show();
             cursor.close();
         } else if (dbManager.isUserRegistered()) {
             // User not found, but some other user is already registered, so show an error message
             isLoginMode = true;
             updateUIForMode();
-            Toast.makeText(getActivity(), "Some other user is already registered. Please login.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Un altro utente è già registrato.", Toast.LENGTH_SHORT).show();
             cursor.close();
         } else {
             // User not found, so register the new user
@@ -270,7 +270,7 @@ public class LogInFragment extends Fragment {
             return isPasswordCorrect;
         } else {
             // User not found, so say that the user is not registered
-            Toast.makeText(getActivity(), "User not registered. Please sign up.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Utente non registrato.", Toast.LENGTH_SHORT).show();
             cursor.close();
             return false;
         }
