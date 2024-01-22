@@ -526,14 +526,14 @@ public class CustomizeSettingsFragment extends Fragment {
     private void showConfirmationDialog() {
         Log.i("back", "showConfirmationDialog: ");
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Save Changes?");
-        builder.setMessage("Do you want to save your changes before exiting?");
-        builder.setPositiveButton("Save", (dialogInterface, i) -> {
+        builder.setTitle("Salvare le modifiche?");
+        builder.setMessage("Vuoi salvare le modifiche prima di uscire?");
+        builder.setPositiveButton("Salva", (dialogInterface, i) -> {
             // Save the changes
             updateUserData();
             preferencesChanged = false;
         });
-        builder.setNegativeButton("Discard", (dialogInterface, i) -> {
+        builder.setNegativeButton("Non salvare", (dialogInterface, i) -> {
             // Discard the changes
             preferencesChanged = false;
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();

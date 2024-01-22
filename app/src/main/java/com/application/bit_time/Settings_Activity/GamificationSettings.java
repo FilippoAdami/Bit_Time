@@ -177,18 +177,20 @@ public class GamificationSettings extends Fragment {
     private void showConfirmationDialog() {
         Log.i("back", "showConfirmationDialog: ");
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Save Changes?");
-        builder.setMessage("Do you want to save your changes before exiting?");
-        builder.setPositiveButton("Save", (dialogInterface, i) -> {
+        builder.setTitle("Salvare le modifiche?");
+        builder.setMessage("Vuoi salvare le modifiche prima di uscire?");
+        builder.setPositiveButton("Salva", (dialogInterface, i) -> {
             // Save the changes
             updateUserData();
             requireActivity().onBackPressed();
         });
-        builder.setNegativeButton("Discard", (dialogInterface, i) -> {
-            // Discard the changes
-            requireActivity().onBackPressed();
+        builder.setNegativeButton("Non salvare", (dialogInterface, i) -> {
+            // Remove the fragment and go back to the previous fragment
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().remove(GamificationSettings.this).commit();
+            fragmentManager.popBackStack();
         });
-        builder.setNeutralButton("Cancel", (dialogInterface, i) -> {
+        builder.setNeutralButton("Annulla", (dialogInterface, i) -> {
             // Cancel the dialog, do nothing
         });
         builder.show();
