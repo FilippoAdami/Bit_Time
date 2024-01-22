@@ -306,17 +306,17 @@ public class SettingsActivity extends AppCompatActivity {
         //homeSettingsRedirect();
 
         viewModel.getSelectedItem().observe(this, item ->
-            {
-                if(fManager.getBackStackEntryCount()>0)
-                    Log.i("BackStackLog","back to "+fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName());
+                {
+                    //if (fManager.getBackStackEntryCount() > 0)
+                    //    Log.i("BackStackLog UP", "back to " + fManager.getBackStackEntryAt(fManager.getBackStackEntryCount() - 1).getName());
 
-                Log.i("SettingsActivity VM","item : "+item.toString());
-                Log.i("BSECount",Integer.toString(fManager.getBackStackEntryCount()));
+                    //Log.i("SettingsActivity VM", "item : " + item.toString());
+                    //Log.i("BSECount", Integer.toString(fManager.getBackStackEntryCount()));
 
-                Log.i("SETTINGS ACT vm",item.toString());
+                    //Log.i("SETTINGS ACT vm", item.toString());
 
-                //if(frag == null)
-                //{
+                    //if(frag == null)
+                    //{
                     //Log.i("INFOZ","entro in if");
 
 
@@ -326,49 +326,40 @@ public class SettingsActivity extends AppCompatActivity {
                         fManager.popBackStackImmediate();
                     }
                 }*/
-                if(item.equals("BackToTasks"))
-                {
-                    taskRender();
-                }
-                else if(item.equals("BackToActivities"))
-                {
-                    activitiesRender();
-                }
-                else if(item.equals("Tasks"))
-                {
-                    taskRender();
-                }
-                else if(item.equals("Activities"))
-                {
-                    activitiesRender();
-                }
-                else if(item.equals("EntryPoint"))
-                {
-                 managementEntryPoint();
-                }
-                else if(item.equals("NewTask"))
-                {
-                    newTaskRender();
-                }else if(item.equals("NewActivity"))
-                {
-                    newActivityRender();
-                }else if(item.equals("ModifyActivity"))
-                {
-                    //Log.i("access","access is here");
-                    //Toast.makeText(getApplicationContext(),"i should modify data",Toast.LENGTH_SHORT);
-                    modifyActivity();
-                }else if(item.equals("ModifyTask"))
-                {
-                    //Toast.makeText(this,"received modify Task",Toast.LENGTH_SHORT).show();
-                    modifyTask();
-                }
-                else if(item.equals("MainEntry"))
-                {
-                    homeSettingsRedirect();
-                    //mainEntry();
-                    //fManager.popBackStackImmediate("SettActBackStackBase",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                }
-            });
+                    if (item.equals("BackToTasks")) {
+                        taskRender();
+                    } else if (item.equals("BackToActivities")) {
+                        activitiesRender();
+                    } else if (item.equals("Tasks")) {
+                        taskRender();
+                    } else if (item.equals("Activities")) {
+                        activitiesRender();
+                    } else if (item.equals("EntryPoint")) {
+                        managementEntryPoint();
+                    } else if (item.equals("NewTask")) {
+                        newTaskRender();
+                    } else if (item.equals("NewActivity")) {
+                        newActivityRender();
+                    } else if (item.equals("ModifyActivity")) {
+                        //Log.i("access","access is here");
+                        //Toast.makeText(getApplicationContext(),"i should modify data",Toast.LENGTH_SHORT);
+                        modifyActivity();
+                    } else if (item.equals("ModifyTask")) {
+                        //Toast.makeText(this,"received modify Task",Toast.LENGTH_SHORT).show();
+                        modifyTask();
+                    } else if (item.equals("MainEntry")) {
+                        homeSettingsRedirect();
+                        //mainEntry();
+                        //fManager.popBackStackImmediate("SettActBackStackBase",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    }
+
+                    if(fManager.getBackStackEntryCount()>0)
+                        Log.i("BackStackLog DOWN","back to "+fManager.getBackStackEntryAt(fManager.getBackStackEntryCount()-1).getName());
+
+
+
+                });
+
     }
 
     private void taskRender()
@@ -416,11 +407,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
         }*/
-
-
-
-
-
 
         Log.i("current dim",Integer.toString(fManager.getBackStackEntryCount()));
 
@@ -489,8 +475,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)
-                .remove(middleFrag)
-                .remove(lowerFrag)
+                .replace(R.id.middle_fragment_container_view,new Fragment())
+                .replace(R.id.bottom_fragment_container_view, new Fragment())
                 .addToBackStack("newTaskBackStackLabel")
                 .commit();
     }
@@ -511,8 +497,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)
-                .remove(middleFrag)
-                .remove(lowerFrag)
+                .replace(R.id.middle_fragment_container_view,new Fragment())
+                .replace(R.id.bottom_fragment_container_view,new Fragment())
                 .addToBackStack("modifyT")
                 .commit();
     }
