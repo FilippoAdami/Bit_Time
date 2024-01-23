@@ -518,7 +518,7 @@ public class DbManager {
 
                     //TODO: CHECK OUT THIS
                     String updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
-                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration ;//+ ",";
+                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration + "," ;
 
                     for (int i = 1; i <= DbContract.Activities.DIM_MAX; i++) {
                         //String partial = " " + DbContract.Activities.TABLE_NAME + ".task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
