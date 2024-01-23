@@ -186,7 +186,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                 public void onClick(View view) {
                     Log.i("MODIFY","pressed");
                     Log.i("MODIFY","would modify "+ id);
-                    Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
 
                     ActivityInfo activityToModifyInfo = new ActivityInfo(
                             id,
