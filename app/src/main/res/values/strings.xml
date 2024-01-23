@@ -198,4 +198,6 @@
     <string name="zeroTimeTaskErrorMsg">quando si crea un task bisogna assegnargli una durata; la durata minima per un task è 1 secondo.</string>
     <string name="ActErrLenTitle">Il nome scelto per l\'activity è troppo lungo</string>
     <string name="ActErrLenMsg">il nome scelto per l\'activity è troppo lungo, prova con uno più corto</string>
+    <string name="emptySubtasksErrTitle">L\'activity che stai creando è vuota</string>
+    <string name="emptySubtasksErrMsg">L\'activity che stai creando al momento non contiene tasks, scegline premendo sul + oppure creane di nuovi e poi torna qui</string>
 </resources>

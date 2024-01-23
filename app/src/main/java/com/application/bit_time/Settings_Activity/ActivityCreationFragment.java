@@ -446,6 +446,9 @@ public class ActivityCreationFragment extends Fragment {
 
     private boolean checks()
     {
+
+        int checkLen = countValidSubtasks();
+
         if(nameLabel.length()<=0)
         {
             showError(1);
@@ -453,6 +456,11 @@ public class ActivityCreationFragment extends Fragment {
         }else if(nameLabel.length()>MAX_LENGTH)
         {
             showError(2);
+            return false;
+        }
+        else if(checkLen==0)
+        {
+            showError(3);
             return false;
         }
 
@@ -474,11 +482,30 @@ public class ActivityCreationFragment extends Fragment {
         {
             errorStr ="ActErrLen";
         }
+        else if(code==3)
+        {
+            errorStr = "emptySubtasksErr";
+        }
 
         b.putString("ErrorCode",errorStr);
         ErrorDialog errorDialog = new ErrorDialog();
         errorDialog.setArguments(b);
         errorDialog.show(getChildFragmentManager(),null);
+    }
+
+
+
+    private int countValidSubtasks()
+    {
+        int count=0;
+
+        for(TaskItem ti : subtasksToAdd)
+        {
+            if(ti.getID()>0)
+                count++;
+        }
+
+        return count;
     }
 
 

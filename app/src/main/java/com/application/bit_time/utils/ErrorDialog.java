@@ -66,6 +66,11 @@ public class ErrorDialog extends DialogFragment {
             title = res.getString(R.string.zeroTimeTaskErrorTitle);
             message = res.getString(R.string.zeroTimeTaskErrorMsg);
         }
+        else if(error.equals("emptySubtasksErr"))
+        {
+            title=res.getString(R.string.emptySubtasksErrTitle);
+            message=res.getString(R.string.emptySubtasksErrMsg);
+        }
 
 
         builder.setTitle(title);
