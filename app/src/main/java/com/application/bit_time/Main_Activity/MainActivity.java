@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     //TODO : if all the subtasks of an activity are deleted then ask if the user wants to delete also the activity or select at least one from the existing ones
     //TODO : show clearly if daily has been pressed and is set or not
     // TODO : consider isPlanned field of activities schema
-    // TODO : query to fix (deletion?)
 
     private RunningActivityViewModel runningActivityViewModel;
     private DbManager dbManager;
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
-
+        Log.i("OBP main",OBPDispatcher.toString());
 
 
         //DisplayMetrics metrics = this.getResources().getDisplayMetrics();

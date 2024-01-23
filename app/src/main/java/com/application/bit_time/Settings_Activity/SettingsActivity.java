@@ -27,6 +27,7 @@ import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbContract;
 import com.application.bit_time.utils.PlannerViewModel;
 import com.application.bit_time.utils.PlanningInfo;
+import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
@@ -69,16 +70,28 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
+        Log.i("OBP sett",OBPDispatcher.toString());
         OnBackPressedCallback mainOBPCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+
                 Log.i("OBPCallback","in main");
-                if(fManager.getBackStackEntryCount()>1)
+                int backstackDim = fManager.getBackStackEntryCount();
+                Log.i("before popping",fManager.getBackStackEntryAt(backstackDim-1).toString());
+                if(backstackDim>1)
+                {
                     fManager.popBackStackImmediate();
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Back));
+                    Log.i("after popping",fManager.getBackStackEntryAt(backstackDim-2).toString());
+                    Fragment f = fManager.findFragmentById(R.id.middle_fragment_container_view);
+                    //Log.i("fragment",f.getTag().toString());
+
+                }
+
             }
         };
 
-        OBPDispatcher.addCallback(mainOBPCallback);
+        OBPDispatcher.addCallback(this,mainOBPCallback);
 
         dbManager = new DbManager(getApplicationContext());
         sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
@@ -307,6 +320,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         viewModel.getSelectedItem().observe(this, item ->
                 {
+                    Log.i("enter","here as well "+item.toString());
                     //if (fManager.getBackStackEntryCount() > 0)
                     //    Log.i("BackStackLog UP", "back to " + fManager.getBackStackEntryAt(fManager.getBackStackEntryCount() - 1).getName());
 
@@ -382,7 +396,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             fManager.beginTransaction()
                     .replace(R.id.top_fragment_container_view,upperFrag)
-                    .replace(R.id.middle_fragment_container_view,middleFrag)
+                    .replace(R.id.middle_fragment_container_view,middleFrag,"taskFrag")
                     .replace(R.id.bottom_fragment_container_view,lowerFrag)
                     .addToBackStack(entryName)
                     .commit();
@@ -451,16 +465,13 @@ public class SettingsActivity extends AppCompatActivity {
             lowerFrag = new SettingsLowerFragmentActivities();
             fManager.beginTransaction()
                     .replace(R.id.top_fragment_container_view,upperFrag)
-                    .replace(R.id.middle_fragment_container_view,middleFrag)
+                    .replace(R.id.middle_fragment_container_view,middleFrag,"actFrag")
                     .replace(R.id.bottom_fragment_container_view,lowerFrag)
                     .addToBackStack(entryName)
                     .commit();
 
             //Log.i("BackStackLog","to set 'ActivitiesRender'");
         }
-
-
-
 
         //Log.i("SettingsActivity VM","activitiesRender called");
     }
@@ -508,15 +519,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view, upperFrag)
-                .remove(middleFrag)
-                .remove(lowerFrag)
+                .replace(R.id.middle_fragment_container_view,new Fragment())
+                .replace(R.id.bottom_fragment_container_view,new Fragment())
                 .addToBackStack("modifyA")
                 .commit();
     }
     public void mainEntry()
     {
-
-
         /*fManager.beginTransaction()
                 .remove(upperFrag)
                 .remove(middleFrag)
@@ -555,7 +564,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)
-                .replace(R.id.middle_fragment_container_view,middleFrag)
+                .replace(R.id.middle_fragment_container_view,middleFrag,"actFrag")
                 .replace(R.id.bottom_fragment_container_view,lowerFrag)
                 .addToBackStack(getResources().getString(R.string.settActBackStackBase))
                 .commit();

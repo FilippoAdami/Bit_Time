@@ -95,14 +95,16 @@ public class ActivityCreationFragment extends Fragment {
         }
 
 
-
-
         subtasksToAdd = new TaskItem[DbContract.Activities.DIM_MAX];
 
         for(int i =0 ;i <DbContract.Activities.DIM_MAX ; i++)
         {
             subtasksToAdd[i] = new TaskItem();
         }
+
+
+
+
 
         currentState = viewModel.getSelectedItem().getValue();
 

@@ -63,6 +63,11 @@ public class TaskSelectionDialog extends DialogFragment {
         subtaskAdapter = subtasksViewModel.getSelectedItem().getValue().subtaskAdapter;
         oldSelectedTasks = new ArrayList<>(Arrays.asList(subtasksViewModel.getSelectedItem().getValue().subtasks));
 
+        for(TaskItem ti : oldSelectedTasks)
+        {
+            Log.i("oldSelTasks",ti.toString());
+        }
+
         Log.i("taskCursor",Integer.toString(allTasksCursor.getCount()));
         Log.i("subtAdapt Dialog is",""+subtaskAdapter.toString());
 
@@ -192,7 +197,13 @@ public class TaskSelectionDialog extends DialogFragment {
                                     updatedData.hasBeenModified();
                                     subtasksViewModel.selectItem(updatedData);
 
-                                    for (TaskItem ti : selectedTasksA)
+
+                                    for(TaskItem ti: oldSelectedTasks)
+                                    {
+                                        Log.i("taksdiffcallback",ti.toString());
+                                    }
+                                    Log.i("taksdiffcallback","now new");
+                                    for (TaskItem ti : selectedTasks)
                                         Log.i("SELTASK_A", ti.toString());
 
                                     Log.i("DIALOG", "subtasks submitted");
@@ -338,7 +349,6 @@ public class TaskSelectionDialog extends DialogFragment {
                     newSTVMData.hasBeenModified();
                     newSTVMData.setSubtasks(selectedTasksA);
                     newSTVMData.setMask(checkedItems);
-
                     subtasksViewModel.selectItem(newSTVMData);
 
                     for (TaskItem ti : selectedTasksA)
@@ -350,7 +360,7 @@ public class TaskSelectionDialog extends DialogFragment {
 
                     final TasksDiffCallback diffCallback = new TasksDiffCallback(oldSelectedTasks, selectedTasks);
                     final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
+                    Log.i("subtasksadapt",subtaskAdapter.toString());
                     diffResult.dispatchUpdatesTo(subtaskAdapter);
                 }
             });

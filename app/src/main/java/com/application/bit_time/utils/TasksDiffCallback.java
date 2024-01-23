@@ -15,6 +15,20 @@ public class TasksDiffCallback extends DiffUtil.Callback {
     {
         this.oldTasksList = oldTasksList;
         this.newTasksList = newTasksList;
+
+
+
+        for(TaskItem ti: oldTasksList)
+        {
+            Log.i("taksdiffcallback",ti.toString());
+        }
+
+        Log.i("taksdiffcallback","now new");
+        for(TaskItem ti: newTasksList)
+        {
+            Log.i("taksdiffcallback",ti.toString());
+        }
+
     }
 
 

@@ -45,7 +45,7 @@ public class CustomizationSettingsFragment extends Fragment {
             fragmentTransaction.commit();
         });
 
-        //TODO: implementare la sezione di start activity
+
         //set the text of the buttonNA to "sezione in fase di sviluppo"
         buttonNA.setText("Sezione in fase di sviluppo");
 

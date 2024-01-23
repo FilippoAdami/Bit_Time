@@ -17,7 +17,8 @@ public class SettingsModeData {
         ModifyActivity,
         MainEntry,
         BackToTasks,
-        BackToActivities
+        BackToActivities,
+        Back
     }
 
     private Mode currentMode;

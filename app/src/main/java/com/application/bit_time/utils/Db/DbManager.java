@@ -516,7 +516,7 @@ public class DbManager {
                 if(pos>0) {
                     currSubtasks[DbContract.Activities.DIM_MAX - 1] = -1;
 
-                    //TODO: CHECK OUT THIS
+
                     String updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
                             + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration + "," ;
 
@@ -1440,7 +1440,7 @@ public class DbManager {
 
 
         } else
-            calendar = new GregorianCalendar(); //TODO : what does this return ?
+            calendar = new GregorianCalendar();
 
 
         return calendar;

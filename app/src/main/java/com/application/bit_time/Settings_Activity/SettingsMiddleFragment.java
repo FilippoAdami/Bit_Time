@@ -35,6 +35,8 @@ public class SettingsMiddleFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
         dbViewModel = new ViewModelProvider(requireActivity()).get(DbViewModel.class);
 
+
+
     }
 
     @Nullable
@@ -49,21 +51,41 @@ public class SettingsMiddleFragment extends Fragment {
         Bundle b = getArguments();
 
 
+        viewModel.getSelectedItem().observe(this.getActivity(),item -> {
+
+            Log.i("viewModel value",item.toString());
+            if(item.equals("Tasks"))
+            {
+                Log.i("ehi man","i check this");
+                tasksSelected();
+            }
+            else if(item.equals("Activities") || item.equals("EntryPoint")) {
+                activitiesSelected();
+            }
+
+
+        });
+
+
 
 
         if(b != null)
         {
+            Log.i("bundle settMidFrag",b.toString());
             String modeStr = b.getString("mode","noValue");
             Log.i("SettMidFrag modeStr",modeStr);
             if(modeStr.equals("Tasks"))
             {
                 tasksSelected();
-            }else if(modeStr.equals("Activities"))
+            }else
             {
                 activitiesSelected();
             }
+            b.clear();
+
         }else
         {
+            Log.i("SettMidFrag def","actmode");
             activitiesSelected();
         }
 
@@ -89,17 +111,7 @@ public class SettingsMiddleFragment extends Fragment {
 
         Log.i("TEST","res da middle "+dbViewModel.getSelectedItem().getValue());*/
 
-        viewModel.getSelectedItem().observe(getViewLifecycleOwner(),item -> {
 
-
-            if(item.equals("Tasks"))
-            {
-              tasksSelected();
-            }
-            else if(item.equals("Activities") || item.equals("EntryPoint")) {
-             activitiesSelected();
-            }
-        });
 
 
 
@@ -113,6 +125,7 @@ public class SettingsMiddleFragment extends Fragment {
     {
         text.setText(R.string.newTaskLabel);
         addButton.setText(R.string.addTaskBtn);
+        Log.i("ehi man","already here");
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +142,7 @@ public class SettingsMiddleFragment extends Fragment {
 
     private void activitiesSelected()
     {
+        Log.i("ehi man","in activitiesSelected");
         text.setText(R.string.newActivityLabel);
         addButton.setText(R.string.addActivityBtn);
         addButton.setOnClickListener(new View.OnClickListener() {

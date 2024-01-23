@@ -88,6 +88,7 @@ public class SettingsUpperFragment extends Fragment {
 
                 Log.i("SETTACT topfrag","right pressed");
                 //Toast.makeText(getContext(),"right label pressed",Toast.LENGTH_SHORT).show();
+
                 viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Activities));
             }
         });
@@ -101,6 +102,7 @@ public class SettingsUpperFragment extends Fragment {
     {
         leftLabel.setTypeface(null, Typeface.NORMAL);
         rightLabel.setTypeface(null,Typeface.BOLD);
+
     }
 
     private void leftSelection()
