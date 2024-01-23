@@ -32,6 +32,8 @@ public class ModifyTasksFragment extends Fragment {
     private DbViewModel dbViewModel;
 
     private EditText editName;
+    private EditText editmin;
+    private EditText editsec;
 
     private CustomViewModel viewModel;
     @Nullable
@@ -46,8 +48,8 @@ public class ModifyTasksFragment extends Fragment {
 
         editName = view.findViewById(R.id.editTaskNameLabel);
         //TextView edith = view.findViewById(R.id.editTextHours);
-        TextView editmin = view.findViewById(R.id.editTextMinutes);
-        TextView editsec = view.findViewById(R.id.editTextSeconds);
+        editmin = view.findViewById(R.id.editTextMinutes);
+        editsec = view.findViewById(R.id.editTextSeconds);
         Button confirmButton = view.findViewById(R.id.confirmButton);
         TextView warningTV = view.findViewById(R.id.TaskCreWarning);
         warningTV.setText("The name of the task cannot be longer than "+MAX_LENGTH+" chars");
@@ -87,17 +89,18 @@ public class ModifyTasksFragment extends Fragment {
 
 
 
-        //int totalTime = taskToModify.getDurationInt();
+        int totalTime = taskToModify.getDurationInt();
         TimeHelper th = taskToModify.getTimeHelper();
 
-        /*int h = (totalTime - totalTime % 60) / 60;
+        int h = (totalTime - totalTime % 60) / 60;
         int min = totalTime -h*60;
-        int sec = 0;*/
+        int sec = 0;
+
 
         editName.setText(taskToModify.getName());
-        /*edith.setText(Integer.toString(h));
+        /*edith.setText(Integer.toString(h));*/
         editmin.setText(Integer.toString(min));
-        editsec.setText(Integer.toString(sec));*/
+        editsec.setText(Integer.toString(sec));
 
         //edith.setText(Integer.toString(th.getHrs()));
         editmin.setText(Integer.toString(th.getMin()));
@@ -126,7 +129,7 @@ public class ModifyTasksFragment extends Fragment {
 
                     dbViewModel.selectItem(dbViewModelData);
 
-                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.MainEntry));
+                    viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.BackToTasks));
                 }
             }
         });
@@ -140,6 +143,8 @@ public class ModifyTasksFragment extends Fragment {
     private boolean checks()
     {
         int length = editName.getText().length();
+        int mins = getTime(editmin);
+        int secs = getTime(editsec);
 
         if(length>MAX_LENGTH)
         {
@@ -149,6 +154,11 @@ public class ModifyTasksFragment extends Fragment {
         else if(length==0)
         {
             showError(2);
+            return false;
+        }
+        else if(mins+secs<=0)
+        {
+            showError(3);
             return false;
         }
 
@@ -180,9 +190,20 @@ public class ModifyTasksFragment extends Fragment {
         {
             strCode = "emptyNameTask";
         }
+        else if(code==3)
+        {
+            strCode = "zeroTimeTaskErr";
+        }
 
         b.putString("ErrorCode",strCode);
         errorDialog.setArguments(b);
         errorDialog.show(getActivity().getSupportFragmentManager(),null);
+    }
+
+    private int getTime(EditText edtTxt)
+    {
+        String srcStr = edtTxt.getText().toString();
+
+        return parseContent(srcStr);
     }
 }

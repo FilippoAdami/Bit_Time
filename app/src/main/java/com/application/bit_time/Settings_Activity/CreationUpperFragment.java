@@ -145,16 +145,24 @@ public class CreationUpperFragment extends Fragment {
     private boolean compulsoryFieldsAreFilled()
     {
         int length = editName.length();
-        if(length>0 && length<=MAX_LENGTH) {
+        int mins = getTime(edtTxtMin);
+        int secs = getTime(edtTxtSec);
+
+
+        if(length>0 && length<=MAX_LENGTH && mins+secs>0) {
             return true;
         }
         else if(length>MAX_LENGTH)
         {
             showError(1);
         }
-        else
+        else if(length<0)
         {
             showError(2);
+        }
+        else if(mins+secs<=0)
+        {
+            showError(3);
         }
         return false;
     }
@@ -173,6 +181,10 @@ public class CreationUpperFragment extends Fragment {
         {
             strCode="emptyNameTask";
         }
+        else if(code==3)
+        {
+            strCode="zeroTimeTaskErr";
+        }
         b.putString("ErrorCode",strCode);
         errorDialog.setArguments(b);
         errorDialog.show(getActivity().getSupportFragmentManager(),null);
@@ -185,6 +197,16 @@ public class CreationUpperFragment extends Fragment {
         else
             return Integer.parseInt(stringToParse);
     }
+
+    private int getTime(EditText edtTxt)
+    {
+        String srcStr=edtTxt.getText().toString();
+        if(srcStr.equals(""))
+            return 0;
+        else return Integer.parseInt(srcStr);
+    }
+
+
 
 
 }

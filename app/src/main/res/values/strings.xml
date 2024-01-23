@@ -183,5 +183,19 @@
     <string name="tasksSettEntry">tasksSettEntry</string>
     <string name="activitiesSettEntry">activitiesSettEntry</string>
     <string name="settActBackStackBase">settActBackStackBase"</string>
-
+    <!--ErrorDialog's strings-->
+    <string name="genericErrorTitle">OPS! Qualcosa è andato storto</string>
+    <string name="genericErrorMsg">Questo è un messaggio generale di errore</string>
+    <string name="emptyNameActErrorTitle">L\'activity che si sta creando non ha un nome!</string>
+    <string name="emptyNameActErrorMsg">Quando si crea un activity è necessario dargli un nome, sarà più facile trovarla in seguito</string>
+    <string name="emptyNameTaskErrorTitle">Il task che si sta creando non ha un nome</string>
+    <string name="emptyNameTaskErrorMsg">Quando si crea un task è necessario dargli un nome, sarà più facile trovarlo in seguito</string>
+    <string name="planningNotFilledErrorTitle">Data o orario mancanti</string>
+    <string name="planningNotFilledErrorMsg">Quando si pianifica un\'activity bisogna specificare sia la data che l\'orario in cui si vuole ricevere la notifica</string>
+    <string name="nameTooLongTaskErrorTitle">il nome scelto per il task è troppo lungo</string>
+    <string name="nameTooLongTaskErrorMsg">il nome scelto per il task è troppo lungo, prova con uno più corto</string>
+    <string name="zeroTimeTaskErrorTitle">il task che si sta creando ha durata zero!</string>
+    <string name="zeroTimeTaskErrorMsg">quando si crea un task bisogna assegnargli una durata; la durata minima per un task è 1 secondo.</string>
+    <string name="ActErrLenTitle">Il nome scelto per l\'activity è troppo lungo</string>
+    <string name="ActErrLenMsg">il nome scelto per l\'activity è troppo lungo, prova con uno più corto</string>
 </resources>

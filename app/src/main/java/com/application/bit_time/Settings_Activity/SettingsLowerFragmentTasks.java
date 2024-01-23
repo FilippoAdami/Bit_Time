@@ -2,6 +2,7 @@ package com.application.bit_time.Settings_Activity;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class SettingsLowerFragmentTasks extends Fragment
 {
-    private List<TaskItem> taskList  = new ArrayList<>();
+    private List<TaskItem> taskList;
     private RecyclerView recyclerView;
     private TaskAdapter taskAdapter;
     DbManager dbManager;
@@ -32,14 +33,11 @@ public class SettingsLowerFragmentTasks extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         dbManager = new DbManager(getContext());
-        Cursor c = dbManager.selectAllTasks();
+        taskList  = new ArrayList<>();
+        //fillTaskList();
 
-        while(c.moveToNext())
-        {
-            taskList.add(new TaskItem(c.getInt(0),c.getString(1),c.getString(2)));
-        }
+
     }
 
 
@@ -60,5 +58,26 @@ public class SettingsLowerFragmentTasks extends Fragment
         recyclerView.setAdapter(taskAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i("SettLowFragTasks","onREsume called");
+        taskList.clear();
+        fillTaskList();
+
+    }
+
+
+    public void fillTaskList()
+    {
+        Cursor c = dbManager.selectAllTasks();
+
+
+        while(c.moveToNext())
+        {
+            taskList.add(new TaskItem(c.getInt(0),c.getString(1),c.getString(2)));
+        }
     }
 }

@@ -62,6 +62,10 @@ public class ActivityCreationFragment extends Fragment {
     private String activityName;
     private SettingsModeData currentState;
 
+    private TextView totalTimelabel ;
+    private Button addButton ;
+    private Button endButton ;
+    private TextView nameLabel;
     private int MAX_LENGTH = 12;
 
     @Override
@@ -219,7 +223,7 @@ public class ActivityCreationFragment extends Fragment {
         actCreWarning.setVisibility(View.INVISIBLE);
 
 
-        TextView nameLabel = view.findViewById(R.id.editNameLabel);
+        nameLabel = view.findViewById(R.id.editNameLabel);
 
         nameLabel.addTextChangedListener(new TextWatcher() {
             @Override
@@ -249,9 +253,9 @@ public class ActivityCreationFragment extends Fragment {
 
 
 
-        TextView totalTimelabel = view.findViewById(R.id.totalTimeLabel);
-        Button addButton = view.findViewById(R.id.addTaskButton);
-        Button endButton = view.findViewById(R.id.fineButton);
+        totalTimelabel = view.findViewById(R.id.totalTimeLabel);
+        addButton = view.findViewById(R.id.addTaskButton);
+        endButton = view.findViewById(R.id.fineButton);
 
         fManager.beginTransaction()
                 .add(R.id.planningFragment,new PlanningFragment(),"currentPlanningFragment")
@@ -360,7 +364,7 @@ public class ActivityCreationFragment extends Fragment {
             //TODO: make this override plannerviewmodel so that next activity will find a new AlarmInfo obj
             @Override
             public void onClick(View view) {
-                if (nameLabel.length() > 0) {
+                if (checks()) {
                     //Toast.makeText(getContext(), nameLabel.getText().toString(), Toast.LENGTH_SHORT).show();
 
 
@@ -431,14 +435,6 @@ public class ActivityCreationFragment extends Fragment {
 
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.BackToActivities));
 
-                }  else
-                {
-                    Bundle b = new Bundle();
-                    b.putString("ErrorCode","emptyNameAct");
-                    ErrorDialog errorDialog = new ErrorDialog();
-                    errorDialog.setArguments(b);
-                    errorDialog.show(getChildFragmentManager(),null);
-
                 }
             }
 
@@ -446,6 +442,43 @@ public class ActivityCreationFragment extends Fragment {
 
 
         return view;
+    }
+
+    private boolean checks()
+    {
+        if(nameLabel.length()<=0)
+        {
+            showError(1);
+            return false;
+        }else if(nameLabel.length()>MAX_LENGTH)
+        {
+            showError(2);
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    private void showError(int code)
+    {
+        String errorStr = "";
+        Bundle b = new Bundle();
+
+        if(code ==1)
+        {
+            errorStr="emptyNameAct";
+        }
+        else if(code==2)
+        {
+            errorStr ="ActErrLen";
+        }
+
+        b.putString("ErrorCode",errorStr);
+        ErrorDialog errorDialog = new ErrorDialog();
+        errorDialog.setArguments(b);
+        errorDialog.show(getChildFragmentManager(),null);
     }
 
 
