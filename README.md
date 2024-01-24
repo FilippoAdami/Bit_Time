@@ -1,0 +1,5 @@
+Alcune persone riscontrano notevoli difficoltà a percepire e stimare lo scorrere del tempo, nonché ad associarlo agli orologi e al concetto di "anticipo" e "ritardo". Conseguentemente queste persone non riescono ad organizzarsi in maniera efficiente e a rispettare le proprie “tabelle di marcia”.
+Tramite il supporto della dottoressa Loredana Bittante si vuole sviluppare un'applicazione in grado di aiutare gli utenti a gestire il loro tempo in maniera interattiva e personalizzata. 
+L'applicazione prevede una sezione dedicata al/ai caregiver in cui è possibile impostare le nuove attività, visualizzare alcune statistiche e gestire le impostazioni di base.
+Nel lato utente, invece, verrà visualizzato lo stato dell'attività in corso (cosa fare e quanto tempo resta per farlo). Sarà quindi possibile interfacciarsi con il sistema per ottenere feedback o aggiornarlo sullo stato dell’operazione in corso (ad esempio passare al task successivo nel caso venga terminato prima dello scadere del tempo impostato).
+In caso non ci siano task da svolgere, saranno accessibili dei mini-giochi studiati per favorire l'apprendimento della lettura dell'orologio.
