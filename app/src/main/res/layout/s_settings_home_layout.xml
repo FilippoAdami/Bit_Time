@@ -2,25 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical">
 
     <Button
         android:id="@+id/buttonAS"
         style="@style/SectionButton"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="2"
+        android:layout_marginTop="35dp"
         android:text="@string/account_e_statistiche" />
 
     <Button
         android:id="@+id/buttonIP"
         style="@style/SectionButton"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="2"
         android:layout_marginTop="35dp"
         android:text="@string/impostazioni_personalizzazione" />
 
     <Button
         android:id="@+id/buttonNA"
         style="@style/SectionButton"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="2"
         android:layout_marginTop="35dp"
         android:text="@string/nuova_attivit" />
 

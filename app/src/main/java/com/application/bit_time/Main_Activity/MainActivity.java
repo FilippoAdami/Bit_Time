@@ -48,22 +48,21 @@ public class MainActivity extends AppCompatActivity {
     private RunningActivityViewModel runningActivityViewModel;
     private DbManager dbManager;
     private MainActivityViewModel statusVM;
-    private  OnBackPressedCallback ActRunningOBPCallback;
-    private  FragmentManager fragmentManager;
+    private OnBackPressedCallback ActRunningOBPCallback;
+    private FragmentManager fragmentManager;
 
 
     public static class QuitDialog extends DialogFragment
     {
-
         @NonNull
         @Override
         public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
             Log.i("OBP callback","quit dialog in OnCreateDial");
             AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-            builder.setTitle("sure about quitting ?")
-                    .setMessage("ehi")
-                    .setPositiveButton("yeah buddy", new DialogInterface.OnClickListener() {
+            builder.setTitle("uscire?")
+                    .setMessage("stai per uscire da questa schermata")
+                    .setPositiveButton("esci", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                             MAV.selectItem(MASData);
                         }
                     })
-                    .setNegativeButton("ehm def not", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("rimani qui", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -146,9 +145,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
-
-
         SharedPreferences sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         //check if there is a shared preference for the theme
         String currentTheme = sharedPreferences.getString("CurrentTheme", null);
@@ -173,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                 case "BWTheme":
                     newTheme = R.style.BWTheme;
                     theme = "BWTheme";
-                    Log.i("BWTheme", "BWTheme hjvhgvmgh");
                     break;
                 case "EarthTheme":
                     newTheme = R.style.EarthTheme;
@@ -194,10 +189,6 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_main);
-
-
-
-
 
 
         //FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
@@ -358,7 +349,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         Bundle intentBundle = getIntent().getExtras();
 
         //TODO : UNCOMMENT AND FIX
@@ -384,17 +374,12 @@ public class MainActivity extends AppCompatActivity {
             Log.i("sourceAct", "intentBundle was null");
         }
 
-
-
-
-
         /*fragmentManager
                 .beginTransaction()
                 .replace(R.id.controlbarFragment,controlbarFragment)
                 .replace(R.id.fragment_container, new QuickstartMenuFragment())
                 .replace(R.id.bottomFragmentContainer,bottomFragment)
                 .commit();*/
-
 
         OnBackPressedCallback mainOBPCallback = new OnBackPressedCallback(true) {
             @Override
@@ -446,40 +431,6 @@ public class MainActivity extends AppCompatActivity {
         }
         */
 
-
-
-    }
-
-    // Method to retrieve the array from SharedPreferences
-    public static int[] getTimes(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-
-        // Retrieve the string representation of the array
-        String arrayString = sharedPreferences.getString("TIME", "0,0,0,0,0,0");
-
-        // Convert the string back to an array of integers
-        String[] stringArray = arrayString.split(",");
-        int[] array = new int[stringArray.length];
-        for (int i = 0; i < stringArray.length; i++) {
-            array[i] = Integer.parseInt(stringArray[i]);
-        }
-
-        return array;
-    }
-    // Method to save a string to SharedPreferences under the key "TIMES"
-    private void saveStringToPreferences(Context context, String value) {
-        // Get the default SharedPreferences instance
-        SharedPreferences preferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-
-        // Use an editor to modify SharedPreferences
-        SharedPreferences.Editor editor = preferences.edit();
-
-        // Put the string value under the key "TIMES"
-        value = "000500,000300,000200,000000,000000,000000";
-        editor.putString("TIMES", value);
-
-        // Apply the changes
-        editor.apply();
     }
 
     @Override
@@ -487,9 +438,5 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         //unregisterReceiver(android.content.BroadcastReceiver);
     }
-
-
-
-
 
 }

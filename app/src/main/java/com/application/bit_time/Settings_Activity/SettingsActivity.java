@@ -2,10 +2,13 @@ package com.application.bit_time.Settings_Activity;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
+import static com.application.bit_time.Settings_Activity.CustomizeSettingsFragment.REQUEST_CODE_MEDIA_PERMISSION;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -14,10 +17,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.application.bit_time.Main_Activity.ControlsFragment;
 import com.application.bit_time.utils.ActivityItem;
@@ -39,7 +45,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity {
+import io.reactivex.annotations.Nullable;
+
+public class SettingsActivity extends AppCompatActivity{
     private SubtasksViewModel subtasksViewModel;
     private SubtasksViewModel dbTasksViewModel;
     private DbManager dbManager;
@@ -549,7 +557,7 @@ public class SettingsActivity extends AppCompatActivity {
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view, new Fragment())
                 .replace(R.id.middle_fragment_container_view, new SettingsHomeFragment())
-                .replace(R.id.bottom_fragment_container_view,new Fragment())
+                .replace(R.id.bottom_fragment_container_view, new Fragment())
                 .addToBackStack("SettingsMenuBackStackLabel")
                 .commit();
     }

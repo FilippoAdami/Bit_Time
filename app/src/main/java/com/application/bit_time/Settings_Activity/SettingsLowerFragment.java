@@ -67,7 +67,7 @@ public class SettingsLowerFragment extends Fragment
         dbViewModel.getSelectedItem().observe(this, item ->
         {
 
-            Log.i("FROM SETTINGS LOWER FRAGMENT","first step of observer");
+            //Log.i("FROM SETTINGS LOWER FRAG","first step of observer");
 
             //dbManager.deleteActivity(item.activityToDelete);
 
@@ -75,7 +75,7 @@ public class SettingsLowerFragment extends Fragment
 
             if(!item.activityItem.equals(latestData.activityItem))
             {
-                Log.i("FROM SETTINGS LOWER FRAGMENT","new activity to delete");
+                //Log.i("FROM SETTINGS LOWER FRAGMENT","new activity to delete");
             }
 
 

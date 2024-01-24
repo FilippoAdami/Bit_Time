@@ -2,14 +2,13 @@ package com.application.bit_time.Settings_Activity;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +38,8 @@ import android.widget.Toast;
 
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
+import com.application.bit_time.utils.ImagePicker;
+import com.application.bit_time.utils.SoundPicker;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,19 +60,30 @@ public class CustomizeSettingsFragment extends Fragment {
     public String newTheme;
     private String currentBackground;
     private String backgroundExtension;
-    private final ActivityResultLauncher<String> backgroundPickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
+    private final ActivityResultLauncher<Void> imagePickerLauncher = registerForActivityResult(
+            new ImagePicker(),
             uri -> {
                 // Handle the result, 'uri' contains the selected image URI
                 if (uri != null) {
-                    //Save the new background in the database
+                    // Save the new background in the database
                     type = "background";
                     currentBackground = uri.toString();
                     backgroundExtension = saveToInternalStorage(uri);
                 }
             }
     );
+    private final ActivityResultLauncher<Void> soundPickerLauncher = registerForActivityResult(
+            new SoundPicker(),
+            uri -> {
+                if (uri != null) {
+                    // Handle the selected sound URI
+                    Log.i("SoundPicker", "Selected sound URI: " + uri.toString());
+                    // Add your logic to handle the selected sound URI
+                }
+            }
+    );
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    static final int REQUEST_CODE_MEDIA_PERMISSION = 123;
     private CheckBox checkbox1;
     private CheckBox checkbox2;
     private CheckBox checkbox3;
@@ -84,7 +96,6 @@ public class CustomizeSettingsFragment extends Fragment {
     private Switch switch1;
     private Uri tempUri;
     private String type = "background";
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.s_customize_settings_layout, container, false);
@@ -161,16 +172,6 @@ public class CustomizeSettingsFragment extends Fragment {
             // Handle the layout click event
             highlightCurrentTheme("BWTheme");
         });
-        loadBackgroundButton.setOnClickListener(v -> {
-            String[] supportedExtensions = {"jpg", "jpeg", "png", "bmp", "webp"};
-            StringBuilder mimeType = new StringBuilder(Objects.requireNonNull(MimeTypeMap.getSingleton().getMimeTypeFromExtension("jpg")));
-
-            for (String extension : supportedExtensions) {
-                mimeType.append("|").append(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
-            }
-
-            backgroundPickerLauncher.launch(mimeType.toString());
-        });
         checkbox1.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
         checkbox2.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
         checkbox3.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
@@ -188,20 +189,35 @@ public class CustomizeSettingsFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        loadBackgroundButton.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT >= 22) {
+                imagePickerLauncher.launch(null);
+            }else{
+                requestMediaPermissions(Manifest.permission.READ_MEDIA_IMAGES);
+            }
+        });
         loadRingtoneButton1.setOnClickListener(v -> {
             type = "ringtone";
-            try {
-                retrieveAndShowRingtones();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (Build.VERSION.SDK_INT >= 22) {
+                try {
+                    retrieveAndShowRingtones();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                requestMediaPermissions(Manifest.permission.READ_MEDIA_AUDIO);
             }
         });
         loadNotificationButton.setOnClickListener(v -> {
             type = "notification";
-            try {
-                retrieveAndShowRingtones();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (Build.VERSION.SDK_INT >= 22) {
+                try {
+                    retrieveAndShowRingtones();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                requestMediaPermissions(Manifest.permission.READ_MEDIA_AUDIO);
             }
         });
         switch1.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
@@ -350,8 +366,6 @@ public class CustomizeSettingsFragment extends Fragment {
             imageView.setImageBitmap(savedBitmap);
 
             Toast.makeText(getActivity(), "sfondo aggiornato correttamente", Toast.LENGTH_SHORT).show();
-            //Toast and return the full path of the image
-            Toast.makeText(getActivity(), fileName, Toast.LENGTH_SHORT).show();
             return fileName;
         } else {
             // Toast something went wrong
@@ -360,6 +374,7 @@ public class CustomizeSettingsFragment extends Fragment {
         }
     }
     private void retrieveAndShowRingtones() throws IOException {
+        Toast.makeText(getActivity(), "Caricamento suonerie...", Toast.LENGTH_SHORT).show();
         RingtoneManager ringtoneManager = new RingtoneManager(getActivity());
         ringtoneManager.setType(RingtoneManager.TYPE_RINGTONE);
         Cursor cursor = ringtoneManager.getCursor();
@@ -475,24 +490,6 @@ public class CustomizeSettingsFragment extends Fragment {
         }
         return soundPath;
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (tempUri != null) {
-                    if (type.equals("background")) {
-                        saveImageOperations(tempUri);
-                    } else if (type.equals("notification") || type.equals("ringtone")) {
-                        saveRingtoneOperations(tempUri);
-                    }
-                }
-            } else {
-                Toast.makeText(getActivity(), "Azione non consentita", Toast.LENGTH_SHORT).show();
-                tempUri = null;
-            }
-        }
-    }
     private void updateUserData() {
         if(newTheme == null){
             newTheme = currentTheme;
@@ -575,6 +572,67 @@ public class CustomizeSettingsFragment extends Fragment {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    // Method to request permissions
+    private void requestMediaPermissions(String permission) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            // Check if the permission is already granted
+            int permissionCheck = ContextCompat.checkSelfPermission(requireContext(), permission);
+
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                // Permission already granted
+                handleMediaPermissionResult(permission);
+            } else {
+                // Request the specific permission based on API level
+                //for api 33 or higher, use new permissions
+                if (Build.VERSION.SDK_INT >= 33) {
+                    // For API level 33 (Android 13) and higher, use new permissions
+                    requestPermissions(new String[]{permission}, REQUEST_CODE_MEDIA_PERMISSION);
+                } else {
+                    // For lower API levels, fall back to READ_EXTERNAL_STORAGE
+                    int storagePermissionCheck = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                    if (storagePermissionCheck != PackageManager.PERMISSION_GRANTED) {
+                        // Request the storage permission
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_MEDIA_PERMISSION);
+                    }
+                }
+            }
+        }
+    }
+    // Method to handle permission request response
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Check if the permission request is granted or not
+        if (requestCode == REQUEST_CODE_MEDIA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                handleMediaPermissionResult(permissions[0]);
+            } else {
+                // Permission is denied
+                handleMediaPermissionDenied();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    void handleMediaPermissionResult(String requestedPermission) {
+        // Check the type of permission request and perform corresponding actions
+        if (requestedPermission.equals(Manifest.permission.READ_MEDIA_IMAGES)) {
+            imagePickerLauncher.launch(null);
+        } else if (requestedPermission.equals(Manifest.permission.READ_MEDIA_AUDIO)) {
+            try {
+                retrieveAndShowRingtones();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    void handleMediaPermissionDenied() {
+        // Inform the user or take appropriate actions when permission is denied
+        // For example, show a message, disable certain features, etc.
+        Toast.makeText(requireContext(), "Autorizzazione non concessa.", Toast.LENGTH_SHORT).show();
     }
 
 }
