@@ -7,13 +7,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.application.bit_time.Main_Activity.GameFragment;
-import com.application.bit_time.Main_Activity.HomeFragment;
-import com.application.bit_time.Main_Activity.ReportFragment;
-import com.application.bit_time.Main_Activity.RunningTaskFragment;
-import com.application.bit_time.R;
+import com.application.bit_time.Main_Activity.newHomeFragment;
 import com.application.bit_time.utils.RunningActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, new HomeFragment())
+        fragmentTransaction.replace(R.id.fragment_container, new newHomeFragment())
                            .replace(R.id.bottomFragmentContainer,bottomFragment);
         fragmentTransaction.commit();
     }

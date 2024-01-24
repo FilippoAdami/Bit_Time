@@ -15,7 +15,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.R;
-import com.application.bit_time.utils.RunningActivityData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 
 public class RunningTaskDialog extends DialogFragment {

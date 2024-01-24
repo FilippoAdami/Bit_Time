@@ -97,7 +97,7 @@ public class SettingsLowerFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
 
-        View view = inflater.inflate(R.layout.settings_lower_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.s_settings_lower_fragment_layout,container,false);
 
         recyclerView= view.findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());

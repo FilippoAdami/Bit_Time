@@ -3,7 +3,6 @@ package com.application.bit_time.Main_Activity;
 import androidx.annotation.NonNull;
 
 import com.application.bit_time.utils.ReportData;
-import com.application.bit_time.utils.RunningActivityData;
 import com.application.bit_time.utils.TaskItem;
 
 import java.util.ArrayList;

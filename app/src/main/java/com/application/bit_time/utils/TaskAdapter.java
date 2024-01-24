@@ -1,17 +1,12 @@
 package com.application.bit_time.utils;
 
-import static java.security.AccessController.getContext;
-
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,7 +52,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     public TaskAdapter.ListItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.new_task_item_fragment_layout,parent,false);
+                .inflate(R.layout.task_item_fragment_layout,parent,false);
 
         return new ListItemHolder(itemView);
 

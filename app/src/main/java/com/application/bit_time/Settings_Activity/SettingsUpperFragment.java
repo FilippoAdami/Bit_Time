@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,7 +31,7 @@ public class SettingsUpperFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.settings_upper_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.s_settings_upper_fragment_layout,container,false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
 
