@@ -43,7 +43,7 @@ public class SettingsMiddleFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.settings_middle_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.s_settings_middle_fragment_layout,container,false);
 
         addButton = view.findViewById(R.id.addButton);
         text = view.findViewById(R.id.label);

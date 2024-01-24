@@ -57,7 +57,7 @@ public class CreationUpperFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         //View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
-        View view = inflater.inflate(R.layout.new_task_creation_upper_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
 
         /*EditText editName = view.findViewById(R.id.editTaskNameLabel);
         EditText edtTxtHrs = view.findViewById(R.id.editTextHours);

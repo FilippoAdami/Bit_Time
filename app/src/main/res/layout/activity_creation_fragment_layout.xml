@@ -6,24 +6,25 @@
 
     <TextView
         android:id="@+id/titleLabel"
+        style="@style/RegularText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/activity_name"
-        android:textAlignment="center"
         android:layout_marginTop="15dp"
-        style="@style/RegularText"/>
+        android:text="@string/activity_name"
+        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/editNameLabel"
+        style="@style/TextInputStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autofillHints="nomeAttività"
         android:ems="10"
         android:hint="@string/nome_attivit"
-        android:inputType="text"
-        style="@style/TextInputStyle"
-        android:autofillHints="nomeAttività"/>
+        android:inputType="text" />
 
     <TextView
+        android:id="@+id/ActCreWarning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/placehoder"
@@ -33,24 +34,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="25dp">
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textView6"
+            style="@style/RegularText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/aggiungi_task"
-            style="@style/RegularText"/>
+            android:text="@string/aggiungi_task" />
 
         <Button
             android:id="@+id/addTaskButton"
+            style="@style/ActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/add_task"
-            style="@style/ActionButton"/>
+            android:text="@string/add_task" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -63,26 +64,20 @@
 
     <TextView
         android:id="@+id/textView7"
+        style="@style/RegularText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:text="@string/tempo_totale"
-        android:textAlignment="center"
-        style="@style/RegularText"
-        android:layout_marginTop="15dp"/>
+        android:textAlignment="center" />
 
     <TextView
         android:id="@+id/totalTimeLabel"
+        style="@style/NormalText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/time"
-        android:textAlignment="center"
-        style="@style/NormalText"/>
-
-    <Switch
-        android:id="@+id/oldPlanSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/planSwitchText" />
+        android:textAlignment="center" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/planningFragment"
@@ -91,9 +86,9 @@
 
     <Button
         android:id="@+id/fineButton"
+        style="@style/SubmitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save"
-        style="@style/SubmitButton"
-        android:layout_marginTop="25dp"/>
+        android:layout_marginTop="25dp"
+        android:text="@string/save" />
 </LinearLayout>

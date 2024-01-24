@@ -122,7 +122,7 @@ public class ReportFragment extends Fragment {
             }
         });*/
 
-        View view = inflater.inflate(R.layout.report_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.a_report_fragment_layout,container,false);
 
         TextView reportTitle = view.findViewById(R.id.reportTitle);
         TextView evaluationField = view.findViewById(R.id.evaluationField);

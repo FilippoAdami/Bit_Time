@@ -44,7 +44,7 @@ public class ModifyTasksFragment extends Fragment {
 
 
         //View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
-        View view = inflater.inflate(R.layout.new_task_creation_upper_fragment_layout,container,false);
+        View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
 
         editName = view.findViewById(R.id.editTaskNameLabel);
         //TextView edith = view.findViewById(R.id.editTextHours);
