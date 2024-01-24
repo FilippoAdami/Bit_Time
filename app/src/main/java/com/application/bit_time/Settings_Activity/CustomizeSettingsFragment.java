@@ -46,8 +46,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class CustomizeSettingsFragment extends Fragment {
     DbManager dbManager;
@@ -378,33 +380,34 @@ public class CustomizeSettingsFragment extends Fragment {
         RingtoneManager ringtoneManager = new RingtoneManager(getActivity());
         ringtoneManager.setType(RingtoneManager.TYPE_RINGTONE);
         Cursor cursor = ringtoneManager.getCursor();
+        cursor.moveToFirst();
 
-        List<String> ringtoneTitles = new ArrayList<>();
-        List<Uri> ringtoneUris = new ArrayList<>();
+        Set<String> ringtoneTitles = new HashSet<>();
+        Set<Uri> ringtoneUris = new HashSet<>();
 
-        while (cursor.moveToNext()) {
+        while (!cursor.isAfterLast()) {
             String title = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
             Uri uri = ringtoneManager.getRingtoneUri(cursor.getPosition());
             int duration = getRingtoneDuration(getActivity(), uri) / 1000;
-            if (type.equals("notification")) {
-                if (duration <= 10) {
-                    ringtoneTitles.add(title);
-                    ringtoneUris.add(uri);
-                }
-            } else {
-                if (duration > 10) {
-                    ringtoneTitles.add(title);
-                    ringtoneUris.add(uri);
-                }
+
+            if (type.equals("notification") && duration <= 10) {
+                ringtoneTitles.add(title);
+                ringtoneUris.add(uri);
+            } else if (type.equals("ringtone") && duration > 10) {
+                ringtoneTitles.add(title);
+                ringtoneUris.add(uri);
             }
+
+            cursor.moveToNext();
         }
-        String[] items = ringtoneTitles.toArray(new String[0]);
-        Uri[] uris = ringtoneUris.toArray(new Uri[0]);
+
+        List<String> uniqueTitles = new ArrayList<>(ringtoneTitles);
+        List<Uri> uniqueUris = new ArrayList<>(ringtoneUris);
 
         new AlertDialog.Builder(requireActivity())
                 .setTitle("Choose a " + type)
-                .setItems(items, (dialog, which) -> {
-                    Uri selectedRingtoneUri = uris[which];
+                .setItems(uniqueTitles.toArray(new String[0]), (dialog, which) -> {
+                    Uri selectedRingtoneUri = uniqueUris.get(which);
                     String sound = saveRingtoneOperations(selectedRingtoneUri);
                     if (type.equals("notification")) {
                         currentNotification = selectedRingtoneUri;
@@ -416,6 +419,7 @@ public class CustomizeSettingsFragment extends Fragment {
                 })
                 .show();
     }
+
     private int getRingtoneDuration(Context context, Uri uri) throws IOException {
         Log.d("RingtonePicker", "Inside getRingtoneDuration");
 
