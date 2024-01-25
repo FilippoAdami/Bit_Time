@@ -189,10 +189,14 @@ public class CustomizeSettingsFragment extends Fragment {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                // Save the volume when the user stops dragging the seek bar
+                int volume = seekBar.getProgress();
+                currentVolume = volume;
+                preferencesChanged = true;
             }
         });
         loadBackgroundButton.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT >= 22) {
+            if (Build.VERSION.SDK_INT <= 22) {
                 imagePickerLauncher.launch(null);
             }else{
                 requestMediaPermissions(Manifest.permission.READ_MEDIA_IMAGES);
@@ -200,7 +204,7 @@ public class CustomizeSettingsFragment extends Fragment {
         });
         loadRingtoneButton1.setOnClickListener(v -> {
             type = "ringtone";
-            if (Build.VERSION.SDK_INT >= 22) {
+            if (Build.VERSION.SDK_INT <= 22) {
                 try {
                     retrieveAndShowRingtones();
                 } catch (IOException e) {
@@ -212,7 +216,7 @@ public class CustomizeSettingsFragment extends Fragment {
         });
         loadNotificationButton.setOnClickListener(v -> {
             type = "notification";
-            if (Build.VERSION.SDK_INT >= 22) {
+            if (Build.VERSION.SDK_INT <= 22) {
                 try {
                     retrieveAndShowRingtones();
                 } catch (IOException e) {

@@ -459,7 +459,21 @@ public class AnalogClockView extends View {
         //Get the notification sound from database
         String notificationSound = dbManager.getNotification();
         // Check if the actual time is equal to the ending time
-        if ((float)(endingTime)< (float)(hour*60 + minute + second/60.0f) && (float)(hour*60 + minute + second/60.0f) < (float)(endingTime + 0.0167f)){
+        int nh = 0;
+        if (hour > 12) {
+            nh = hour - 12;
+        }
+        else{
+            nh = hour;
+        }
+        float ne = 0;
+        if (endingTime>720){
+            ne = (endingTime - 720);
+        }
+        else{
+            ne = endingTime;
+        }
+        if ((float)(ne)< (float)(nh*60 + minute + second/60.0f) && (float)(nh*60 + minute + second/60.0f) < (float)(ne + 0.0167f)){
             if(dbManager.getFocus()){
                 int volume = dbManager.getVolume();
                 // Check if a notification is already being played, else play the notification sound
@@ -470,7 +484,7 @@ public class AnalogClockView extends View {
 
         }
 
-        //canvas.drawText(String.valueOf((float)(endingTime)) + " , "+ String.valueOf((float)(hour*60 + minute + second/60f)), centerX, centerY, textPaint);
+        //canvas.drawText(String.valueOf((float)(ne)) + " , "+ String.valueOf((float)(nh*60 + minute + second/60f)), centerX, centerY, textPaint);
 
         // Draw clock hands
         drawClockHand(canvas, centerX, centerY, hourAngle, (int)(radius*0.6), hourHandPaint, hour);

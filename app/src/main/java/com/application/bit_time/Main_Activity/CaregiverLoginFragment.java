@@ -1,5 +1,6 @@
 package com.application.bit_time.Main_Activity;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,6 +23,18 @@ import com.application.bit_time.utils.MainActivityViewModel;
 public class CaregiverLoginFragment extends Fragment {
 
     private DbManager dbManager;
+    private MainActivityViewModel mainActivityViewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        this.mainActivityViewModel = new ViewModelProvider(this.getActivity()).get(MainActivityViewModel.class);
+
+
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.a_caregiver_login_layout, container, false);
@@ -30,8 +43,6 @@ public class CaregiverLoginFragment extends Fragment {
         Button backButton = rootView.findViewById(R.id.backButton);
         Button logInButton = rootView.findViewById(R.id.loginButton);
         dbManager = new DbManager(getActivity());
-
-
 
         backButton.setOnClickListener(v -> {
             MainActivityViewModel MAVM = new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);

@@ -43,6 +43,15 @@ public class ControlsFragment extends Fragment {
 
         settingsButton = view.findViewById(R.id.settingsButton);
 
+        MainActivityStatusData.Status currentStatus = mainActivityViewModel.getSelectedItem().getValue().getCurrentStatus();
+        MainActivityStatusData MASData = new MainActivityStatusData(MainActivityStatusData.Status.CaregiverLogin);
+        if(currentStatus.equals(MainActivityStatusData.Status.RunningActivity))
+        {
+            settingsButton.setVisibility(View.INVISIBLE);
+        }else {
+            settingsButton.setVisibility(View.VISIBLE);
+        }
+
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
