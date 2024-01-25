@@ -145,26 +145,31 @@ public class CreationUpperFragment extends Fragment {
     private boolean compulsoryFieldsAreFilled()
     {
         int length = editName.length();
+        Log.i("length","is "+length);
         int mins = getTime(edtTxtMin);
         int secs = getTime(edtTxtSec);
 
-
-        if(length>0 && length<=MAX_LENGTH && mins+secs>0) {
-            return true;
-        }
-        else if(length>MAX_LENGTH)
+        if(length>MAX_LENGTH)
         {
+            Log.i("checks","errorCode 1");
             showError(1);
+            return false;
         }
-        else if(length<0)
+        else if(length==0)
         {
+
+            Log.i("checks","errorCode 2");
             showError(2);
+            return false;
         }
         else if(mins+secs<=0)
         {
+
+            Log.i("checks","errorCode 3");
             showError(3);
+            return false;
         }
-        return false;
+        return true;
     }
 
 
