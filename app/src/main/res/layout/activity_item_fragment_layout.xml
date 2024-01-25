@@ -10,12 +10,13 @@
 
         <TextView
             android:id="@+id/labelName"
+            style="@style/RegularText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
             android:text="@string/name"
-            style="@style/RegularText"/>
+            android:textAlignment="textStart" />
 
         <TextView
             android:id="@+id/labelTime"
@@ -28,7 +29,7 @@
 
         <ImageButton
             android:id="@+id/modifyButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/action_button"
@@ -36,7 +37,7 @@
 
         <ImageButton
             android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/red_action_button"
