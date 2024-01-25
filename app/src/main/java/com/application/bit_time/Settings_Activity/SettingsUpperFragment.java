@@ -46,6 +46,7 @@ public class SettingsUpperFragment extends Fragment {
 
             modeStr = b.getString("mode","noValue");
 
+            Log.i("SUF modeStr",modeStr);
             if(modeStr.equals("Tasks"))
             {
                 leftSelection();
@@ -56,15 +57,12 @@ public class SettingsUpperFragment extends Fragment {
             }
         }else
         {
+            Log.i("SUF default","rightSel");
             rightSelection();
         }
 
 
 
-
-
-
-        //rightSelection();
         leftLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

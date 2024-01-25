@@ -387,10 +387,11 @@ public class SettingsActivity extends AppCompatActivity{
     private void taskRender()
     {
         String entryName =getResources().getString(R.string.tasksSettEntry);;
-        if(fManager.popBackStackImmediate(entryName,0))
+        if(fManager.popBackStackImmediate(entryName,FragmentManager.POP_BACK_STACK_INCLUSIVE))
         {
             Log.i("back to",entryName);
-        }else
+
+        }/*else
         {
 
             Bundle b = new Bundle();
@@ -410,7 +411,24 @@ public class SettingsActivity extends AppCompatActivity{
                     .commit();
             //Log.i("BackStackLog","to set 'taskRender'");
 
-        }
+        }*/
+
+
+        Bundle b = new Bundle();
+        b.putString("mode","Tasks");
+        //Log.i("BackStackLog","taskRender");
+        upperFrag = new SettingsUpperFragment();
+        upperFrag.setArguments(b);
+        middleFrag = new SettingsMiddleFragment();
+        middleFrag.setArguments(b);
+        lowerFrag = new SettingsLowerFragmentTasks();
+
+        fManager.beginTransaction()
+                .replace(R.id.top_fragment_container_view,upperFrag)
+                .replace(R.id.middle_fragment_container_view,middleFrag,"taskFrag")
+                .replace(R.id.bottom_fragment_container_view,lowerFrag)
+                .addToBackStack(entryName)
+                .commit();
 
 
 
