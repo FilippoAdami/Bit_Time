@@ -99,6 +99,7 @@ public class SettingsActivity extends AppCompatActivity{
             }
         };
 
+
         OBPDispatcher.addCallback(this,mainOBPCallback);
 
         dbManager = new DbManager(getApplicationContext());

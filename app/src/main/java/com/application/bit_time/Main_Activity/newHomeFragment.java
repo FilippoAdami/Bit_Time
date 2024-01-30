@@ -336,4 +336,12 @@ public class newHomeFragment extends Fragment {
         Log.i("runnable","removed");
         this.handler.removeCallbacks(runnable);
     }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        quitTimer();
+        Log.i("timer quitted","from itself");
+    }
 }

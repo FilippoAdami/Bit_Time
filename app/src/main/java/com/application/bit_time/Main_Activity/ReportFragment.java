@@ -58,54 +58,9 @@ public class ReportFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-
-        timescores = new int[DbContract.timescores];
-
-        DbManager dbManager = new DbManager(this.getContext());
-        timescores = dbManager.getGamificationPoints();
-
-        Log.i("TIMESCORES from RepFrag",Integer.toString(timescores.length));
-
-        for(int i : timescores)
-        {
-            Log.i("TIMESCORE ",Integer.toString(i));
-        }
-
-
-        runningActivityViewModel = new ViewModelProvider(getActivity()).get(RunningActivityViewModel.class);
-        this.reportDataList = new ArrayList<>();
-        this.reportDataList = runningActivityViewModel.getSelectedItem().getValue().getFullReport();
-        ListIterator<ReportData> iterator = this.reportDataList.listIterator();
-        this.scoreList = new int[this.reportDataList.size()];
-
-        currentScore = 0;   // in the end will hold the total score of the activity
-        while(iterator.hasNext()) {
-            int pos =iterator.nextIndex();
-            ReportData RD = iterator.next();
-            Log.i("RD", RD.toString());
-            int currentPoints = assignPoints(RD,pos);
-            currentScore = currentScore + currentPoints;
-
-        }
-
-
-
-
-        if(currentScore>THRESHOLD)
-        {
-            Log.i("result","BRAVO");
-            evaluation = ReportFragment.evaluation.GoodJob;
-
-        }
-        else
-        {
-            Log.i("result","MEH");
-            evaluation = ReportFragment.evaluation.StillToImprove;
-        }
-
-        //this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
-
+        givePoints();
     }
 
     @Nullable
@@ -150,12 +105,12 @@ public class ReportFragment extends Fragment {
 
 
 
-        Button saveButton = view.findViewById(R.id.collectButton);
-        Button discardButton = view.findViewById(R.id.discardButton);
+        //Button saveButton = view.findViewById(R.id.collectButton);
+        //Button discardButton = view.findViewById(R.id.discardButton);
 
         mainActivityViewModel= new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);
         statusData=mainActivityViewModel.getSelectedItem().getValue();
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        /*saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("PRESSED","Save");
@@ -176,7 +131,7 @@ public class ReportFragment extends Fragment {
                 commonButtonRoutine();
 
             }
-        });
+        });*/
 
 
 
@@ -211,7 +166,13 @@ public class ReportFragment extends Fragment {
         return rightScore;
     }
 
-
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i("actually","inside of onDetach");
+        statusData.setCurrentStatus(MainActivityStatusData.Status.QuickstartMenu);
+        mainActivityViewModel.selectItem(statusData);
+    }
 
     private void commonButtonRoutine()
     {
@@ -219,5 +180,57 @@ public class ReportFragment extends Fragment {
         mainActivityViewModel.selectItem(statusData);
         Log.i("toString",statusData.toString());
     }
+
+
+    public void givePoints()
+    {
+        DbManager dbManager = new DbManager(this.getContext());
+
+        timescores = new int[DbContract.timescores];
+        timescores = dbManager.getGamificationPoints();
+        runningActivityViewModel = new ViewModelProvider(getActivity()).get(RunningActivityViewModel.class);
+        this.reportDataList = new ArrayList<>();
+
+        /*Log.i("TIMESCORES from RepFrag",Integer.toString(timescores.length));
+
+        for(int i : timescores)
+        {
+            Log.i("TIMESCORE ",Integer.toString(i));
+        }*/
+
+
+
+        this.reportDataList = runningActivityViewModel.getSelectedItem().getValue().getFullReport();
+        ListIterator<ReportData> iterator = this.reportDataList.listIterator();
+        this.scoreList = new int[this.reportDataList.size()];
+
+        currentScore = 0;   // in the end will hold the total score of the activity
+        while(iterator.hasNext()) {
+            int pos =iterator.nextIndex();
+            ReportData RD = iterator.next();
+            Log.i("RD", RD.toString());
+            int currentPoints = assignPoints(RD,pos);
+            currentScore = currentScore + currentPoints;
+
+        }
+
+
+        if(currentScore>THRESHOLD)
+        {
+            Log.i("result","BRAVO");
+            evaluation = ReportFragment.evaluation.GoodJob;
+
+        }
+        else
+        {
+            Log.i("result","MEH");
+            evaluation = ReportFragment.evaluation.StillToImprove;
+        }
+
+        //this.reportDataList.add(new ReportData("emptyTest", RunningActivityData.Status.OnTime));
+
+    }
+
+
 
 }

@@ -1,5 +1,7 @@
 package com.application.bit_time.utils;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.application.bit_time.Main_Activity.newRunningActivityData;
@@ -12,6 +14,38 @@ public class ReportData {
     private int totalTime;
     public int lastedTime ;
 
+    public static class Metadata
+    {
+        int actId;
+        int pos;
+        int subtaskId;
+        String subtaskName;
+
+        public Metadata(int subtaskId,String subtaskName)
+        {
+            this.actId=-1;
+            this.pos=-1;
+            this.subtaskId=subtaskId;
+            this.subtaskName=subtaskName;
+        }
+
+        public void updateMetadata(int actId,int pos)
+        {
+            this.actId=actId;
+            this.pos=pos;
+        }
+
+        public String getSubtaskInfotoStr()
+        {
+            return this.subtaskId+"-"+this.subtaskName;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "actID:"+this.actId+",pos:"+this.pos+",subId:"+this.subtaskId+",subName:"+this.subtaskName;
+        }
+    }
 
     public ReportData(int subtaskId,String subtaskName,int totalTime)
     {
@@ -48,15 +82,19 @@ public class ReportData {
         return this.totalTime;
     }
 
-    public String getMetadata()
+    public Metadata getMetadata()
     {
-
-        return "-"+subtaskId+"-"+subtaskName ;
+        return new Metadata(subtaskId,subtaskName) ;
     }
 
 
     public TaskItem getTaskItem()
     {
         return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime());
+    }
+
+    public static void metadataParser(String rawMetadata)
+    {
+        Log.i("index","of "+rawMetadata.indexOf("-"));
     }
 }

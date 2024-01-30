@@ -27,6 +27,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +37,7 @@ import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.MainActivityStatusData;
 import com.application.bit_time.utils.MainActivityViewModel;
+import com.application.bit_time.utils.ReportData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 
 
@@ -239,16 +241,13 @@ public class MainActivity extends AppCompatActivity {
                 {
                     if(item.getBackField().equals(MainActivityStatusData.BackField.Save))
                     {
-                        Toast.makeText(this,"REPORT WILL BE SAVED",Toast.LENGTH_SHORT).show();
-                        /*SharedPreferences tempsharedPreferences = getPreferences(Context.MODE_PRIVATE);
-                        int actID = tempsharedPreferences.getInt("activityToRun",-100);
-                        Log.i("Backfield choice","Save actId "+actID);
-                        dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());*/
+
+
                     }
                     else if(item.getBackField().equals(MainActivityStatusData.BackField.Quit))
                     {
                         newHomeFragment currentHF = (newHomeFragment)fragmentManager.findFragmentByTag("currentNewHomeFragment");
-                        currentHF.quitTimer();
+                        //currentHF.quitTimer();
                     }
                     else
                     {
@@ -338,6 +337,33 @@ public class MainActivity extends AppCompatActivity {
             {
                 Log.i("Main Activity detection","ActivityDone detected");
                 Log.i("Main act detection",Integer.toString(item.getFullReport().size()));
+
+
+
+                Toast.makeText(this,"REPORT WILL BE SAVED",Toast.LENGTH_SHORT).show();
+
+                SharedPreferences tempsharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                int actID = tempsharedPreferences.getInt("activityToRun",-100);
+                Log.i("Backfield choice","Save actId "+actID);
+                dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());
+
+                //this piece of code has test purpose only !!!
+                Cursor c = dbManager.retrieveReportDataByActId(actID);
+
+                if(c.moveToFirst())
+                {
+                    do {
+                        String rawMD =c.getString(1);
+                        Log.i("rawMD",rawMD);
+                        ReportData.metadataParser(rawMD);
+                    }while(c.moveToNext());
+                }
+                //up to here
+
+
+                fragmentManager.popBackStackImmediate(getResources().getString(R.string.runningActivityEntry),FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.controlbarFragment,new ControlsFragment())

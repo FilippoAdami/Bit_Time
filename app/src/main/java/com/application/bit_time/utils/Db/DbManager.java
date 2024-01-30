@@ -1481,19 +1481,29 @@ public class DbManager {
     }
     public void insertReportData(ReportData RD,int pos,int actId)
     {
-        String metadataStr = actId+"-"+pos+RD.getMetadata();
+        String metadataStr = actId+"-"+pos+"-"+RD.getMetadata().getSubtaskInfotoStr();
 
         String queryStr = "insert into "+DbContract.reportData.TABLE_NAME +" (" +
                 DbContract.reportData.COLUMN_NAME_METADATA + ","+
                 DbContract.reportData.COLUMN_NAME_ENDSTATUS + "," +
                 DbContract.reportData.COLUMN_NAME_LASTED_TIME + ") values ('"+
-                metadataStr + "','"+RD.endStatus.toString() + "'," + RD.lastedTime + ")";
+                metadataStr + "','"+RD.endStatus.toString() + "'," + RD.lastedTime + ");";
 
         Log.i("queryStr",queryStr);
 
         db.execSQL(queryStr);
     }
 
+    public Cursor retrieveReportDataByActId(int actId)
+    {
+        String patternToSearchFor = "'"+actId+"-%'";
+        String queryStr =
+                "select * from "+DbContract.reportData.TABLE_NAME +
+                " where "+DbContract.reportData.COLUMN_NAME_METADATA + " like " +  patternToSearchFor ;
+
+        Log.i("retrQuery",queryStr);
+        return db.rawQuery(queryStr,null);
+    }
 
 
 }
