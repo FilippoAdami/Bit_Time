@@ -1,6 +1,8 @@
 package com.application.bit_time.Settings_Activity;
 
 
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,8 @@ public class PlanFragment extends Fragment {
 
     AlarmInfo alarmToPlan;
 
+    Drawable defaultBtnBackground;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +60,7 @@ public class PlanFragment extends Fragment {
 
         Button dailyFreqButton = view.findViewById(R.id.dailyFreqButton);
         Button weeklyFreqButton = view.findViewById(R.id.weeklyFreqButton);
+        this.defaultBtnBackground=dailyFreqButton.getBackground();
 
 
 
@@ -210,13 +215,14 @@ public class PlanFragment extends Fragment {
     private void setButtonOff(Button buttonToSetOff)
     {
         buttonToSetOff.setSelected(false);
-        buttonToSetOff.setBackgroundColor(getResources().getColor(R.color.pastel_red));
+        buttonToSetOff.setBackground(defaultBtnBackground);
     }
 
     private void setButtonOn(Button buttonToSetOn)
     {
         buttonToSetOn.setSelected(true);
         buttonToSetOn.setBackgroundColor(getResources().getColor(R.color.yellow));
+
     }
 
 

@@ -237,9 +237,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                if(item.isBack())
+                /*if(item.isBack())
                 {
-                    if(item.getBackField().equals(MainActivityStatusData.BackField.Save))
+                    /*if(item.getBackField().equals(MainActivityStatusData.BackField.Save))
                     {
 
 
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                     {
                         Log.i("Backfield choice","Ignore");
                     }
-                }
+                }*/
 
                 String entryName= getResources().getString(R.string.quickstartMenuEntry);
 
@@ -333,8 +333,10 @@ public class MainActivity extends AppCompatActivity {
 
         runningActivityViewModel.getSelectedItem().observe(this, item->
         {
+
             if(item.status.toString().equals("ActivityDone"))
             {
+                ActRunningOBPCallback.setEnabled(false);
                 Log.i("Main Activity detection","ActivityDone detected");
                 Log.i("Main act detection",Integer.toString(item.getFullReport().size()));
 
