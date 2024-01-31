@@ -132,12 +132,22 @@ public class AlarmScheduler implements AlarmSchedulerInterface
             Log.i("freq check","freq is not set so i will call cancel");
 
         }
-        else if(info.freq.toString().equals("Daily"))
+        else
         {
-            Log.i("freq check","freq is set to daily so i will reset the alarm");
-            info.min +=1;
-            schedule(info);
+            if(info.freq.toString().equals("Daily"))
+            {
+                Log.i("freq check","freq is set to daily so i will reset the alarm");
+                //info.min +=1;
+                schedule(info.dailyPostpone());
+            }
+            else if(info.freq.toString().equals("Weekly"))
+            {
+                Log.i("freq check","freq is set to weekly so i will reset the alarm");
+                schedule(info.weeklyPostpone());
+            }
+
             dbManager.insertActivitySchedule(actId,info.getInfoGC(),info.getFreq());
+
         }
 
         dbManager.closeDb();

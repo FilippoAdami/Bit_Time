@@ -208,4 +208,22 @@ public class AlarmInfo {
         return this.year+this.month+this.day+this.hour+this.min;
     }
 
+    public AlarmInfo dailyPostpone()
+    {
+        //TODO : checks over months and days and change values
+        Log.i("fromAlarmInfo","this.day now is "+this.day);
+        this.day=this.min+1;
+        Log.i("fromAlarmInfo","this.day now is "+this.day);
+        return this;
+
+    }
+
+    public AlarmInfo weeklyPostpone()
+    {
+        //TODO : checks over months and days and change values
+        Log.i("fromAlarmInfo","this.day now is "+this.day);
+        this.day=this.min+2;
+        Log.i("fromAlarmInfo","this.day now is "+this.day);
+        return this;
+    }
 }

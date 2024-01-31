@@ -7,11 +7,16 @@
 
     <TextView
         android:id="@+id/textView4"
+        style="@style/TitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="5sp"
+        android:paddingTop="25sp"
+        android:paddingRight="5sp"
+        android:paddingBottom="25sp"
         android:text="@string/quickstart_menu"
         android:textAlignment="center"
-        style="@style/TitleText"/>
+        android:textSize="40sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quickstartRecyclerView"
