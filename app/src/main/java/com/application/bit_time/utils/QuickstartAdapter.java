@@ -71,10 +71,6 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
         holder.title.setText(holder.titleString);
         holder.duration.setText(currentAI.getFormattedDuration());
 
-
-
-
-
     }
 
     @Override
@@ -103,9 +99,6 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
             this.startActBtn = view.findViewById(R.id.startButton);
             this.mainActivityViewModel = new ViewModelProvider(quickstartMenuFragment.getActivity()).get(MainActivityViewModel.class);
 
-
-
-
             this.startActBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -124,9 +117,6 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
             });
 
         }
-
-
-
 
     }
 
