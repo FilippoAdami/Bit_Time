@@ -420,15 +420,15 @@ public class SettingsActivity extends AppCompatActivity{
         //Log.i("BackStackLog","taskRender");
         upperFrag = new SettingsUpperFragment();
         upperFrag.setArguments(b);
-        middleFrag = new SettingsMiddleFragment();
+        //middleFrag = new SettingsMiddleFragment();
+        //middleFrag.setArguments(b);
+        middleFrag = new CommonSettingsLowerFragment();
         middleFrag.setArguments(b);
-        lowerFrag = new CommonSettingsLowerFragment();
-        lowerFrag.setArguments(b);
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .replace(R.id.middle_fragment_container_view,middleFrag,"taskFrag")
-                .replace(R.id.bottom_fragment_container_view,lowerFrag)
+                .replace(R.id.bottom_fragment_container_view,new Fragment())
                 .addToBackStack(entryName)
                 .commit();
 
@@ -488,14 +488,14 @@ public class SettingsActivity extends AppCompatActivity{
             b.putString("mode","Activities");
             upperFrag = new SettingsUpperFragment();
             upperFrag.setArguments(b);
-            middleFrag= new SettingsMiddleFragment();
+            //middleFrag= new SettingsMiddleFragment();
+            //middleFrag.setArguments(b);
+            middleFrag = new CommonSettingsLowerFragment();
             middleFrag.setArguments(b);
-            lowerFrag = new CommonSettingsLowerFragment();
-            lowerFrag.setArguments(b);
             fManager.beginTransaction()
                     .replace(R.id.top_fragment_container_view,upperFrag)
                     .replace(R.id.middle_fragment_container_view,middleFrag,"actFrag")
-                    .replace(R.id.bottom_fragment_container_view,lowerFrag)
+                    .replace(R.id.bottom_fragment_container_view, new Fragment())
                     .addToBackStack(entryName)
                     .commit();
 
@@ -593,16 +593,16 @@ public class SettingsActivity extends AppCompatActivity{
 
         Log.i("BackStackLog","managmententryPoint");
         upperFrag = new SettingsUpperFragment();
-        middleFrag = new SettingsMiddleFragment();
+        //middleFrag = new SettingsMiddleFragment();
         //lowerFrag = new SettingsLowerFragmentActivities();
-        lowerFrag = new CommonSettingsLowerFragment();
-        lowerFrag.setArguments(b);
+        middleFrag = new CommonSettingsLowerFragment();
+        middleFrag.setArguments(b);
 
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)
                 .replace(R.id.middle_fragment_container_view,middleFrag,"actFrag")
-                .replace(R.id.bottom_fragment_container_view,lowerFrag)
+                .replace(R.id.bottom_fragment_container_view,new Fragment())
                 .addToBackStack(getResources().getString(R.string.settActBackStackBase))
                 .commit();
         Log.i("BackStackLog"," to set 'SettActBackStackBase'");
