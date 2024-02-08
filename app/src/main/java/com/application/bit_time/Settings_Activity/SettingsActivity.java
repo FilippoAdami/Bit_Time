@@ -422,7 +422,8 @@ public class SettingsActivity extends AppCompatActivity{
         upperFrag.setArguments(b);
         middleFrag = new SettingsMiddleFragment();
         middleFrag.setArguments(b);
-        lowerFrag = new SettingsLowerFragmentTasks();
+        lowerFrag = new CommonSettingsLowerFragment();
+        lowerFrag.setArguments(b);
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)
@@ -489,7 +490,8 @@ public class SettingsActivity extends AppCompatActivity{
             upperFrag.setArguments(b);
             middleFrag= new SettingsMiddleFragment();
             middleFrag.setArguments(b);
-            lowerFrag = new SettingsLowerFragmentActivities();
+            lowerFrag = new CommonSettingsLowerFragment();
+            lowerFrag.setArguments(b);
             fManager.beginTransaction()
                     .replace(R.id.top_fragment_container_view,upperFrag)
                     .replace(R.id.middle_fragment_container_view,middleFrag,"actFrag")
@@ -584,10 +586,18 @@ public class SettingsActivity extends AppCompatActivity{
 
     public void managementEntryPoint()
     {
+
+        Bundle b = new Bundle();
+        b.putString("mode","Activities");
+
+
         Log.i("BackStackLog","managmententryPoint");
         upperFrag = new SettingsUpperFragment();
         middleFrag = new SettingsMiddleFragment();
-        lowerFrag = new SettingsLowerFragmentActivities();
+        //lowerFrag = new SettingsLowerFragmentActivities();
+        lowerFrag = new CommonSettingsLowerFragment();
+        lowerFrag.setArguments(b);
+
 
         fManager.beginTransaction()
                 .replace(R.id.top_fragment_container_view,upperFrag)

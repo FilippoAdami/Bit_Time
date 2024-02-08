@@ -105,7 +105,7 @@ public class SettingsLowerFragmentActivities extends Fragment
             }
         }
 
-        listAdapter = new ListAdapter(this,activityList,this.getContext());
+        //listAdapter = new ListAdapter(this,activityList,this.getContext());
         //Log.i("LOWFRAGACT adaptState",listAdapter.toString());
 
         recyclerView.setAdapter(listAdapter);

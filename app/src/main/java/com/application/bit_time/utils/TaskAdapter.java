@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
+import com.application.bit_time.Settings_Activity.CommonSettingsLowerFragment;
 import com.application.bit_time.Settings_Activity.SettingsLowerFragmentTasks;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
@@ -31,12 +32,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     private CustomViewModel viewModel;
     private SubtasksViewModel subtasksViewModel;
     private List<TaskItem> taskList;
-    private SettingsLowerFragmentTasks settingsLowerFragmentTasks;
+    private CommonSettingsLowerFragment settingsLowerFragmentTasks;
 
     private Context context;
 
 
-    public TaskAdapter(SettingsLowerFragmentTasks settingsLowerFragmentTasks, List<TaskItem> taskList, Context context)
+    public TaskAdapter(CommonSettingsLowerFragment settingsLowerFragmentTasks, List<TaskItem> taskList, Context context)
     {
         this.settingsLowerFragmentTasks = settingsLowerFragmentTasks;
         this.taskList = taskList;

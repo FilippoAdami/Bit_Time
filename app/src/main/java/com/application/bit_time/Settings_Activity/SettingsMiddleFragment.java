@@ -51,7 +51,7 @@ public class SettingsMiddleFragment extends Fragment {
         Bundle b = getArguments();
 
 
-        viewModel.getSelectedItem().observe(this.getActivity(),item -> {
+        /*viewModel.getSelectedItem().observe(this.getActivity(),item -> {
 
             Log.i("viewModel value",item.toString());
             if(item.equals("Tasks"))
@@ -64,7 +64,7 @@ public class SettingsMiddleFragment extends Fragment {
             }
 
 
-        });
+        });*/
 
 
 

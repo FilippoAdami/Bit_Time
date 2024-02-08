@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bit_time.R;
+import com.application.bit_time.Settings_Activity.CommonSettingsLowerFragment;
 import com.application.bit_time.Settings_Activity.SettingsLowerFragmentActivities;
 import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
 import com.application.bit_time.utils.Db.DbContract;
@@ -37,13 +38,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     private DbManager dbManager;
     private DbViewModel dbViewModel;
     private List<ActivityItem> list;
-    private SettingsLowerFragmentActivities settingsLowerFragmentActivities;
+    private CommonSettingsLowerFragment settingsLowerFragmentActivities;
     private CustomViewModel viewModel;
 
     private Context context;
 
 
-    public ListAdapter(SettingsLowerFragmentActivities settingsLowerFragmentActivities, List<ActivityItem> list, Context context)
+    public ListAdapter(CommonSettingsLowerFragment settingsLowerFragmentActivities, List<ActivityItem> list, Context context)
     {
 
         this.settingsLowerFragmentActivities = settingsLowerFragmentActivities;
