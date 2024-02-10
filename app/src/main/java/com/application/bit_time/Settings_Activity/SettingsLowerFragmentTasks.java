@@ -99,7 +99,7 @@ public class SettingsLowerFragmentTasks extends Fragment
         });
 
 
-        taskAdapter= new TaskAdapter(this,taskList,this.getContext());
+        //taskAdapter= new TaskAdapter(this,taskList,this.getContext());
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
