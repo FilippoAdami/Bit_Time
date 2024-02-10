@@ -10,14 +10,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/internalImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="center"
-            android:contentDescription="internal image"
-            />
-
         <!-- Aspetto -->
         <TextView
             android:layout_width="match_parent"
@@ -130,6 +122,10 @@
 
         </LinearLayout>
 
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+              android:orientation="vertical">
         <Button
             android:id="@+id/loadBackgroundButton"
             android:layout_width="match_parent"
@@ -138,6 +134,27 @@
             android:layout_marginTop="16dp"
             style="@style/ActionButton"/>
 
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:gravity="center">
+              <ImageView
+                  android:id="@+id/internalImage"
+                  android:layout_width="100dp"
+                  android:layout_height="100dp"
+                  android:scaleType="center"
+                  android:contentDescription="internal image"
+                  />
+              <ImageView
+                    android:id="@+id/deleteBackground"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/delete"
+                    android:contentDescription="deleteBackgroundButton"/>
+          </LinearLayout>
+       </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -226,20 +243,62 @@
             android:layout_height="wrap_content"
             android:max="100"
             android:paddingTop="10dp"/>
-            <Button
+        <Button
             android:id="@+id/loadRingtoneButton1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/notifications_sound"
             style="@style/ActionButton"/>
-            <Button
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="8">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="nessun suono di notifica"
+                android:textSize="20sp"
+                android:id="@+id/notification_name"
+                android:layout_weight="7"
+                style="@style/NormalText"/>
+            <ImageView
+                android:id="@+id/deleteNotification"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/delete"
+                android:contentDescription="deleteNotificationButton"/>
+        </LinearLayout>
+        <Button
             android:id="@+id/loadRingtoneButton2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/change_ringtone"
             style="@style/ActionButton"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="8">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="nessuna suoneria"
+                android:textSize="20sp"
+                android:id="@+id/ringtone_name"
+                android:layout_weight="7"
+                style="@style/NormalText"/>
+            <ImageView
+                android:id="@+id/deleteRingtone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/delete"
+                android:contentDescription="deleteRingtoneButton"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

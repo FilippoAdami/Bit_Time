@@ -73,6 +73,10 @@ public final class DbContract {
         public static final String COLUMN_NAME_SOUNDS = "sounds";
         public static final String COLUMN_NAME_FOCUS = "focus";
         public static final String COLUMN_NAME_HOME_TYPE = "home_type";
+        public static final String COLUMN_NAME_BACKGROUND_NAME = "background_name";
+        public static final String COLUMN_NAME_RINGTONE_NAME = "ringtone_name";
+        public static final String COLUMN_NAME_NOTIFICATIONS_NAME = "notification_name";
+
     }
 
     public static class gamificationSettings implements BaseColumns{

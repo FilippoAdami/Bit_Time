@@ -84,7 +84,10 @@ public class DbManager {
                 DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS + " integer," +
                 DbContract.appSettings.COLUMN_NAME_SOUNDS + " integer," +
                 DbContract.appSettings.COLUMN_NAME_FOCUS + " integer," +
-                DbContract.appSettings.COLUMN_NAME_HOME_TYPE + " integer)";
+                DbContract.appSettings.COLUMN_NAME_HOME_TYPE + " integer," +
+                DbContract.appSettings.COLUMN_NAME_BACKGROUND_NAME + " text," +
+                DbContract.appSettings.COLUMN_NAME_RINGTONE_NAME + " text," +
+                DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS_NAME + " text)";
 
 
         public static final String SQL_CREATE_ACTIVITY_SCHEDULE_TABLE =
@@ -518,7 +521,7 @@ public class DbManager {
 
 
                     String updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
-                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration + "," ;
+                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration ;
 
                     for (int i = 1; i <= DbContract.Activities.DIM_MAX; i++) {
                         //String partial = " " + DbContract.Activities.TABLE_NAME + ".task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
@@ -791,6 +794,40 @@ public class DbManager {
 
         cursor.close();  // Close the cursor to avoid potential memory leaks
     }
+    public void changeBackgroundName(String name){
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_BACKGROUND_NAME, name);
+
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            int rowsAffected = db.update(
+                    DbContract.appSettings.TABLE_NAME,
+                    values,
+                    null,
+                    null
+            );
+
+            if (rowsAffected > 0) {
+                Log.i("DB_UPDATE", "Background updated successfully: " + name);
+            } else {
+                Log.e("DB_ERROR", "Failed to update background");
+            }
+        } else {
+            // If no row exists, create a new row with default values
+            long newRowId = db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+
+            if (newRowId != -1) {
+                Log.i("DB_INSERT", "New row inserted with background: " + name);
+            } else {
+                Log.e("DB_ERROR", "Failed to insert new row");
+            }
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
+    }
     public void changeVolume(int volume) {
         ContentValues values = new ContentValues();
         values.put(DbContract.appSettings.COLUMN_NAME_VOLUME, volume);
@@ -885,6 +922,40 @@ public class DbManager {
 
         Log.i("SQLMOD", "changeNotifications: Rows affected - " + rowsAffected);
     }
+    public void changeNotificationsName(String name){
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS_NAME, name);
+
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            int rowsAffected = db.update(
+                    DbContract.appSettings.TABLE_NAME,
+                    values,
+                    null,
+                    null
+            );
+
+            if (rowsAffected > 0) {
+                Log.i("DB_UPDATE", "Background updated successfully: " + name);
+            } else {
+                Log.e("DB_ERROR", "Failed to update background");
+            }
+        } else {
+            // If no row exists, create a new row with default values
+            long newRowId = db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+
+            if (newRowId != -1) {
+                Log.i("DB_INSERT", "New row inserted with background: " + name);
+            } else {
+                Log.e("DB_ERROR", "Failed to insert new row");
+            }
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
+    }
     public void changeSounds(boolean sounds) {
         ContentValues values = new ContentValues();
         values.put(DbContract.appSettings.COLUMN_NAME_SOUNDS, sounds ? 1 : 0);
@@ -897,6 +968,40 @@ public class DbManager {
         }
 
         Log.i("SQLMOD", "changeSounds: Rows affected - " + rowsAffected);
+    }
+    public void changeRingtoneName(String name){
+        ContentValues values = new ContentValues();
+        values.put(DbContract.appSettings.COLUMN_NAME_RINGTONE_NAME, name);
+
+        // Check if a row exists
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            // If at least one row exists, update the value
+            int rowsAffected = db.update(
+                    DbContract.appSettings.TABLE_NAME,
+                    values,
+                    null,
+                    null
+            );
+
+            if (rowsAffected > 0) {
+                Log.i("DB_UPDATE", "Background updated successfully: " + name);
+            } else {
+                Log.e("DB_ERROR", "Failed to update background");
+            }
+        } else {
+            // If no row exists, create a new row with default values
+            long newRowId = db.insert(DbContract.appSettings.TABLE_NAME, null, values);
+
+            if (newRowId != -1) {
+                Log.i("DB_INSERT", "New row inserted with background: " + name);
+            } else {
+                Log.e("DB_ERROR", "Failed to insert new row");
+            }
+        }
+
+        cursor.close();  // Close the cursor to avoid potential memory leaks
     }
     public void changeFocus(boolean focus) {
         ContentValues values = new ContentValues();
@@ -965,6 +1070,27 @@ public class DbManager {
             Log.i("DB_INFO", "No rows found in the database, returning default theme");
             cursor.close();
             return "no background";
+        }
+    }
+    public String getBackgroundName(){
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DbContract.appSettings.COLUMN_NAME_BACKGROUND_NAME);
+
+            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
+                String theme = cursor.getString(columnIndex);
+                cursor.close();  // Close the cursor to avoid potential memory leaks
+                return theme;
+            } else {
+                Log.e("DB_ERROR", "Column index is -1 for background column");
+                cursor.close();
+                return "nessuno sfondo";
+            }
+        } else {
+            Log.i("DB_INFO", "No rows found in the database, returning default name");
+            cursor.close();
+            return "nessuno sfondo";
         }
     }
     public int getVolume() {
@@ -1053,6 +1179,29 @@ public class DbManager {
             cursor.close();  // Close the cursor to avoid potential memory leaks
         }
     }
+    public String getNotificationName(){
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        try {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_NOTIFICATIONS_NAME);
+                String notifications = cursor.getString(columnIndex);
+                cursor.close();
+                return notifications;
+            } else {
+                cursor.close();
+                return "nessun suono di notifica";
+            }
+        } catch (IllegalArgumentException e) {
+            // Log the error or handle it as needed
+            e.printStackTrace();
+            cursor.close();
+            return "nessun suono di notifica";
+        } finally {
+            cursor.close();  // Close the cursor to avoid potential memory leaks
+        }
+
+    }
     public boolean getSounds() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
 
@@ -1071,6 +1220,28 @@ public class DbManager {
             e.printStackTrace();
             cursor.close();
             return false;
+        } finally {
+            cursor.close();  // Close the cursor to avoid potential memory leaks
+        }
+    }
+    public String getRingtoneName(){
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.appSettings.TABLE_NAME, null);
+
+        try {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(DbContract.appSettings.COLUMN_NAME_RINGTONE_NAME);
+                String sounds = cursor.getString(columnIndex);
+                cursor.close();
+                return sounds;
+            } else {
+                cursor.close();
+                return "nessuna suoneria";
+            }
+        } catch (IllegalArgumentException e) {
+            // Log the error or handle it as needed
+            e.printStackTrace();
+            cursor.close();
+            return "nessuna suoneria";
         } finally {
             cursor.close();  // Close the cursor to avoid potential memory leaks
         }

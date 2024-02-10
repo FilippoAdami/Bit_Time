@@ -61,6 +61,10 @@ public class CustomizeSettingsFragment extends Fragment {
     public String currentTheme;
     public String newTheme;
     private String currentBackground;
+    private ImageView removeBackground;
+    private ImageView removeRingtone;
+    private ImageView removeNotification;
+    private ImageView imageView;
     private String backgroundExtension;
     private final ActivityResultLauncher<Void> imagePickerLauncher = registerForActivityResult(
             new ImagePicker(),
@@ -95,6 +99,8 @@ public class CustomizeSettingsFragment extends Fragment {
     private String ringtoneExtension;
     private Uri currentNotification;
     private String notificationExtension;
+    private TextView ringtone_name;
+    private TextView notification_name;
     private Switch switch1;
     private Uri tempUri;
     private String type = "background";
@@ -129,6 +135,12 @@ public class CustomizeSettingsFragment extends Fragment {
         Button loadNotificationButton = view.findViewById(R.id.loadRingtoneButton2);
         Button saveButton = view.findViewById(R.id.saveButton);
         switch1 = view.findViewById(R.id.switch1);
+        removeBackground = view.findViewById(R.id.deleteBackground);
+        removeRingtone = view.findViewById(R.id.deleteRingtone);
+        removeNotification = view.findViewById(R.id.deleteNotification);
+        ringtone_name = view.findViewById(R.id.ringtone_name);
+        notification_name = view.findViewById(R.id.notification_name);
+        imageView = view.findViewById(R.id.internalImage);
 
         // Set the saved values
         currentTheme = dbManager.getTheme();
@@ -144,6 +156,14 @@ public class CustomizeSettingsFragment extends Fragment {
         checkbox4.setChecked(check4);
         volumeSeekBar.setProgress(dbManager.getVolume());
         switch1.setChecked(dbManager.getHomeType());
+        if(imageView.getDrawable() != null && currentBackground != "no background"){
+            Toast.makeText(getActivity(), "sfondo caricato   "+currentBackground, Toast.LENGTH_SHORT).show();
+            imageView.setImageURI(Uri.parse(currentBackground));
+        }
+        else{
+            imageView.setVisibility(View.GONE);
+            removeBackground.setVisibility(View.GONE);
+        }
 
         //do not show subtextCheckbox3 and switch1 and subtextSwitch1 and switch1off and switch1on
         TextView subtextCheckbox3 = view.findViewById(R.id.subtextCheckbox3);
@@ -155,6 +175,8 @@ public class CustomizeSettingsFragment extends Fragment {
         switch1off.setVisibility(View.GONE);
         TextView switch1on = view.findViewById(R.id.switch1on);
         switch1on.setVisibility(View.GONE);
+        ringtone_name.setText(dbManager.getRingtoneName());
+        notification_name.setText(dbManager.getNotificationName());
 
 
         // Set the click listeners
@@ -225,6 +247,28 @@ public class CustomizeSettingsFragment extends Fragment {
             }else{
                 requestMediaPermissions(Manifest.permission.READ_MEDIA_AUDIO);
             }
+        });
+        removeBackground.setOnClickListener(v -> {
+            // Remove the background image
+            currentBackground = null;
+            backgroundExtension = null;
+            imageView.setVisibility(View.GONE);
+            removeBackground.setVisibility(View.GONE);
+            preferencesChanged = true;
+        });
+        removeRingtone.setOnClickListener(v -> {
+            // Remove the ringtone
+            currentRingtone = null;
+            ringtoneExtension = null;
+            ringtone_name.setText("nessuna suoneria");
+            preferencesChanged = true;
+        });
+        removeNotification.setOnClickListener(v -> {
+            // Remove the notification sound
+            currentNotification = null;
+            notificationExtension = null;
+            notification_name.setText("nessun suono di notifica");
+            preferencesChanged = true;
         });
         switch1.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
         saveButton.setOnClickListener(v -> {
@@ -368,8 +412,10 @@ public class CustomizeSettingsFragment extends Fragment {
 
         if (savedBitmap != null) {
             // Display the saved image in your ImageView
-            ImageView imageView = getView().findViewById(R.id.internalImage);
+            imageView = getView().findViewById(R.id.internalImage);
             imageView.setImageBitmap(savedBitmap);
+            removeBackground.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
 
             Toast.makeText(getActivity(), "sfondo aggiornato correttamente", Toast.LENGTH_SHORT).show();
             return fileName;
@@ -412,13 +458,16 @@ public class CustomizeSettingsFragment extends Fragment {
                 .setTitle("Choose a " + type)
                 .setItems(uniqueTitles.toArray(new String[0]), (dialog, which) -> {
                     Uri selectedRingtoneUri = uniqueUris.get(which);
+                    String Title = uniqueTitles.get(which);
                     String sound = saveRingtoneOperations(selectedRingtoneUri);
                     if (type.equals("notification")) {
                         currentNotification = selectedRingtoneUri;
                         notificationExtension = sound;
+                        ringtone_name.setText(Title);
                     } else {
                         currentRingtone = selectedRingtoneUri;
                         ringtoneExtension = sound;
+                        notification_name.setText(Title);
                     }
                 })
                 .show();
@@ -508,6 +557,8 @@ public class CustomizeSettingsFragment extends Fragment {
             String backgroundPath = saveFile(Uri.parse(currentBackground), backgroundExtension);
             dbManager.changeBackground(backgroundPath);
         }
+        dbManager.changeRingtoneName(ringtone_name.getText().toString());
+        dbManager.changeNotificationsName(notification_name.getText().toString());
         dbManager.changeSounds(checkbox1.isChecked());
         dbManager.changeNotifications(checkbox2.isChecked());
         dbManager.changeFocus(checkbox3.isChecked());
@@ -556,7 +607,6 @@ public class CustomizeSettingsFragment extends Fragment {
         preferencesChanged = false;
     }
     public Bitmap saveImageFile(Uri uri, String fileName) {
-
         Bitmap bitmap = null;
         try {
             InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
