@@ -301,7 +301,7 @@ public class ActivityCreationFragment extends Fragment {
 
         subtasksRecyclerView.setAdapter(subtaskAdapter);
 
-        subtasksViewModel.getSelectedItem().observe(this,item ->
+        subtasksViewModel.getSelectedItem().observe(getViewLifecycleOwner(),item ->
                 {
 
                     int totalTime = 0;

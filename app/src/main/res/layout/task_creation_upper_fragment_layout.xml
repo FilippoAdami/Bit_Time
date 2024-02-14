@@ -15,15 +15,39 @@
         android:text="@string/nome_del_task"
         android:textAlignment="center" />
 
-    <EditText
-        android:id="@+id/editTaskNameLabel"
-        style="@style/TextInputStyle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autofillHints="name"
-        android:ems="10"
-        android:hint="@string/inserire_il_nome_del_task"
-        android:inputType="text" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="15dp">
+        <EditText
+            android:id="@+id/editTaskNameLabel"
+            style="@style/TextInputStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="name"
+            android:hint="@string/inserire_il_nome_del_task"
+            android:inputType="text"
+            android:layout_marginStart="0dp"
+            android:layout_weight="6" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTaskIcon">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/image"
+                android:layout_weight="-1"/>
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/edit"
+                android:layout_marginStart="67dp"
+                android:layout_marginTop="67dp"/>
+        </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/TaskCreWarning"
@@ -40,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:textAlignment="center"
-        tools:text="@string/durata" />
+        android:text="@string/durata" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -79,6 +103,6 @@
         style="@style/SubmitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="45dp"
         android:text="@string/save" />
 </LinearLayout>

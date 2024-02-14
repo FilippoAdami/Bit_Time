@@ -176,7 +176,13 @@ public class CustomizeSettingsFragment extends Fragment {
         TextView switch1on = view.findViewById(R.id.switch1on);
         switch1on.setVisibility(View.GONE);
         ringtone_name.setText(dbManager.getRingtoneName());
+        if (ringtone_name.getText().toString().equals("nessuna suoneria")){
+            removeRingtone.setVisibility(View.GONE);
+        }
         notification_name.setText(dbManager.getNotificationName());
+        if (notification_name.getText().toString().equals("nessun suono di notifica")){
+            removeNotification.setVisibility(View.GONE);
+        }
 
 
         // Set the click listeners
@@ -229,11 +235,13 @@ public class CustomizeSettingsFragment extends Fragment {
             if (Build.VERSION.SDK_INT <= 22) {
                 try {
                     retrieveAndShowRingtones();
+                    removeNotification.setVisibility(View.VISIBLE);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }else{
                 requestMediaPermissions(Manifest.permission.READ_MEDIA_AUDIO);
+                removeNotification.setVisibility(View.VISIBLE);
             }
         });
         loadNotificationButton.setOnClickListener(v -> {
@@ -241,11 +249,13 @@ public class CustomizeSettingsFragment extends Fragment {
             if (Build.VERSION.SDK_INT <= 22) {
                 try {
                     retrieveAndShowRingtones();
+                    removeRingtone.setVisibility(View.VISIBLE);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }else{
                 requestMediaPermissions(Manifest.permission.READ_MEDIA_AUDIO);
+                removeRingtone.setVisibility(View.VISIBLE);
             }
         });
         removeBackground.setOnClickListener(v -> {
@@ -261,6 +271,7 @@ public class CustomizeSettingsFragment extends Fragment {
             currentRingtone = null;
             ringtoneExtension = null;
             ringtone_name.setText("nessuna suoneria");
+            removeRingtone.setVisibility(View.GONE);
             preferencesChanged = true;
         });
         removeNotification.setOnClickListener(v -> {
@@ -268,6 +279,7 @@ public class CustomizeSettingsFragment extends Fragment {
             currentNotification = null;
             notificationExtension = null;
             notification_name.setText("nessun suono di notifica");
+            removeNotification.setVisibility(View.GONE);
             preferencesChanged = true;
         });
         switch1.setOnCheckedChangeListener((buttonView, isChecked) -> preferencesChanged = true);
