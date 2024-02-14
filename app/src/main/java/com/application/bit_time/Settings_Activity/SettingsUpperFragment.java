@@ -1,11 +1,13 @@
 package com.application.bit_time.Settings_Activity;
 
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,23 +24,35 @@ public class SettingsUpperFragment extends Fragment {
 
     private CustomViewModel viewModel;
     private String modeStr;
-    private TextView leftLabel;
-    private TextView rightLabel;
+    //private TextView leftLabel;
+    //private TextView rightLabel;
+    private Button activitiesButton;
+    private Button tasksButton;
 
 
-
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.s_settings_upper_fragment_layout,container,false);
+        /*View view = inflater.inflate(R.layout.s_settings_upper_fragment_layout,container,false);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
+
 
 
         leftLabel = view.findViewById(R.id.leftLabel);
-        rightLabel  = view.findViewById(R.id.rightLabel);
+        rightLabel  = view.findViewById(R.id.rightLabel);*/
+
+        View view = inflater.inflate(R.layout.new_s_settings_upper_fragment_layout,container,false);
+
+        tasksButton = view.findViewById(R.id.tasksButton);
+        activitiesButton = view.findViewById(R.id.activitiesButton);
+
 
 
         Bundle b = getArguments();
@@ -50,21 +64,24 @@ public class SettingsUpperFragment extends Fragment {
             Log.i("SUF modeStr",modeStr);
             if(modeStr.equals("Tasks"))
             {
-                leftSelection();
+                //leftSelection();
+                tasksSelected();
             }
             else if(modeStr.equals("Activities"))
             {
-                rightSelection();
+                //rightSelection();
+                activitiesSelected();
             }
         }else
         {
             Log.i("SUF default","rightSel");
-            rightSelection();
+            //rightSelection();
+            activitiesSelected();
         }
 
 
 
-        leftLabel.setOnClickListener(new View.OnClickListener() {
+        /*leftLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -89,14 +106,33 @@ public class SettingsUpperFragment extends Fragment {
 
                 viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Activities));
             }
+        });*/
+
+
+
+        tasksButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tasksSelected();
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Tasks));
+            }
         });
 
+
+
+        activitiesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activitiesSelected();
+                viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.Activities));
+            }
+        });
 
 
         return view;
     }
 
-    private void rightSelection()
+    /*private void rightSelection()
     {
         leftLabel.setTypeface(null, Typeface.NORMAL);
         rightLabel.setTypeface(null,Typeface.BOLD);
@@ -107,7 +143,21 @@ public class SettingsUpperFragment extends Fragment {
     {
         rightLabel.setTypeface(null, Typeface.NORMAL);
         leftLabel.setTypeface(null,Typeface.BOLD);
+    }*/
+
+    private void activitiesSelected()
+    {
+        activitiesButton.setBackgroundColor(getResources().getColor(R.color.yellow));
+        tasksButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
+
     }
+
+    private void tasksSelected()
+    {
+        activitiesButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
+        tasksButton.setBackgroundColor(getResources().getColor(R.color.yellow));
+    }
+
 
 
 }
