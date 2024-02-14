@@ -70,6 +70,11 @@ public class PlanningInfo {
         return this.planned + " "+this.info.toString();
     }
 
+    public String toFormattedString()
+    {
+        return this.info.toFormattedString();
+    }
+
     public int getPlanId()
     {
         return this.planId;

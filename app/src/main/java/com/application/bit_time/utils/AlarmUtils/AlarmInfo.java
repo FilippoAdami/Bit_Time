@@ -226,4 +226,9 @@ public class AlarmInfo {
         Log.i("fromAlarmInfo","this.day now is "+this.day);
         return this;
     }
+
+    public String toFormattedString()
+    {
+        return this.day+"/"+this.month+"/"+this.year+" "+this.hour+":"+this.min;
+    }
 }
