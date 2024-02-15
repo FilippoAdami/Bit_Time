@@ -211,19 +211,32 @@ public class AlarmInfo {
     public AlarmInfo dailyPostpone()
     {
         //TODO : checks over months and days and change values
-        Log.i("fromAlarmInfo","this.day now is "+this.day);
-        this.day=this.min+1;
-        Log.i("fromAlarmInfo","this.day now is "+this.day);
+        Log.i("fromAlarmInfo","this.day now is "+this.min);
+        this.min=this.min+1;
+        Log.i("fromAlarmInfo","this.day now is "+this.min);
         return this;
 
+    }
+
+
+    public String getFreqStr()
+    {
+        if(this.freq.equals(Frequency.Daily)) {
+            return "Daily";
+        }
+        else if(this.freq.equals(Frequency.Weekly))
+        {
+            return "Weekly";
+        }
+        else return "Not Set";
     }
 
     public AlarmInfo weeklyPostpone()
     {
         //TODO : checks over months and days and change values
-        Log.i("fromAlarmInfo","this.day now is "+this.day);
-        this.day=this.min+2;
-        Log.i("fromAlarmInfo","this.day now is "+this.day);
+        Log.i("fromAlarmInfo","this.day now is "+this.min);
+        this.min=this.min+2;
+        Log.i("fromAlarmInfo","this.day now is "+this.min);
         return this;
     }
 

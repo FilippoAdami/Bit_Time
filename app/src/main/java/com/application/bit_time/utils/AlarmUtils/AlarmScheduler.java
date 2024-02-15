@@ -123,6 +123,11 @@ public class AlarmScheduler implements AlarmSchedulerInterface
 
     public void manage(AlarmInfo info,int planDbId)
     {
+
+
+        Log.i("from manage log",info.toString());
+
+
         alarmId = planDbId;
         DbManager dbManager = new DbManager(this.context);
         dbManager.deleteActivitySchedule(planDbId);

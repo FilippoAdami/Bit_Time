@@ -45,7 +45,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
 
         PlanningInfo currentPlan = planList.get(position);
         holder.id = currentPlan.getPlanId();
-        holder.fullDate.setText(currentPlan.getInfo().toFormattedString());
+        holder.fullDate.setText(currentPlan.toFormattedString());
+        holder.freq.setText(currentPlan.info.getFreqStr());
         holder.planningInfo = new PlanningInfo(currentPlan);
         holder.planningInfo.info.setAsSet();
         Log.i("inspection","picp "+currentPlan);
@@ -82,6 +83,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
 
         int id;
         TextView fullDate;
+        TextView freq;
         Button removeButton;
         PlanningInfo planningInfo;
         public ListItemHolder(View view)
@@ -89,6 +91,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ListItemHolder
             super(view);
             this.fullDate = view.findViewById(R.id.fullDateTextView);
             this.removeButton = view.findViewById(R.id.deletePlanButton);
+            this.freq= view.findViewById(R.id.FreqTextView);
             this.removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
