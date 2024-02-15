@@ -96,7 +96,7 @@ public class ReportFragment extends Fragment {
 
 
         Log.i("REPFRAG",Integer.toString(this.reportDataList.size()));
-        dataAdapter = new ReportDataAdapter(this,this.reportDataList,happyIcon,sadIcon);
+        dataAdapter = new ReportDataAdapter(this,this.reportDataList,this.scoreList,happyIcon,sadIcon);
 
 
 

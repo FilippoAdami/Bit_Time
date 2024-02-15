@@ -107,6 +107,6 @@ public class ReportData {
         int sec = (lastedTimeCopy-h-min);
 
 
-        return  h+" h "+min+" min "+sec+" sec ";
+        return  min+" min "+sec+" sec ";
     }
 }

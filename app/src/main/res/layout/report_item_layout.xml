@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            android:paddingStart="5dp"
             android:text="@string/TaskName"
             android:textAlignment="viewStart"
             android:textSize="24sp" />
@@ -25,25 +26,44 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            android:paddingStart="5dp"
             android:text="TextView"
             android:textAlignment="viewStart"
             android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/subtaskScore"
-            style="@style/RegularText"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:text="@string/TotalScore"
-            android:textAlignment="viewStart" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/subtaskEndStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingStart="5dp"
+                android:text="TextView"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/subtaskScore"
+                style="@style/RegularText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingStart="5dp"
+                android:text="@string/TotalScore"
+                android:textAlignment="viewStart" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/taskImg"
-        android:layout_width="236dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="0"
         android:src="@drawable/image" />
 </LinearLayout>

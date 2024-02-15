@@ -25,11 +25,12 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
     private ReportFragment fragment;
     private Drawable happyIcon;
     private Drawable sadIcon;
+    private int[] scorelist;
 
-
-    public ReportDataAdapter(ReportFragment reportFragment, List<ReportData> dataList,Drawable happyIcon,Drawable sadIcon)
+    public ReportDataAdapter(ReportFragment reportFragment, List<ReportData> dataList,int[] scorelist,Drawable happyIcon,Drawable sadIcon)
     {
         this.reportDataList = dataList;
+        this.scorelist= scorelist.clone();
         Log.i("RepAdapt",Integer.toString(dataList.size()));
         this.fragment = reportFragment;
         this.happyIcon=happyIcon;
@@ -49,9 +50,11 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
     @Override
     public void onBindViewHolder(@NonNull ReportDataAdapter.ListItemHolder holder, int position) {
         ReportData reportData = this.reportDataList.get(position);
+
         Log.i("viewholder log",reportData.subtaskName);
         holder.subtaskName.setText(reportData.subtaskName);
-        holder.subtaskScore.setText(reportData.endStatus.toString());
+        holder.subtaskScore.setText(Integer.toString(this.scorelist[position]));
+        holder.endStatus.setText(reportData.endStatus.toString());
         holder.subtaskTime.setText(reportData.lastedtimeToString());
         holder.image.setImageDrawable(happyIcon);
         holder.image.setImageDrawable(sadIcon);
@@ -68,6 +71,7 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
         TextView subtaskName;
         TextView subtaskScore;
         TextView subtaskTime;
+        TextView endStatus;
         ImageView image;
 
         public ListItemHolder(View view)
@@ -77,6 +81,7 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
             this.subtaskScore = view.findViewById(R.id.subtaskScore);
             this.subtaskTime = view.findViewById(R.id.subtaskTime);
             this.image = view.findViewById(R.id.taskImg);
+            this.endStatus = view.findViewById(R.id.subtaskEndStatus);
         }
 
     }
