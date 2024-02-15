@@ -41,8 +41,8 @@ public class GamificationSettings extends Fragment {
         // Set user configurations before the fragment is created
         dbManager = new DbManager(getActivity());
         gamificationType = dbManager.getGamificationType();
-        positiveIcon = dbManager.getPositiveIcon();
-        negativeIcon = dbManager.getNegativeIcon();
+        positiveIcon = dbManager.getPositiveIconStr();
+        negativeIcon = dbManager.getNegativeIconStr();
         timePoints = dbManager.getGamificationPoints();
     }
 
@@ -212,7 +212,7 @@ public class GamificationSettings extends Fragment {
         if (!spinner1Selection.equals(dbManager.getPositiveIcon())) {
             return true;
         }
-        if (!spinner2Selection.equals(dbManager.getNegativeIcon())) {
+        if (!spinner2Selection.equals(dbManager.getNegativeIconStr())) {
             return true;
         }
         if (editText1Value != dbManager.getGamificationPoints()[0]) {

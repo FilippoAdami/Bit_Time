@@ -4,26 +4,46 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="5dp">
 
-    <TextView
-        android:id="@+id/subtaskName"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:text="@string/TaskName"
-        style="@style/RegularText"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/subtaskTime"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.7"
-        android:text="TextView" />
+        <TextView
+            android:id="@+id/subtaskName"
+            style="@style/RegularText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="@string/TaskName"
+            android:textAlignment="viewStart"
+            android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/subtaskScore"
-        android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/subtaskTime"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="TextView"
+            android:textAlignment="viewStart"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/subtaskScore"
+            style="@style/RegularText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="@string/TotalScore"
+            android:textAlignment="viewStart" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/taskImg"
+        android:layout_width="236dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:text="@string/TotalScore"
-        style="@style/RegularText"/>
+        android:layout_weight="0.25"
+        android:src="@drawable/image" />
 </LinearLayout>

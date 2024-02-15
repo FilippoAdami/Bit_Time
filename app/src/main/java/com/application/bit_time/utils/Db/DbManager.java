@@ -3,11 +3,16 @@ package com.application.bit_time.utils.Db;
 import org.mindrot.jbcrypt.BCrypt;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import androidx.core.content.res.ResourcesCompat;
+
+import com.application.bit_time.R;
 import com.application.bit_time.utils.ActivityInfo;
 import com.application.bit_time.utils.ActivityItem;
 import com.application.bit_time.utils.AlarmUtils.AlarmInfo;
@@ -23,6 +28,7 @@ import java.util.List;
 public class DbManager {
 
     private static SQLiteDatabase db = null;
+    private Resources res;
 
     public static class DbHelper extends SQLiteOpenHelper
     {
@@ -138,7 +144,7 @@ public class DbManager {
     public DbManager(Context context)
     {
         DbHelper dbHelper = new DbHelper(context);
-
+        res = context.getResources();
         db = dbHelper.getWritableDatabase();
     }
 
@@ -1552,7 +1558,7 @@ public class DbManager {
         cursor.close();  // Close the cursor to avoid potential memory leaks
         return gamificationPoints;
     }
-    public String getPositiveIcon() {
+    public String getPositiveIconStr() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
@@ -1569,9 +1575,9 @@ public class DbManager {
             Log.e("PositiveIcon", "No data found in the cursor.");
         }
         cursor.close();
-        return "happy_dog"; // Default value
+        return res.getText(R.string.happyDogIcon).toString(); // Default value
     }
-    public String getNegativeIcon() {
+    public String getNegativeIconStr() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.gamificationSettings.TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
@@ -1588,8 +1594,38 @@ public class DbManager {
             Log.e("NegativeIcon", "No data found in the cursor.");
         }
         cursor.close();
-        return "sad_dog"; // Default value
+        return res.getText(R.string.sadDogIcon).toString(); // Default value
     }
+
+
+    public Drawable getNegativeIcon()
+    {
+        String negativeIconStr = getNegativeIconStr();
+
+        if(negativeIconStr.equals("sad_cat"))
+        {
+            return res.getDrawable(R.drawable.sad_cat,null);
+        }else
+        {
+            return res.getDrawable(R.drawable.sad_dog,null);
+        }
+
+    }
+
+    public Drawable getPositiveIcon()
+    {
+        String positiveIconStr = getPositiveIconStr();
+
+        if(positiveIconStr.equals("happy_cat"))
+        {
+            return res.getDrawable(R.drawable.happy_cat,null);
+        }
+        else {
+            return res.getDrawable(R.drawable.happy_dog,null);
+        }
+
+    }
+
 
     public void closeDb() {
         db.close();

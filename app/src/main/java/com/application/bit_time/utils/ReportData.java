@@ -97,4 +97,16 @@ public class ReportData {
     {
         Log.i("index","of "+rawMetadata.indexOf("-"));
     }
+
+    public String lastedtimeToString()
+    {
+        int lastedTimeCopy = this.lastedTime;
+
+        int h = lastedTimeCopy/3600;
+        int min = (lastedTimeCopy-h)/60;
+        int sec = (lastedTimeCopy-h-min);
+
+
+        return  h+" h "+min+" min "+sec+" sec ";
+    }
 }

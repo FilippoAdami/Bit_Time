@@ -2,6 +2,7 @@ package com.application.bit_time.Main_Activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +43,9 @@ public class ReportFragment extends Fragment {
     private ReportDataAdapter dataAdapter;
     private RunningActivityViewModel runningActivityViewModel;
     private int[] timescores;
+
+    private Drawable sadIcon;
+    private Drawable happyIcon;
 
     private static evaluation evaluation;
 
@@ -84,8 +88,15 @@ public class ReportFragment extends Fragment {
 
         evaluationField.setText(evaluation.toString());
         recyclerView = view.findViewById(R.id.recyclerView);
+
+
+
+
+
+
+
         Log.i("REPFRAG",Integer.toString(this.reportDataList.size()));
-        dataAdapter = new ReportDataAdapter(this,this.reportDataList);
+        dataAdapter = new ReportDataAdapter(this,this.reportDataList,happyIcon,sadIcon);
 
 
 
@@ -185,6 +196,9 @@ public class ReportFragment extends Fragment {
     public void givePoints()
     {
         DbManager dbManager = new DbManager(this.getContext());
+
+        happyIcon = dbManager.getPositiveIcon();
+        sadIcon = dbManager.getNegativeIcon();
 
         timescores = new int[DbContract.timescores];
         timescores = dbManager.getGamificationPoints();

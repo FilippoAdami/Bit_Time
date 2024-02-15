@@ -200,4 +200,7 @@
     <string name="ActErrLenMsg">il nome scelto per l\'activity è troppo lungo, prova con uno più corto</string>
     <string name="emptySubtasksErrTitle">L\'activity che stai creando è vuota</string>
     <string name="emptySubtasksErrMsg">L\'activity che stai creando al momento non contiene tasks, scegline premendo sul + oppure creane di nuovi e poi torna qui</string>
+    <string name="sadDogIcon">sad_dog</string>
+    <string name="happyDogIcon">happy_dog</string>
+
 </resources>
