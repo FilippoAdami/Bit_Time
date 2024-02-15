@@ -24,6 +24,7 @@ public final class DbContract {
         public static final String COLUMN_NAME_TASK4  = "task4";
         public static final String COLUMN_NAME_TASK5  = "task5";
         public static final String COLUMN_NAME_IS_PLANNED = "isPlanned";
+        public static final String COLUMN_NAME_IMG = "img";
 
 
 
@@ -35,6 +36,7 @@ public final class DbContract {
 
         public static final String COLUMN_NAME_TASK_NAME ="name";
         public static final String COLUMN_NAME_TASK_DURATION = "duration";
+        public static final String COLUMN_NAME_IMG = "img";
 
 
     }

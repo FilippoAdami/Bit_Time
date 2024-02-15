@@ -138,6 +138,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="horizontal"
+              android:layout_marginTop="3dp"
               android:gravity="center">
               <ImageView
                   android:id="@+id/internalImage"
@@ -150,6 +151,7 @@
                     android:id="@+id/deleteBackground"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:padding="3dp"
                     android:layout_weight="1"
                     android:src="@drawable/delete"
                     android:contentDescription="deleteBackgroundButton"/>
@@ -254,6 +256,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="3dp"
             android:layout_weight="8">
             <TextView
                 android:layout_width="wrap_content"
@@ -267,6 +270,7 @@
                 android:id="@+id/deleteNotification"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:padding="1dp"
                 android:layout_weight="1"
                 android:src="@drawable/delete"
                 android:contentDescription="deleteNotificationButton"/>
@@ -282,6 +286,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="3dp"
             android:layout_weight="8">
             <TextView
                 android:layout_width="wrap_content"
@@ -295,6 +300,7 @@
                 android:id="@+id/deleteRingtone"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:padding="3dp"
                 android:layout_weight="1"
                 android:src="@drawable/delete"
                 android:contentDescription="deleteRingtoneButton"/>

@@ -6,22 +6,47 @@
 
     <TextView
         android:id="@+id/titleLabel"
-        style="@style/RegularText"
+        style="@style/TitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:text="@string/activity_name"
         android:textAlignment="center" />
 
-    <EditText
-        android:id="@+id/editNameLabel"
-        style="@style/TextInputStyle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autofillHints="nomeAttività"
-        android:ems="10"
-        android:hint="@string/nome_attivit"
-        android:inputType="text" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="15dp">
+        <EditText
+            android:id="@+id/editNameLabel"
+            style="@style/TextInputStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="nomeAttività"
+            android:hint="@string/nome_attivit"
+            android:inputType="text"
+            android:layout_marginStart="0dp"
+            android:layout_weight="6"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editActivityIcon">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/image"
+                android:layout_weight="-1"/>
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/edit"
+                android:layout_marginStart="67dp"
+                android:layout_marginTop="67dp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/ActCreWarning"
@@ -89,6 +114,7 @@
         style="@style/SubmitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="@string/save" />
+        android:layout_marginTop="35dp"
+        android:text="@string/save"
+    />
 </LinearLayout>
