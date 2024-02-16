@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,8 +78,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         holder.bind(activityItem);
         holder.id = activityItem.activityInfo.getIdInt();
         holder.duration=activityItem.getInfo().getTimeInt();
-//img added
-        holder.img = activityItem.getInfo().getImage();
 
         Bitmap originalEditBitmap = BitmapFactory.decodeResource(this.context.getResources(),R.drawable.edit);
         Bitmap editBitmap = Bitmap.createScaledBitmap(originalEditBitmap,100,100,true);
@@ -139,9 +136,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     {
         int id;
         int duration;
-// img & path added
-        String img = "";
-        ImageView image;
         TextView labelName;
         TextView labelTime;
         ImageButton modifyButton;
@@ -166,9 +160,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
             labelName = view.findViewById(R.id.labelName);
             labelTime = view.findViewById(R.id.labelTime);
-//img in layout reference
-            image = view.findViewById(R.id.activityIcon);
-
             modifyButton = view.findViewById(R.id.modifyButton);
             deleteButton = view.findViewById(R.id.deleteButton);
             subitem = view.findViewById(R.id.sub_item);
@@ -189,15 +180,19 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             view.setOnClickListener(this);
 
 
+
+
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Log.i("MODIFY","pressed");
                     Log.i("MODIFY","would modify "+ id);
                     //Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
-// updated constructor call
-                    ActivityInfo activityToModifyInfo = new ActivityInfo(id,labelName.getText().toString(),duration,img);
 
+                    ActivityInfo activityToModifyInfo = new ActivityInfo(
+                            id,
+                            labelName.getText().toString(),
+                            labelTime.getText().toString());
 
                     Log.i("ACT INFO",activityToModifyInfo.toString());
                     TaskItem[] subtasksToBeAdded = new TaskItem[subtaskItems.length];
@@ -254,8 +249,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     // magari aggiungiamo una richiesta di conferma
 
                     Log.i("justtest",labelTime.getText().toString());
-// updated constructor call
-                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),duration, img);
+                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),duration);
                     ActivityItem item = dbManager.searchActivityItem(itemToDelete);
 
 

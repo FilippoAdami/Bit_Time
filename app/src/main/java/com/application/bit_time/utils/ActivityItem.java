@@ -69,35 +69,36 @@ public class ActivityItem {
 
     }
 
-// updated constructor to take also the image
-    public ActivityItem(String id,String name,String duration, String img)
+    public ActivityItem(String id,String name,String duration)
     {
         this.plans = null;
-        this.activityInfo = new ActivityInfo(id,name,duration,img);
+        this.activityInfo = new ActivityInfo(id,name,duration);
         expanded = false;
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
+
+
     }
 
-    // updated constructor to take also the image
-    public ActivityItem(String id, String name, String duration, String img, int[] subtasksA)
+
+    public ActivityItem(String id, String name, String duration, int[] subtasksA)
     {
-        this(id,name,duration, img);
+        this(id,name,duration);
 
         //this.subtasks= new TaskItem[DbContract.Activities.DIM_MAX];
         for(int i = 0;i< DbContract.Activities.DIM_MAX ;i++)
         {
-            subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0, "placeholderImg");
+            subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0);
             Log.i("creatingAI",subtasks[i].toString());
         }
     }
-    // updated constructor to take also the image
-    public ActivityItem(String name, int duration, TaskItem[] subtasks, String img)
+
+    public ActivityItem(String name, int duration, TaskItem[] subtasks)
     {
         this.plans = null;
 
         Log.i("SUB2ADD",subtasks[0].toString());
 
-        this.activityInfo = new ActivityInfo(-1,name,duration, img);
+        this.activityInfo = new ActivityInfo(-1,name,duration);
         this.subtasks =  new TaskItem[DbContract.Activities.DIM_MAX];
 
         for(int i = 0; i< DbContract.Activities.DIM_MAX;i++)

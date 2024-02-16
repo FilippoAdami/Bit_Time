@@ -190,8 +190,7 @@ public class newRunningActivityData {
 
         for(ReportData RD : this.fullReport)
         {
-// should add the image as well at the end, temporary constructor call
-            subtasksList.add(new TaskItem(RD.subtaskId,RD.subtaskName,RD.getTotalTime(), ""));
+            subtasksList.add(new TaskItem(RD.subtaskId,RD.subtaskName,RD.getTotalTime()));
         }
 
         return subtasksList;

@@ -1,12 +1,5 @@
 package com.application.bit_time.Settings_Activity;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,34 +9,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.ErrorDialog;
-import com.application.bit_time.utils.ImagePicker;
 import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.TaskAdapter;
 import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class CreationUpperFragment extends Fragment {
 
@@ -58,22 +39,6 @@ public class CreationUpperFragment extends Fragment {
     EditText edtTxtMin;
     EditText edtTxtSec;
     TextView WarningTW;
-    ImageView imgView;
-    RelativeLayout changeIcon;
-    String currentIcon;
-    String iconExtension;
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-    static final int REQUEST_CODE_MEDIA_PERMISSION = 123;
-    private final ActivityResultLauncher<Void> imagePickerLauncher = registerForActivityResult(
-            new ImagePicker(),
-            uri -> {
-                // Handle the result, 'uri' contains the selected image URI
-                if (uri != null) {
-                    currentIcon = uri.toString();
-                    iconExtension = saveToInternalStorage(uri);
-                }
-            }
-    );
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +48,8 @@ public class CreationUpperFragment extends Fragment {
         subtasksViewModel = new ViewModelProvider(requireActivity()).get("dbTasksVM", SubtasksViewModel.class);
 
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
+
+
     }
 
     @Nullable
@@ -103,9 +70,7 @@ public class CreationUpperFragment extends Fragment {
         WarningTW = view.findViewById(R.id.TaskCreWarning);
         WarningTW.setText("The name of the task cannot be longer than "+MAX_LENGTH+" chars");
         WarningTW.setVisibility(View.INVISIBLE);
-    //added image and path
-        imgView = view.findViewById(R.id.taskIcon);
-        changeIcon = view.findViewById(R.id.editTaskIcon);
+
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
@@ -145,15 +110,9 @@ public class CreationUpperFragment extends Fragment {
                     int minutes = parseContent(edtTxtMin.getText().toString()) * 60;
                     int seconds = parseContent(edtTxtSec.getText().toString()) ;
                     int totalTime = hours + minutes + seconds;
-//added the set of the image
-                    String iconPath = "empty";
-                    if(currentIcon != null && iconExtension != null){
-                        Log.i("currentBackground", "updateUserData: "+ currentIcon +" "+ iconExtension);
-                        iconPath = saveFile(Uri.parse(currentIcon), iconExtension);
-                    }
                     Log.i("totalTime",Integer.toString(totalTime));
 
-                    TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime, iconPath);
+                    TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime);
 
                     Log.i("INFOZ", newTask.getName() + " " + newTask.getDuration());
 
@@ -179,177 +138,9 @@ public class CreationUpperFragment extends Fragment {
 
             }
         });
-// listener for the image change
-        changeIcon.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT <= 22) {
-                imagePickerLauncher.launch(null);
-            }else{
-                requestMediaPermissions(Manifest.permission.READ_MEDIA_IMAGES);
-            }
-        });
 
         return view;
     }
-//tons of functions to save image path and request permissions
-    public String saveFile(Uri uri, String fileName){
-        Log.i("saveFile", "saveFile: "+uri+" "+fileName);
-
-        String soundPath = null;
-        try {
-            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
-            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            inputStream.close();
-            outputStream.close();
-
-            File file = new File(requireActivity().getFilesDir(), fileName);
-            soundPath = file.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return soundPath;
-    }
-    private String saveToInternalStorage(Uri uri) {
-        //check API version
-        int apiLevel = android.os.Build.VERSION.SDK_INT;
-        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-        if (apiLevel > 32){
-            permission = Manifest.permission.READ_MEDIA_IMAGES;
-        }
-        if (ContextCompat.checkSelfPermission(requireContext(), permission)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Request the permission
-            ActivityCompat.requestPermissions(requireActivity(),
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        } else {Log.i("type", "saveToInternalStorage");
-            return(saveImageOperations(uri));
-        }
-        return null;
-    }
-    private void requestMediaPermissions(String permission) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            // Check if the permission is already granted
-            int permissionCheck = ContextCompat.checkSelfPermission(requireContext(), permission);
-
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                // Permission already granted
-                handleMediaPermissionResult();
-            } else {
-                // Request the specific permission based on API level
-                //for api 33 or higher, use new permissions
-                if (Build.VERSION.SDK_INT >= 33) {
-                    // For API level 33 (Android 13) and higher, use new permissions
-                    requestPermissions(new String[]{permission}, REQUEST_CODE_MEDIA_PERMISSION);
-                } else {
-                    // For lower API levels, fall back to READ_EXTERNAL_STORAGE
-                    int storagePermissionCheck = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
-
-                    if (storagePermissionCheck != PackageManager.PERMISSION_GRANTED) {
-                        // Request the storage permission
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_MEDIA_PERMISSION);
-                    }
-                }
-            }
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // Check if the permission request is granted or not
-        if (requestCode == REQUEST_CODE_MEDIA_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted
-                handleMediaPermissionResult();
-            } else {
-                // Permission is denied
-                handleMediaPermissionDenied();
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-    void handleMediaPermissionResult() {
-        imagePickerLauncher.launch(null);
-    }
-    void handleMediaPermissionDenied() {
-        // Inform the user or take appropriate actions when permission is denied
-        // For example, show a message, disable certain features, etc.
-        Toast.makeText(requireContext(), "Autorizzazione non concessa.", Toast.LENGTH_SHORT).show();
-    }
-    public Bitmap saveImageFile(Uri uri, String fileName) {
-        Bitmap bitmap = null;
-        try {
-            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
-            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            inputStream.close();
-            outputStream.close();
-
-            // Load the saved image into a Bitmap
-            File file = new File(requireActivity().getFilesDir(), fileName);
-            String imagePath = file.getAbsolutePath();
-            Log.i("saveFileAbPath", imagePath);
-            bitmap = BitmapFactory.decodeFile(imagePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
-    public String saveImageOperations(Uri uri) {
-        // Determine the file extension from the MIME type
-        String extension;
-        String mimeType = requireActivity().getContentResolver().getType(uri);
-        if ("image/jpeg".equals(mimeType)) {
-            extension = ".jpg";
-        } else if ("image/png".equals(mimeType)) {
-            extension = ".png";
-        }else if ("image/ico".equals(mimeType)) {
-            extension = ".ico";
-        } else {
-            // Toast unsupported file types
-            Toast.makeText(getActivity(), "File non supportato", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-
-        // Construct the file name with extension
-        String fileName = "background_image" + extension;
-
-        // Save the image to internal storage and get the Bitmap
-        Bitmap savedBitmap = saveImageFile(uri, fileName);
-
-        if (savedBitmap != null) {
-            // Display the saved image in your ImageView
-            imgView = getView().findViewById(R.id.taskIcon);
-            imgView.setImageBitmap(savedBitmap);
-
-            Toast.makeText(getActivity(), "sfondo aggiornato correttamente", Toast.LENGTH_SHORT).show();
-            return fileName;
-        } else {
-            // Toast something went wrong
-            Toast.makeText(getActivity(), "Errore nel salvataggio", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-    }
-
-
-
-
-
-
-
-
 
     private boolean compulsoryFieldsAreFilled()
     {
@@ -380,6 +171,8 @@ public class CreationUpperFragment extends Fragment {
         }
         return true;
     }
+
+
     private void showError(int code)
     {
         ErrorDialog errorDialog = new ErrorDialog();
@@ -401,6 +194,7 @@ public class CreationUpperFragment extends Fragment {
         errorDialog.setArguments(b);
         errorDialog.show(getActivity().getSupportFragmentManager(),null);
     }
+
     private int parseContent(String stringToParse)
     {
         if(stringToParse.equals(""))
@@ -408,6 +202,7 @@ public class CreationUpperFragment extends Fragment {
         else
             return Integer.parseInt(stringToParse);
     }
+
     private int getTime(EditText edtTxt)
     {
         String srcStr=edtTxt.getText().toString();
@@ -415,4 +210,8 @@ public class CreationUpperFragment extends Fragment {
             return 0;
         else return Integer.parseInt(srcStr);
     }
+
+
+
+
 }

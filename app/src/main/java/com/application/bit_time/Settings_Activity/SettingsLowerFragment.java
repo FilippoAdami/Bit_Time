@@ -148,8 +148,7 @@ public class SettingsLowerFragment extends Fragment
 
         while(c.moveToNext())
         {
-// updated constructor call
-            ActivityInfo activityInfo = new ActivityInfo(c.getString(0),c.getString(1), c.getString(2), c.getString(3));
+            ActivityInfo activityInfo = new ActivityInfo(c.getString(0),c.getString(1), c.getString(2));
             list.add(activityInfo);
         }
 
@@ -165,8 +164,7 @@ public class SettingsLowerFragment extends Fragment
 
         while(c.moveToNext())
         {
-// updated constructor call
-            TaskItem listItem = new TaskItem(-1,c.getString(1),c.getString(2), c.getString(3));
+            TaskItem listItem = new TaskItem(-1,c.getString(1),c.getString(2));
             Log.i("CREAD",listItem.toString());
             list.add(listItem);
         }

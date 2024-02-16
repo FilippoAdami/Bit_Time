@@ -21,7 +21,7 @@ public class SubtasksViewModelData {
     public SubtasksViewModelData()
     {
 
-        this.activityToModify = new ActivityItem("10","TESTPERCASO","3", "empty");
+        this.activityToModify = new ActivityItem("10","TESTPERCASO","3");
         mask = null;
         allTaskItems=null;
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];

@@ -11,7 +11,6 @@ public class ActivityInfo {
     private int IDpk;
     private String labelName;
     private int labelTime;
-    private String img;
 
 
     public ActivityInfo()
@@ -19,31 +18,29 @@ public class ActivityInfo {
         this.IDpk = -1;
         this.labelName = new String("emptyActivityInfoName");
         this.labelTime = -1;
-// added the default empty string for image path
-        this.img = new String("empty");
 
     }
-// changed the constructor to take also the image as argument
-    public ActivityInfo(int ID,String name, int time, String img)
+
+    public ActivityInfo(int ID,String name, int time)
     {
         IDpk = ID;
         labelName = name;
         labelTime = time;
-        img = img;
+
     }
+
+
 
     public ActivityInfo(ActivityInfo original)
     {
         this.IDpk = original.IDpk;
         this.labelTime = original.getTimeInt();
         this.labelName = new String(original.getName());
-// changed the constructor to take also the image as argument
-        this.img = new String(original.img);
 
     }
 
-    // changed the constructor to take also the image as argument
-    public ActivityInfo(int id,String name, String time, String img)
+
+    public ActivityInfo(int id,String name, String time)
     {
         this.IDpk = id;
         this.labelName = name;
@@ -56,11 +53,9 @@ public class ActivityInfo {
             Log.e("ERROR","exception thrown when converting time for listItem obj");
         }
 
-        this.img = img;
     }
 
-    // changed the constructor to take also the image as argument
-    public ActivityInfo(String ID,String name, String time, String img)
+    public ActivityInfo(String ID,String name, String time)
     {
         try{
             IDpk = Integer.parseInt(ID);
@@ -78,7 +73,6 @@ public class ActivityInfo {
             labelTime = -1 ;
             Log.e("ERROR","exception thrown when converting time for listItem obj");
         }
-        img = img;
 
 
         Log.i("ACTINFO CRE completed",this.toString());
@@ -113,16 +107,6 @@ public class ActivityInfo {
     public void setTime(int labelTime)
     {
         this.labelTime = labelTime;
-    }
-
-// functions to set and get the image
-    public void setImage(String img)
-    {
-        this.img = img;
-    }
-    public String getImage()
-    {
-        return this.img;
     }
 
 

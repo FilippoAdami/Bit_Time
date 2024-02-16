@@ -118,8 +118,7 @@ public class ModifyTasksFragment extends Fragment {
 
                     int totalTime = h * 3600 + min * 60 + sec;
 
-// should add the image as well at the end, temporary constructor call
-                    TaskItem newItem = new TaskItem(taskToModify.getID(), editName.getText().toString(), totalTime, "");
+                    TaskItem newItem = new TaskItem(taskToModify.getID(), editName.getText().toString(), totalTime);
 
                     Log.i("UPDATE", newItem.toString());
 

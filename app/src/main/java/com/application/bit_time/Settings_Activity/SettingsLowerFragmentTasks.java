@@ -127,8 +127,7 @@ public class SettingsLowerFragmentTasks extends Fragment
 
         while(c.moveToNext())
         {
-//updated constructor call
-            taskList.add(new TaskItem(c.getInt(0),c.getString(1),c.getString(2), c.getString(3)));
+            taskList.add(new TaskItem(c.getInt(0),c.getString(1),c.getString(2)));
         }
     }
 

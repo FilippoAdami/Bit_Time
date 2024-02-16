@@ -134,8 +134,7 @@ public class TaskSelectionDialog extends DialogFragment {
                     int i = 0;
                     do {
                         checkedItems[i] = new Boolean(false);
-// updated to take also the image element
-                        allTaskItems[i] = new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1), allTasksCursor.getInt(2), allTasksCursor.getString(3));
+                        allTaskItems[i] = new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1), allTasksCursor.getInt(2));
                         allTasksNames[i] = new String(allTaskItems[i].getName());
 
                         Log.i("building dialog structs", allTasksNames[i] + " " + Boolean.toString(checkedItems[i]));
@@ -427,8 +426,7 @@ public class TaskSelectionDialog extends DialogFragment {
             if(!stringList.contains(currentElemName))
             {
                 stringList.add(currentElemName);
-// updated to take also the element
-                subtasks.add(new TaskItem(allTasksCursor.getInt(0),allTasksCursor.getString(1),allTasksCursor.getInt(2), allTasksCursor.getString(3)));
+                subtasks.add(new TaskItem(allTasksCursor.getInt(0),allTasksCursor.getString(1),allTasksCursor.getInt(2)));
                 Log.i("fromSetce",currentElemName);
                 checkedItemsList.add(Boolean.FALSE);
             }

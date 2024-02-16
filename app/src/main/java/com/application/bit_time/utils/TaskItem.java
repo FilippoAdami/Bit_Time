@@ -13,26 +13,24 @@ public class TaskItem {
     private int IDpk;
     private String Name;
     private int Duration;
-// img added; updated all the constructors to take also the image
-    private String img;
+    //immagine boh
+
 
     public TaskItem()
     {
         this.IDpk = -1;
         this.Name = "emptyTask";
         this.Duration = 0;
-        this.img = "empty";
 
         //Log.i("TASKITEMCONST",this.toString());
     }
-    public TaskItem(int id,String name, int duration, String img)
+    public TaskItem(int id,String name, int duration)
     {
         this.IDpk = id;
         this.Name = name;
         this.Duration = duration;
-        this.img = img;
     }
-    public TaskItem(int id,String name,String duration, String img)
+    public TaskItem(int id,String name,String duration)
     {
         this.IDpk = id;
         this.Name = name;
@@ -44,14 +42,13 @@ public class TaskItem {
             this.Duration = -1 ;
             Log.e("ERROR","exception thrown when converting time for TaskItem obj");
         }
-        this.img = img;
+
     }
     public TaskItem(TaskItem original)
     {
         this.IDpk = original.IDpk;
         this.Name = new String(original.getName());
         this.Duration = original.getDurationInt();
-        this.img = new String(original.img);
     }
     public String getName()
     {
@@ -64,15 +61,6 @@ public class TaskItem {
     public int getDurationInt()
     {
         return Duration;
-    }
-// function to get and set the image
-    public String getImg()
-    {
-        return img;
-    }
-    public void setImg(String img)
-    {
-        this.img = img;
     }
     public void setName(String name)
     {

@@ -36,7 +36,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/editTaskIcon">
             <ImageView
-                android:id="@+id/taskIcon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/image"
