@@ -31,9 +31,8 @@ import com.application.bit_time.utils.TaskItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import kotlinx.coroutines.scheduling.Task;
 
 public class CommonSettingsLowerFragment extends Fragment {
 
@@ -149,7 +148,8 @@ public class CommonSettingsLowerFragment extends Fragment {
         {
 
             do{
-                taskList.add(new TaskItem(c.getInt(0),c.getString(1),c.getString(2)));
+// took also the last column to retrieve the image from db
+                taskList.add(new TaskItem(c.getInt(0),c.getString(1),c.getString(2), c.getString(3)));
             }while(c.moveToNext());
 
 
@@ -178,7 +178,7 @@ public class CommonSettingsLowerFragment extends Fragment {
                 }
 
 
-                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), subtasksA);
+                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), Arrays.toString(subtasksA));
                 Log.i("activity item SLA",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
                 list.add(activityItem);
             } while (c.moveToNext());

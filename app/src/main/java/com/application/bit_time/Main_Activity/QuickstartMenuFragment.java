@@ -99,13 +99,16 @@ public class QuickstartMenuFragment extends Fragment {
                 ActivityInfo currentAIInfo = new ActivityInfo(
                         allActivitiesCursor.getInt(0),
                         allActivitiesCursor.getString(1),
-                        allActivitiesCursor.getInt(2));
+                        allActivitiesCursor.getInt(2),
+// updated constructor call
+                        allActivitiesCursor.getString(3));
+
 
 
                 if(currentAIInfo.getName().length() > this.maxLengthActName )
                 {
                     this.maxLengthActName = currentAIInfo.getName().length();
-                    Log.i("maxLengthActName changed",Integer.toString(this.maxLengthActName));
+                    Log.i("maxLenActName changed",Integer.toString(this.maxLengthActName));
                 }
 
                 Log.i("QMF db action",currentAIInfo.toString());

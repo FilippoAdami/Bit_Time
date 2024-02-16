@@ -63,8 +63,8 @@ public class NewRunningTaskFragment extends Fragment {
 
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         int actId= sharedPreferences.getInt("activityToRun",-500);
-
-        ActivityInfo activityInfoToSearch = new ActivityInfo(actId,"placeholderName",-1);
+// updated constructor call
+        ActivityInfo activityInfoToSearch = new ActivityInfo(actId,"placeholderName",-1, "placeholderImg");
         ActivityItem activityItem =dbManager.searchActivityItem(activityInfoToSearch);
 
         Log.i("actToRun in NRTF",activityItem.toString());

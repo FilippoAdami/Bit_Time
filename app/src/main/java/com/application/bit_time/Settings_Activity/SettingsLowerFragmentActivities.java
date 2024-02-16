@@ -31,6 +31,7 @@ import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SettingsLowerFragmentActivities extends Fragment
@@ -134,7 +135,7 @@ public class SettingsLowerFragmentActivities extends Fragment
                 }
 
 
-                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), subtasksA);
+                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), Arrays.toString(subtasksA));
                 Log.i("activity item SLA",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
                 list.add(activityItem);
             } while (c.moveToNext());

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,7 @@ import com.application.bit_time.utils.TimeHelper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ActivityCreationFragment extends Fragment {
 
@@ -53,6 +55,9 @@ public class ActivityCreationFragment extends Fragment {
     private DbViewModel dbViewModel;
     private TaskItem[] subtasksToAdd;
     private String currentName;
+//added String of the path of the image and imageView
+    private String currrentIconPath;
+    private ImageView currentIcon;
 
     private int idToBeModified;
     private String activityName;
@@ -86,12 +91,13 @@ public class ActivityCreationFragment extends Fragment {
             allTasks = new TaskItem[allTasksCursor.getCount()];
             allTasksCursor.moveToFirst();
             do{
-                allTasks[i]=new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1),allTasksCursor.getInt(2));
-                Log.i("allTasks",allTasks[i].toString());
+//retrieved also the added column of the task table
+                allTasks[i]=new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1),allTasksCursor.getInt(2), allTasksCursor.getString(3));
+                //Log.i("allTasks",allTasks[i].toString());
                 i++;
             }while(allTasksCursor.moveToNext());
 
-            subtasksViewModel.getSelectedItem().getValue().setAllTaskItems(allTasks);
+            Objects.requireNonNull(subtasksViewModel.getSelectedItem().getValue()).setAllTaskItems(allTasks);
         }
 
 
@@ -370,7 +376,8 @@ public class ActivityCreationFragment extends Fragment {
 
                     //dbViewModel.selectItem();
                     if (viewModel.getSelectedItem().getValue().equals("NewActivity")) {
-                        ActivityItem activity = new ActivityItem(nameLabel.getText().toString(), -1, subtasksToAdd);
+//should also add the image at the end
+                        ActivityItem activity = new ActivityItem(nameLabel.getText().toString(), -1, subtasksToAdd, null);
                         // dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
                         newData.action = DbViewModelData.ACTION_TYPE.INSERT;
                         newData.activityItem = new ActivityItem(activity);
@@ -404,7 +411,7 @@ public class ActivityCreationFragment extends Fragment {
                         Log.i("ACT_CRE_FRA", Integer.toString(duration));
 
                         newData.action = DbViewModelData.ACTION_TYPE.MODIFY;
-                        newData.activityItem = new ActivityItem(Integer.toString(idToBeModified), currentName, Integer.toString(duration), subtasksId);
+                        newData.activityItem = new ActivityItem(Integer.toString(idToBeModified), currentName, Integer.toString(duration), Arrays.toString(subtasksId));
 
                     /*dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.MODIFY,

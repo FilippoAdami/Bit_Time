@@ -44,12 +44,16 @@ public class DbManager {
                 + DbContract.Activities.COLUMN_NAME_TASK3 + " integer,"
                 + DbContract.Activities.COLUMN_NAME_TASK4 + " integer,"
                 + DbContract.Activities.COLUMN_NAME_TASK5 + " integer,"
-                + DbContract.Activities.COLUMN_NAME_IS_PLANNED + "integer);"; // 0 will be false and 1 true
+                + DbContract.Activities.COLUMN_NAME_IS_PLANNED + "integer," // 0 will be false and 1 true
+// added img column
+                + DbContract.Activities.COLUMN_NAME_IMG + "text);";
 
         private static final String SQL_CREATE_TASKS_TABLE = "create table " + DbContract.Tasks.TABLE_NAME  + " (" +
                 DbContract.Tasks._ID + " integer primary key autoincrement,"  +
                 DbContract.Tasks.COLUMN_NAME_TASK_NAME + " text," +
-                DbContract.Tasks.COLUMN_NAME_TASK_DURATION  + " text);";
+                DbContract.Tasks.COLUMN_NAME_TASK_DURATION  + " text," +
+// added img column
+                DbContract.Tasks.COLUMN_NAME_IMG + "text);";
 
         private static final String SQL_DELETE_ENTRIES =   "DROP TABLE IF EXISTS " + DbContract.Activities.TABLE_NAME;
 
@@ -207,16 +211,8 @@ public class DbManager {
             c.moveToFirst();
             latestActId = c.getInt(0);
         }
-
-
-
         //return latestActId;
         return latestActId;
-
-
-
-
-
     }
 
 
@@ -268,19 +264,8 @@ public class DbManager {
                 c.moveToFirst();
                 Log.i("latest act inserted has",c.getColumnCount() +" columns");
             }
-
-
-
-
         }
-
         return c;
-
-
-
-
-
-
     }
 
     public void insertTaskRecord(TaskItem task)
@@ -302,7 +287,7 @@ public class DbManager {
 
         if(c.getCount()>0) {
             c.moveToFirst();
-            TaskItem item = new TaskItem(c.getInt(0), c.getString(1), c.getInt(2));
+            TaskItem item = new TaskItem(c.getInt(0), c.getString(1), c.getInt(2), c.getString(3));
             c.close();
             return item;
         }
@@ -611,7 +596,6 @@ public class DbManager {
         // Use parameterized query to avoid SQL injection
         db.execSQL(insertQuery, new String[]{email, hashedPassword, salt});
     }
-
     public boolean checkUser(Cursor cursor, String password) {
         int columnIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_PASSWORD);
         int saltIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_SALT);

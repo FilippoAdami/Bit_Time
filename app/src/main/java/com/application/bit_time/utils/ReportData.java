@@ -90,7 +90,8 @@ public class ReportData {
 
     public TaskItem getTaskItem()
     {
-        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime());
+// should add the image as well at the end, temporary constructor call
+        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime(), "");
     }
 
     public static void metadataParser(String rawMetadata)
