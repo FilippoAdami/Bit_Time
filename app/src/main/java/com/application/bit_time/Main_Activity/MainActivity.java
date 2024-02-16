@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     //TODO : show clearly if daily has been pressed and is set or not
     // TODO : consider isPlanned field of activities schema
 
+    private boolean isGamificationOn;
     private RunningActivityViewModel runningActivityViewModel;
     private DbManager dbManager;
     private MainActivityViewModel statusVM;
@@ -98,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         //DisplayMetrics metrics = this.getResources().getDisplayMetrics();
         //Log.i("pixelWidth",Integer.toString(metrics.widthPixels));
 
+
+        //TODO: this will interact with the settings actviity in order to update without always refering to the db if gamification changes from disabled to eabled or viceversa.
         dbManager = new DbManager(getApplicationContext());
 
 
@@ -382,7 +385,8 @@ public class MainActivity extends AppCompatActivity {
         //TODO : UNCOMMENT AND FIX
         if(intentBundle != null)
         {
-
+            this.isGamificationOn = intentBundle.getBoolean("isGamificationOn");
+            Log.i("isGamificationOn","retrieved from bundleatio value: "+this.isGamificationOn);
             int actId = (int) intentBundle.get("actId");
             Log.i("sourceAct"," actId : " + actId);
 
@@ -400,6 +404,8 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             Log.i("sourceAct", "intentBundle was null");
+            this.isGamificationOn = dbManager.getGamification();
+            Log.i("isGamificationOn","retrieved from db value: "+this.isGamificationOn);
         }
 
         /*fragmentManager
