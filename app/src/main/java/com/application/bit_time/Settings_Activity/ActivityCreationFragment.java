@@ -86,7 +86,7 @@ public class ActivityCreationFragment extends Fragment {
             allTasks = new TaskItem[allTasksCursor.getCount()];
             allTasksCursor.moveToFirst();
             do{
-                allTasks[i]=new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1),allTasksCursor.getInt(2));
+                allTasks[i]=new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1),allTasksCursor.getInt(2),allTasksCursor.getString(3));
                 Log.i("allTasks",allTasks[i].toString());
                 i++;
             }while(allTasksCursor.moveToNext());

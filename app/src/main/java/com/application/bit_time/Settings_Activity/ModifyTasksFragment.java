@@ -1,5 +1,6 @@
 package com.application.bit_time.Settings_Activity;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,8 @@ import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.TimeHelper;
 
+import java.io.IOException;
+
 public class ModifyTasksFragment extends Fragment {
 
 
@@ -34,7 +38,7 @@ public class ModifyTasksFragment extends Fragment {
     private EditText editName;
     private EditText editmin;
     private EditText editsec;
-
+    private ImageView taskCreThumbnail;
     private CustomViewModel viewModel;
     @Nullable
     @Override
@@ -45,6 +49,8 @@ public class ModifyTasksFragment extends Fragment {
 
         //View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
         View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
+
+        taskCreThumbnail = view.findViewById(R.id.taskCreThumbnail);
 
         editName = view.findViewById(R.id.editTaskNameLabel);
         //TextView edith = view.findViewById(R.id.editTextHours);
@@ -86,7 +92,7 @@ public class ModifyTasksFragment extends Fragment {
         Log.i("TASKTOMOD",dbViewModel.getSelectedItem().getValue().taskItem.toString());
 
         TaskItem taskToModify = dbViewModel.getSelectedItem().getValue().taskItem;
-
+        Log.i("taskToMod URI",taskToModify.getImageUri().toString());
 
 
         int totalTime = taskToModify.getDurationInt();
@@ -106,6 +112,13 @@ public class ModifyTasksFragment extends Fragment {
         editmin.setText(Integer.toString(th.getMin()));
         editsec.setText(Integer.toString(th.getSec()));
 
+
+        try {
+            taskCreThumbnail.setImageDrawable(taskToModify.getDrawableThumbnail(this.getContext()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,7 +131,7 @@ public class ModifyTasksFragment extends Fragment {
 
                     int totalTime = h * 3600 + min * 60 + sec;
 
-                    TaskItem newItem = new TaskItem(taskToModify.getID(), editName.getText().toString(), totalTime);
+                    TaskItem newItem = new TaskItem(taskToModify.getID(), editName.getText().toString(), totalTime,taskToModify.getImageUri());
 
                     Log.i("UPDATE", newItem.toString());
 

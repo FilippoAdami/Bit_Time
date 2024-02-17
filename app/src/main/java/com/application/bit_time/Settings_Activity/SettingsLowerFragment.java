@@ -164,7 +164,7 @@ public class SettingsLowerFragment extends Fragment
 
         while(c.moveToNext())
         {
-            TaskItem listItem = new TaskItem(-1,c.getString(1),c.getString(2));
+            TaskItem listItem = new TaskItem(-1,c.getString(1),c.getString(2),c.getString(3));
             Log.i("CREAD",listItem.toString());
             list.add(listItem);
         }

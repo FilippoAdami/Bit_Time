@@ -172,7 +172,7 @@ public class newRunningActivityData {
 
     public ReportData getReportData()
     {
-        ReportData reportData = new ReportData(currentTask.getID(),currentTask.getName(),this.endStatus,this.lastedTime,currentTask.getDurationInt());
+        ReportData reportData = new ReportData(currentTask.getID(),currentTask.getName(),this.endStatus,this.lastedTime,currentTask.getDurationInt(),currentTask.getImageUri());
 
         return reportData;
     }
@@ -190,7 +190,7 @@ public class newRunningActivityData {
 
         for(ReportData RD : this.fullReport)
         {
-            subtasksList.add(new TaskItem(RD.subtaskId,RD.subtaskName,RD.getTotalTime()));
+            subtasksList.add(new TaskItem(RD.subtaskId,RD.subtaskName,RD.getTotalTime(),"placeholderUri"));
         }
 
         return subtasksList;
