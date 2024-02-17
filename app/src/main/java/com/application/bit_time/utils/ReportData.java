@@ -1,5 +1,6 @@
 package com.application.bit_time.utils;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ public class ReportData {
     private int totalTime;
     public int lastedTime ;
 
+    private Uri imageUri;
     public static class Metadata
     {
         int actId;
@@ -47,21 +49,23 @@ public class ReportData {
         }
     }
 
-    public ReportData(int subtaskId,String subtaskName,int totalTime)
+    public ReportData(int subtaskId, String subtaskName, int totalTime, Uri imageUri)
     {
         this.subtaskId = subtaskId;
         this.subtaskName = subtaskName;
         this.totalTime = totalTime;
         this.endStatus = newRunningActivityData.EndStatus.notSet;
         this.lastedTime = -100; // stands for not set yet
+        this.imageUri = imageUri;
     }
-    public ReportData(int subtaskId,String subtaskName, newRunningActivityData.EndStatus currentStatus, int lastedTime,int totalTime)
+    public ReportData(int subtaskId,String subtaskName, newRunningActivityData.EndStatus currentStatus, int lastedTime,int totalTime,Uri imageUri)
     {
         this.subtaskId = subtaskId;
         this.subtaskName = subtaskName;
         this.endStatus = currentStatus;
         this.lastedTime = lastedTime;
         this.totalTime = totalTime;
+        this.imageUri = imageUri;
     }
 
     @NonNull
@@ -90,7 +94,7 @@ public class ReportData {
 
     public TaskItem getTaskItem()
     {
-        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime(),"placeholderUri");
+        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime(),this.imageUri);
     }
 
     public static void metadataParser(String rawMetadata)

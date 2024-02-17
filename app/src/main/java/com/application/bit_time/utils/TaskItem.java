@@ -151,7 +151,7 @@ public class TaskItem {
 
     public Drawable getDrawableThumbnail(Context context) throws IOException {
 
-        return new BitmapDrawable(context.getResources(),context.getContentResolver().loadThumbnail(this.imageUri, new Size(800, 800), null));
+        return new BitmapDrawable(context.getResources(),context.getContentResolver().loadThumbnail(this.imageUri, new Size(300, 300), null));
     }
     public Uri getImageUri()
     {

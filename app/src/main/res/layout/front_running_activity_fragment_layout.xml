@@ -13,26 +13,28 @@
 
         <TextView
             android:id="@+id/currentTaskTextView"
+            style="@style/NormalText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/TaskName"
-            style="@style/NormalText"/>
+            android:gravity="center_vertical"
+            android:text="@string/TaskName" />
 
         <TextView
             android:id="@+id/clockPlaceholder"
+            style="@style/NormalText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/time"
-            style="@style/NormalText"/>
+            android:gravity="center_vertical"
+            android:text="@string/time" />
 
-        <TextView
-            android:id="@+id/imagePlaceholder"
+        <ImageView
+            android:id="@+id/currentTaskThumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="IMAGE"/>
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <Button
@@ -53,25 +55,27 @@
 
         <TextView
             android:id="@+id/nextTaskTextView"
+            style="@style/NormalText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/TaskName"
-            style="@style/NormalText" />
+            android:gravity="center_vertical"
+            android:text="@string/TaskName" />
 
         <TextView
             android:id="@+id/nextClockPlaceholder"
+            style="@style/NormalText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/time"
-            style="@style/NormalText" />
+            android:gravity="center_vertical"
+            android:text="@string/time" />
 
-        <TextView
-            android:id="@+id/nextImagePlaceholder"
+        <ImageView
+            android:id="@+id/nextTaskThumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="IMAGE" />
+            android:layout_weight="1" />
+
     </LinearLayout>
 </LinearLayout>

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import com.application.bit_time.utils.ReportData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 import com.application.bit_time.utils.TaskItem;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -41,6 +43,10 @@ public class NewRunningTaskFragment extends Fragment {
     private RunningActivityViewModel RAVM;
     private List<ReportData> reportDataList;
     private ListIterator<ReportData> SLIterator;
+
+
+    private ImageView currentTaskThumbnail;
+    private ImageView nextTaskThumbnail;
 
 
 
@@ -73,7 +79,8 @@ public class NewRunningTaskFragment extends Fragment {
         {
             if(ti.getID()!=-1)
             {
-                ReportData latestReportDataBase = new ReportData(ti.getID(),ti.getName(),ti.getDurationInt());
+                Log.i("URI filling",ti.getImageUri().toString());
+                ReportData latestReportDataBase = new ReportData(ti.getID(),ti.getName(),ti.getDurationInt(),ti.getImageUri());
                 this.reportDataList.add(latestReportDataBase);
                 Log.i("latestRDBase",latestReportDataBase.toString());
                 //subtasksList.add(ti);
@@ -113,22 +120,35 @@ public class NewRunningTaskFragment extends Fragment {
                     TextView durationTextView = view.findViewById(R.id.clockPlaceholder);
                     //durationTextView.setText(item.currentTask.getDuration());
                     durationTextView.setText(item.currentTask.getFormattedDuration());
+                    currentTaskThumbnail = view.findViewById(R.id.currentTaskThumbnail);
+                    try {
+                        currentTaskThumbnail.setImageDrawable(currentTask.getDrawableThumbnail(this.getContext()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
 
                     TextView nextTaskTW = view.findViewById(R.id.nextTaskTextView);
                     TextView nextDurationTW = view.findViewById(R.id.nextClockPlaceholder);
-                    TextView nextImageTW = view.findViewById(R.id.nextImagePlaceholder);
+                    nextTaskThumbnail = view.findViewById(R.id.nextTaskThumbnail);
 
                     if (SLIterator.hasNext()) {
 
                         TaskItem nextTask = SLIterator.next().getTaskItem();
+                        Log.i("nextTaskItem URI",nextTask.getImageUri().toString());
                         nextTaskTW.setText(nextTask.getName());
                         //nextDurationTW.setText(nextTask.getDuration());
                         nextDurationTW.setText(nextTask.getFormattedDuration());
+                        try {
+                            nextTaskThumbnail.setImageDrawable(nextTask.getDrawableThumbnail(this.getContext()));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         SLIterator.previous();
                     } else {
                         nextTaskTW.setVisibility(View.INVISIBLE);
                         nextDurationTW.setVisibility(View.INVISIBLE);
-                        nextImageTW.setVisibility(View.INVISIBLE);
+                        nextTaskThumbnail.setVisibility(View.INVISIBLE);
                     }
 
 
@@ -147,6 +167,7 @@ public class NewRunningTaskFragment extends Fragment {
 
                     if (SLIterator.hasNext()) {
                         currentTask = SLIterator.next().getTaskItem();
+                        Log.i("URI testz",currentTask.getImageUri().toString());
                         // Load the current subTask index to SharedPreferences
                         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                         int currentTaskID = Integer.parseInt(currentTask.getIdStr());
@@ -178,7 +199,7 @@ public class NewRunningTaskFragment extends Fragment {
         if(SLIterator.hasNext())
         {
             currentTask = SLIterator.next().getTaskItem();
-            Log.i("currentTask",currentTask.toString());
+            Log.i("currentTask URI",currentTask.getImageUri().toString());
             newRunningActivityData nRAD = new newRunningActivityData(currentTask);
             nRAD.setFullReport(this.reportDataList);
             RAVM.selectItem(nRAD);
