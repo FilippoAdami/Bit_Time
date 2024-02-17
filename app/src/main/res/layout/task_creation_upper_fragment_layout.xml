@@ -35,11 +35,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/editTaskIcon">
+
             <ImageView
+                android:id="@+id/taskCreThumbnail"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/image"
-                android:layout_weight="-1"/>
+                android:layout_weight="-1"
+                android:src="@drawable/image" />
             <ImageView
                 android:layout_width="35dp"
                 android:layout_height="35dp"

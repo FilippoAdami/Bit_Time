@@ -190,7 +190,7 @@ public class newRunningActivityData {
 
         for(ReportData RD : this.fullReport)
         {
-            subtasksList.add(new TaskItem(RD.subtaskId,RD.subtaskName,RD.getTotalTime()));
+            subtasksList.add(new TaskItem(RD.subtaskId,RD.subtaskName,RD.getTotalTime(),"placeholderUri"));
         }
 
         return subtasksList;

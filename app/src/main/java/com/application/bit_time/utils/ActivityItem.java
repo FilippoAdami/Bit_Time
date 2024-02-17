@@ -87,7 +87,7 @@ public class ActivityItem {
         //this.subtasks= new TaskItem[DbContract.Activities.DIM_MAX];
         for(int i = 0;i< DbContract.Activities.DIM_MAX ;i++)
         {
-            subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0);
+            subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0,"placeholderUri");
             Log.i("creatingAI",subtasks[i].toString());
         }
     }

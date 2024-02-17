@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        /*Context context = this.getApplicationContext();
+        context.deleteDatabase("Activities.db");*/
+
         fragmentManager = getSupportFragmentManager();
         OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
         Log.i("OBP main",OBPDispatcher.toString());

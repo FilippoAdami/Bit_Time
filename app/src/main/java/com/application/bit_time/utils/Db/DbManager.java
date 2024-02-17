@@ -49,7 +49,8 @@ public class DbManager {
         private static final String SQL_CREATE_TASKS_TABLE = "create table " + DbContract.Tasks.TABLE_NAME  + " (" +
                 DbContract.Tasks._ID + " integer primary key autoincrement,"  +
                 DbContract.Tasks.COLUMN_NAME_TASK_NAME + " text," +
-                DbContract.Tasks.COLUMN_NAME_TASK_DURATION  + " text);";
+                DbContract.Tasks.COLUMN_NAME_TASK_DURATION  + " text,"+
+                DbContract.Tasks.COLUMN_NAME_IMG + " text)";
 
         private static final String SQL_DELETE_ENTRIES =   "DROP TABLE IF EXISTS " + DbContract.Activities.TABLE_NAME;
 
@@ -287,8 +288,10 @@ public class DbManager {
     {
         String insertQuery = "insert into "+ DbContract.Tasks.TABLE_NAME
                 +" ("+ DbContract.Tasks.COLUMN_NAME_TASK_NAME+","
-                + DbContract.Tasks.COLUMN_NAME_TASK_DURATION+") values("
-                + "'"+task.getName()+"','"+task.getDuration()+"');";
+                + DbContract.Tasks.COLUMN_NAME_TASK_DURATION+ ","
+                + DbContract.Tasks.COLUMN_NAME_IMG +
+                ") values("
+                + "'"+task.getName()+"','"+task.getDuration()+"','"+task.getImageUri().toString()+"');";
 
         db.execSQL(insertQuery);
     }
@@ -302,7 +305,7 @@ public class DbManager {
 
         if(c.getCount()>0) {
             c.moveToFirst();
-            TaskItem item = new TaskItem(c.getInt(0), c.getString(1), c.getInt(2));
+            TaskItem item = new TaskItem(c.getInt(0), c.getString(1), c.getInt(2),c.getString(3));
             c.close();
             return item;
         }

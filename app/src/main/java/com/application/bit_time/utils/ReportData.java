@@ -90,7 +90,7 @@ public class ReportData {
 
     public TaskItem getTaskItem()
     {
-        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime());
+        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime(),"placeholderUri");
     }
 
     public static void metadataParser(String rawMetadata)

@@ -3,6 +3,7 @@ package com.application.bit_time.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         holder.labelDuration.setText(task.getFormattedDuration());
         holder.id = task.getID();
         holder.duration = task.getDurationInt();
+        holder.imageUri = task.getImageUri();
         Log.i("TaskAdapter idact",Integer.toString(holder.id));
 
         Bitmap originalDeleteBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.delete);
@@ -105,6 +107,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
         int id;
         int duration;
+        Uri imageUri;
         TextView labelName;
         TextView labelDuration;
         ImageButton modifyButton;
@@ -141,8 +144,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                     //DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
                     //newData.taskToModify = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
-                    TaskItem thisTaskItem = new TaskItem(id,labelName.getText().toString(), duration);
-
+                    TaskItem thisTaskItem = new TaskItem(id,labelName.getText().toString(), duration,imageUri);
+                    Log.i("at modPress Uri",thisTaskItem.getImageUri().toString());
                     DbViewModelData newData = new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.UNDEFINED,
                             DbViewModelData.ITEM_TYPE.UNDEFINED,
@@ -169,7 +172,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
                     //DbViewModelData dbData = dbViewModel.getSelectedItem().getValue();
                     //dbData.taskToDelete = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
 
-                    TaskItem currentTask = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
+                    TaskItem currentTask = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString(),imageUri.toString());
 
                     dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.DELETE,
