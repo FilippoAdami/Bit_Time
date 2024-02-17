@@ -61,6 +61,8 @@ public class CreationUpperFragment extends Fragment {
     ImageView imgView;
     RelativeLayout changeIcon;
     String currentIcon;
+// default icon path
+    String iconPath = "drawable/image.png";
     String iconExtension;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     static final int REQUEST_CODE_MEDIA_PERMISSION = 123;
@@ -70,7 +72,7 @@ public class CreationUpperFragment extends Fragment {
                 // Handle the result, 'uri' contains the selected image URI
                 if (uri != null) {
                     currentIcon = uri.toString();
-                    iconExtension = saveToInternalStorage(uri);
+                    saveToInternalStorage(uri);
                 }
             }
     );
@@ -103,7 +105,7 @@ public class CreationUpperFragment extends Fragment {
         WarningTW = view.findViewById(R.id.TaskCreWarning);
         WarningTW.setText("The name of the task cannot be longer than "+MAX_LENGTH+" chars");
         WarningTW.setVisibility(View.INVISIBLE);
-    //added image and path
+//added image and path
         imgView = view.findViewById(R.id.taskIcon);
         changeIcon = view.findViewById(R.id.editTaskIcon);
 
@@ -134,7 +136,14 @@ public class CreationUpperFragment extends Fragment {
 
             }
         });
-
+// listener for the image change
+        changeIcon.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT <= 22) {
+                imagePickerLauncher.launch(null);
+            }else{
+                requestMediaPermissions(Manifest.permission.READ_MEDIA_IMAGES);
+            }
+        });
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,14 +154,9 @@ public class CreationUpperFragment extends Fragment {
                     int minutes = parseContent(edtTxtMin.getText().toString()) * 60;
                     int seconds = parseContent(edtTxtSec.getText().toString()) ;
                     int totalTime = hours + minutes + seconds;
-//added the set of the image
-                    String iconPath = "empty";
-                    if(currentIcon != null && iconExtension != null){
-                        Log.i("currentBackground", "updateUserData: "+ currentIcon +" "+ iconExtension);
-                        iconPath = saveFile(Uri.parse(currentIcon), iconExtension);
-                    }
                     Log.i("totalTime",Integer.toString(totalTime));
-
+//added the set of the image
+                    Toast.makeText(getActivity(), iconPath, Toast.LENGTH_SHORT).show();
                     TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime, iconPath);
 
                     Log.i("INFOZ", newTask.getName() + " " + newTask.getDuration());
@@ -179,43 +183,12 @@ public class CreationUpperFragment extends Fragment {
 
             }
         });
-// listener for the image change
-        changeIcon.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT <= 22) {
-                imagePickerLauncher.launch(null);
-            }else{
-                requestMediaPermissions(Manifest.permission.READ_MEDIA_IMAGES);
-            }
-        });
+
 
         return view;
     }
 //tons of functions to save image path and request permissions
-    public String saveFile(Uri uri, String fileName){
-        Log.i("saveFile", "saveFile: "+uri+" "+fileName);
-
-        String soundPath = null;
-        try {
-            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
-            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            inputStream.close();
-            outputStream.close();
-
-            File file = new File(requireActivity().getFilesDir(), fileName);
-            soundPath = file.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return soundPath;
-    }
-    private String saveToInternalStorage(Uri uri) {
+    private void saveToInternalStorage(Uri uri) {
         //check API version
         int apiLevel = android.os.Build.VERSION.SDK_INT;
         String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -229,9 +202,8 @@ public class CreationUpperFragment extends Fragment {
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         } else {Log.i("type", "saveToInternalStorage");
-            return(saveImageOperations(uri));
+            saveImageOperations(uri);
         }
-        return null;
     }
     private void requestMediaPermissions(String permission) {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -300,6 +272,7 @@ public class CreationUpperFragment extends Fragment {
             // Load the saved image into a Bitmap
             File file = new File(requireActivity().getFilesDir(), fileName);
             String imagePath = file.getAbsolutePath();
+            iconPath = imagePath;
             Log.i("saveFileAbPath", imagePath);
             bitmap = BitmapFactory.decodeFile(imagePath);
         } catch (IOException e) {
@@ -307,7 +280,7 @@ public class CreationUpperFragment extends Fragment {
         }
         return bitmap;
     }
-    public String saveImageOperations(Uri uri) {
+    public void saveImageOperations(Uri uri) {
         // Determine the file extension from the MIME type
         String extension;
         String mimeType = requireActivity().getContentResolver().getType(uri);
@@ -320,11 +293,12 @@ public class CreationUpperFragment extends Fragment {
         } else {
             // Toast unsupported file types
             Toast.makeText(getActivity(), "File non supportato", Toast.LENGTH_SHORT).show();
-            return null;
+            return;
         }
-
         // Construct the file name with extension
-        String fileName = "background_image" + extension;
+        //Generate a random string to append to the file name to make it unique
+        String random = Long.toString(System.currentTimeMillis());
+        String fileName = "task_image" +random+ extension;
 
         // Save the image to internal storage and get the Bitmap
         Bitmap savedBitmap = saveImageFile(uri, fileName);
@@ -335,22 +309,11 @@ public class CreationUpperFragment extends Fragment {
             imgView.setImageBitmap(savedBitmap);
 
             Toast.makeText(getActivity(), "sfondo aggiornato correttamente", Toast.LENGTH_SHORT).show();
-            return fileName;
         } else {
             // Toast something went wrong
             Toast.makeText(getActivity(), "Errore nel salvataggio", Toast.LENGTH_SHORT).show();
-            return null;
         }
     }
-
-
-
-
-
-
-
-
-
     private boolean compulsoryFieldsAreFilled()
     {
         int length = editName.length();
