@@ -64,6 +64,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     public void onBindViewHolder(@NonNull TaskAdapter.ListItemHolder holder, int position) {
 
         TaskItem task = taskList.get(position);
+
         holder.labelName.setText(task.getName());
         holder.labelDuration.setText(task.getFormattedDuration());
         holder.id = task.getID();
@@ -120,10 +121,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
         LinearLayout holderLayout;
 
-
-
-
-
         public ListItemHolder(View view)
         {
             super(view);
@@ -134,7 +131,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
             holderLayout = view.findViewById(R.id.itemHolderLayout);
 // icon reference in layout
             iconh = view.findViewById(R.id.taskIcon);
-
 
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -164,8 +160,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                 }
             });
-
-
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -205,8 +199,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                 }
             });
-
-
 
             view.setClickable(true);
             view.setOnClickListener(this);

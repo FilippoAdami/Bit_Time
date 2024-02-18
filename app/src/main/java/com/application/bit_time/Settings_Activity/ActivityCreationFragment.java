@@ -385,17 +385,20 @@ public class ActivityCreationFragment extends Fragment {
                     //dbViewModel.selectItem();
                     if (viewModel.getSelectedItem().getValue().equals("NewActivity")) {
 //should also add the image at the end
+                        Log.i("image current path", "path: "+currentIcon);
                         ActivityItem activity = new ActivityItem(nameLabel.getText().toString(), -1, subtasksToAdd, currentIcon);
                         // dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
                         newData.action = DbViewModelData.ACTION_TYPE.INSERT;
-                        newData.activityItem = new ActivityItem(activity);
+                        Log.i("activity image is", activity.getInfo().getImage());
+                        newData.activityItem = activity;
 
 
                         Log.i("activity is", activity.toString());
                         for (TaskItem ti : activity.getSubtasks()) {
                             Log.i("actsubtaksks are", ti.toString());
                         }
-                    } else if (viewModel.getSelectedItem().getValue().equals("ModifyActivity")) {
+                    }
+                    else if (viewModel.getSelectedItem().getValue().equals("ModifyActivity")) {
 
                         int[] subtasksId = new int[DbContract.Activities.DIM_MAX];
 
@@ -419,7 +422,7 @@ public class ActivityCreationFragment extends Fragment {
                         Log.i("ACT_CRE_FRA", Integer.toString(duration));
 
                         newData.action = DbViewModelData.ACTION_TYPE.MODIFY;
-                        newData.activityItem = new ActivityItem(Integer.toString(idToBeModified), currentName, Integer.toString(duration), Arrays.toString(subtasksId));
+                        newData.activityItem = new ActivityItem(Integer.toString(idToBeModified), currentName, Integer.toString(duration), currentIcon, subtasksId);
 
                     /*dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.MODIFY,
@@ -428,7 +431,6 @@ public class ActivityCreationFragment extends Fragment {
                         //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityToModify.getIdInt(), nameLabel.getText().toString(),Integer.parseInt(totalTimelabel.getText().toString()),subtasksId);
                         //dbManager.modifyActivity(dbViewModel.getSelectedItem().getValue().activityItem.getInfo(),subtasksId);
                     }
-
 
                     PlannerViewModelData plannerViewModelData = plannerViewModel.getSelectedItem().getValue();
 
@@ -445,12 +447,10 @@ public class ActivityCreationFragment extends Fragment {
                     plannerViewModel.selectItem(new PlannerViewModelData());
 
                     viewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.BackToActivities));
-
                 }
             }
 
         });
-
 
         return view;
     }

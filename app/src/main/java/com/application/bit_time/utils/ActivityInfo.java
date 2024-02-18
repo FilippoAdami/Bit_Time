@@ -24,12 +24,12 @@ public class ActivityInfo {
 
     }
 // changed the constructor to take also the image as argument
-    public ActivityInfo(int ID,String name, int time, String img)
+    public ActivityInfo(int ID,String name, int time, String image)
     {
         IDpk = ID;
         labelName = name;
         labelTime = time;
-        img = img;
+        img = image;
     }
 
     public ActivityInfo(ActivityInfo original)
@@ -37,12 +37,7 @@ public class ActivityInfo {
         this.IDpk = original.IDpk;
         this.labelTime = original.getTimeInt();
         this.labelName = new String(original.getName());
-// changed the constructor to take also the image as argument
-        //TODO: faulty constructor
-        //Log the image path
-        Log.i("ACTINFO CRE completed", "original.getImage()");
-        this.img = "empty";
-
+        this.img = original.getImage();
     }
 
     // changed the constructor to take also the image as argument
