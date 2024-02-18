@@ -165,8 +165,6 @@ public class ActivityCreationFragment extends Fragment {
                 }
             });
 
-
-
             TaskItem[] sharedSubtasks = new TaskItem[DbContract.Activities.DIM_MAX];
 
             int pos =0 ;
@@ -179,13 +177,13 @@ public class ActivityCreationFragment extends Fragment {
             }
 
             //Log.i("contentz",dbViewModel.getSelectedItem().getValue().toString());
-
             //Cursor activityToModifyData = dbManager.searchActivityById(activityToModifyInfo.getIdInt());
-
             //activityToModifyData.moveToFirst();
 
             this.activityName = activityToModify.getName();//activityToModifyData.getString(1);
             this.idToBeModified= activityToModify.getInfo().getIdInt();//activityToModifyData.getInt(0);
+            this.currentIcon = activityToModify.getInfo().getImage();//activityToModifyData.getString(4);
+            Log.i("ACT_CRE_FRA", "ToBeModified: "+currentIcon);
 
             for(int i = 0; i< DbContract.Activities.DIM_MAX; i++)
             {
@@ -291,6 +289,8 @@ public class ActivityCreationFragment extends Fragment {
         {
             nameLabel.setHint(activityName);
             nameLabel.setText(activityName);
+            Bitmap bitmap = BitmapFactory.decodeFile(this.currentIcon);
+            icon.setImageBitmap(bitmap);
             nameLabel.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {

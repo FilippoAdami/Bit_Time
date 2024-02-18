@@ -82,7 +82,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         holder.id = activityItem.activityInfo.getIdInt();
         holder.duration=activityItem.getInfo().getTimeInt();
 // icon path
-        holder.iconPathah = activityItem.activityInfo.getImage();
+        holder.iconPathah = activityItem.getInfo().getImage();
+        Log.i("iconPathah","prova: ? "+holder.iconPathah);
         String imagePath = activityItem.activityInfo.getImage();
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//decodeFile(imagePath);
         holder.iconah.setImageBitmap(bitmap);
