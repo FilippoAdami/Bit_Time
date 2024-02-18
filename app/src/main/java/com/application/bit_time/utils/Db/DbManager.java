@@ -44,8 +44,8 @@ public class DbManager {
                 + DbContract.Activities.COLUMN_NAME_TASK3 + " integer,"
                 + DbContract.Activities.COLUMN_NAME_TASK4 + " integer,"
                 + DbContract.Activities.COLUMN_NAME_TASK5 + " integer,"
-                + DbContract.Activities.COLUMN_NAME_IS_PLANNED + "integer," // 0 will be false and 1 true
-                + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + "text)";
+                + DbContract.Activities.COLUMN_NAME_IS_PLANNED + " integer," // 0 will be false and 1 true
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + " text)";
 
         private static final String SQL_CREATE_TASKS_TABLE = "create table " + DbContract.Tasks.TABLE_NAME  + " (" +
                 DbContract.Tasks._ID + " integer primary key autoincrement,"  +
