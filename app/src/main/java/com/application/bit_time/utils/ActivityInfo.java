@@ -76,7 +76,7 @@ public class ActivityInfo {
             labelTime = -1 ;
             Log.e("ERROR","exception thrown when converting time for listItem obj");
         }
-        img = img;
+        this.img = img;
 
 
         Log.i("ACTINFO CRE completed",this.toString());

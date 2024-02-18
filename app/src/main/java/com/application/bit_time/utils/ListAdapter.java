@@ -47,6 +47,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     public ListAdapter(CommonSettingsLowerFragment settingsLowerFragmentActivities, List<ActivityItem> list, Context context)
     {
 
+        for(ActivityItem AI : list) {
+            Log.i("ListAdapterImage", AI.getInfo().getImage());
+        }
         this.settingsLowerFragmentActivities = settingsLowerFragmentActivities;
         this.list = list;
         this.context = context;

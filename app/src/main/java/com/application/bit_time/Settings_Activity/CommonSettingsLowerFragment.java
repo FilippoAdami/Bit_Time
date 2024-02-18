@@ -178,8 +178,8 @@ public class CommonSettingsLowerFragment extends Fragment {
                 }
 
 
-                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), Arrays.toString(subtasksA));
-                Log.i("activity item SLA",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
+                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2),"placeholderTESTIMG", subtasksA);
+                Log.i("activity item SLA",c.getString(0)+" "+c.getString(1) + " " + c.getString(2) + " "+activityItem.getInfo().getImage());
                 list.add(activityItem);
             } while (c.moveToNext());
         }
