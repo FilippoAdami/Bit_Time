@@ -13,7 +13,8 @@ public class DbHelper extends SQLiteOpenHelper
     private static final String SQL_CREATE_ENTRIES = "create table " + DbContract.Activities.TABLE_NAME  + " (" +
                     DbContract.Activities._ID + " integer primary key,"  +
                     DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME     + " text," +
-                    DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + " text);";
+                    DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + " text," +
+                    DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG+");";
 
     private static final String SQL_DELETE_ENTRIES =   "DROP TABLE IF EXISTS " + DbContract.Activities.TABLE_NAME;
 

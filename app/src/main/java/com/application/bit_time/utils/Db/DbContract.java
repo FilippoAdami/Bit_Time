@@ -16,15 +16,15 @@ public final class DbContract {
         public static final String TABLE_NAME = "activities";
         public static final String COLUMN_NAME_ACTIVITY_NAME = "name";
         public static final String COLUMN_NAME_ACTIVITY_DURATION = "duration";
-        public static final int DIM_MAX = 5;
-
+        public static final String COLUMN_NAME_ACTIVITY_IMG = "activityImg";
         public static final String COLUMN_NAME_TASK1  = "task1";
         public static final String COLUMN_NAME_TASK2  = "task2";
         public static final String COLUMN_NAME_TASK3  = "task3";
         public static final String COLUMN_NAME_TASK4  = "task4";
         public static final String COLUMN_NAME_TASK5  = "task5";
         public static final String COLUMN_NAME_IS_PLANNED = "isPlanned";
-        public static final String COLUMN_NAME_ACTIVITY_IMG = "activityImg";
+
+        public static final int DIM_MAX = 5;
 
     }
 

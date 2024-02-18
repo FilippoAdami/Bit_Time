@@ -77,13 +77,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         Log.i("ADAPTonbind",activityItem.toString());
         holder.bind(activityItem);
         holder.id = activityItem.activityInfo.getIdInt();
-        Log.i("iconPathahha","prova: "+holder.id);
         holder.duration=activityItem.getInfo().getTimeInt();
-        Log.i("iconPathahha","prova: "+holder.duration);
 // icon path
         holder.iconPathah = activityItem.activityInfo.getImage();
-        //TODO: understand why it returns null
-        Log.i("iconPathahha","prova: "+holder.iconPathah);
         String imagePath = activityItem.activityInfo.getImage();
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//decodeFile(imagePath);
         holder.iconah.setImageBitmap(bitmap);

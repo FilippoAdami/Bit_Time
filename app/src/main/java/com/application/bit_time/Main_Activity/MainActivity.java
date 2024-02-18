@@ -94,14 +94,10 @@ public class MainActivity extends AppCompatActivity {
         OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
         Log.i("OBP main",OBPDispatcher.toString());
 
-
         //DisplayMetrics metrics = this.getResources().getDisplayMetrics();
         //Log.i("pixelWidth",Integer.toString(metrics.widthPixels));
 
         dbManager = new DbManager(getApplicationContext());
-
-        //Context context = getApplicationContext();
-        //context.deleteDatabase("Activities.db");
 
         //CHECKS FOR PERMISSIONS
         if(Build.VERSION.SDK_INT > 22)
