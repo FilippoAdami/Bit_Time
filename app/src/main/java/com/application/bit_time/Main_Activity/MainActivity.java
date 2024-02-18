@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     //TODO : show clearly if daily has been pressed and is set or not
     // TODO : consider isPlanned field of activities schema
 
+
+
     private RunningActivityViewModel runningActivityViewModel;
     private DbManager dbManager;
     private MainActivityViewModel statusVM;

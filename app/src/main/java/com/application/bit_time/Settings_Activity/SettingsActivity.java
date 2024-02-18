@@ -78,6 +78,10 @@ public class SettingsActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        /*Context context = getApplicationContext();
+        context.deleteDatabase("Activities.db");*/
+
+
         OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
         Log.i("OBP sett",OBPDispatcher.toString());
         OnBackPressedCallback mainOBPCallback = new OnBackPressedCallback(true) {
