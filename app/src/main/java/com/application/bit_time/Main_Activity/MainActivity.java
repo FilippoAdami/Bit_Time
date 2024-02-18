@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
 
         dbManager = new DbManager(getApplicationContext());
 
+        //Context context = getApplicationContext();
+        //context.deleteDatabase("Activities.db");
+
 
         Log.i("buildVersion",Integer.toString(Build.VERSION.SDK_INT));
 

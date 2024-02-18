@@ -30,15 +30,11 @@ public final class DbContract {
 
     }
 
-    public static class Tasks implements  BaseColumns
-    {
+    public static class Tasks implements  BaseColumns{
         public static final String TABLE_NAME = "tasks";
-
         public static final String COLUMN_NAME_TASK_NAME ="name";
         public static final String COLUMN_NAME_TASK_DURATION = "duration";
         public static final String COLUMN_NAME_IMG = "img";
-
-
     }
 
     public static class Userdata implements  BaseColumns{

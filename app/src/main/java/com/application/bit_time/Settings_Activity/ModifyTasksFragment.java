@@ -1,5 +1,12 @@
 package com.application.bit_time.Settings_Activity;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,10 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -20,10 +33,16 @@ import com.application.bit_time.R;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.ErrorDialog;
+import com.application.bit_time.utils.ImagePicker;
 import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.TimeHelper;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ModifyTasksFragment extends Fragment {
 
@@ -34,6 +53,21 @@ public class ModifyTasksFragment extends Fragment {
     private EditText editName;
     private EditText editmin;
     private EditText editsec;
+    private ImageView icon;
+    RelativeLayout changeIcon;
+    String currentIcon;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    static final int REQUEST_CODE_MEDIA_PERMISSION = 123;
+    private final ActivityResultLauncher<Void> imagePickerLauncher = registerForActivityResult(
+            new ImagePicker(),
+            uri -> {
+                // Handle the result, 'uri' contains the selected image URI
+                if (uri != null) {
+                    currentIcon = uri.toString();
+                    saveToInternalStorage(uri);
+                }
+            }
+    );
 
     private CustomViewModel viewModel;
     @Nullable
@@ -47,6 +81,8 @@ public class ModifyTasksFragment extends Fragment {
         View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
 
         editName = view.findViewById(R.id.editTaskNameLabel);
+        icon = view.findViewById(R.id.taskIcon);
+        changeIcon = view.findViewById(R.id.editTaskIcon);
         //TextView edith = view.findViewById(R.id.editTextHours);
         editmin = view.findViewById(R.id.editTextMinutes);
         editsec = view.findViewById(R.id.editTextSeconds);
@@ -83,6 +119,14 @@ public class ModifyTasksFragment extends Fragment {
             }
         });
 
+        changeIcon.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT <= 22) {
+                imagePickerLauncher.launch(null);
+            }else{
+                requestMediaPermissions(Manifest.permission.READ_MEDIA_IMAGES);
+            }
+        });
+
         Log.i("TASKTOMOD",dbViewModel.getSelectedItem().getValue().taskItem.toString());
 
         TaskItem taskToModify = dbViewModel.getSelectedItem().getValue().taskItem;
@@ -106,6 +150,10 @@ public class ModifyTasksFragment extends Fragment {
         editmin.setText(Integer.toString(th.getMin()));
         editsec.setText(Integer.toString(th.getSec()));
 
+        currentIcon = taskToModify.getImg();
+        Bitmap bitmap = BitmapFactory.decodeFile(currentIcon);//decodeFile(imagePath);
+        icon.setImageBitmap(bitmap);
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,7 +167,7 @@ public class ModifyTasksFragment extends Fragment {
                     int totalTime = h * 3600 + min * 60 + sec;
 
 // should add the image as well at the end, temporary constructor call
-                    TaskItem newItem = new TaskItem(taskToModify.getID(), editName.getText().toString(), totalTime, "");
+                    TaskItem newItem = new TaskItem(taskToModify.getID(), editName.getText().toString(), totalTime, currentIcon);
 
                     Log.i("UPDATE", newItem.toString());
 
@@ -135,10 +183,134 @@ public class ModifyTasksFragment extends Fragment {
             }
         });
 
-
-
-
         return view;
+    }
+
+//tons of functions to save image path and request permissions
+    private void saveToInternalStorage(Uri uri) {
+        //check API version
+        int apiLevel = android.os.Build.VERSION.SDK_INT;
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (apiLevel > 32){
+            permission = Manifest.permission.READ_MEDIA_IMAGES;
+        }
+        if (ContextCompat.checkSelfPermission(requireContext(), permission)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request the permission
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        } else {Log.i("type", "saveToInternalStorage");
+            saveImageOperations(uri);
+        }
+    }
+    private void requestMediaPermissions(String permission) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            // Check if the permission is already granted
+            int permissionCheck = ContextCompat.checkSelfPermission(requireContext(), permission);
+
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                // Permission already granted
+                handleMediaPermissionResult();
+            } else {
+                // Request the specific permission based on API level
+                //for api 33 or higher, use new permissions
+                if (Build.VERSION.SDK_INT >= 33) {
+                    // For API level 33 (Android 13) and higher, use new permissions
+                    requestPermissions(new String[]{permission}, REQUEST_CODE_MEDIA_PERMISSION);
+                } else {
+                    // For lower API levels, fall back to READ_EXTERNAL_STORAGE
+                    int storagePermissionCheck = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                    if (storagePermissionCheck != PackageManager.PERMISSION_GRANTED) {
+                        // Request the storage permission
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_MEDIA_PERMISSION);
+                    }
+                }
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Check if the permission request is granted or not
+        if (requestCode == REQUEST_CODE_MEDIA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                handleMediaPermissionResult();
+            } else {
+                // Permission is denied
+                handleMediaPermissionDenied();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    void handleMediaPermissionResult() {
+        imagePickerLauncher.launch(null);
+    }
+    void handleMediaPermissionDenied() {
+        // Inform the user or take appropriate actions when permission is denied
+        // For example, show a message, disable certain features, etc.
+        Toast.makeText(requireContext(), "Autorizzazione non concessa.", Toast.LENGTH_SHORT).show();
+    }
+    public Bitmap saveImageFile(Uri uri, String fileName) {
+        Bitmap bitmap = null;
+        try {
+            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+            // Load the saved image into a Bitmap
+            File file = new File(requireActivity().getFilesDir(), fileName);
+            String imagePath = file.getAbsolutePath();
+            currentIcon = imagePath;
+            Log.i("saveFileAbPath", imagePath);
+            bitmap = BitmapFactory.decodeFile(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+    public void saveImageOperations(Uri uri) {
+        // Determine the file extension from the MIME type
+        String extension;
+        String mimeType = requireActivity().getContentResolver().getType(uri);
+        if ("image/jpeg".equals(mimeType)) {
+            extension = ".jpg";
+        } else if ("image/png".equals(mimeType)) {
+            extension = ".png";
+        }else if ("image/ico".equals(mimeType)) {
+            extension = ".ico";
+        } else {
+            // Toast unsupported file types
+            Toast.makeText(getActivity(), "File non supportato", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Construct the file name with extension
+        //Generate a random string to append to the file name to make it unique
+        String random = Long.toString(System.currentTimeMillis());
+        String fileName = "task_image" +random+ extension;
+
+        // Save the image to internal storage and get the Bitmap
+        Bitmap savedBitmap = saveImageFile(uri, fileName);
+
+        if (savedBitmap != null) {
+            // Display the saved image in your ImageView
+            icon = getView().findViewById(R.id.taskIcon);
+            icon.setImageBitmap(savedBitmap);
+
+        } else {
+            // Toast something went wrong
+            Toast.makeText(getActivity(), "Errore nel salvataggio", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean checks()
@@ -177,7 +349,6 @@ public class ModifyTasksFragment extends Fragment {
             return Integer.parseInt(stringToParse);
         }
     }
-
 
     private void showError(int code)
     {

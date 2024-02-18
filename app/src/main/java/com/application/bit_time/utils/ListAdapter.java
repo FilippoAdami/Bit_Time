@@ -314,9 +314,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
         private void bind(ActivityItem activityItem) {
 
-            Log.i("bind","is called");
-            Log.i("ACTIVITYITEM inside",activityItem.subtasks[0].toString());
-
             boolean expanded = activityItem.isExpanded();
             int subtasksNum = activityItem.subtasks.length;
 

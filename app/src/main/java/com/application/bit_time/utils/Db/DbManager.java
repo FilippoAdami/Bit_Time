@@ -52,8 +52,7 @@ public class DbManager {
                 DbContract.Tasks._ID + " integer primary key autoincrement,"  +
                 DbContract.Tasks.COLUMN_NAME_TASK_NAME + " text," +
                 DbContract.Tasks.COLUMN_NAME_TASK_DURATION  + " text," +
-// added img column
-                DbContract.Tasks.COLUMN_NAME_IMG + "text);";
+                DbContract.Tasks.COLUMN_NAME_IMG + " text)";
 
         private static final String SQL_DELETE_ENTRIES =   "DROP TABLE IF EXISTS " + DbContract.Activities.TABLE_NAME;
 
@@ -272,8 +271,9 @@ public class DbManager {
     {
         String insertQuery = "insert into "+ DbContract.Tasks.TABLE_NAME
                 +" ("+ DbContract.Tasks.COLUMN_NAME_TASK_NAME+","
-                + DbContract.Tasks.COLUMN_NAME_TASK_DURATION+") values("
-                + "'"+task.getName()+"','"+task.getDuration()+"');";
+                + DbContract.Tasks.COLUMN_NAME_TASK_DURATION+","
+                + DbContract.Tasks.COLUMN_NAME_IMG+") values("
+                + "'"+task.getName()+"','"+task.getDuration()+"','"+task.getImg()+"');";
 
         db.execSQL(insertQuery);
     }
@@ -431,7 +431,8 @@ public class DbManager {
                 "update "+ DbContract.Tasks.TABLE_NAME +
                         " set "
                         + DbContract.Tasks.COLUMN_NAME_TASK_NAME + "='" + modifiedItem.getName() + "',"
-                        + DbContract.Tasks.COLUMN_NAME_TASK_DURATION + "=" + modifiedItem.getDuration()
+                        + DbContract.Tasks.COLUMN_NAME_TASK_DURATION + "='" + modifiedItem.getDuration() + "',"
+                        + DbContract.Tasks.COLUMN_NAME_IMG + "='" + modifiedItem.getImg() + "'"
                         + " where " + DbContract.Tasks._ID + "=" + modifiedItem.getIdStr();
 
         Log.i("SQLMOD",updateQuery);
@@ -716,61 +717,6 @@ public class DbManager {
         db.execSQL(deleteQuery);
     }*/
 
-    public void changeTaskIcon(String icon) {
-        ContentValues values = new ContentValues();
-        values.put(DbContract.Tasks.COLUMN_NAME_IMG, icon);
-
-        // Check if a row exists
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Tasks.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            // If at least one row exists, update the value
-            int rowsAffected = db.update(
-                    DbContract.Tasks.TABLE_NAME,
-                    values,
-                    null,
-                    null
-            );
-
-            if (rowsAffected > 0) {
-                Log.i("DB_UPDATE", "Background updated successfully: " + icon);
-            } else {
-                Log.e("DB_ERROR", "Failed to update background");
-            }
-        } else {
-            // If no row exists, create a new row with default values
-            long newRowId = db.insert(DbContract.Tasks.TABLE_NAME, null, values);
-
-            if (newRowId != -1) {
-                Log.i("DB_INSERT", "New row inserted with background: " + icon);
-            } else {
-                Log.e("DB_ERROR", "Failed to insert new row");
-            }
-        }
-
-        cursor.close();  // Close the cursor to avoid potential memory leaks
-    }
-    public String getTaskIcon() {
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Tasks.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex(DbContract.Tasks.COLUMN_NAME_IMG);
-
-            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
-                String theme = cursor.getString(columnIndex);
-                cursor.close();  // Close the cursor to avoid potential memory leaks
-                return theme;
-            } else {
-                Log.e("DB_ERROR", "Column index is -1 for icon column");
-                cursor.close();
-                return "no icon";
-            }
-        } else {
-            Log.i("DB_INFO", "No rows found in the database, returning default icon");
-            cursor.close();
-            return "no icon";
-        }
-    }
     public void changeActivityIcon(String icon) {
         ContentValues values = new ContentValues();
         values.put(DbContract.Activities.COLUMN_NAME_IMG, icon);

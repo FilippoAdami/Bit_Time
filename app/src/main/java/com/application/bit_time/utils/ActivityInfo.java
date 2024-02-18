@@ -38,7 +38,10 @@ public class ActivityInfo {
         this.labelTime = original.getTimeInt();
         this.labelName = new String(original.getName());
 // changed the constructor to take also the image as argument
-        this.img = new String(original.img);
+        //TODO: faulty constructor
+        //Log the image path
+        Log.i("ACTINFO CRE completed", "original.getImage()");
+        this.img = "empty";
 
     }
 
@@ -120,10 +123,7 @@ public class ActivityInfo {
     {
         this.img = img;
     }
-    public String getImage()
-    {
-        return this.img;
-    }
+    public String getImage(){ return this.img; }
 
 
     @Override

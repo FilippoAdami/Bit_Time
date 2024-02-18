@@ -51,8 +51,6 @@ public class CreationUpperFragment extends Fragment {
     DbViewModel dbViewModel;
     SubtasksViewModel subtasksViewModel;
     CustomViewModel viewModel;
-    TaskAdapter taskAdapter;
-
     EditText editName;
     //EditText edtTxtHrs;
     EditText edtTxtMin;
@@ -63,7 +61,6 @@ public class CreationUpperFragment extends Fragment {
     String currentIcon;
 // default icon path
     String iconPath = "drawable/image.png";
-    String iconExtension;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     static final int REQUEST_CODE_MEDIA_PERMISSION = 123;
     private final ActivityResultLauncher<Void> imagePickerLauncher = registerForActivityResult(
@@ -106,6 +103,7 @@ public class CreationUpperFragment extends Fragment {
         WarningTW.setText("The name of the task cannot be longer than "+MAX_LENGTH+" chars");
         WarningTW.setVisibility(View.INVISIBLE);
 //added image and path
+        // Toast the current icon path
         imgView = view.findViewById(R.id.taskIcon);
         changeIcon = view.findViewById(R.id.editTaskIcon);
 

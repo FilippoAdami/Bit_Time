@@ -24,6 +24,7 @@ import com.application.bit_time.Settings_Activity.SettingsLowerFragmentTasks;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +35,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     private SubtasksViewModel subtasksViewModel;
     private List<TaskItem> taskList;
     private CommonSettingsLowerFragment settingsLowerFragmentTasks;
-// icon and path variables
-    private ImageView icon;
-    private String iconPath;
-
     private Context context;
 
 
@@ -73,7 +70,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         holder.duration = task.getDurationInt();
 // icon path
         holder.iconPathh = task.getImg();
-        Log.i("TaskAdapter idact",Integer.toString(holder.id));
+        String imagePath = task.getImg();
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//decodeFile(imagePath);
+        holder.iconh.setImageBitmap(bitmap);
 
         Bitmap originalDeleteBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.delete);
         Bitmap bitmapDeleteIcon = Bitmap.createScaledBitmap(originalDeleteBitmap,100,100,true);
@@ -107,8 +106,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
     public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 // icon and path def
-        public ImageView iconh;
-        public String iconPathh;
+        ImageView iconh;
+        String iconPathh;
         int id;
         int duration;
         TextView labelName;

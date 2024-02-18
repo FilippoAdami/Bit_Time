@@ -1,6 +1,13 @@
 package com.application.bit_time.Settings_Activity;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,10 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,6 +39,7 @@ import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbViewModelData;
 import com.application.bit_time.utils.ErrorDialog;
+import com.application.bit_time.utils.ImagePicker;
 import com.application.bit_time.utils.PlannerViewModel;
 import com.application.bit_time.utils.PlannerViewModelData;
 import com.application.bit_time.utils.PlanningInfo;
@@ -40,6 +53,10 @@ import com.application.bit_time.utils.Db.DbManager;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.TimeHelper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -55,10 +72,6 @@ public class ActivityCreationFragment extends Fragment {
     private DbViewModel dbViewModel;
     private TaskItem[] subtasksToAdd;
     private String currentName;
-//added String of the path of the image and imageView
-    private String currrentIconPath;
-    private ImageView currentIcon;
-
     private int idToBeModified;
     private String activityName;
     private SettingsModeData currentState;
@@ -68,6 +81,22 @@ public class ActivityCreationFragment extends Fragment {
     private Button endButton ;
     private TextView nameLabel;
     private int MAX_LENGTH = 12;
+
+    private ImageView icon;
+    RelativeLayout changeIcon;
+    String currentIcon = "empty";
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    static final int REQUEST_CODE_MEDIA_PERMISSION = 123;
+    private final ActivityResultLauncher<Void> imagePickerLauncher = registerForActivityResult(
+            new ImagePicker(),
+            uri -> {
+                // Handle the result, 'uri' contains the selected image URI
+                if (uri != null) {
+                    currentIcon = uri.toString();
+                    saveToInternalStorage(uri);
+                }
+            }
+    );
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -100,17 +129,12 @@ public class ActivityCreationFragment extends Fragment {
             Objects.requireNonNull(subtasksViewModel.getSelectedItem().getValue()).setAllTaskItems(allTasks);
         }
 
-
         subtasksToAdd = new TaskItem[DbContract.Activities.DIM_MAX];
 
         for(int i =0 ;i <DbContract.Activities.DIM_MAX ; i++)
         {
             subtasksToAdd[i] = new TaskItem();
         }
-
-
-
-
 
         currentState = viewModel.getSelectedItem().getValue();
 
@@ -216,17 +240,12 @@ public class ActivityCreationFragment extends Fragment {
 
         //View view = inflater.inflate(R.layout.activity_creation_fragment_layout,container,false);
         View view = inflater.inflate(R.layout.activity_creation_fragment_layout,container,false);
-
-
-
         TextView actCreWarning = view.findViewById(R.id.ActCreWarning);
-
         actCreWarning.setText("The name of the activity cannot be longer than "+MAX_LENGTH+" chars");
         actCreWarning.setVisibility(View.INVISIBLE);
-
-
+        icon = view.findViewById(R.id.activityIcon);
+        changeIcon = view.findViewById(R.id.editActivityIcon);
         nameLabel = view.findViewById(R.id.editNameLabel);
-
         nameLabel.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -249,12 +268,6 @@ public class ActivityCreationFragment extends Fragment {
 
             }
         });
-
-
-
-
-
-
         totalTimelabel = view.findViewById(R.id.totalTimeLabel);
         addButton = view.findViewById(R.id.addTaskButton);
         endButton = view.findViewById(R.id.fineButton);
@@ -265,6 +278,13 @@ public class ActivityCreationFragment extends Fragment {
 
         //Switch planningSwitch = view.findViewById(R.id.planSwitch);
 
+        changeIcon.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT <= 22) {
+                imagePickerLauncher.launch(null);
+            }else{
+                requestMediaPermissions(Manifest.permission.READ_MEDIA_IMAGES);
+            }
+        });
 
 
         if(currentState.equals("ModifyActivity"))
@@ -297,8 +317,6 @@ public class ActivityCreationFragment extends Fragment {
             //TODO: set stuff if the activity to be modified was previously planned
         }
 
-
-
         subtasksRecyclerView = view.findViewById(R.id.subtasksRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         subtasksRecyclerView.setLayoutManager(layoutManager);
@@ -321,9 +339,6 @@ public class ActivityCreationFragment extends Fragment {
                     //totalTimelabel.setText(Integer.toString(totalTime));
                     totalTimelabel.setText(th.toStringShrt());
                 });
-
-
-
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -336,9 +351,6 @@ public class ActivityCreationFragment extends Fragment {
                 taskSelectionDialog.show(getActivity().getSupportFragmentManager(),null);
             }
         });
-
-
-
 
         /*planningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -368,16 +380,12 @@ public class ActivityCreationFragment extends Fragment {
             public void onClick(View view) {
                 if (checks()) {
                     //Toast.makeText(getContext(), nameLabel.getText().toString(), Toast.LENGTH_SHORT).show();
-
-
                     DbViewModelData newData = new DbViewModelData();
                     newData.selector = DbViewModelData.ITEM_TYPE.ACTIVITY;
-
-
                     //dbViewModel.selectItem();
                     if (viewModel.getSelectedItem().getValue().equals("NewActivity")) {
 //should also add the image at the end
-                        ActivityItem activity = new ActivityItem(nameLabel.getText().toString(), -1, subtasksToAdd, null);
+                        ActivityItem activity = new ActivityItem(nameLabel.getText().toString(), -1, subtasksToAdd, currentIcon);
                         // dbManager.insertActivityRecord(new ActivityItem(nameLabel.getText().toString(),-1, subtasksToAdd));
                         newData.action = DbViewModelData.ACTION_TYPE.INSERT;
                         newData.activityItem = new ActivityItem(activity);
@@ -447,6 +455,131 @@ public class ActivityCreationFragment extends Fragment {
         return view;
     }
 
+    //tons of functions to save image path and request permissions
+    private void saveToInternalStorage(Uri uri) {
+        //check API version
+        int apiLevel = android.os.Build.VERSION.SDK_INT;
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (apiLevel > 32){
+            permission = Manifest.permission.READ_MEDIA_IMAGES;
+        }
+        if (ContextCompat.checkSelfPermission(requireContext(), permission)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request the permission
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        } else {Log.i("type", "saveToInternalStorage");
+            saveImageOperations(uri);
+        }
+    }
+    private void requestMediaPermissions(String permission) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            // Check if the permission is already granted
+            int permissionCheck = ContextCompat.checkSelfPermission(requireContext(), permission);
+
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                // Permission already granted
+                handleMediaPermissionResult();
+            } else {
+                // Request the specific permission based on API level
+                //for api 33 or higher, use new permissions
+                if (Build.VERSION.SDK_INT >= 33) {
+                    // For API level 33 (Android 13) and higher, use new permissions
+                    requestPermissions(new String[]{permission}, REQUEST_CODE_MEDIA_PERMISSION);
+                } else {
+                    // For lower API levels, fall back to READ_EXTERNAL_STORAGE
+                    int storagePermissionCheck = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                    if (storagePermissionCheck != PackageManager.PERMISSION_GRANTED) {
+                        // Request the storage permission
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_MEDIA_PERMISSION);
+                    }
+                }
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Check if the permission request is granted or not
+        if (requestCode == REQUEST_CODE_MEDIA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                handleMediaPermissionResult();
+            } else {
+                // Permission is denied
+                handleMediaPermissionDenied();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    void handleMediaPermissionResult() {
+        imagePickerLauncher.launch(null);
+    }
+    void handleMediaPermissionDenied() {
+        // Inform the user or take appropriate actions when permission is denied
+        // For example, show a message, disable certain features, etc.
+        Toast.makeText(requireContext(), "Autorizzazione non concessa.", Toast.LENGTH_SHORT).show();
+    }
+    public Bitmap saveImageFile(Uri uri, String fileName) {
+        Bitmap bitmap = null;
+        try {
+            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+            // Load the saved image into a Bitmap
+            File file = new File(requireActivity().getFilesDir(), fileName);
+            String imagePath = file.getAbsolutePath();
+            currentIcon = imagePath;
+            Toast.makeText(getContext(), currentIcon, Toast.LENGTH_SHORT).show();
+            bitmap = BitmapFactory.decodeFile(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+    public void saveImageOperations(Uri uri) {
+        // Determine the file extension from the MIME type
+        String extension;
+        String mimeType = requireActivity().getContentResolver().getType(uri);
+        if ("image/jpeg".equals(mimeType)) {
+            extension = ".jpg";
+        } else if ("image/png".equals(mimeType)) {
+            extension = ".png";
+        }else if ("image/ico".equals(mimeType)) {
+            extension = ".ico";
+        } else {
+            // Toast unsupported file types
+            Toast.makeText(getActivity(), "File non supportato", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Construct the file name with extension
+        //Generate a random string to append to the file name to make it unique
+        String random = Long.toString(System.currentTimeMillis());
+        String fileName = "task_image" +random+ extension;
+
+        // Save the image to internal storage and get the Bitmap
+        Bitmap savedBitmap = saveImageFile(uri, fileName);
+
+        if (savedBitmap != null) {
+            // Display the saved image in your ImageView
+            icon = getView().findViewById(R.id.activityIcon);
+            icon.setImageBitmap(savedBitmap);
+        } else {
+            // Toast something went wrong
+            Toast.makeText(getActivity(), "Errore nel salvataggio", Toast.LENGTH_SHORT).show();
+        }
+    }
     private boolean checks()
     {
 
@@ -470,8 +603,6 @@ public class ActivityCreationFragment extends Fragment {
 
         return true;
     }
-
-
     private void showError(int code)
     {
         String errorStr = "";
@@ -495,9 +626,6 @@ public class ActivityCreationFragment extends Fragment {
         errorDialog.setArguments(b);
         errorDialog.show(getChildFragmentManager(),null);
     }
-
-
-
     private int countValidSubtasks()
     {
         int count=0;
@@ -510,7 +638,4 @@ public class ActivityCreationFragment extends Fragment {
 
         return count;
     }
-
-
-
 }
