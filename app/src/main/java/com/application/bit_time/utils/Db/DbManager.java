@@ -196,7 +196,7 @@ public class DbManager {
                 + DbContract.Activities.COLUMN_NAME_TASK3 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK4 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK5 + ") values ('"
-                + activity.getName()+ "'," + totalTime + ",'" + imagePath + "','" +tasksStr +"');";
+                + activity.getName()+ "'," + totalTime + ",'" + imagePath + "'," +tasksStr +");";
 
 
         Log.i("insert act str",insertQuery);
