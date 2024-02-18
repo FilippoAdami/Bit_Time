@@ -103,9 +103,6 @@ public class MainActivity extends AppCompatActivity {
         //Context context = getApplicationContext();
         //context.deleteDatabase("Activities.db");
 
-
-        Log.i("buildVersion",Integer.toString(Build.VERSION.SDK_INT));
-
         //CHECKS FOR PERMISSIONS
         if(Build.VERSION.SDK_INT > 22)
         {

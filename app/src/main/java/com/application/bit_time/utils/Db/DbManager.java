@@ -45,8 +45,7 @@ public class DbManager {
                 + DbContract.Activities.COLUMN_NAME_TASK4 + " integer,"
                 + DbContract.Activities.COLUMN_NAME_TASK5 + " integer,"
                 + DbContract.Activities.COLUMN_NAME_IS_PLANNED + "integer," // 0 will be false and 1 true
-// added img column
-                + DbContract.Activities.COLUMN_NAME_IMG + "text);";
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + "text)";
 
         private static final String SQL_CREATE_TASKS_TABLE = "create table " + DbContract.Tasks.TABLE_NAME  + " (" +
                 DbContract.Tasks._ID + " integer primary key autoincrement,"  +
@@ -187,16 +186,17 @@ public class DbManager {
                 tasksStr = tasksStr.concat(tasks[i].getIdStr());
 
         }
-
+        String imagePath = activity.getInfo().getImage();
         String insertQuery = "insert into "+ DbContract.Activities.TABLE_NAME
                 +" ("+ DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME+","
                 + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + ","
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + ","
                 + DbContract.Activities.COLUMN_NAME_TASK1 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK2 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK3 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK4 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK5 + ") values ('"
-                + activity.getName()+ "'," + totalTime + "," +tasksStr +");";
+                + activity.getName()+ "'," + totalTime + ",'" + imagePath + "'," +tasksStr +");";
 
 
         Log.i("insert act str",insertQuery);
@@ -349,8 +349,9 @@ public class DbManager {
                 "UPDATE "+ DbContract.Activities.TABLE_NAME
                 + " SET "
                 + DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME + "='"+ info.getName() + "',"
-                + DbContract.Activities.COLUMN_NAME_TASK1 + "=" +subtasksId[0] +","
                 + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + info.getTimeInt() +","
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + "='" + info.getImage() + "',"
+                + DbContract.Activities.COLUMN_NAME_TASK1 + "=" + subtasksId[0] +","
                 + DbContract.Activities.COLUMN_NAME_TASK2 + "=" + subtasksId[1] +","
                 + DbContract.Activities.COLUMN_NAME_TASK3 + "=" + subtasksId[2] +","
                 + DbContract.Activities.COLUMN_NAME_TASK4 + "=" + subtasksId[3] +","
@@ -361,8 +362,6 @@ public class DbManager {
 
 
         db.execSQL(query);
-
-
 
     }
 
@@ -716,63 +715,6 @@ public class DbManager {
         //Log.i("DB delTask",deleteQuery.toString());
         db.execSQL(deleteQuery);
     }*/
-
-    public void changeActivityIcon(String icon) {
-        ContentValues values = new ContentValues();
-        values.put(DbContract.Activities.COLUMN_NAME_IMG, icon);
-
-        // Check if a row exists
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Activities.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            // If at least one row exists, update the value
-            int rowsAffected = db.update(
-                    DbContract.Activities.TABLE_NAME,
-                    values,
-                    null,
-                    null
-            );
-
-            if (rowsAffected > 0) {
-                Log.i("DB_UPDATE", "Icon updated successfully: " + icon);
-            } else {
-                Log.e("DB_ERROR", "Failed to update icon");
-            }
-        } else {
-            // If no row exists, create a new row with default values
-            long newRowId = db.insert(DbContract.Activities.TABLE_NAME, null, values);
-
-            if (newRowId != -1) {
-                Log.i("DB_INSERT", "New row inserted with icon: " + icon);
-            } else {
-                Log.e("DB_ERROR", "Failed to insert new row");
-            }
-        }
-
-        cursor.close();  // Close the cursor to avoid potential memory leaks
-    }
-    public String getActivityIcon() {
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Activities.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex(DbContract.Activities.COLUMN_NAME_IMG);
-
-            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
-                String theme = cursor.getString(columnIndex);
-                cursor.close();  // Close the cursor to avoid potential memory leaks
-                return theme;
-            } else {
-                Log.e("DB_ERROR", "Column index is -1 for icon column");
-                cursor.close();
-                return "no icon";
-            }
-        } else {
-            Log.i("DB_INFO", "No rows found in the database, returning default icon");
-            cursor.close();
-            return "no icon";
-        }
-    }
-
 
     public void changeTheme(String theme) {
         ContentValues values = new ContentValues();
