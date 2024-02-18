@@ -148,7 +148,7 @@ public class SettingsLowerFragment extends Fragment
 
         while(c.moveToNext())
         {
-            ActivityInfo activityInfo = new ActivityInfo(c.getString(0),c.getString(1), c.getString(2));
+            ActivityInfo activityInfo = new ActivityInfo(c.getString(0),c.getString(1), c.getString(2),"UriActPlaceholderSettLowFrag");
             list.add(activityInfo);
         }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,7 +71,7 @@ public class NewRunningTaskFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         int actId= sharedPreferences.getInt("activityToRun",-500);
 
-        ActivityInfo activityInfoToSearch = new ActivityInfo(actId,"placeholderName",-1);
+        ActivityInfo activityInfoToSearch = new ActivityInfo(actId,"placeholderName",-1, Uri.parse("UriActPlaceholderNewRTFrag"));
         ActivityItem activityItem =dbManager.searchActivityItem(activityInfoToSearch);
 
         Log.i("actToRun in NRTF",activityItem.toString());

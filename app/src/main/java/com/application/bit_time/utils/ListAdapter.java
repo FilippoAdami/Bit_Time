@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -192,7 +193,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     ActivityInfo activityToModifyInfo = new ActivityInfo(
                             id,
                             labelName.getText().toString(),
-                            labelTime.getText().toString());
+                            labelTime.getText().toString(), Uri.parse("UriActPlaceholderListAdapt"));
 
                     Log.i("ACT INFO",activityToModifyInfo.toString());
                     TaskItem[] subtasksToBeAdded = new TaskItem[subtaskItems.length];
@@ -249,7 +250,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     // magari aggiungiamo una richiesta di conferma
 
                     Log.i("justtest",labelTime.getText().toString());
-                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),duration);
+                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),duration,Uri.parse("UriActPlaceholderListAdapt"));
                     ActivityItem item = dbManager.searchActivityItem(itemToDelete);
 
 

@@ -1,5 +1,6 @@
 package com.application.bit_time.utils;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ public class ActivityItem {
     List<PlanningInfo> plans;
 
     boolean expanded;
+
 
 
     public ActivityItem()
@@ -72,7 +74,7 @@ public class ActivityItem {
     public ActivityItem(String id,String name,String duration)
     {
         this.plans = null;
-        this.activityInfo = new ActivityInfo(id,name,duration);
+        this.activityInfo = new ActivityInfo(id,name,duration,"URiActPlaceholderCosntr");
         expanded = false;
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
 
@@ -98,7 +100,7 @@ public class ActivityItem {
 
         Log.i("SUB2ADD",subtasks[0].toString());
 
-        this.activityInfo = new ActivityInfo(-1,name,duration);
+        this.activityInfo = new ActivityInfo(-1,name,duration, Uri.parse("UriActPlaceholderActItem"));
         this.subtasks =  new TaskItem[DbContract.Activities.DIM_MAX];
 
         for(int i = 0; i< DbContract.Activities.DIM_MAX;i++)
