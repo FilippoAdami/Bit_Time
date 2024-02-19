@@ -287,6 +287,7 @@ public class ActivityCreationFragment extends Fragment {
 
         if(currentState.equals("ModifyActivity"))
         {
+
             nameLabel.setHint(activityName);
             nameLabel.setText(activityName);
             Bitmap bitmap = BitmapFactory.decodeFile(this.currentIcon);

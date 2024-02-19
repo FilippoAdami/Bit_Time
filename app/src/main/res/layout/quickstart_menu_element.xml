@@ -6,18 +6,8 @@
     android:gravity="center"
     android:layout_weight="4"
     android:layout_marginBottom="15dp">
-    <TextView
-        android:id="@+id/activityNameText"
-        style="@style/RegularText"
-        android:textAlignment="viewStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginStart="5dp"
-        android:singleLine="true"
-        android:text="@string/activity_name"/>
 
-        <LinearLayout
+    <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:orientation="horizontal"
@@ -29,22 +19,42 @@
                     android:layout_weight="2"
                     android:src="@drawable/image"
                     android:contentDescription="activityImage"/>
-                <TextView
-                    android:id="@+id/activityDurationText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/time"
-                    style="@style/NormalText"/>
-                <Button
-                    android:id="@+id/startButton"
-                    android:layout_width="0dp"
-                    android:paddingHorizontal="10dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="@string/start"
-                    style="@style/ActionButton"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/activityNameText"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="5dp"
+                android:singleLine="true"
+                android:text="@string/activity_name"
+                android:textAlignment="viewStart" />
+
+            <TextView
+                android:id="@+id/activityDurationText"
+                style="@style/NormalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center|center_vertical"
+                android:text="@string/time" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/startButton"
+            style="@style/ActionButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingHorizontal="10dp"
+            android:text="@string/start" />
             </LinearLayout>
 </LinearLayout>
