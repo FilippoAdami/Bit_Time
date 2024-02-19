@@ -3,8 +3,9 @@ package com.application.bit_time.Main_Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,36 +29,22 @@ import com.application.bit_time.utils.ReportData;
 import com.application.bit_time.utils.RunningActivityViewModel;
 import com.application.bit_time.utils.TaskItem;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ListIterator;
 
 public class NewRunningTaskFragment extends Fragment {
-
-
     DbManager dbManager;
-
     private TaskItem currentTask;
+    private TaskItem nextTask;
     //private List<TaskItem> subtasksList;
     private RunningActivityViewModel RAVM;
     private List<ReportData> reportDataList;
     private ListIterator<ReportData> SLIterator;
 
-
-    private ImageView currentTaskThumbnail;
-    private ImageView nextTaskThumbnail;
-
-
-
-
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
 
         this.dbManager = new DbManager(this.getContext());
@@ -65,14 +52,13 @@ public class NewRunningTaskFragment extends Fragment {
         RAVM = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);
         this.reportDataList = new ArrayList<>();
 
-
-
-
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         int actId= sharedPreferences.getInt("activityToRun",-500);
-
-        ActivityInfo activityInfoToSearch = new ActivityInfo(actId,"placeholderName",-1, Uri.parse("UriActPlaceholderNewRTFrag"));
+// updated constructor call
+        ActivityInfo activityInfoToSearch = new ActivityInfo(actId,"placeholderName",-1, "placeholderImg");
         ActivityItem activityItem =dbManager.searchActivityItem(activityInfoToSearch);
+
+
 
         Log.i("actToRun in NRTF",activityItem.toString());
 
@@ -80,23 +66,20 @@ public class NewRunningTaskFragment extends Fragment {
         {
             if(ti.getID()!=-1)
             {
-                Log.i("URI filling",ti.getImageUri().toString());
-                ReportData latestReportDataBase = new ReportData(ti.getID(),ti.getName(),ti.getDurationInt(),ti.getImageUri());
+                Log.i("img inside actItem",ti.getImg());
+                ReportData latestReportDataBase = new ReportData(ti.getID(),ti.getName(),ti.getDurationInt(),ti.getImg());
                 this.reportDataList.add(latestReportDataBase);
                 Log.i("latestRDBase",latestReportDataBase.toString());
                 //subtasksList.add(ti);
                 //Log.i("ti added",ti.toString());
-
             }
         }
-
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.front_running_activity_fragment_layout,container,false);
-
 
         Button endTaskButton = view.findViewById(R.id.endTaskButton);
         endTaskButton.setOnClickListener(view1 -> {
@@ -121,35 +104,35 @@ public class NewRunningTaskFragment extends Fragment {
                     TextView durationTextView = view.findViewById(R.id.clockPlaceholder);
                     //durationTextView.setText(item.currentTask.getDuration());
                     durationTextView.setText(item.currentTask.getFormattedDuration());
-                    currentTaskThumbnail = view.findViewById(R.id.currentTaskThumbnail);
-                    try {
-                        currentTaskThumbnail.setImageDrawable(currentTask.getDrawableThumbnail(this.getContext()));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
+// Punto 1
+                    ImageView currentImageTW = view.findViewById(R.id.imagePlaceholder);
+                    String currentTaskIconPath = item.currentTask.getImg();
+                    Log.i("currentTaskIconPathA",currentTaskIconPath);
+                    Bitmap bitmap = BitmapFactory.decodeFile(currentTaskIconPath);
+                    currentImageTW.setImageBitmap(bitmap);
 
                     TextView nextTaskTW = view.findViewById(R.id.nextTaskTextView);
                     TextView nextDurationTW = view.findViewById(R.id.nextClockPlaceholder);
-                    nextTaskThumbnail = view.findViewById(R.id.nextTaskThumbnail);
+                    ImageView nextImageTW = view.findViewById(R.id.nextImagePlaceholder);
 
                     if (SLIterator.hasNext()) {
 
                         TaskItem nextTask = SLIterator.next().getTaskItem();
-                        Log.i("nextTaskItem URI",nextTask.getImageUri().toString());
                         nextTaskTW.setText(nextTask.getName());
+//Punto 2
+                        String nextTaskIconPath = nextTask.getImg();
+                        Log.i("nextTaskIconPathA",nextTaskIconPath);
+                        Bitmap nextbitmap = BitmapFactory.decodeFile(nextTaskIconPath);
+                        nextImageTW.setImageBitmap(nextbitmap);
+                        //nextImageTW.setAlpha(0.5f);
+
                         //nextDurationTW.setText(nextTask.getDuration());
                         nextDurationTW.setText(nextTask.getFormattedDuration());
-                        try {
-                            nextTaskThumbnail.setImageDrawable(nextTask.getDrawableThumbnail(this.getContext()));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
                         SLIterator.previous();
                     } else {
                         nextTaskTW.setVisibility(View.INVISIBLE);
                         nextDurationTW.setVisibility(View.INVISIBLE);
-                        nextTaskThumbnail.setVisibility(View.INVISIBLE);
+                        nextImageTW.setVisibility(View.INVISIBLE);
                     }
 
 
@@ -168,7 +151,6 @@ public class NewRunningTaskFragment extends Fragment {
 
                     if (SLIterator.hasNext()) {
                         currentTask = SLIterator.next().getTaskItem();
-                        Log.i("URI testz",currentTask.getImageUri().toString());
                         // Load the current subTask index to SharedPreferences
                         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                         int currentTaskID = Integer.parseInt(currentTask.getIdStr());
@@ -200,7 +182,7 @@ public class NewRunningTaskFragment extends Fragment {
         if(SLIterator.hasNext())
         {
             currentTask = SLIterator.next().getTaskItem();
-            Log.i("currentTask URI",currentTask.getImageUri().toString());
+            Log.i("currentTask img",currentTask.getImg());
             newRunningActivityData nRAD = new newRunningActivityData(currentTask);
             nRAD.setFullReport(this.reportDataList);
             RAVM.selectItem(nRAD);

@@ -248,14 +248,11 @@ public class LogInFragment extends Fragment {
                             emailEditText.setText("");
                             password_edit_text.setText("");
                         }else {
-                            Toast.makeText(getActivity(), "email non valida", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }else {
-                    Toast.makeText(getActivity(), "email non valida", Toast.LENGTH_SHORT).show();
                 }
             }else{
-                Toast.makeText(getActivity(), "email non valida", Toast.LENGTH_SHORT).show();
             }
             cursor.close();
         }

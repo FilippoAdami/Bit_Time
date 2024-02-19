@@ -3,7 +3,6 @@ package com.application.bit_time.Main_Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,19 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuickstartMenuFragment extends Fragment {
-
-
-
-
     private SharedPreferences sharedPreferences;
     private DbManager dbManager;
     private List<ActivityInfo> activitiesList;
     private RecyclerView recyclerView;
     private QuickstartAdapter adapter;
-
     private int maxLengthActName;
-
-
 
     @Nullable
     @Override
@@ -53,7 +45,6 @@ public class QuickstartMenuFragment extends Fragment {
         setup();
 
         View view = inflater.inflate(R.layout.a_quickstart_menu_layout,container,false);
-
 
         this.recyclerView = view.findViewById(R.id.quickstartRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());
@@ -65,26 +56,16 @@ public class QuickstartMenuFragment extends Fragment {
 
         AdaptiveSpacingItemDecoration adaptiveSpacingItemDecoration = new AdaptiveSpacingItemDecoration(150,true);
         this.recyclerView.addItemDecoration(adaptiveSpacingItemDecoration);
-
-
         this.recyclerView.setAdapter(this.adapter);
-
-
 
         return view;
     }
-
-
-
-
-
 
     @Override
     public void onStop() {
         super.onStop();
         this.activitiesList.clear();
     }
-
 
     private void setup()
     {
@@ -95,26 +76,22 @@ public class QuickstartMenuFragment extends Fragment {
 
         if(allActivitiesCursor.getCount()>0) {
             allActivitiesCursor.moveToFirst();
-
             do {
                 ActivityInfo currentAIInfo = new ActivityInfo(
                         allActivitiesCursor.getInt(0),
                         allActivitiesCursor.getString(1),
-                        allActivitiesCursor.getInt(2), Uri.parse("UriActPlaceholderQuickMenu"));
-
+                        allActivitiesCursor.getInt(2),
+                        allActivitiesCursor.getString(9));
 
                 if(currentAIInfo.getName().length() > this.maxLengthActName )
                 {
                     this.maxLengthActName = currentAIInfo.getName().length();
-                    Log.i("maxLengthActName changed",Integer.toString(this.maxLengthActName));
+                    Log.i("maxLenActName changed",Integer.toString(this.maxLengthActName));
                 }
 
                 Log.i("QMF db action",currentAIInfo.toString());
 
                 TaskItem[] currentAISubtasks = new TaskItem[DbContract.Activities.DIM_MAX];
-
-
-
                 /*List<TaskItem> currentAISubtasksList = new ArrayList<>(this.dbManager.retrieveSubtasks(allActivitiesCursor));
 
                 int i =0;
@@ -126,20 +103,11 @@ public class QuickstartMenuFragment extends Fragment {
                     i++;
                 }*/
 
-
-
                 this.activitiesList.add(new ActivityInfo(currentAIInfo));
 
             }while(allActivitiesCursor.moveToNext());
-
-
         }
-
-
         this.adapter = new QuickstartAdapter(this,this.activitiesList);
         Log.i("QMF","onCreate called");
     }
-
-
-
 }

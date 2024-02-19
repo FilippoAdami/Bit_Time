@@ -1,34 +1,30 @@
 package com.application.bit_time.Settings_Activity;
 
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.provider.MediaStore.getExternalVolumeNames;
-import static android.provider.MediaStore.getVersion;
-
-import android.content.ContentUris;
-import android.database.Cursor;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,7 +32,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.application.bit_time.utils.CustomViewModel;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.ErrorDialog;
-import com.application.bit_time.utils.ImageInfo;
+import com.application.bit_time.utils.ImagePicker;
 import com.application.bit_time.utils.SettingsModeData;
 import com.application.bit_time.utils.SubtasksViewModel;
 import com.application.bit_time.utils.TaskAdapter;
@@ -44,23 +40,39 @@ import com.application.bit_time.utils.TaskItem;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
 
 public class CreationUpperFragment extends Fragment {
 
-    private int MAX_LENGTH = 12;
+    private int MAX_LENGTH = 16;
     DbViewModel dbViewModel;
     SubtasksViewModel subtasksViewModel;
     CustomViewModel viewModel;
-    TaskAdapter taskAdapter;
-
     EditText editName;
     //EditText edtTxtHrs;
     EditText edtTxtMin;
     EditText edtTxtSec;
     TextView WarningTW;
+    ImageView imgView;
+    RelativeLayout changeIcon;
+    String currentIcon;
+// default icon path
+    String iconPath = "drawable/image.png";
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    static final int REQUEST_CODE_MEDIA_PERMISSION = 123;
+    private final ActivityResultLauncher<Void> imagePickerLauncher = registerForActivityResult(
+            new ImagePicker(),
+            uri -> {
+                // Handle the result, 'uri' contains the selected image URI
+                if (uri != null) {
+                    currentIcon = uri.toString();
+                    saveToInternalStorage(uri);
+                }
+            }
+    );
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,21 +82,14 @@ public class CreationUpperFragment extends Fragment {
         subtasksViewModel = new ViewModelProvider(requireActivity()).get("dbTasksVM", SubtasksViewModel.class);
 
         viewModel = new ViewModelProvider(requireActivity()).get(CustomViewModel.class);
-
-
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        ImageInfo latestImage = null;
         //View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
         View view = inflater.inflate(R.layout.task_creation_upper_fragment_layout,container,false);
-
-        ImageView thumbnailIV = view.findViewById(R.id.taskCreThumbnail);
-
-
 
         /*EditText editName = view.findViewById(R.id.editTaskNameLabel);
         EditText edtTxtHrs = view.findViewById(R.id.editTextHours);
@@ -97,7 +102,8 @@ public class CreationUpperFragment extends Fragment {
         WarningTW = view.findViewById(R.id.TaskCreWarning);
         WarningTW.setText("The name of the task cannot be longer than "+MAX_LENGTH+" chars");
         WarningTW.setVisibility(View.INVISIBLE);
-
+        imgView = view.findViewById(R.id.taskIcon);
+        changeIcon = view.findViewById(R.id.editTaskIcon);
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
@@ -126,12 +132,14 @@ public class CreationUpperFragment extends Fragment {
 
             }
         });
-        //checkPermissionsAndRetrievePictures(latestImage,thumbnailIV);
-
-        ImageInfo finalLatestImage = latestImage;
-
-
-
+// listener for the image change
+        changeIcon.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT <= 22) {
+                imagePickerLauncher.launch(null);
+            }else{
+                requestMediaPermissions(Manifest.permission.READ_MEDIA_IMAGES);
+            }
+        });
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,8 +151,7 @@ public class CreationUpperFragment extends Fragment {
                     int seconds = parseContent(edtTxtSec.getText().toString()) ;
                     int totalTime = hours + minutes + seconds;
                     Log.i("totalTime",Integer.toString(totalTime));
-
-                    TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime, finalLatestImage.getUri());
+                    TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime, iconPath);
 
                     Log.i("INFOZ", newTask.getName() + " " + newTask.getDuration());
 
@@ -171,9 +178,135 @@ public class CreationUpperFragment extends Fragment {
             }
         });
 
+
         return view;
     }
+//tons of functions to save image path and request permissions
+    private void saveToInternalStorage(Uri uri) {
+        //check API version
+        int apiLevel = android.os.Build.VERSION.SDK_INT;
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (apiLevel > 32){
+            permission = Manifest.permission.READ_MEDIA_IMAGES;
+        }
+        if (ContextCompat.checkSelfPermission(requireContext(), permission)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request the permission
+            ActivityCompat.requestPermissions(requireActivity(),
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        } else {Log.i("type", "saveToInternalStorage");
+            saveImageOperations(uri);
+        }
+    }
+    private void requestMediaPermissions(String permission) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            // Check if the permission is already granted
+            int permissionCheck = ContextCompat.checkSelfPermission(requireContext(), permission);
 
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                // Permission already granted
+                handleMediaPermissionResult();
+            } else {
+                // Request the specific permission based on API level
+                //for api 33 or higher, use new permissions
+                if (Build.VERSION.SDK_INT >= 33) {
+                    // For API level 33 (Android 13) and higher, use new permissions
+                    requestPermissions(new String[]{permission}, REQUEST_CODE_MEDIA_PERMISSION);
+                } else {
+                    // For lower API levels, fall back to READ_EXTERNAL_STORAGE
+                    int storagePermissionCheck = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                    if (storagePermissionCheck != PackageManager.PERMISSION_GRANTED) {
+                        // Request the storage permission
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_MEDIA_PERMISSION);
+                    }
+                }
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Check if the permission request is granted or not
+        if (requestCode == REQUEST_CODE_MEDIA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                handleMediaPermissionResult();
+            } else {
+                // Permission is denied
+                handleMediaPermissionDenied();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    void handleMediaPermissionResult() {
+        imagePickerLauncher.launch(null);
+    }
+    void handleMediaPermissionDenied() {
+        // Inform the user or take appropriate actions when permission is denied
+        // For example, show a message, disable certain features, etc.
+        Toast.makeText(requireContext(), "Autorizzazione non concessa.", Toast.LENGTH_SHORT).show();
+    }
+    public Bitmap saveImageFile(Uri uri, String fileName) {
+        Bitmap bitmap = null;
+        try {
+            InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = requireActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+            // Load the saved image into a Bitmap
+            File file = new File(requireActivity().getFilesDir(), fileName);
+            String imagePath = file.getAbsolutePath();
+            iconPath = imagePath;
+            Log.i("saveFileAbPath", imagePath);
+            bitmap = BitmapFactory.decodeFile(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+    public void saveImageOperations(Uri uri) {
+        // Determine the file extension from the MIME type
+        String extension;
+        String mimeType = requireActivity().getContentResolver().getType(uri);
+        if ("image/jpeg".equals(mimeType)) {
+            extension = ".jpg";
+        } else if ("image/png".equals(mimeType)) {
+            extension = ".png";
+        }else if ("image/ico".equals(mimeType)) {
+            extension = ".ico";
+        } else {
+            // Toast unsupported file types
+            Toast.makeText(getActivity(), "File non supportato", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Construct the file name with extension
+        //Generate a random string to append to the file name to make it unique
+        String random = Long.toString(System.currentTimeMillis());
+        String fileName = "task_image" +random+ extension;
+
+        // Save the image to internal storage and get the Bitmap
+        Bitmap savedBitmap = saveImageFile(uri, fileName);
+
+        if (savedBitmap != null) {
+            // Display the saved image in your ImageView
+            imgView = getView().findViewById(R.id.taskIcon);
+            imgView.setImageBitmap(savedBitmap);
+
+        } else {
+            // Toast something went wrong
+            Toast.makeText(getActivity(), "Errore nel salvataggio", Toast.LENGTH_SHORT).show();
+        }
+    }
     private boolean compulsoryFieldsAreFilled()
     {
         int length = editName.length();
@@ -203,8 +336,6 @@ public class CreationUpperFragment extends Fragment {
         }
         return true;
     }
-
-
     private void showError(int code)
     {
         ErrorDialog errorDialog = new ErrorDialog();
@@ -226,7 +357,6 @@ public class CreationUpperFragment extends Fragment {
         errorDialog.setArguments(b);
         errorDialog.show(getActivity().getSupportFragmentManager(),null);
     }
-
     private int parseContent(String stringToParse)
     {
         if(stringToParse.equals(""))
@@ -234,7 +364,6 @@ public class CreationUpperFragment extends Fragment {
         else
             return Integer.parseInt(stringToParse);
     }
-
     private int getTime(EditText edtTxt)
     {
         String srcStr=edtTxt.getText().toString();
@@ -242,102 +371,4 @@ public class CreationUpperFragment extends Fragment {
             return 0;
         else return Integer.parseInt(srcStr);
     }
-
-
-    /*private void checkPermissionsAndRetrievePictures(ImageInfo latestImage,ImageView thumbnailIV)
-    {
-
-        if(ContextCompat.checkSelfPermission(this.getContext(),READ_MEDIA_IMAGES) == PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 29)
-        {
-            Log.i("AccessMedia","permission granted");
-
-
-            for(String s : getExternalVolumeNames(this.getContext()))
-            {
-                Log.i("externalVolume",s);
-            }
-
-            String version = getVersion(this.getContext(),"external_primary");
-            Log.i("externalVol versionStr",version);
-
-
-            List<ImageInfo> imageList = new ArrayList<>();
-
-            Uri collection;
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            {
-                collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
-            }
-            else
-            {
-                collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            }
-
-            String[] projection = new String[]
-                    {
-                            MediaStore.Images.Media._ID,
-                            MediaStore.Images.Media.DISPLAY_NAME
-                    };
-            try(Cursor cursor = this.getContext().getContentResolver().query(collection,projection,null,null,null)){
-                Log.i("cursor res","rows "+cursor.getCount());
-                Log.i("cursor res",Integer.toString(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
-
-                int idColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                int nameColumnIndex= cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
-
-                while(cursor.moveToNext())
-                {
-                    long id = cursor.getLong(idColumnIndex);
-                    String name = cursor.getString(nameColumnIndex);
-
-                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id);
-                    latestImage = new ImageInfo(contentUri,name);
-                    imageList.add(latestImage);
-                    Log.i("cursor res",latestImage.toString());
-
-                }
-
-                if(latestImage != null) {
-                    Bitmap thumbnail = this.getContext().getContentResolver().loadThumbnail(latestImage.getUri(), new Size(800, 800), null);
-
-                    thumbnailIV.setImageDrawable(new BitmapDrawable(getResources(), thumbnail));
-                }
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else
-        {
-            Log.i("AccessMedia","permission denied");
-
-            if(shouldShowRequestPermissionRationale(READ_MEDIA_IMAGES))
-            {
-                Log.i("AccessMedia","you should show a rationale");
-            }else
-            {
-                Log.i("AccessMedia","rationale is not requested");
-            }
-
-
-            ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->{
-                if(isGranted)
-                {
-                    Log.i("AccessMedia","is granted");
-                }
-                else
-                {
-                    Log.i("AccessMedia","was NOT granted");
-                }
-            });
-
-            requestPermissionLauncher.launch(READ_MEDIA_IMAGES);
-
-
-        }
-    }
-    */
-
-
 }

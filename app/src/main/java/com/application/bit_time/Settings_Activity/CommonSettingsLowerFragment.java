@@ -1,36 +1,17 @@
 package com.application.bit_time.Settings_Activity;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.provider.MediaStore.getExternalVolumeNames;
-import static android.provider.MediaStore.getVersion;
-
-import android.content.ContentUris;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -49,10 +30,9 @@ import com.application.bit_time.utils.TaskAdapter;
 import com.application.bit_time.utils.TaskItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
 
 public class CommonSettingsLowerFragment extends Fragment {
 
@@ -61,10 +41,6 @@ public class CommonSettingsLowerFragment extends Fragment {
     private DbManager dbManager;
 
     private boolean addFABisPressed;
-
-
-
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,11 +66,6 @@ public class CommonSettingsLowerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.new_s_settings_lower_fragment_layout,container,false);
-
-        ImageView thumbtest = view.findViewById(R.id.thumbtest);
-
-
-
 
         FloatingActionButton addFAB = view.findViewById(R.id.addFAB);
         Button addTaskButton = view.findViewById(R.id.addTaskMenuButton);
@@ -177,10 +148,8 @@ public class CommonSettingsLowerFragment extends Fragment {
         {
 
             do{
-                TaskItem taskToAdd = new TaskItem(c.getInt(0),c.getString(1),c.getString(2),c.getString(3));
-                Log.i("tasktoAdd URI",taskToAdd.getImageUri().toString());
-                taskList.add(taskToAdd);
-
+// took also the last column to retrieve the image from db
+                taskList.add(new TaskItem(c.getInt(0),c.getString(1),c.getString(2), c.getString(3)));
             }while(c.moveToNext());
 
 
@@ -209,8 +178,8 @@ public class CommonSettingsLowerFragment extends Fragment {
                 }
 
 
-                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), subtasksA);
-                Log.i("activity item SLA",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
+                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2),c.getString(9), subtasksA);
+                Log.i("activity item SLA",c.getString(0)+" "+c.getString(1) + " " + c.getString(2) + " "+activityItem.getInfo().getImage());
                 list.add(activityItem);
             } while (c.moveToNext());
         }
@@ -231,8 +200,5 @@ public class CommonSettingsLowerFragment extends Fragment {
         this.addFABisPressed = true;
     }
 
-   public void onRequestPermissionResult(int reqCode,String[] permissions,int[] grantRes)
-   {
-       Log.i("AccessMedia","onREqPerm called");
-   }
+
 }

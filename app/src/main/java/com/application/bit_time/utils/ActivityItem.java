@@ -39,6 +39,8 @@ public class ActivityItem {
     {
 
         this.activityInfo = new ActivityInfo(original.activityInfo);
+        String image = this.activityInfo.getImage();
+        Log.i("image current path 10", "path: "+image);
 
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
 
@@ -97,6 +99,7 @@ public class ActivityItem {
     public ActivityItem(String name, int duration, TaskItem[] subtasks)
     {
         this.plans = null;
+        Log.i("image current path 1", "path: "+img);
 
         Log.i("SUB2ADD",subtasks[0].toString());
 

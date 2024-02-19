@@ -1,18 +1,10 @@
 package com.application.bit_time.utils;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Size;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 public class TaskItem {
@@ -21,39 +13,29 @@ public class TaskItem {
     private int IDpk;
     private String Name;
     private int Duration;
-    //immagine boh
-    private Uri imageUri;
-
+// img added; updated all the constructors to take also the image
+    private String Img;
 
     public TaskItem()
     {
         this.IDpk = -1;
         this.Name = "emptyTask";
         this.Duration = 0;
-        this.imageUri = null;
+        this.Img = "empty";
 
         //Log.i("TASKITEMCONST",this.toString());
     }
-    public TaskItem(int id,String name, int duration,Uri imageUri)
+    public TaskItem(int id,String name, int duration, String img)
     {
         this.IDpk = id;
         this.Name = name;
         this.Duration = duration;
-        this.imageUri = imageUri;
+        this.Img = img;
     }
-    public TaskItem(int id,String name, int duration,String imageUri)
+    public TaskItem(int id,String name,String duration, String img)
     {
         this.IDpk = id;
         this.Name = name;
-        this.Duration = duration;
-        this.imageUri = Uri.parse(imageUri);
-    }
-
-    public TaskItem(int id,String name,String duration,String uriStr)
-    {
-        this.IDpk = id;
-        this.Name = name;
-        this.imageUri=Uri.parse(uriStr);
 
         try {
             this.Duration = Integer.parseInt(duration);
@@ -62,14 +44,14 @@ public class TaskItem {
             this.Duration = -1 ;
             Log.e("ERROR","exception thrown when converting time for TaskItem obj");
         }
-
+        this.Img = img;
     }
     public TaskItem(TaskItem original)
     {
         this.IDpk = original.IDpk;
         this.Name = new String(original.getName());
         this.Duration = original.getDurationInt();
-        this.imageUri = original.getImageUri();
+        this.Img = new String(original.Img);
     }
     public String getName()
     {
@@ -82,6 +64,12 @@ public class TaskItem {
     public int getDurationInt()
     {
         return Duration;
+    }
+// function to get and set the image
+    public String getImg(){return Img;}
+    public void setImg(String img)
+    {
+        this.Img = img;
     }
     public void setName(String name)
     {
@@ -142,20 +130,6 @@ public class TaskItem {
          Log.i("reslog",res);
          return res;
 
-    }
-
-    public BitmapDrawable getBitmapDrawableImage(Context context)
-    {
-        return new BitmapDrawable(context.getResources(),this.imageUri.getPath());
-    }
-
-    public Drawable getDrawableThumbnail(Context context) throws IOException {
-
-        return new BitmapDrawable(context.getResources(),context.getContentResolver().loadThumbnail(this.imageUri, new Size(300, 300), null));
-    }
-    public Uri getImageUri()
-    {
-        return this.imageUri;
     }
     public TimeHelper getTimeHelper()
     {

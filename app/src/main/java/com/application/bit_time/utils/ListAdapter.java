@@ -6,12 +6,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,13 +41,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     private List<ActivityItem> list;
     private CommonSettingsLowerFragment settingsLowerFragmentActivities;
     private CustomViewModel viewModel;
-
     private Context context;
 
 
     public ListAdapter(CommonSettingsLowerFragment settingsLowerFragmentActivities, List<ActivityItem> list, Context context)
     {
 
+        for(ActivityItem AI : list) {
+            Log.i("ListAdapterImage", AI.getInfo().getImage());
+        }
         this.settingsLowerFragmentActivities = settingsLowerFragmentActivities;
         this.list = list;
         this.context = context;
@@ -79,6 +81,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         holder.bind(activityItem);
         holder.id = activityItem.activityInfo.getIdInt();
         holder.duration=activityItem.getInfo().getTimeInt();
+// icon path
+        holder.iconPathah = activityItem.getInfo().getImage();
+        Log.i("iconPathah","prova: ? "+holder.iconPathah);
+        String imagePath = activityItem.activityInfo.getImage();
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//decodeFile(imagePath);
+        holder.iconah.setImageBitmap(bitmap);
 
         Bitmap originalEditBitmap = BitmapFactory.decodeResource(this.context.getResources(),R.drawable.edit);
         Bitmap editBitmap = Bitmap.createScaledBitmap(originalEditBitmap,100,100,true);
@@ -98,9 +106,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
         holder.labelTime.setText(activityItem.getTime());
         holder.id = activityItem.activityInfo.getIdInt();
         //holder.subtask1.setText(activityItem.subtasks[0].getName());*/
-
-
-
     }
 
     @Override
@@ -137,6 +142,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
     {
         int id;
         int duration;
+// img & path added
+        ImageView iconah;
+        String iconPathah;
         TextView labelName;
         TextView labelTime;
         ImageButton modifyButton;
@@ -161,6 +169,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
             labelName = view.findViewById(R.id.labelName);
             labelTime = view.findViewById(R.id.labelTime);
+//img in layout reference
+            iconah = view.findViewById(R.id.activityIcon);
+
             modifyButton = view.findViewById(R.id.modifyButton);
             deleteButton = view.findViewById(R.id.deleteButton);
             subitem = view.findViewById(R.id.sub_item);
@@ -181,19 +192,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             view.setOnClickListener(this);
 
 
-
-
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Log.i("MODIFY","pressed");
                     Log.i("MODIFY","would modify "+ id);
                     //Toast.makeText(view.getContext(), "would modify "+ id,Toast.LENGTH_SHORT).show();
+// updated constructor call
+                    ActivityInfo activityToModifyInfo = new ActivityInfo(id,labelName.getText().toString(),duration, iconPathah);
 
-                    ActivityInfo activityToModifyInfo = new ActivityInfo(
-                            id,
-                            labelName.getText().toString(),
-                            labelTime.getText().toString(), Uri.parse("UriActPlaceholderListAdapt"));
 
                     Log.i("ACT INFO",activityToModifyInfo.toString());
                     TaskItem[] subtasksToBeAdded = new TaskItem[subtaskItems.length];
@@ -250,7 +257,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
                     // magari aggiungiamo una richiesta di conferma
 
                     Log.i("justtest",labelTime.getText().toString());
-                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),duration,Uri.parse("UriActPlaceholderListAdapt"));
+// updated constructor call
+                    ActivityInfo itemToDelete = new ActivityInfo(id,labelName.getText().toString(),duration, iconPathah);
                     ActivityItem item = dbManager.searchActivityItem(itemToDelete);
 
 
@@ -309,11 +317,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
 
         private void bind(ActivityItem activityItem) {
 
-            Log.i("bind","is called");
-            Log.i("ACTIVITYITEM inside",activityItem.subtasks[0].toString());
-
             boolean expanded = activityItem.isExpanded();
             int subtasksNum = activityItem.subtasks.length;
+            Log.i("subtasksNum",Integer.toString(subtasksNum));
 
             subitem.setVisibility(expanded ? View.VISIBLE : GONE);
 
@@ -325,7 +331,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemHolder
             for(int i = 0; i < subtasksNum ; i++)
             {
 
-                if(activityItem.subtasks[i].getID() != -1) {
+                if(activityItem.subtasks[i] != null) {
                     TaskItem ti = new TaskItem(dbManager.searchTask(activityItem.subtasks[i].getID()));
 
                     this.subtaskItems[i]= new TaskItem(ti);

@@ -206,10 +206,21 @@ public class GamificationSettings extends Fragment {
         int editText5Value = Integer.parseInt(editText5.getText().toString());
         int editText6Value = Integer.parseInt(editText6.getText().toString());
 
+        Log.d("CheckChanges", "Radio selection changed: " + (radioSelection != dbManager.getGamificationType()));
+        Log.d("CheckChanges", "Spinner 1 selection changed: " + (!spinner1Selection.equals(dbManager.getPositiveIcon())));
+        Log.d("CheckChanges", "Spinner 2 selection changed: " + (!spinner2Selection.equals(dbManager.getNegativeIconStr())));
+        Log.d("CheckChanges", "Edit text 1 value changed: " + (editText1Value != dbManager.getGamificationPoints()[0]));
+        Log.d("CheckChanges", "Edit text 2 value changed: " + (editText2Value != dbManager.getGamificationPoints()[1]));
+        Log.d("CheckChanges", "Edit text 3 value changed: " + (editText3Value != dbManager.getGamificationPoints()[2]));
+        Log.d("CheckChanges", "Edit text 4 value changed: " + (editText4Value != dbManager.getGamificationPoints()[3]));
+        Log.d("CheckChanges", "Edit text 5 value changed: " + (editText5Value != dbManager.getGamificationPoints()[4]));
+        Log.d("CheckChanges", "Edit text 6 value changed: " + (editText6Value != dbManager.getGamificationPoints()[5]));
+
+
         if (radioSelection != dbManager.getGamificationType()) {
             return true;
         }
-        if (!spinner1Selection.equals(dbManager.getPositiveIcon())) {
+        if (!spinner1Selection.equals(dbManager.getPositiveIconStr())) {
             return true;
         }
         if (!spinner2Selection.equals(dbManager.getNegativeIconStr())) {

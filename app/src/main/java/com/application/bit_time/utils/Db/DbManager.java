@@ -44,12 +44,13 @@ public class DbManager {
                 + DbContract.Activities.COLUMN_NAME_TASK3 + " integer,"
                 + DbContract.Activities.COLUMN_NAME_TASK4 + " integer,"
                 + DbContract.Activities.COLUMN_NAME_TASK5 + " integer,"
-                + DbContract.Activities.COLUMN_NAME_IS_PLANNED + "integer);"; // 0 will be false and 1 true
+                + DbContract.Activities.COLUMN_NAME_IS_PLANNED + " integer," // 0 will be false and 1 true
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + " text)";
 
         private static final String SQL_CREATE_TASKS_TABLE = "create table " + DbContract.Tasks.TABLE_NAME  + " (" +
                 DbContract.Tasks._ID + " integer primary key autoincrement,"  +
                 DbContract.Tasks.COLUMN_NAME_TASK_NAME + " text," +
-                DbContract.Tasks.COLUMN_NAME_TASK_DURATION  + " text,"+
+                DbContract.Tasks.COLUMN_NAME_TASK_DURATION  + " text," +
                 DbContract.Tasks.COLUMN_NAME_IMG + " text)";
 
         private static final String SQL_DELETE_ENTRIES =   "DROP TABLE IF EXISTS " + DbContract.Activities.TABLE_NAME;
@@ -185,16 +186,17 @@ public class DbManager {
                 tasksStr = tasksStr.concat(tasks[i].getIdStr());
 
         }
-
+        String imagePath = activity.getInfo().getImage();
         String insertQuery = "insert into "+ DbContract.Activities.TABLE_NAME
                 +" ("+ DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME+","
                 + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + ","
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + ","
                 + DbContract.Activities.COLUMN_NAME_TASK1 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK2 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK3 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK4 + ","
                 + DbContract.Activities.COLUMN_NAME_TASK5 + ") values ('"
-                + activity.getName()+ "'," + totalTime + "," +tasksStr +");";
+                + activity.getName()+ "'," + totalTime + ",'" + imagePath + "'," +tasksStr +");";
 
 
         Log.i("insert act str",insertQuery);
@@ -208,16 +210,8 @@ public class DbManager {
             c.moveToFirst();
             latestActId = c.getInt(0);
         }
-
-
-
         //return latestActId;
         return latestActId;
-
-
-
-
-
     }
 
 
@@ -269,29 +263,17 @@ public class DbManager {
                 c.moveToFirst();
                 Log.i("latest act inserted has",c.getColumnCount() +" columns");
             }
-
-
-
-
         }
-
         return c;
-
-
-
-
-
-
     }
 
     public void insertTaskRecord(TaskItem task)
     {
         String insertQuery = "insert into "+ DbContract.Tasks.TABLE_NAME
                 +" ("+ DbContract.Tasks.COLUMN_NAME_TASK_NAME+","
-                + DbContract.Tasks.COLUMN_NAME_TASK_DURATION+ ","
-                + DbContract.Tasks.COLUMN_NAME_IMG +
-                ") values("
-                + "'"+task.getName()+"','"+task.getDuration()+"','"+task.getImageUri().toString()+"');";
+                + DbContract.Tasks.COLUMN_NAME_TASK_DURATION+","
+                + DbContract.Tasks.COLUMN_NAME_IMG+") values("
+                + "'"+task.getName()+"','"+task.getDuration()+"','"+task.getImg()+"');";
 
         db.execSQL(insertQuery);
     }
@@ -305,7 +287,7 @@ public class DbManager {
 
         if(c.getCount()>0) {
             c.moveToFirst();
-            TaskItem item = new TaskItem(c.getInt(0), c.getString(1), c.getInt(2),c.getString(3));
+            TaskItem item = new TaskItem(c.getInt(0), c.getString(1), c.getInt(2), c.getString(3));
             c.close();
             return item;
         }
@@ -344,6 +326,7 @@ public class DbManager {
         //ActivityItem item = new ActivityItem(activityInfo,taskItemArr);
 
         //return item;
+        //activityInfo.updateImgStr(c.getString(9));
 
         return new ActivityItem(activityInfo,taskItemArr);
     }
@@ -367,8 +350,9 @@ public class DbManager {
                 "UPDATE "+ DbContract.Activities.TABLE_NAME
                 + " SET "
                 + DbContract.Activities.COLUMN_NAME_ACTIVITY_NAME + "='"+ info.getName() + "',"
-                + DbContract.Activities.COLUMN_NAME_TASK1 + "=" +subtasksId[0] +","
                 + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + info.getTimeInt() +","
+                + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + "='" + info.getImage() + "',"
+                + DbContract.Activities.COLUMN_NAME_TASK1 + "=" + subtasksId[0] +","
                 + DbContract.Activities.COLUMN_NAME_TASK2 + "=" + subtasksId[1] +","
                 + DbContract.Activities.COLUMN_NAME_TASK3 + "=" + subtasksId[2] +","
                 + DbContract.Activities.COLUMN_NAME_TASK4 + "=" + subtasksId[3] +","
@@ -379,8 +363,6 @@ public class DbManager {
 
 
         db.execSQL(query);
-
-
 
     }
 
@@ -449,7 +431,8 @@ public class DbManager {
                 "update "+ DbContract.Tasks.TABLE_NAME +
                         " set "
                         + DbContract.Tasks.COLUMN_NAME_TASK_NAME + "='" + modifiedItem.getName() + "',"
-                        + DbContract.Tasks.COLUMN_NAME_TASK_DURATION + "=" + modifiedItem.getDuration()
+                        + DbContract.Tasks.COLUMN_NAME_TASK_DURATION + "='" + modifiedItem.getDuration() + "',"
+                        + DbContract.Tasks.COLUMN_NAME_IMG + "='" + modifiedItem.getImg() + "'"
                         + " where " + DbContract.Tasks._ID + "=" + modifiedItem.getIdStr();
 
         Log.i("SQLMOD",updateQuery);
@@ -501,11 +484,11 @@ public class DbManager {
 
         String scanQuery = scanQueryBuilder(task);
 
-        Cursor scanCursor = db.rawQuery(scanQuery,null);
+        Cursor scanCursor = db.rawQuery(scanQuery, null);
 
-        Log.i("scanCursor info","dim : "+ scanCursor.getCount());
+        Log.i("scanCursor info", "dim: " + scanCursor.getCount());
 
-        if(scanCursor.getCount()>0) {
+        if (scanCursor.getCount() > 0) {
             scanCursor.moveToFirst();
             do {
                 int[] currSubtasks = new int[DbContract.Activities.DIM_MAX];
@@ -525,21 +508,19 @@ public class DbManager {
                     }
                 }
 
-                if(pos>0) {
+                if (pos > 0) {
                     currSubtasks[DbContract.Activities.DIM_MAX - 1] = -1;
 
 
                     String updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
-                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration ;
+                            + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration + ",";
 
                     for (int i = 1; i <= DbContract.Activities.DIM_MAX; i++) {
-                        //String partial = " " + DbContract.Activities.TABLE_NAME + ".task" + Integer.toString(i) + "=" + Integer.toString(currSubtasks[i - 1]);
-                        String partial = " " + "task" + i + "=" + currSubtasks[i - 1];
+                        String partial = " task" + i + "=" + currSubtasks[i - 1];
 
-
-                        if (i < DbContract.Activities.DIM_MAX)
+                        if (i < DbContract.Activities.DIM_MAX) {
                             partial = partial.concat(",");
-                        //Log.i("partial",partial);
+                        }
                         updateQuery = updateQuery.concat(partial);
 
                     }
@@ -548,10 +529,8 @@ public class DbManager {
 
                     Log.i("updateQuery2", updateQuery);
                     db.execSQL(updateQuery);
-                }
-                else
-                {
-                    Log.i("dimtestlog","left subtasks are zero");
+                } else {
+                    Log.i("dimtestlog", "left subtasks are zero");
                 }
             }while (scanCursor.moveToNext());
         }
@@ -567,7 +546,6 @@ public class DbManager {
         if(activityCursor.getCount()>0)
         {
             activityCursor.moveToFirst();
-
 
             for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
                 int subtaskId = activityCursor.getInt(3 + i);
@@ -614,7 +592,6 @@ public class DbManager {
         // Use parameterized query to avoid SQL injection
         db.execSQL(insertQuery, new String[]{email, hashedPassword, salt});
     }
-
     public boolean checkUser(Cursor cursor, String password) {
         int columnIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_PASSWORD);
         int saltIndex = cursor.getColumnIndex(DbContract.Userdata.COLUMN_NAME_SALT);
@@ -734,118 +711,6 @@ public class DbManager {
         //Log.i("DB delTask",deleteQuery.toString());
         db.execSQL(deleteQuery);
     }*/
-
-    public void changeTaskIcon(String icon) {
-        ContentValues values = new ContentValues();
-        values.put(DbContract.Tasks.COLUMN_NAME_IMG, icon);
-
-        // Check if a row exists
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Tasks.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            // If at least one row exists, update the value
-            int rowsAffected = db.update(
-                    DbContract.Tasks.TABLE_NAME,
-                    values,
-                    null,
-                    null
-            );
-
-            if (rowsAffected > 0) {
-                Log.i("DB_UPDATE", "Background updated successfully: " + icon);
-            } else {
-                Log.e("DB_ERROR", "Failed to update background");
-            }
-        } else {
-            // If no row exists, create a new row with default values
-            long newRowId = db.insert(DbContract.Tasks.TABLE_NAME, null, values);
-
-            if (newRowId != -1) {
-                Log.i("DB_INSERT", "New row inserted with background: " + icon);
-            } else {
-                Log.e("DB_ERROR", "Failed to insert new row");
-            }
-        }
-
-        cursor.close();  // Close the cursor to avoid potential memory leaks
-    }
-    public String getTaskIcon() {
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Tasks.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex(DbContract.Tasks.COLUMN_NAME_IMG);
-
-            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
-                String theme = cursor.getString(columnIndex);
-                cursor.close();  // Close the cursor to avoid potential memory leaks
-                return theme;
-            } else {
-                Log.e("DB_ERROR", "Column index is -1 for icon column");
-                cursor.close();
-                return "no icon";
-            }
-        } else {
-            Log.i("DB_INFO", "No rows found in the database, returning default icon");
-            cursor.close();
-            return "no icon";
-        }
-    }
-    public void changeActivityIcon(String icon) {
-        ContentValues values = new ContentValues();
-        values.put(DbContract.Activities.COLUMN_NAME_IMG, icon);
-
-        // Check if a row exists
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Activities.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            // If at least one row exists, update the value
-            int rowsAffected = db.update(
-                    DbContract.Activities.TABLE_NAME,
-                    values,
-                    null,
-                    null
-            );
-
-            if (rowsAffected > 0) {
-                Log.i("DB_UPDATE", "Icon updated successfully: " + icon);
-            } else {
-                Log.e("DB_ERROR", "Failed to update icon");
-            }
-        } else {
-            // If no row exists, create a new row with default values
-            long newRowId = db.insert(DbContract.Activities.TABLE_NAME, null, values);
-
-            if (newRowId != -1) {
-                Log.i("DB_INSERT", "New row inserted with icon: " + icon);
-            } else {
-                Log.e("DB_ERROR", "Failed to insert new row");
-            }
-        }
-
-        cursor.close();  // Close the cursor to avoid potential memory leaks
-    }
-    public String getActivityIcon() {
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.Activities.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex(DbContract.Activities.COLUMN_NAME_IMG);
-
-            if (columnIndex != -1 && !cursor.isNull(columnIndex)) {
-                String theme = cursor.getString(columnIndex);
-                cursor.close();  // Close the cursor to avoid potential memory leaks
-                return theme;
-            } else {
-                Log.e("DB_ERROR", "Column index is -1 for icon column");
-                cursor.close();
-                return "no icon";
-            }
-        } else {
-            Log.i("DB_INFO", "No rows found in the database, returning default icon");
-            cursor.close();
-            return "no icon";
-        }
-    }
-
 
     public void changeTheme(String theme) {
         ContentValues values = new ContentValues();

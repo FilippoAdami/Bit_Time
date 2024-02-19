@@ -3,12 +3,12 @@ package com.application.bit_time.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +24,7 @@ import com.application.bit_time.Settings_Activity.SettingsLowerFragmentTasks;
 import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     private SubtasksViewModel subtasksViewModel;
     private List<TaskItem> taskList;
     private CommonSettingsLowerFragment settingsLowerFragmentTasks;
-
     private Context context;
 
 
@@ -64,12 +64,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     public void onBindViewHolder(@NonNull TaskAdapter.ListItemHolder holder, int position) {
 
         TaskItem task = taskList.get(position);
+
         holder.labelName.setText(task.getName());
         holder.labelDuration.setText(task.getFormattedDuration());
         holder.id = task.getID();
         holder.duration = task.getDurationInt();
-        holder.imageUri = task.getImageUri();
-        Log.i("TaskAdapter idact",Integer.toString(holder.id));
+// icon path
+        holder.iconPathh = task.getImg();
+        String imagePath = task.getImg();
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//decodeFile(imagePath);
+        holder.iconh.setImageBitmap(bitmap);
 
         Bitmap originalDeleteBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.delete);
         Bitmap bitmapDeleteIcon = Bitmap.createScaledBitmap(originalDeleteBitmap,100,100,true);
@@ -78,8 +82,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
         Bitmap originalEditBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.edit);
         Bitmap bitmapEditIcon = Bitmap.createScaledBitmap(originalEditBitmap,100,100,true);
         holder.modifyButton.setImageBitmap(bitmapEditIcon);
-        //immagine boh
-
 
     }
 
@@ -104,10 +106,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
     }
 
     public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+// icon and path def
+        ImageView iconh;
+        String iconPathh;
         int id;
         int duration;
-        Uri imageUri;
         TextView labelName;
         TextView labelDuration;
         ImageButton modifyButton;
@@ -118,10 +121,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
         LinearLayout holderLayout;
 
-
-
-
-
         public ListItemHolder(View view)
         {
             super(view);
@@ -130,10 +129,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
             modifyButton = view.findViewById(R.id.modifyTaskIButton);
             deleteButton = view.findViewById(R.id.deleteTaskIButton);
             holderLayout = view.findViewById(R.id.itemHolderLayout);
-
-
-            //immagine boh
-
+// icon reference in layout
+            iconh = view.findViewById(R.id.taskIcon);
 
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -144,8 +141,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                     //DbViewModelData newData = dbViewModel.getSelectedItem().getValue();
                     //newData.taskToModify = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
-                    TaskItem thisTaskItem = new TaskItem(id,labelName.getText().toString(), duration,imageUri);
-                    Log.i("at modPress Uri",thisTaskItem.getImageUri().toString());
+//added iconpath to constructor
+                    TaskItem thisTaskItem = new TaskItem(id,labelName.getText().toString(), duration, iconPathh);
+
                     DbViewModelData newData = new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.UNDEFINED,
                             DbViewModelData.ITEM_TYPE.UNDEFINED,
@@ -162,8 +160,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                 }
             });
-
-
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -171,8 +167,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                     //DbViewModelData dbData = dbViewModel.getSelectedItem().getValue();
                     //dbData.taskToDelete = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString());
-
-                    TaskItem currentTask = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString(),imageUri.toString());
+// added iconpath to constructor
+                    TaskItem currentTask = new TaskItem(id,labelName.getText().toString(),labelDuration.getText().toString(), iconPathh);
 
                     dbViewModel.selectItem(new DbViewModelData(
                             DbViewModelData.ACTION_TYPE.DELETE,
@@ -203,8 +199,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListItemHolder
 
                 }
             });
-
-
 
             view.setClickable(true);
             view.setOnClickListener(this);

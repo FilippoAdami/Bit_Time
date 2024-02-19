@@ -47,12 +47,15 @@ public class MainActivity extends AppCompatActivity {
     //TODO : show clearly if daily has been pressed and is set or not
     // TODO : consider isPlanned field of activities schema
 
-    private boolean isGamificationOn;
+
+
     private RunningActivityViewModel runningActivityViewModel;
     private DbManager dbManager;
     private MainActivityViewModel statusVM;
     private OnBackPressedCallback ActRunningOBPCallback;
     private FragmentManager fragmentManager;
+    private String iconPath;
+
 
     public static class QuitDialog extends DialogFragment
     {
@@ -86,27 +89,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        /*Context context = this.getApplicationContext();
-        context.deleteDatabase("Activities.db");*/
 
         fragmentManager = getSupportFragmentManager();
         OnBackPressedDispatcher OBPDispatcher = getOnBackPressedDispatcher();
         Log.i("OBP main",OBPDispatcher.toString());
 
-
         //DisplayMetrics metrics = this.getResources().getDisplayMetrics();
         //Log.i("pixelWidth",Integer.toString(metrics.widthPixels));
 
-
-        //TODO: this will interact with the settings actviity in order to update without always refering to the db if gamification changes from disabled to eabled or viceversa.
         dbManager = new DbManager(getApplicationContext());
-
-
-        Log.i("buildVersion",Integer.toString(Build.VERSION.SDK_INT));
 
         //CHECKS FOR PERMISSIONS
         if(Build.VERSION.SDK_INT > 22)
@@ -196,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_main);
-
 
         //FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
 
@@ -289,7 +281,12 @@ public class MainActivity extends AppCompatActivity {
 
                 SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
                 int value = sharedPrefs.getInt("activityToRun",-1);
+                iconPath = sharedPrefs.getString("activityIconPath",null);
                 Log.i("activityToRun",Integer.toString(value));
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("activityIconPathhh", iconPath);
+                editor.apply();
+                Log.i("activityIconPathM", ""+iconPath);
 
                 fragmentManager
                         .beginTransaction()
@@ -328,9 +325,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-
-
-
         });
 
 
@@ -345,12 +339,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Main Activity detection","ActivityDone detected");
                 Log.i("Main act detection",Integer.toString(item.getFullReport().size()));
 
-
-
                 Toast.makeText(this,"REPORT WILL BE SAVED",Toast.LENGTH_SHORT).show();
 
                 SharedPreferences tempsharedPreferences = getPreferences(Context.MODE_PRIVATE);
                 int actID = tempsharedPreferences.getInt("activityToRun",-100);
+                iconPath = tempsharedPreferences.getString("activityIconPath",null);
                 Log.i("Backfield choice","Save actId "+actID);
                 dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());
 
@@ -367,9 +360,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //up to here
 
-
                 fragmentManager.popBackStackImmediate(getResources().getString(R.string.runningActivityEntry),FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
 
                 fragmentManager
                         .beginTransaction()
@@ -387,8 +378,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO : UNCOMMENT AND FIX
         if(intentBundle != null)
         {
-            this.isGamificationOn = intentBundle.getBoolean("isGamificationOn");
-            Log.i("isGamificationOn","retrieved from bundleatio value: "+this.isGamificationOn);
             int actId = (int) intentBundle.get("actId");
             Log.i("sourceAct"," actId : " + actId);
 
@@ -397,17 +386,11 @@ public class MainActivity extends AppCompatActivity {
                     .edit()
                     .putInt("activityToRun",actId)
                     .commit();
-
-
             statusVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
-
-
         }
         else
         {
             Log.i("sourceAct", "intentBundle was null");
-            this.isGamificationOn = dbManager.getGamification();
-            Log.i("isGamificationOn","retrieved from db value: "+this.isGamificationOn);
         }
 
         /*fragmentManager

@@ -31,24 +31,18 @@ import com.application.bit_time.utils.Db.DbViewModel;
 import com.application.bit_time.utils.Db.DbViewModelData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SettingsLowerFragmentActivities extends Fragment
 {
-
-
     private List<ActivityItem> activityList;
-    private List<TaskItem> taskList;
-    DbContract activityContract;
     private RecyclerView recyclerView;
     ListAdapter listAdapter;
-    TaskAdapter taskAdapter;
     DbManager dbManager;
     DbViewModel dbViewModel;
     DbViewModelData latestData;
     CustomViewModel viewModel;
-
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,7 +80,7 @@ public class SettingsLowerFragmentActivities extends Fragment
     {
         //Log.i("LOWFRAGACT","uptohere bro");
         View view = inflater.inflate(R.layout.s_settings_lower_fragment_layout,container,false);
-
+        Log.d("DEBUGGINGLOG", "arrivato al punto 0");
         recyclerView= view.findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -94,8 +88,10 @@ public class SettingsLowerFragmentActivities extends Fragment
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),LinearLayoutManager.VERTICAL));
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
+        Log.d("DEBUGGINGLOG", "arrivato al punto 1");
         activityList = new ArrayList<>();
         activityList = getActivityData(dbManager.selectAllActivities());
+        Log.d("DEBUGGINGLOG", "arrivato al punto 2");
         //Log.i("ACTIVITYLIST",Integer.toString(activityList.size()));
 
         for(ActivityItem ai : activityList)
@@ -104,7 +100,7 @@ public class SettingsLowerFragmentActivities extends Fragment
                 Log.i(ai.toString(),ti.toString());
             }
         }
-
+        Log.d("DEBUGGINGLOG", "arrivato al punto 3");
         //listAdapter = new ListAdapter(this,activityList,this.getContext());
         //Log.i("LOWFRAGACT adaptState",listAdapter.toString());
 
@@ -134,7 +130,7 @@ public class SettingsLowerFragmentActivities extends Fragment
                 }
 
 
-                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), subtasksA);
+                ActivityItem activityItem = new ActivityItem(c.getString(0), c.getString(1), c.getString(2), c.getString(3), subtasksA);
                 Log.i("activity item SLA",c.getString(0)+" "+c.getString(1) + " " + c.getString(2));
                 list.add(activityItem);
             } while (c.moveToNext());
@@ -142,9 +138,6 @@ public class SettingsLowerFragmentActivities extends Fragment
 
         return list;
     }
-
-
-
 
     @Override
     public void onDestroy() {
