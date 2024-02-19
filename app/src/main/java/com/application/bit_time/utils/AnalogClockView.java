@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.application.bit_time.Main_Activity.QuickstartMenuFragment;
 import com.application.bit_time.R;
 import com.application.bit_time.utils.Db.DbManager;
 
@@ -41,7 +42,7 @@ public class AnalogClockView extends View {
     private Paint minuteHandPaint;     // Paint for the minute hand
     private Paint textPaint;           // Paint for drawing text (numbers)
     private Paint minuteMarkPaint;     // Paint for drawing minute marks
-
+    private QuickstartMenuFragment quickstartMenuFragment;
     private Paint RedPaint;      // Paint for the pastel red color
     private Paint YellowPaint;   // Paint for the pastel yellow color
     private Paint GreenPaint;    // Paint for the pastel green color
@@ -197,6 +198,7 @@ public class AnalogClockView extends View {
         //Get TimesString from SharedPreferences
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String TimesString = sharedPreferences.getString("TimesString", "000000,000000,000000,000000,000000,000000,00000");
+        String currentBackground = sharedPreferences.getString("activityIconPathhh", "null");
         //Get current task from SharedPreferences
         int currentTaskID = sharedPreferences.getInt("currentTask", 0);
         // Get currentTaskStartingTime from SharedPreferences
@@ -382,32 +384,9 @@ public class AnalogClockView extends View {
         canvas.drawCircle(centerX, centerY, (int) (radius*0.6), clockPaint);
 
         // Draw background image inside the clock
-        String currentBackground = dbManager.getBackground();
+        Log.i("iconPathClock"," x "+currentBackground);
         try {
-            // Check if the file path is valid
-            if (currentBackground == null || currentBackground.isEmpty()) {
-                // Handle invalid file path
-                throw new IllegalArgumentException("Invalid file path");
-            }
-
-            // Get the file object from the file path
-            File file = new File(currentBackground);
-
-            // Check if the file exists
-            if (!file.exists()) {
-                // Handle file not found
-                throw new FileNotFoundException("File not found");
-            }
-
-            String imagePath = file.getAbsolutePath();
-
-            // Check if the file is a valid image
-            if (!isValidImageFile(file)) {
-                // Handle invalid image file
-                throw new IllegalArgumentException("Invalid image file");
-            }
-
-            Bitmap originalBitmap = BitmapFactory.decodeFile(imagePath);
+            Bitmap originalBitmap = BitmapFactory.decodeFile(currentBackground);
             int maxSize = 2 * (int)(radius*0.6);  // Change this to your desired value
 
             // Calculate the scaling factors for width and height

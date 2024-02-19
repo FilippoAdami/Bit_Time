@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private MainActivityViewModel statusVM;
     private OnBackPressedCallback ActRunningOBPCallback;
     private FragmentManager fragmentManager;
+    private String iconPath;
 
 
     public static class QuitDialog extends DialogFragment
@@ -87,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
             return builder.create();
         }
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_main);
 
-
         //FragmentContainerView topContainer = (FragmentContainerView) findViewById(R.id.controlbarFragment);
 
         /*if(topContainer == null)
@@ -282,7 +281,12 @@ public class MainActivity extends AppCompatActivity {
 
                 SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
                 int value = sharedPrefs.getInt("activityToRun",-1);
+                iconPath = sharedPrefs.getString("activityIconPath",null);
                 Log.i("activityToRun",Integer.toString(value));
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("activityIconPathhh", iconPath);
+                editor.apply();
+                Log.i("activityIconPathM", ""+iconPath);
 
                 fragmentManager
                         .beginTransaction()
@@ -338,12 +342,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Main Activity detection","ActivityDone detected");
                 Log.i("Main act detection",Integer.toString(item.getFullReport().size()));
 
-
-
                 Toast.makeText(this,"REPORT WILL BE SAVED",Toast.LENGTH_SHORT).show();
 
                 SharedPreferences tempsharedPreferences = getPreferences(Context.MODE_PRIVATE);
                 int actID = tempsharedPreferences.getInt("activityToRun",-100);
+                iconPath = tempsharedPreferences.getString("activityIconPath",null);
                 Log.i("Backfield choice","Save actId "+actID);
                 dbManager.insertFullReportData(actID,this.runningActivityViewModel.getSelectedItem().getValue().getFullReport());
 
@@ -360,9 +363,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //up to here
 
-
                 fragmentManager.popBackStackImmediate(getResources().getString(R.string.runningActivityEntry),FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
 
                 fragmentManager
                         .beginTransaction()
@@ -380,7 +381,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO : UNCOMMENT AND FIX
         if(intentBundle != null)
         {
-
             int actId = (int) intentBundle.get("actId");
             Log.i("sourceAct"," actId : " + actId);
 
@@ -389,11 +389,7 @@ public class MainActivity extends AppCompatActivity {
                     .edit()
                     .putInt("activityToRun",actId)
                     .commit();
-
-
             statusVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
-
-
         }
         else
         {

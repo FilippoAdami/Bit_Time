@@ -1,8 +1,5 @@
 package com.application.bit_time.utils;
 
-
-import static com.google.android.material.internal.ContextUtils.getActivity;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -21,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.bit_time.Main_Activity.MainActivity;
 import com.application.bit_time.Main_Activity.QuickstartMenuFragment;
 import com.application.bit_time.R;
 
@@ -64,9 +60,8 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
         holder.id = currentAI.getIdInt();
         holder.titleString = currentAI.getName();
         holder.title.setText(holder.titleString);
-        String path = currentAI.getImage();
-        Log.i("imagePathIS: ","prova"+path);
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        holder.iconPath = currentAI.getImage();
+        Bitmap bitmap = BitmapFactory.decodeFile(holder.iconPath);
         holder.icon.setImageBitmap(bitmap);
         holder.duration.setText(currentAI.getFormattedDuration());
 
@@ -81,6 +76,7 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
 
         TextView title;
         TextView duration;
+        String iconPath;
         ImageView icon;
         Button startActBtn;
         private MainActivityViewModel mainActivityViewModel;
@@ -96,20 +92,18 @@ public class QuickstartAdapter extends RecyclerView.Adapter<QuickstartAdapter.Li
             this.startActBtn = view.findViewById(R.id.startButton);
             this.mainActivityViewModel = new ViewModelProvider(quickstartMenuFragment.getActivity()).get(MainActivityViewModel.class);
 
-            this.startActBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.i("STARTBUTTON ACT","would share id: "+id);
-                    SharedPreferences sharedPreferences = quickstartMenuFragment.getActivity().getPreferences(Context.MODE_PRIVATE);
+            this.startActBtn.setOnClickListener(view1 -> {
+                Log.i("STARTBUTTON ACT","would share id: "+id);
+                SharedPreferences sharedPreferences = quickstartMenuFragment.getActivity().getPreferences(Context.MODE_PRIVATE);
 
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    Log.i("titlename",titleString);
-                    editor.putInt("activityToRun",id);
-                    editor.putString("activityName",titleString);
-                    editor.apply();
-                    mainActivityViewModel.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
-                }
+                Log.i("titlename",titleString);
+                editor.putInt("activityToRun",id);
+                editor.putString("activityName",titleString);
+                editor.putString("activityIconPath", iconPath);
+                editor.apply();
+                mainActivityViewModel.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
             });
 
         }

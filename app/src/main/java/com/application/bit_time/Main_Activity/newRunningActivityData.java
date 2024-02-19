@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class newRunningActivityData {
-
-
-
     static final int BIGANTICIPATION = 70;
     static final int ANTICIPATION = 90;
 
@@ -70,6 +67,7 @@ public class newRunningActivityData {
     EndStatus endStatus;
     int lastedTime;
     private String activityName;
+    String activityIconPath;
     private List<ReportData> fullReport;
 
     public newRunningActivityData()
