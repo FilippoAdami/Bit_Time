@@ -1589,17 +1589,28 @@ public class DbManager {
 
     public AlarmInfo selectScheduleById(int scheduleId)
     {
+
+        AlarmInfo res;
         String queryStr = "select * from "+DbContract.ActivitySchedule.TABLE_NAME +
             " where " + DbContract.ActivitySchedule._ID +"="+scheduleId;
-
+        Log.i("queryStr sched",queryStr);
         Cursor c = db.rawQuery(queryStr,null);
 
-
+        if(c.getCount()>0) {
             c.moveToFirst();
-            AlarmInfo res = new AlarmInfo(c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), AlarmInfo.Frequency.valueOf(c.getString(7)));
+            res = new AlarmInfo(c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), AlarmInfo.Frequency.valueOf(c.getString(7)));
             Log.i("res", res.toString());
+
+        }
+        else
+        {
+            Log.i("something","went wrong here");
+            res=null;
+        }
         c.close();
+
         return res;
+
     }
 
     /*public GregorianCalendar getActivityScheduleInfoGC(int activityId,int scheduleId) {

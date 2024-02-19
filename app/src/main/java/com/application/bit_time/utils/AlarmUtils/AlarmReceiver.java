@@ -37,10 +37,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.i("title recevied",title);
         Log.i("msg received",msg);
 
-        Log.i("alarmId received", Integer.toString(alarmId));
+        Log.i("alarmId received sched", Integer.toString(alarmId));
 
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.putExtra("actId", actId);
+        //resultIntent.putExtra("alarmId",alarmId);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntent(resultIntent);
@@ -52,6 +53,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         String actName = intent.getExtras().getString("actName", "unnamed activity");
 
         Log.i("ALARMRECEIVER", "log from me");
+
+        //TODO:manage how the alarm behaves aftere the notification is fired
+        AlarmScheduler alarmScheduler = new AlarmScheduler(context.getApplicationContext());
+        Log.i("actId passed 2 mansched",Integer.toString(actId));
+        AlarmInfo schedule= dbManager.selectScheduleById(alarmId);
+        Log.i("schedule retr is",schedule.toString());
+        alarmScheduler.manage(schedule,alarmId,actId,actName);
 
 
 
@@ -73,9 +81,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
         notificationManager.notify(17, builder.build());
-        //TODO:manage how the alarm behaves aftere the notification is fired
-        AlarmScheduler alarmScheduler = new AlarmScheduler(context.getApplicationContext());
-        Log.i("actId passed 2 mansched",Integer.toString(actId));
-        alarmScheduler.manage(dbManager.selectScheduleById(alarmId),alarmId);
+
     }
 }

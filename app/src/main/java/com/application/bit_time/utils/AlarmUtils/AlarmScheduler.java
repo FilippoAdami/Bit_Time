@@ -33,6 +33,13 @@ public class AlarmScheduler implements AlarmSchedulerInterface
     private int actId;
     private int alarmId;
 
+    public AlarmScheduler(Context context)
+    {
+        this.context = context;
+        this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+    }
+
     @SuppressLint("ScheduleExactAlarm")
     @Override
     public void schedule(AlarmInfo info) {
@@ -121,17 +128,25 @@ public class AlarmScheduler implements AlarmSchedulerInterface
 
     }
 
-    public void manage(AlarmInfo info,int planDbId)
+    public void manage(AlarmInfo info,int planDbId,int actId,String actName)
     {
 
 
         Log.i("from manage log sched",info.toString());
 
 
-        planDbId = planDbId;
+        this.actId = actId;
+        this.alarmId = planDbId;
+        this.actName= actName;
+
         DbManager dbManager = new DbManager(this.context);
-        dbManager.deleteActivitySchedule(planDbId);
+        dbManager.deleteActivitySchedule(this.alarmId);
         cancel(info);
+
+
+        this.alarmId = planDbId +1;// this makes sense because id is set as autoincrement so the new entry will be old one +1
+
+
         if(info.freq.toString().equals("NotSet"))
         {
             Log.i("freq check sched","freq is not set so i will call cancel");
@@ -152,30 +167,25 @@ public class AlarmScheduler implements AlarmSchedulerInterface
             }
 
             Log.i("actId before sched",Integer.toString(actId));
-            dbManager.insertActivitySchedule(actId,info.getInfoGC(),info.getFreq());
+            dbManager.insertActivitySchedule(this.actId,info.getInfoGC(),info.getFreq());
 
         }
 
         dbManager.closeDb();
     }
 
-    public AlarmScheduler(Context context)
-    {
-            this.context = context;
-            this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-    }
 
     public void scheduleAll(List<PlanningInfo> plans, String actName,List<Integer> ids)
     {
         int i=0;
         this.actName = actName;
         this.actId = ids.get(i);
-        Log.i("id here as",Integer.toString(this.actId));
+        //Log.i("id here as",Integer.toString(this.actId));
 
         for(PlanningInfo pi : plans)
         {
-            Log.i("pi here",pi.toString());
+            //Log.i("pi here",pi.toString());
             i++;
             alarmId = ids.get(i);
             schedule(pi.getInfo());

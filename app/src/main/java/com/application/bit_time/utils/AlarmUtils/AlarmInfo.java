@@ -212,7 +212,7 @@ public class AlarmInfo {
     {
         //TODO : checks over months and days and change values
         Log.i("fromAlarmInfo","this.day now is "+this.min);
-        this.min=this.min+1;
+        this.day=this.day+1;
         Log.i("fromAlarmInfo","this.day now is "+this.min);
         return this;
 
@@ -235,7 +235,7 @@ public class AlarmInfo {
     {
         //TODO : checks over months and days and change values
         Log.i("fromAlarmInfo","this.day now is "+this.min);
-        this.min=this.min+2;
+        this.day=this.day+7;
         Log.i("fromAlarmInfo","this.day now is "+this.min);
         return this;
     }
