@@ -124,6 +124,8 @@ public class NewRunningTaskFragment extends Fragment {
                         Log.i("nextTaskIconPathA",nextTaskIconPath);
                         Bitmap nextbitmap = BitmapFactory.decodeFile(nextTaskIconPath);
                         nextImageTW.setImageBitmap(nextbitmap);
+                        //nextImageTW.setAlpha(0.5f);
+
                         //nextDurationTW.setText(nextTask.getDuration());
                         nextDurationTW.setText(nextTask.getFormattedDuration());
                         SLIterator.previous();
