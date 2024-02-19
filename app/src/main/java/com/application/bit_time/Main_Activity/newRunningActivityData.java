@@ -79,7 +79,6 @@ public class newRunningActivityData {
         this.fullReport = null;
         this.activityName = null;
     }
-
     public newRunningActivityData(TaskItem currentTask)
     {
         this();
@@ -87,33 +86,27 @@ public class newRunningActivityData {
         this.lastedTime=-1;
         this.status = Status.Uploaded;
     }
-
     public newRunningActivityData(TaskItem currentTask,Status currentStatus)
     {
         this(currentTask);
         this.status=currentStatus;
     }
-
     public newRunningActivityData(Status currentStatus,List<ReportData> reportData)
     {
         this();
         this.status = currentStatus;
         this.fullReport = new ArrayList<>(reportData);
     }
-
     public List<ReportData> getFullReport()
     {
         return this.fullReport;
     }
-
     public newRunningActivityData(TaskItem currentTask, int lastedTime)
     {
         this(currentTask);
         this.lastedTime = lastedTime;
         setLastedTime(this.lastedTime);
     }
-
-
     public void setLastedTime(int lastedTime)
     {
         float MAXTIME = currentTask.getDurationInt();
@@ -137,14 +130,11 @@ public class newRunningActivityData {
             this.endStatus = EndStatus.Delay;
         }
     }
-
-
     public void setFullReport(List<ReportData> reportList)
     {
         this.fullReport=new ArrayList<>(reportList);
 
     }
-
     public boolean isExpired()
     {
         if(this.endStatus.equals(EndStatus.Expired))
@@ -152,29 +142,22 @@ public class newRunningActivityData {
 
         return false;
     }
-
     public void setAsExpired()
     {
         this.status= Status.End;
         this.endStatus = EndStatus.Expired;
         this.lastedTime= this.currentTask.getDurationInt();
     }
-
-
-
     public UpdatePackage getUpdatePackage()
     {
         return new UpdatePackage(this.lastedTime,this.endStatus);
     }
-
-
     public ReportData getReportData()
     {
         ReportData reportData = new ReportData(currentTask.getID(),currentTask.getName(),this.endStatus,this.lastedTime,currentTask.getDurationInt());
 
         return reportData;
     }
-
     public void setAsTerminated(int lastedTime)
     {
         this.status=Status.End;

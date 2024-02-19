@@ -3,6 +3,8 @@ package com.application.bit_time.Main_Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,34 +35,22 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class NewRunningTaskFragment extends Fragment {
-
-
     DbManager dbManager;
-
     private TaskItem currentTask;
+    private TaskItem nextTask;
     //private List<TaskItem> subtasksList;
     private RunningActivityViewModel RAVM;
     private List<ReportData> reportDataList;
     private ListIterator<ReportData> SLIterator;
 
-
-
-
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
 
         this.dbManager = new DbManager(this.getContext());
         //subtasksList = new ArrayList<>();
         RAVM = new ViewModelProvider(this.requireActivity()).get(RunningActivityViewModel.class);
         this.reportDataList = new ArrayList<>();
-
-
-
 
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         int actId= sharedPreferences.getInt("activityToRun",-500);
@@ -78,17 +69,14 @@ public class NewRunningTaskFragment extends Fragment {
                 Log.i("latestRDBase",latestReportDataBase.toString());
                 //subtasksList.add(ti);
                 //Log.i("ti added",ti.toString());
-
             }
         }
-
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.front_running_activity_fragment_layout,container,false);
-
 
         Button endTaskButton = view.findViewById(R.id.endTaskButton);
         endTaskButton.setOnClickListener(view1 -> {
@@ -113,15 +101,26 @@ public class NewRunningTaskFragment extends Fragment {
                     TextView durationTextView = view.findViewById(R.id.clockPlaceholder);
                     //durationTextView.setText(item.currentTask.getDuration());
                     durationTextView.setText(item.currentTask.getFormattedDuration());
+// Punto 1
+                    ImageView currentImageTW = view.findViewById(R.id.imagePlaceholder);
+                    String currentTaskIconPath = item.currentTask.getImg();
+                    Log.i("currentTaskIconPathA",currentTaskIconPath);
+                    Bitmap bitmap = BitmapFactory.decodeFile(currentTaskIconPath);
+                    currentImageTW.setImageBitmap(bitmap);
 
                     TextView nextTaskTW = view.findViewById(R.id.nextTaskTextView);
                     TextView nextDurationTW = view.findViewById(R.id.nextClockPlaceholder);
-                    TextView nextImageTW = view.findViewById(R.id.nextImagePlaceholder);
+                    ImageView nextImageTW = view.findViewById(R.id.nextImagePlaceholder);
 
                     if (SLIterator.hasNext()) {
 
                         TaskItem nextTask = SLIterator.next().getTaskItem();
                         nextTaskTW.setText(nextTask.getName());
+//Punto 2
+                        String nextTaskIconPath = nextTask.getImg();
+                        Log.i("nextTaskIconPathA",nextTaskIconPath);
+                        Bitmap nextbitmap = BitmapFactory.decodeFile(nextTaskIconPath);
+                        nextImageTW.setImageBitmap(nextbitmap);
                         //nextDurationTW.setText(nextTask.getDuration());
                         nextDurationTW.setText(nextTask.getFormattedDuration());
                         SLIterator.previous();
