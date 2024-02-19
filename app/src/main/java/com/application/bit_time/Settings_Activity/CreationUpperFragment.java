@@ -126,7 +126,7 @@ public class CreationUpperFragment extends Fragment {
 
             }
         });
-        checkPermissionsAndRetrievePictures(latestImage,thumbnailIV);
+        //checkPermissionsAndRetrievePictures(latestImage,thumbnailIV);
 
         ImageInfo finalLatestImage = latestImage;
 
@@ -244,10 +244,10 @@ public class CreationUpperFragment extends Fragment {
     }
 
 
-    private void checkPermissionsAndRetrievePictures(ImageInfo latestImage,ImageView thumbnailIV)
+    /*private void checkPermissionsAndRetrievePictures(ImageInfo latestImage,ImageView thumbnailIV)
     {
 
-        if(ContextCompat.checkSelfPermission(this.getContext(),READ_MEDIA_IMAGES) == PERMISSION_GRANTED )
+        if(ContextCompat.checkSelfPermission(this.getContext(),READ_MEDIA_IMAGES) == PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 29)
         {
             Log.i("AccessMedia","permission granted");
 
@@ -258,7 +258,7 @@ public class CreationUpperFragment extends Fragment {
             }
 
             String version = getVersion(this.getContext(),"external_primary");
-            Log.i("externalVolume versionStr",version);
+            Log.i("externalVol versionStr",version);
 
 
             List<ImageInfo> imageList = new ArrayList<>();
@@ -337,6 +337,7 @@ public class CreationUpperFragment extends Fragment {
 
         }
     }
+    */
 
 
 }
