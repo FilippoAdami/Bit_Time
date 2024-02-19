@@ -202,5 +202,6 @@
     <string name="emptySubtasksErrMsg">L\'activity che stai creando al momento non contiene tasks, scegline premendo sul + oppure creane di nuovi e poi torna qui</string>
     <string name="sadDogIcon">sad_dog</string>
     <string name="happyDogIcon">happy_dog</string>
+    <string name="backReportButton">Torna al menu\'</string>
 
 </resources>
