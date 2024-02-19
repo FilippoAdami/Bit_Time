@@ -3,6 +3,7 @@ package com.application.bit_time.Main_Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -99,7 +100,7 @@ public class QuickstartMenuFragment extends Fragment {
                 ActivityInfo currentAIInfo = new ActivityInfo(
                         allActivitiesCursor.getInt(0),
                         allActivitiesCursor.getString(1),
-                        allActivitiesCursor.getInt(2));
+                        allActivitiesCursor.getInt(2), Uri.parse("UriActPlaceholderQuickMenu"));
 
 
                 if(currentAIInfo.getName().length() > this.maxLengthActName )

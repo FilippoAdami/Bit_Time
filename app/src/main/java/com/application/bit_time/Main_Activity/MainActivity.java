@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private OnBackPressedCallback ActRunningOBPCallback;
     private FragmentManager fragmentManager;
 
-
     public static class QuitDialog extends DialogFragment
     {
         @NonNull

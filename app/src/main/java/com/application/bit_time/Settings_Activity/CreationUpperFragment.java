@@ -84,95 +84,8 @@ public class CreationUpperFragment extends Fragment {
 
         ImageView thumbnailIV = view.findViewById(R.id.taskCreThumbnail);
 
-        if(ContextCompat.checkSelfPermission(this.getContext(),READ_MEDIA_IMAGES) == PERMISSION_GRANTED )
-        {
-            Log.i("AccessMedia","permission granted");
 
 
-            for(String s : getExternalVolumeNames(this.getContext()))
-            {
-                Log.i("externalVolume",s);
-            }
-
-            String version = getVersion(this.getContext(),"external_primary");
-            Log.i("externalVolume versionStr",version);
-
-
-            List<ImageInfo> imageList = new ArrayList<>();
-
-            Uri collection;
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            {
-                collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
-            }
-            else
-            {
-                collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            }
-
-            String[] projection = new String[]
-                    {
-                            MediaStore.Images.Media._ID,
-                            MediaStore.Images.Media.DISPLAY_NAME
-                    };
-            try(Cursor cursor = this.getContext().getContentResolver().query(collection,projection,null,null,null)){
-                Log.i("cursor res","rows "+cursor.getCount());
-                Log.i("cursor res",Integer.toString(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
-
-                int idColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                int nameColumnIndex= cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
-
-                while(cursor.moveToNext())
-                {
-                    long id = cursor.getLong(idColumnIndex);
-                    String name = cursor.getString(nameColumnIndex);
-
-                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id);
-                    latestImage = new ImageInfo(contentUri,name);
-                    imageList.add(latestImage);
-                    Log.i("cursor res",latestImage.toString());
-
-                }
-
-                if(latestImage != null) {
-                    Bitmap thumbnail = this.getContext().getContentResolver().loadThumbnail(latestImage.getUri(), new Size(800, 800), null);
-
-                    thumbnailIV.setImageDrawable(new BitmapDrawable(getResources(), thumbnail));
-                }
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else
-        {
-            Log.i("AccessMedia","permission denied");
-
-            if(shouldShowRequestPermissionRationale(READ_MEDIA_IMAGES))
-            {
-                Log.i("AccessMedia","you should show a rationale");
-            }else
-            {
-                Log.i("AccessMedia","rationale is not requested");
-            }
-
-
-            ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->{
-                if(isGranted)
-                {
-                    Log.i("AccessMedia","is granted");
-                }
-                else
-                {
-                    Log.i("AccessMedia","was NOT granted");
-                }
-            });
-
-            requestPermissionLauncher.launch(READ_MEDIA_IMAGES);
-
-
-        }
         /*EditText editName = view.findViewById(R.id.editTaskNameLabel);
         EditText edtTxtHrs = view.findViewById(R.id.editTextHours);
         EditText edtTxtMin = view.findViewById(R.id.editTextMinutes);
@@ -213,8 +126,12 @@ public class CreationUpperFragment extends Fragment {
 
             }
         });
+        checkPermissionsAndRetrievePictures(latestImage,thumbnailIV);
 
         ImageInfo finalLatestImage = latestImage;
+
+
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -327,6 +244,99 @@ public class CreationUpperFragment extends Fragment {
     }
 
 
+    private void checkPermissionsAndRetrievePictures(ImageInfo latestImage,ImageView thumbnailIV)
+    {
+
+        if(ContextCompat.checkSelfPermission(this.getContext(),READ_MEDIA_IMAGES) == PERMISSION_GRANTED )
+        {
+            Log.i("AccessMedia","permission granted");
+
+
+            for(String s : getExternalVolumeNames(this.getContext()))
+            {
+                Log.i("externalVolume",s);
+            }
+
+            String version = getVersion(this.getContext(),"external_primary");
+            Log.i("externalVolume versionStr",version);
+
+
+            List<ImageInfo> imageList = new ArrayList<>();
+
+            Uri collection;
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            {
+                collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+            }
+            else
+            {
+                collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            }
+
+            String[] projection = new String[]
+                    {
+                            MediaStore.Images.Media._ID,
+                            MediaStore.Images.Media.DISPLAY_NAME
+                    };
+            try(Cursor cursor = this.getContext().getContentResolver().query(collection,projection,null,null,null)){
+                Log.i("cursor res","rows "+cursor.getCount());
+                Log.i("cursor res",Integer.toString(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
+
+                int idColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                int nameColumnIndex= cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
+
+                while(cursor.moveToNext())
+                {
+                    long id = cursor.getLong(idColumnIndex);
+                    String name = cursor.getString(nameColumnIndex);
+
+                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id);
+                    latestImage = new ImageInfo(contentUri,name);
+                    imageList.add(latestImage);
+                    Log.i("cursor res",latestImage.toString());
+
+                }
+
+                if(latestImage != null) {
+                    Bitmap thumbnail = this.getContext().getContentResolver().loadThumbnail(latestImage.getUri(), new Size(800, 800), null);
+
+                    thumbnailIV.setImageDrawable(new BitmapDrawable(getResources(), thumbnail));
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else
+        {
+            Log.i("AccessMedia","permission denied");
+
+            if(shouldShowRequestPermissionRationale(READ_MEDIA_IMAGES))
+            {
+                Log.i("AccessMedia","you should show a rationale");
+            }else
+            {
+                Log.i("AccessMedia","rationale is not requested");
+            }
+
+
+            ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->{
+                if(isGranted)
+                {
+                    Log.i("AccessMedia","is granted");
+                }
+                else
+                {
+                    Log.i("AccessMedia","was NOT granted");
+                }
+            });
+
+            requestPermissionLauncher.launch(READ_MEDIA_IMAGES);
+
+
+        }
+    }
 
 
 }

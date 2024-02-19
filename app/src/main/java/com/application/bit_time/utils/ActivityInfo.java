@@ -1,5 +1,6 @@
 package com.application.bit_time.utils;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,21 +13,23 @@ public class ActivityInfo {
     private String labelName;
     private int labelTime;
 
+    private Uri imageUri;
 
     public ActivityInfo()
     {
         this.IDpk = -1;
         this.labelName = new String("emptyActivityInfoName");
         this.labelTime = -1;
+        this.imageUri = null;
 
     }
 
-    public ActivityInfo(int ID,String name, int time)
+    public ActivityInfo(int ID,String name, int time,Uri imageUri)
     {
         IDpk = ID;
         labelName = name;
         labelTime = time;
-
+        this.imageUri = imageUri;
     }
 
 
@@ -36,14 +39,16 @@ public class ActivityInfo {
         this.IDpk = original.IDpk;
         this.labelTime = original.getTimeInt();
         this.labelName = new String(original.getName());
+        this.imageUri = original.imageUri;
 
     }
 
 
-    public ActivityInfo(int id,String name, String time)
+    public ActivityInfo(int id,String name, String time,Uri imageUri)
     {
         this.IDpk = id;
         this.labelName = name;
+        this.imageUri=imageUri;
 
         try {
             labelTime = Integer.parseInt(time);
@@ -55,7 +60,7 @@ public class ActivityInfo {
 
     }
 
-    public ActivityInfo(String ID,String name, String time)
+    public ActivityInfo(String ID,String name, String time,String imageUri)
     {
         try{
             IDpk = Integer.parseInt(ID);
@@ -74,6 +79,7 @@ public class ActivityInfo {
             Log.e("ERROR","exception thrown when converting time for listItem obj");
         }
 
+        this.imageUri = Uri.parse(imageUri);
 
         Log.i("ACTINFO CRE completed",this.toString());
     }
@@ -102,6 +108,8 @@ public class ActivityInfo {
     public int getTimeInt() { return this.labelTime;}
 
     public int getIdInt() {return this.IDpk;}
+
+
 
 
     public void setTime(int labelTime)
