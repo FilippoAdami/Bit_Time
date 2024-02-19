@@ -47,7 +47,7 @@ import java.io.InputStream;
 public class ModifyTasksFragment extends Fragment {
 
 
-    int MAX_LENGTH = 12;
+    int MAX_LENGTH = 16;
     private DbViewModel dbViewModel;
 
     private EditText editName;

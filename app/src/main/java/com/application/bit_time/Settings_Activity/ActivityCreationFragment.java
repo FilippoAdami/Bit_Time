@@ -80,7 +80,7 @@ public class ActivityCreationFragment extends Fragment {
     private Button addButton ;
     private Button endButton ;
     private TextView nameLabel;
-    private int MAX_LENGTH = 12;
+    private int MAX_LENGTH = 16;
 
     private ImageView icon;
     RelativeLayout changeIcon;

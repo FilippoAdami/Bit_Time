@@ -47,7 +47,7 @@ import java.io.InputStream;
 
 public class CreationUpperFragment extends Fragment {
 
-    private int MAX_LENGTH = 12;
+    private int MAX_LENGTH = 16;
     DbViewModel dbViewModel;
     SubtasksViewModel subtasksViewModel;
     CustomViewModel viewModel;

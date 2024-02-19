@@ -16,7 +16,7 @@
         android:paddingBottom="25sp"
         android:text="@string/quickstart_menu"
         android:textAlignment="center"
-        android:textSize="40sp" />
+        android:textSize="27sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quickstartRecyclerView"
