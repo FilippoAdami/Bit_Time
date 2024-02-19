@@ -96,7 +96,7 @@
     <string name="PastelTheme">pastello</string>
     <string name="VividTheme">acceso</string>
     <string name="EarthTheme">terra</string>
-    <string name="BWTheme">bienco/nero</string>
+    <string name="BWTheme">neutro</string>
     <string name="notifications">notifiche</string>
     <string name="change_background">Scegli Sfondo</string>
     <string name="notifications_sound">Suono di notifica</string>

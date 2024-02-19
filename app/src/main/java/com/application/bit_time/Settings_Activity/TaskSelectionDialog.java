@@ -167,14 +167,13 @@ public class TaskSelectionDialog extends DialogFragment {
                                             //selectedTasks.add(new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1), allTasksCursor.getString(2)));
                                             selectedTasks.add(new TaskItem(allTaskItems[i]));
                                             //Toast.makeText(getContext(), "added " + allTasksCursor.getString(1), Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(getContext(), "added " + allTasksNames[i], Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "aggiunto " + allTasksNames[i], Toast.LENGTH_SHORT).show();
 
                                         } else
-                                            Toast.makeText(getContext(), "DIM MAX reached", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "lunghezza massima", Toast.LENGTH_SHORT).show();
 
 
                                     } else {
-                                        Toast.makeText(getContext(), "UNselected" + i, Toast.LENGTH_SHORT).show();
                                         //selectedTasks.remove(new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1), allTasksCursor.getString(2)));
                                         selectedTasks.remove(new TaskItem(allTaskItems[i]));
 
@@ -313,7 +312,7 @@ public class TaskSelectionDialog extends DialogFragment {
                                     selectedTasks.add(new TaskItem(allTaskItems[i]));
                                     //Toast.makeText(getContext(), "added " + allTasksNames[i], Toast.LENGTH_SHORT).show();
                                 } else
-                                    Toast.makeText(getContext(), "DIM MAX reached", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "lunghezza massima", Toast.LENGTH_SHORT).show();
 
 
                             } else {

@@ -102,8 +102,6 @@ public class CreationUpperFragment extends Fragment {
         WarningTW = view.findViewById(R.id.TaskCreWarning);
         WarningTW.setText("The name of the task cannot be longer than "+MAX_LENGTH+" chars");
         WarningTW.setVisibility(View.INVISIBLE);
-//added image and path
-        // Toast the current icon path
         imgView = view.findViewById(R.id.taskIcon);
         changeIcon = view.findViewById(R.id.editTaskIcon);
 
@@ -153,8 +151,6 @@ public class CreationUpperFragment extends Fragment {
                     int seconds = parseContent(edtTxtSec.getText().toString()) ;
                     int totalTime = hours + minutes + seconds;
                     Log.i("totalTime",Integer.toString(totalTime));
-//added the set of the image
-                    Toast.makeText(getActivity(), iconPath, Toast.LENGTH_SHORT).show();
                     TaskItem newTask = new TaskItem(-2, editName.getText().toString(), totalTime, iconPath);
 
                     Log.i("INFOZ", newTask.getName() + " " + newTask.getDuration());
@@ -306,7 +302,6 @@ public class CreationUpperFragment extends Fragment {
             imgView = getView().findViewById(R.id.taskIcon);
             imgView.setImageBitmap(savedBitmap);
 
-            Toast.makeText(getActivity(), "sfondo aggiornato correttamente", Toast.LENGTH_SHORT).show();
         } else {
             // Toast something went wrong
             Toast.makeText(getActivity(), "Errore nel salvataggio", Toast.LENGTH_SHORT).show();

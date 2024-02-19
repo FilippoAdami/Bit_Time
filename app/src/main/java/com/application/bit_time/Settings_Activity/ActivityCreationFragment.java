@@ -542,7 +542,6 @@ public class ActivityCreationFragment extends Fragment {
             File file = new File(requireActivity().getFilesDir(), fileName);
             String imagePath = file.getAbsolutePath();
             currentIcon = imagePath;
-            Toast.makeText(getContext(), currentIcon, Toast.LENGTH_SHORT).show();
             bitmap = BitmapFactory.decodeFile(imagePath);
         } catch (IOException e) {
             e.printStackTrace();
