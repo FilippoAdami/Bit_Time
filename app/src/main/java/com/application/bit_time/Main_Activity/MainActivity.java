@@ -365,8 +365,8 @@ public class MainActivity extends AppCompatActivity {
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.controlbarFragment,new ReportFragment())
-                        .replace(R.id.fragment_container,new BottomReportFragment())
-                        .replace(R.id.bottomFragmentContainer,new Fragment())
+                        .replace(R.id.fragment_container,new Fragment())
+                        .replace(R.id.bottomFragmentContainer,new BottomReportFragment())
                         .addToBackStack("reportEntry")
                         .commit();
             }
