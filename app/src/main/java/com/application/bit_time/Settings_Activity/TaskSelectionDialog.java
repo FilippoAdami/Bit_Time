@@ -167,10 +167,11 @@ public class TaskSelectionDialog extends DialogFragment {
                                             //selectedTasks.add(new TaskItem(allTasksCursor.getInt(0), allTasksCursor.getString(1), allTasksCursor.getString(2)));
                                             selectedTasks.add(new TaskItem(allTaskItems[i]));
                                             //Toast.makeText(getContext(), "added " + allTasksCursor.getString(1), Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(getContext(), "aggiunto " + allTasksNames[i], Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(getContext(), "aggiunto " + allTasksNames[i], Toast.LENGTH_SHORT).show();
 
-                                        } else
-                                            Toast.makeText(getContext(), "lunghezza massima", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            //Toast.makeText(getContext(), "lunghezza massima", Toast.LENGTH_SHORT).show();
+                                        }
 
 
                                     } else {
@@ -311,10 +312,10 @@ public class TaskSelectionDialog extends DialogFragment {
                                 if (selectedTasks.size() <= DbContract.Activities.DIM_MAX) {
                                     selectedTasks.add(new TaskItem(allTaskItems[i]));
                                     //Toast.makeText(getContext(), "added " + allTasksNames[i], Toast.LENGTH_SHORT).show();
-                                } else
-                                    Toast.makeText(getContext(), "lunghezza massima", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    //Toast.makeText(getContext(), "lunghezza massima", Toast.LENGTH_SHORT).show();
 
-
+                                }
                             } else {
                                 //Toast.makeText(getContext(), "UNselected" + i, Toast.LENGTH_SHORT).show();
                                 selectedTasks.remove(new TaskItem(allTaskItems[i]));

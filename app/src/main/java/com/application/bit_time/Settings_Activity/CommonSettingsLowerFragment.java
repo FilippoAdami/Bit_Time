@@ -74,7 +74,7 @@ public class CommonSettingsLowerFragment extends Fragment {
         addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),"+task", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),"+task", Toast.LENGTH_SHORT).show();
                 customViewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.NewTask));
 
             }
@@ -82,7 +82,7 @@ public class CommonSettingsLowerFragment extends Fragment {
         addActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),"+activity", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),"+activity", Toast.LENGTH_SHORT).show();
                 customViewModel.selectItem(new SettingsModeData(SettingsModeData.Mode.NewActivity));
             }
         });

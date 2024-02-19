@@ -75,6 +75,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         notificationManager.notify(17, builder.build());
         //TODO:manage how the alarm behaves aftere the notification is fired
         AlarmScheduler alarmScheduler = new AlarmScheduler(context.getApplicationContext());
+        Log.i("actId passed 2 mansched",Integer.toString(actId));
         alarmScheduler.manage(dbManager.selectScheduleById(alarmId),alarmId);
     }
 }

@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Main Activity detection","ActivityDone detected");
                 Log.i("Main act detection",Integer.toString(item.getFullReport().size()));
 
-                Toast.makeText(this,"REPORT WILL BE SAVED",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,"REPORT WILL BE SAVED",Toast.LENGTH_SHORT).show();
 
                 SharedPreferences tempsharedPreferences = getPreferences(Context.MODE_PRIVATE);
                 int actID = tempsharedPreferences.getInt("activityToRun",-100);

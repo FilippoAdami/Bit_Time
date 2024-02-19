@@ -58,9 +58,9 @@ public class AlarmScheduler implements AlarmSchedulerInterface
         Log.i("pendint info",intent.toString());*/
 
 
-        Log.i("pendingIntent cre",pendingIntent.toString());
+        Log.i("pendingIntentSched cre",pendingIntent.toString());
         long alarmTime = info.getAlarmTimeLong();
-        Log.i("alarmtimeLOG",Long.toString(alarmTime)+" is alarmTimeLNG");
+        Log.i("alarmtimeLOG sched",Long.toString(alarmTime)+" is alarmTimeLNG");
 
         //TODO : must put conditions on the API version
 
@@ -125,32 +125,33 @@ public class AlarmScheduler implements AlarmSchedulerInterface
     {
 
 
-        Log.i("from manage log",info.toString());
+        Log.i("from manage log sched",info.toString());
 
 
-        alarmId = planDbId;
+        planDbId = planDbId;
         DbManager dbManager = new DbManager(this.context);
         dbManager.deleteActivitySchedule(planDbId);
         cancel(info);
         if(info.freq.toString().equals("NotSet"))
         {
-            Log.i("freq check","freq is not set so i will call cancel");
+            Log.i("freq check sched","freq is not set so i will call cancel");
 
         }
         else
         {
             if(info.freq.toString().equals("Daily"))
             {
-                Log.i("freq check","freq is set to daily so i will reset the alarm");
+                Log.i("freq check sched","freq is set to daily so i will reset the alarm");
                 //info.min +=1;
                 schedule(info.dailyPostpone());
             }
             else if(info.freq.toString().equals("Weekly"))
             {
-                Log.i("freq check","freq is set to weekly so i will reset the alarm");
+                Log.i("freq check sched","freq is set to weekly so i will reset the alarm");
                 schedule(info.weeklyPostpone());
             }
 
+            Log.i("actId before sched",Integer.toString(actId));
             dbManager.insertActivitySchedule(actId,info.getInfoGC(),info.getFreq());
 
         }
