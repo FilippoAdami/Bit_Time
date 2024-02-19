@@ -473,13 +473,11 @@ public class DbManager {
         scanCursor.close();
     }
 
-    public void deleteTask(TaskItem task)
-    {
+    public void deleteTask(TaskItem task) {
         String deleteQuery =
-                "delete from "+ DbContract.Tasks.TABLE_NAME + " where "
-                + DbContract.Tasks._ID + "=" + task.getIdStr();
+                "DELETE FROM " + DbContract.Tasks.TABLE_NAME + " WHERE "
+                        + DbContract.Tasks._ID + "=" + task.getIdStr();
 
-        //Log.i("DB delTask",deleteQuery.toString());
         db.execSQL(deleteQuery);
 
         String scanQuery = scanQueryBuilder(task);
@@ -511,7 +509,6 @@ public class DbManager {
                 if (pos > 0) {
                     currSubtasks[DbContract.Activities.DIM_MAX - 1] = -1;
 
-
                     String updateQuery = "update " + DbContract.Activities.TABLE_NAME + " set "
                             + DbContract.Activities.COLUMN_NAME_ACTIVITY_DURATION + "=" + newDuration + ",";
 
@@ -522,22 +519,21 @@ public class DbManager {
                             partial = partial.concat(",");
                         }
                         updateQuery = updateQuery.concat(partial);
-
                     }
 
-                    updateQuery = updateQuery.concat(" where " + DbContract.Activities._ID + "=" + scanCursor.getInt(0));
+                    updateQuery = updateQuery.concat(" WHERE " + DbContract.Activities._ID + "=" + scanCursor.getInt(0));
 
                     Log.i("updateQuery2", updateQuery);
                     db.execSQL(updateQuery);
                 } else {
                     Log.i("dimtestlog", "left subtasks are zero");
                 }
-            }while (scanCursor.moveToNext());
+            } while (scanCursor.moveToNext());
         }
-
 
         scanCursor.close();
     }
+
 
     public List<TaskItem> retrieveSubtasks(Cursor activityCursor)
     {
@@ -552,7 +548,7 @@ public class DbManager {
                 Log.i("testdbm", Integer.toString(subtaskId));
                 if (subtaskId != -1) {
                     TaskItem subtask = searchTask(subtaskId);
-                    Log.i("retrieved subtask", subtask.getName());
+                    Log.i("retrieved subtask img", subtask.getImg());
                     subtasks.add(subtask);
                 }
             }

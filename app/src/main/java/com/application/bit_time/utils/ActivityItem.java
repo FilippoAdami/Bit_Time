@@ -1,6 +1,5 @@
 package com.application.bit_time.utils;
 
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -21,7 +20,6 @@ public class ActivityItem {
     List<PlanningInfo> plans;
 
     boolean expanded;
-
 
 
     public ActivityItem()
@@ -73,37 +71,36 @@ public class ActivityItem {
 
     }
 
-    public ActivityItem(String id,String name,String duration)
+// updated constructor to take also the image
+    public ActivityItem(String id,String name,String duration, String img)
     {
         this.plans = null;
-        this.activityInfo = new ActivityInfo(id,name,duration,"URiActPlaceholderCosntr");
+        this.activityInfo = new ActivityInfo(id,name,duration,img);
         expanded = false;
         subtasks = new TaskItem[DbContract.Activities.DIM_MAX];
-
-
     }
 
-
-    public ActivityItem(String id, String name, String duration, int[] subtasksA)
+    // updated constructor to take also the image
+    public ActivityItem(String id, String name, String duration, String img, int[] subtasksA)
     {
-        this(id,name,duration);
+        this(id,name,duration, img);
 
         //this.subtasks= new TaskItem[DbContract.Activities.DIM_MAX];
         for(int i = 0;i< DbContract.Activities.DIM_MAX ;i++)
         {
-            subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0,"placeholderUri");
+            subtasks[i] = new TaskItem(subtasksA[i],"placeholderName",0, "placeholderImg");
             Log.i("creatingAI",subtasks[i].toString());
         }
     }
-
-    public ActivityItem(String name, int duration, TaskItem[] subtasks)
+    // updated constructor to take also the image
+    public ActivityItem(String name, int duration, TaskItem[] subtasks, String img)
     {
         this.plans = null;
         Log.i("image current path 1", "path: "+img);
 
         Log.i("SUB2ADD",subtasks[0].toString());
 
-        this.activityInfo = new ActivityInfo(-1,name,duration, Uri.parse("UriActPlaceholderActItem"));
+        this.activityInfo = new ActivityInfo(-1,name,duration, img);
         this.subtasks =  new TaskItem[DbContract.Activities.DIM_MAX];
 
         for(int i = 0; i< DbContract.Activities.DIM_MAX;i++)

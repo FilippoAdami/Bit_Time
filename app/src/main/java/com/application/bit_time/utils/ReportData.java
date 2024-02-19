@@ -1,6 +1,5 @@
 package com.application.bit_time.utils;
 
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,7 +14,8 @@ public class ReportData {
     private int totalTime;
     public int lastedTime ;
 
-    private Uri imageUri;
+    private String img;
+
     public static class Metadata
     {
         int actId;
@@ -49,23 +49,23 @@ public class ReportData {
         }
     }
 
-    public ReportData(int subtaskId, String subtaskName, int totalTime, Uri imageUri)
+    public ReportData(int subtaskId,String subtaskName,int totalTime,String imgStr)
     {
         this.subtaskId = subtaskId;
         this.subtaskName = subtaskName;
         this.totalTime = totalTime;
         this.endStatus = newRunningActivityData.EndStatus.notSet;
         this.lastedTime = -100; // stands for not set yet
-        this.imageUri = imageUri;
+        this.img=imgStr;
     }
-    public ReportData(int subtaskId,String subtaskName, newRunningActivityData.EndStatus currentStatus, int lastedTime,int totalTime,Uri imageUri)
+    public ReportData(int subtaskId,String subtaskName, newRunningActivityData.EndStatus currentStatus, int lastedTime,int totalTime,String imgStr)
     {
         this.subtaskId = subtaskId;
         this.subtaskName = subtaskName;
         this.endStatus = currentStatus;
         this.lastedTime = lastedTime;
         this.totalTime = totalTime;
-        this.imageUri = imageUri;
+        this.img = imgStr;
     }
 
     @NonNull
@@ -94,7 +94,8 @@ public class ReportData {
 
     public TaskItem getTaskItem()
     {
-        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime(),this.imageUri);
+// should add the image as well at the end, temporary constructor call
+        return new TaskItem(this.subtaskId,this.subtaskName,this.getTotalTime(),this.img);
     }
 
     public static void metadataParser(String rawMetadata)

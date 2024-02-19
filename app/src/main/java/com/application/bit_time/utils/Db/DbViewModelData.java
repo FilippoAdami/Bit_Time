@@ -71,7 +71,6 @@ public class DbViewModelData {
         this();
         this.action = action;
         this.selector = item;
-        Log.i("from DbVmD",newItem.getImageUri().toString());
         this.taskItem = new TaskItem(newItem);
     }
 
