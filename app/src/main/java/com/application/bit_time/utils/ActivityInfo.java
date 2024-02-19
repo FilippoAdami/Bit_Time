@@ -120,7 +120,10 @@ public class ActivityInfo {
     }
     public String getImage(){ return this.img; }
 
-
+    public void updateImgStr(String imageUri)
+    {
+        this.img = imageUri;
+    }
     @Override
     public boolean equals(@Nullable Object obj) {
 

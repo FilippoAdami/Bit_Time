@@ -326,6 +326,7 @@ public class DbManager {
         //ActivityItem item = new ActivityItem(activityInfo,taskItemArr);
 
         //return item;
+        //activityInfo.updateImgStr(c.getString(9));
 
         return new ActivityItem(activityInfo,taskItemArr);
     }
@@ -550,13 +551,12 @@ public class DbManager {
         {
             activityCursor.moveToFirst();
 
-
             for (int i = 0; i < DbContract.Activities.DIM_MAX; i++) {
                 int subtaskId = activityCursor.getInt(3 + i);
                 Log.i("testdbm", Integer.toString(subtaskId));
                 if (subtaskId != -1) {
                     TaskItem subtask = searchTask(subtaskId);
-                    Log.i("retrieved subtask", subtask.getName());
+                    Log.i("retrieved subtask img", subtask.getImg());
                     subtasks.add(subtask);
                 }
             }

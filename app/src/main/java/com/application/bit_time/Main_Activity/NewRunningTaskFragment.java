@@ -58,13 +58,16 @@ public class NewRunningTaskFragment extends Fragment {
         ActivityInfo activityInfoToSearch = new ActivityInfo(actId,"placeholderName",-1, "placeholderImg");
         ActivityItem activityItem =dbManager.searchActivityItem(activityInfoToSearch);
 
+
+
         Log.i("actToRun in NRTF",activityItem.toString());
 
         for(TaskItem ti : activityItem.getSubtasks())
         {
             if(ti.getID()!=-1)
             {
-                ReportData latestReportDataBase = new ReportData(ti.getID(),ti.getName(),ti.getDurationInt());
+                Log.i("img inside actItem",ti.getImg());
+                ReportData latestReportDataBase = new ReportData(ti.getID(),ti.getName(),ti.getDurationInt(),ti.getImg());
                 this.reportDataList.add(latestReportDataBase);
                 Log.i("latestRDBase",latestReportDataBase.toString());
                 //subtasksList.add(ti);
@@ -177,7 +180,7 @@ public class NewRunningTaskFragment extends Fragment {
         if(SLIterator.hasNext())
         {
             currentTask = SLIterator.next().getTaskItem();
-            Log.i("currentTask",currentTask.toString());
+            Log.i("currentTask img",currentTask.getImg());
             newRunningActivityData nRAD = new newRunningActivityData(currentTask);
             nRAD.setFullReport(this.reportDataList);
             RAVM.selectItem(nRAD);

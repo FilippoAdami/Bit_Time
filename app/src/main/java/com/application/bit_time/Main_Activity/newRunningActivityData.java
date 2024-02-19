@@ -154,7 +154,7 @@ public class newRunningActivityData {
     }
     public ReportData getReportData()
     {
-        ReportData reportData = new ReportData(currentTask.getID(),currentTask.getName(),this.endStatus,this.lastedTime,currentTask.getDurationInt());
+        ReportData reportData = new ReportData(currentTask.getID(),currentTask.getName(),this.endStatus,this.lastedTime,currentTask.getDurationInt(), currentTask.getImg());
 
         return reportData;
     }
