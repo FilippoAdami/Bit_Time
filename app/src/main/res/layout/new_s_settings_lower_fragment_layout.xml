@@ -17,8 +17,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addFAB"
-        android:layout_width="57dp"
-        android:layout_height="53dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:clickable="true"
         android:src="@drawable/plus"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,8 +30,8 @@
 
     <LinearLayout
         android:id="@+id/FloatingAddMenu"
-        android:layout_width="118dp"
-        android:layout_height="102dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/addFAB"
         app:layout_constraintEnd_toEndOf="@+id/addFAB"
