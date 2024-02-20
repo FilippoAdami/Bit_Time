@@ -110,6 +110,32 @@ public class DbManager {
                         DbContract.ActivitySchedule.COLUMN_NAME_FREQUENCY + " text);";
 
 
+        public String insertPremadeTasksQueryBuilder()
+        {
+            String insertionQueryBase = "insert into " + DbContract.Tasks.TABLE_NAME + "("
+                    + DbContract.Tasks.COLUMN_NAME_TASK_NAME +","
+                    + DbContract.Tasks.COLUMN_NAME_TASK_DURATION +","
+                    + DbContract.Tasks.COLUMN_NAME_IMG + ") values ";
+
+            String space = ",";
+
+            String firstPremadeTaskQuery = "('lavare i denti',"+15*60+",'empty')";
+            String secondPremadeTaskQuery = "('fare colazione',"+15*60+",'empty')";
+            String thirdPremadeTaskQuery = "('fare lo zaino',"+10*60+",'empty')";
+            String fourthPremadeTaskQuery = "('fare la doccia',"+20*60+",'empty')";
+            String fifthPremadeTaskQuery = "('fare merenda',"+20*60+",'empty')";
+
+            String finalQuery = insertionQueryBase +
+                    firstPremadeTaskQuery + space +
+                    secondPremadeTaskQuery + space +
+                    thirdPremadeTaskQuery + space +
+                    fourthPremadeTaskQuery + space +
+                    fifthPremadeTaskQuery;
+
+            return finalQuery;
+        }
+
+
         public DbHelper(Context context)
         {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -126,6 +152,9 @@ public class DbManager {
             db.execSQL(SQL_CREATE_GAMIFICATION_SETTINGS_TABLE);
             db.execSQL(SQL_CREATE_ACTIVITY_SCHEDULE_TABLE);
             db.execSQL(SQL_CREATE_REPORT_DATA_TABLE);
+
+            db.execSQL(insertPremadeTasksQueryBuilder());
+
         }
 
         /*public String getDbName()
@@ -1700,30 +1729,6 @@ public class DbManager {
 
 
 
-    public void insertPremadeTasks()
-    {
-        String insertionQueryBase = "insert into " + DbContract.Tasks.TABLE_NAME + "("
-                + DbContract.Tasks.COLUMN_NAME_TASK_NAME +","
-                + DbContract.Tasks.COLUMN_NAME_TASK_DURATION +","
-                + DbContract.Tasks.COLUMN_NAME_IMG + ") values ";
 
-        String space = ",";
-
-        String firstPremadeTaskQuery = "('lavare i denti',15,'empty')";
-        String secondPremadeTaskQuery = "('fare colazione',15,'empty')";
-        String thirdPremadeTaskQuery = "('fare lo zaino',10,'empty')";
-        String fourthPremadeTaskQuery = "('fare la doccia',20,'empty')";
-        String fifthPremadeTaskQuery = "('fare merenda',20,'empty')";
-
-        String finalQuery = insertionQueryBase +
-                firstPremadeTaskQuery + space +
-                secondPremadeTaskQuery + space +
-                thirdPremadeTaskQuery + space +
-                fourthPremadeTaskQuery + space +
-                fifthPremadeTaskQuery;
-
-        Log.i("insertion query",finalQuery);
-        db.execSQL(finalQuery);
-    }
 
 }

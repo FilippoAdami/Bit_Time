@@ -108,7 +108,7 @@ public class SettingsActivity extends AppCompatActivity{
         OBPDispatcher.addCallback(this,mainOBPCallback);
 
         dbManager = new DbManager(getApplicationContext());
-        dbManager.insertPremadeTasks();
+        //dbManager.insertPremadeTasks();
         sharedPreferences = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         //check if there is a shared preference for the theme
         String currentTheme = sharedPreferences.getString("CurrentTheme", null);
