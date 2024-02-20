@@ -85,14 +85,11 @@ public class ReportFragment extends Fragment {
 
         TextView reportTitle = view.findViewById(R.id.reportTitle);
         TextView evaluationField = view.findViewById(R.id.evaluationField);
+        TextView totalScoreTV = view.findViewById(R.id.totalscore);
 
         evaluationField.setText(evaluation.toString());
+        totalScoreTV.setText(Integer.toString(currentScore));
         recyclerView = view.findViewById(R.id.recyclerView);
-
-
-
-
-
 
 
         Log.i("REPFRAG",Integer.toString(this.reportDataList.size()));

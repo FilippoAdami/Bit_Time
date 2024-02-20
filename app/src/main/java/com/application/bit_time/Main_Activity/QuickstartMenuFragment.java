@@ -69,12 +69,16 @@ public class QuickstartMenuFragment extends Fragment {
 
     private void setup()
     {
+        /*Context context = getContext();
+        context.deleteDatabase("Activities.db");*/
+
         maxLengthActName = 0;
         this.activitiesList = new ArrayList<>();
         this.dbManager = new DbManager(this.getContext());
         Cursor allActivitiesCursor = this.dbManager.selectAllActivities();
 
         if(allActivitiesCursor.getCount()>0) {
+            Log.i("allActCursor","count "+allActivitiesCursor.getCount());
             allActivitiesCursor.moveToFirst();
             do {
                 ActivityInfo currentAIInfo = new ActivityInfo(

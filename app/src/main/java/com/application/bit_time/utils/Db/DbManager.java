@@ -333,7 +333,7 @@ public class DbManager {
     public Cursor selectAllActivities()
     {
         String searchQuery= "select * from "+ DbContract.Activities.TABLE_NAME;
-
+        Log.i("selectAllActivities query",searchQuery);
         return db.rawQuery(searchQuery,null);
     }
 
