@@ -1709,7 +1709,7 @@ public class DbManager {
 
         String space = ",";
 
-        String firstPremadeTaskQuery = "('wash teeth',15,'empty')";
+        String firstPremadeTaskQuery = "('lavare i denti',15,'empty')";
         String secondPremadeTaskQuery = "('fare colazione',15,'empty')";
         String thirdPremadeTaskQuery = "('fare lo zaino',10,'empty')";
         String fourthPremadeTaskQuery = "('fare la doccia',20,'empty')";
