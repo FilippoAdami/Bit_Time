@@ -1,5 +1,7 @@
 package com.application.bit_time.utils;
 
+
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -54,7 +56,29 @@ public class ReportDataAdapter extends RecyclerView.Adapter<ReportDataAdapter.Li
         Log.i("viewholder log",reportData.subtaskName);
         holder.subtaskName.setText(reportData.subtaskName);
         holder.subtaskScore.setText(Integer.toString(this.scorelist[position]));
-        holder.endStatus.setText(reportData.endStatus.toString());
+
+        int endstatusId = -1;
+        if(reportData.endStatus.equals(newRunningActivityData.EndStatus.BigAnticipation))
+        {
+            endstatusId = R.string.BigAnticpiationIta;
+        }
+        else if(reportData.endStatus.equals(newRunningActivityData.EndStatus.Anticipation))
+        {
+            endstatusId = R.string.AnticipationIta;
+        }
+        else if(reportData.endStatus.equals(newRunningActivityData.EndStatus.OnTime))
+        {
+            endstatusId = R.string.OnTimeIta;
+        }
+        else if(reportData.endStatus.equals(newRunningActivityData.EndStatus.Delay))
+        {
+            endstatusId = R.string.DelayIta;
+        }else
+        {
+            endstatusId = R.string.BigDelayIta;
+        }
+
+        holder.endStatus.setText(endstatusId);//reportData.endStatus.toString());
         holder.subtaskTime.setText(reportData.lastedtimeToString());
         holder.image.setImageDrawable(happyIcon);
         holder.image.setImageDrawable(sadIcon);

@@ -87,7 +87,25 @@ public class ReportFragment extends Fragment {
         TextView evaluationField = view.findViewById(R.id.evaluationField);
         TextView totalScoreTV = view.findViewById(R.id.totalscore);
 
-        evaluationField.setText(evaluation.toString());
+        int evaluationId=-1;
+
+        if(evaluation.equals(ReportFragment.evaluation.StillToImprove))
+        {
+            evaluationId = R.string.StillToImproveIta;
+        }else if(evaluation.equals(ReportFragment.evaluation.GoodJob))
+        {
+            evaluationId = R.string.GoodJobIta;
+        }
+        else if(evaluation.equals(ReportFragment.evaluation.WellDone))
+        {
+            evaluationId = R.string.WellDoneIta;
+        }
+        else if(evaluation.equals(ReportFragment.evaluation.Great))
+        {
+            evaluationId = R.string.GreatIta;
+        }
+
+        evaluationField.setText(evaluationId);
         totalScoreTV.setText(Integer.toString(currentScore));
         recyclerView = view.findViewById(R.id.recyclerView);
 

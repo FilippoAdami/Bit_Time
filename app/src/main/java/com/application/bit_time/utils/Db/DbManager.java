@@ -1726,9 +1726,4 @@ public class DbManager {
         Log.i("retrQuery",queryStr);
         return db.rawQuery(queryStr,null);
     }
-
-
-
-
-
 }

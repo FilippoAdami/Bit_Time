@@ -203,5 +203,13 @@
     <string name="sadDogIcon">sad_dog</string>
     <string name="happyDogIcon">happy_dog</string>
     <string name="backReportButton">Torna al menu\'</string>
-
+    <string name="BigAnticpiationIta">Largo Anticipo</string>
+    <string name="AnticipationIta">In Anticipo</string>
+    <string name="OnTimeIta">In Orario</string>
+    <string name="DelayIta">In Ritardo</string>
+    <string name="BigDelayIta">Largo Ritardo</string>
+    <string name="StillToImproveIta">Si può migliorare</string>
+    <string name="GoodJobIta">Bel lavoro, continua così</string>
+    <string name="WellDoneIta">Ben fatto</string>ù
+    <string name="GreatIta">Grande ! Vai avanti così</string>
 </resources>
