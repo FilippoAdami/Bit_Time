@@ -19,7 +19,7 @@ public class DbHelper extends SQLiteOpenHelper
             + DbContract.Activities.COLUMN_NAME_TASK3 + " integer,"
             + DbContract.Activities.COLUMN_NAME_TASK4 + " integer,"
             + DbContract.Activities.COLUMN_NAME_TASK5 + " integer,"
-            + DbContract.Activities.COLUMN_NAME_IS_PLANNED + " integer," // 0 will be false and 1 true
+            //+ DbContract.Activities.COLUMN_NAME_IS_PLANNED + " integer," // 0 will be false and 1 true
             + DbContract.Activities.COLUMN_NAME_ACTIVITY_IMG + " text)";
 
     private static final String SQL_DELETE_ENTRIES =   "DROP TABLE IF EXISTS " + DbContract.Activities.TABLE_NAME;

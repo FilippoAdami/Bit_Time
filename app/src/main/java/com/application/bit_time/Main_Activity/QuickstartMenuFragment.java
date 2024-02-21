@@ -69,7 +69,7 @@ public class QuickstartMenuFragment extends Fragment {
 
     private void setup()
     {
-       /* Context context = getContext();
+        /*Context context = getContext();
         context.deleteDatabase("Activities.db");*/
 
         maxLengthActName = 0;
@@ -81,9 +81,10 @@ public class QuickstartMenuFragment extends Fragment {
             Log.i("allActCursor","count "+allActivitiesCursor.getCount());
             Log.i("allActCursor","has "+allActivitiesCursor.getColumnCount());
             String[] columnNames = allActivitiesCursor.getColumnNames();
+
             for(int i = 0 ; i<allActivitiesCursor.getColumnCount();i++)
             {
-                Log.i("column",columnNames[i]);
+                Log.i("column",columnNames[i]+" "+allActivitiesCursor.getColumnIndex(columnNames[i]));
             }
 
             allActivitiesCursor.moveToFirst();
