@@ -375,23 +375,33 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle intentBundle = getIntent().getExtras();
 
-        //TODO : UNCOMMENT AND FIX
-        if(intentBundle != null)
-        {
-            int actId = (int) intentBundle.get("actId");
-            Log.i("sourceAct"," actId : " + actId);
+// Check if intentBundle is not null
+        if (intentBundle != null) {
+            // Retrieve the value associated with the key "actId"
+            Integer actId = (Integer) intentBundle.get("actId");
 
-            SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
-            sharedPrefs
-                    .edit()
-                    .putInt("activityToRun",actId)
-                    .commit();
-            statusVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
-        }
-        else
-        {
+            // Check if actId is not null before proceeding
+            if (actId != null) {
+                // Log the value of actId
+                Log.i("sourceAct", "actId : " + actId);
+
+                // Store the value of actId in SharedPreferences
+                SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+                sharedPrefs.edit()
+                        .putInt("activityToRun", actId)
+                        .apply(); // Use apply() instead of commit() for asynchronous saving
+
+                // Update the statusVM
+                statusVM.selectItem(new MainActivityStatusData(MainActivityStatusData.Status.RunningActivity));
+            } else {
+                // Handle the case where actId is null
+                Log.i("sourceAct", "actId was null");
+            }
+        } else {
+            // Handle the case where intentBundle is null
             Log.i("sourceAct", "intentBundle was null");
         }
+
 
         /*fragmentManager
                 .beginTransaction()
