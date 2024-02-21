@@ -85,7 +85,7 @@ public class QuickstartMenuFragment extends Fragment {
                         allActivitiesCursor.getInt(0),
                         allActivitiesCursor.getString(1),
                         allActivitiesCursor.getInt(2),
-                        allActivitiesCursor.getString(8));
+                        allActivitiesCursor.getString(9));
 
                 if(currentAIInfo.getName().length() > this.maxLengthActName )
                 {
